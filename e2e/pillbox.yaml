@@ -1,0 +1,20 @@
+appId: com.tentacode.pilbo
+name: Pillbox lists the intakes
+---
+- launchApp:
+    clearState: true
+- assertVisible:
+    text: "Pilulier"
+- assertVisible:
+    text: "8 h 20.*Lithium 250 mg, quantité 1. Lamictal 50 mg, quantité 1"
+- assertVisible:
+    text: "12 h 20.*Lithium 250 mg, quantité 1"
+- scrollUntilVisible:
+    element:
+      text: "20 h 20.*Lithium 250 mg, quantité 2"
+- scrollUntilVisible:
+    element:
+      text: "22 h.*Lamictal 100 mg, quantité 1. Quviviq 50 mg, quantité 1. Prégabaline 50 mg, quantité 1"
+- scrollUntilVisible:
+    element:
+      text: "Hydroxyzine.*"
