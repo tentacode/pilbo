@@ -1,5 +1,9 @@
 # Directions for Claude
 
+## Mise à jour de ce fichier CLAUDE.md
+
+Si besoin, mettre à jour ce fichier pour les prochains prompt, mais ne le faire qu'après ma validation et pas tout seul.
+
 ## Project description
 
 Project description is in `./README.md`. This is a global description and you don't have to take it all into account, as the project will be made step by step. It is still good to know what will be there in the future.
@@ -11,6 +15,8 @@ Specs are in `./specs`.
 Sometimes you will be asked to work on a specific spec, you must not be out of the spec scope unless you have permission. If you feel it's necessary to refine the scope you can always ask.
 
 Specs are prefixed in numeric order, ex `./specs/01_setup_react_native.md`.
+
+Once validated, the plan is stored in `./plans/01_setup_react_native.md`. Each step has a checkbox to know what had been done and what still needs to be done.
 
 ### Out of scope
 
