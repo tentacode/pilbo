@@ -7,7 +7,7 @@
 - Xcode → Settings → Accounts : Apple ID connecté.
 - Signing : `ios/Pilbo.xcworkspace` → target Pilbo → Signing & Capabilities → "Automatically manage signing" + Team "(Personal Team)".
 
-`ios/` est généré par Expo (non versionné). Pour le régénérer : `npx expo prebuild --clean`, puis refaire le signing.
+`ios/` est généré par Expo (non versionné). Pour le régénérer : `npx expo prebuild --clean` (la Team est conservée grâce à `ios.appleTeamId` dans `app.json`).
 
 ## Simulateur
 

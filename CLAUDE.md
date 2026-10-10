@@ -1,5 +1,7 @@
 # Directions for Claude
 
+IMPORTANT : LANGUE : TOUJOURS EN FRANÇAIS (réponses, plans, specs, etc.), exception: tout dans le code doit être en anglais, y compris les commentaires.
+
 ## Mise à jour de ce fichier CLAUDE.md
 
 Si besoin, mettre à jour ce fichier pour les prochains prompt, mais ne le faire qu'après ma validation et pas tout seul.
@@ -32,9 +34,9 @@ Basically we are looking for a proof of concept, in doubt ask if it's in the sco
 * React Native with **Expo**, using **development builds** (not Expo Go). iOS only.
 * **TypeScript** in strict mode.
 * Navigation: **Expo Router**.
-* Storage: **expo-sqlite + Drizzle ORM** (allows migrations in the future).
+* Storage: **expo-sqlite + Drizzle ORM** (allows migrations in the future, migration shall not be implemented).
 * Data is **100% local**: no backend, no user account.
-* i18n: **i18next + react-i18next + expo-localization** (French and English).
+* i18n: **i18next + react-i18next + expo-localization** (French and English), but only implement in the future when I say so.
 * Notifications: **expo-notifications** (scheduled local notifications).
 * Tests: **Jest + React Native Testing Library**.
 * Code quality: **ESLint + Prettier**.
@@ -45,6 +47,9 @@ Basically we are looking for a proof of concept, in doubt ask if it's in the sco
 * Max 64 pending local notifications at the same time: use daily repeating reminders (1 slot each), rescheduled when an intake is validated.
 * Silent mode: no sound, but vibration if "Play Haptics in Silent Mode" is enabled.
 * Free Apple account: the installed app expires every 7 days (reinstall from Xcode).
+* Free Apple account: no Push Notifications and no Time Sensitive capabilities (signing fails). Local notifications work.
+* `plugins/withoutPushEntitlement.js` removes the push entitlement added by `expo-notifications`; it must be declared **before** `expo-notifications` in `app.json` (iOS mods run in reverse order).
+* `ios.appleTeamId` in `app.json` keeps the signing team after `npx expo prebuild --clean`.
 
 ## Code conventions
 

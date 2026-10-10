@@ -9,7 +9,8 @@
     "userInterfaceStyle": "automatic",
     "ios": {
       "icon": "./assets/expo.icon",
-      "bundleIdentifier": "com.tentacode.pilbo"
+      "bundleIdentifier": "com.tentacode.pilbo",
+      "appleTeamId": "7M466ZX432"
     },
     "plugins": [
       "expo-router",
@@ -19,6 +20,15 @@
           "backgroundColor": "#208AEF",
           "image": "./assets/images/splash-icon.png",
           "imageWidth": 76
+        }
+      ],
+      "./plugins/withoutPushEntitlement",
+      [
+        "expo-notifications",
+        {
+          "sounds": [
+            "./assets/sounds/beep.wav"
+          ]
         }
       ]
     ],
