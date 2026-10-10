@@ -16,7 +16,7 @@ Sometimes you will be asked to work on a specific spec, you must not be out of t
 
 Specs are prefixed in numeric order, ex `./specs/01_setup_react_native.md`.
 
-Once validated, the plan is stored in `./plans/01_setup_react_native.md`. Each step has a checkbox to know what had been done and what still needs to be done.
+Once the plan is validated, don't take any actions yet, you need to create the plan in `./plans/01_setup_react_native.md`. Each step has a checkbox to know what had been done and what still needs to be done. You have to maintain the checkboxes as you go: tick each one as soon as the step is done and verified, before moving to the next one, never all at once at the end.
 
 ### Out of scope
 
