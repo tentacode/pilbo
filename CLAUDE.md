@@ -59,7 +59,7 @@ Conventions :
 
 * Never run any git operation (commit, add, branch, stash, push, etc.), only reading is allowed (log, diff, show, status).
 * Code (symbol names, file names) is written in English.
-* Never hardcode UI text, always use i18n.
+* UI text is hardcoded for now, i18n will be added later (only when I say so).
 * Keep it concise and modular.
 * Always favor small components.
 * Prefer keeping the design and the logic separated.
