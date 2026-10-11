@@ -18,38 +18,53 @@ Sometimes you will be asked to work on a specific spec, you must not be out of t
 
 Specs are prefixed in numeric order, ex `./specs/01_setup_react_native.md`.
 
-Once the plan is validated, don't take any actions yet, you need to create the plan in `./plans/01_setup_react_native.md`. Each step has a checkbox to know what had been done and what still needs to be done. You have to maintain the checkboxes as you go: tick each one as soon as the step is done and verified, before moving to the next one, never all at once at the end.
+Once the plan is validated, don't take any actions yet, you need to create the plan in `./plans/01_setup_react_native.md`. Each step has a checkbox to know what had been done and what still needs to be done. You have to maintain the checkboxes as you go: tick each one as soon as the step is done and verified (by yourself, or by me if I explicitely ask).
 
 ### Out of scope
 
-* Everything that is not in the spec.
-* Android is absolutely not a thing for now.
-* Some advanced features that can be in the design but are not for a proof of concept, example: the pill design customizer.
-* iOS widget (Swift/WidgetKit + App Group, requires a paid Apple Developer account): will be handled later.
+- Everything that is not in the spec.
+- Android is absolutely not a thing for now.
+- Some advanced features that can be in the design but are not for a proof of concept, example: the pill design customizer.
+- iOS widget (Swift/WidgetKit + App Group, requires a paid Apple Developer account): will be handled later. It will read the SQLite database directly, so keep it in mind: the database file will move to the App Group container (`openDatabaseSync` directory parameter), and the schema must stay simple to query from Swift.
 
 Basically we are looking for a proof of concept, in doubt ask if it's in the scope.
 
 ## Stack
 
-* React Native with **Expo**, using **development builds** (not Expo Go). iOS only.
-* **TypeScript** in strict mode.
-* Navigation: **Expo Router**.
-* Storage: **expo-sqlite + Drizzle ORM** (allows migrations in the future, migration shall not be implemented).
-* Data is **100% local**: no backend, no user account.
-* i18n: **i18next + react-i18next + expo-localization** (French and English), but only implement in the future when I say so.
-* Notifications: **expo-notifications** (scheduled local notifications).
-* Tests: **Jest + React Native Testing Library**.
-* Code quality: **ESLint + Prettier**.
-* The app is tested on a personal iPhone through Xcode, with a free Apple account for now.
+- React Native with **Expo**, using **development builds** (not Expo Go). iOS only.
+- **TypeScript** in strict mode.
+- Navigation: **Expo Router**.
+- Storage: **expo-sqlite + Drizzle ORM** (allows migrations in the future, migration shall not be implemented).
+  - The Drizzle schema is the source of truth for types (`$inferSelect` / `$inferInsert`).
+  - Reads: raw SQL with the `sql` tag (``database.all<Type>(sql`...`)``), no query builder for selects. Reference schema columns (`${table.column}`) instead of hardcoded names, and alias columns to camelCase (`AS takenAt`).
+  - Writes: Drizzle ORM (`insert`, `update`, `delete`), conditions written with `sql`.
+  - Raw SQL result types are casts: cover repositories with Jest tests.
+- UI state: local state or React context first. **Zustand** only if a UI state must be shared between distant components. Never for persisted data (SQLite only).
+- Data is **100% local**: no backend, no user account.
+- i18n: **i18next + react-i18next + expo-localization** (French and English), but only implement in the future when I say so.
+- Notifications: **expo-notifications** (scheduled local notifications).
+- Tests: **Jest + React Native Testing Library**.
+- Code quality: **ESLint + Prettier**.
+- The app is tested on a personal iPhone through Xcode, with a free Apple account for now.
 
 ### iOS constraints to keep in mind
 
-* Max 64 pending local notifications at the same time: use daily repeating reminders (1 slot each), rescheduled when an intake is validated.
-* Silent mode: no sound, but vibration if "Play Haptics in Silent Mode" is enabled.
-* Free Apple account: the installed app expires every 7 days (reinstall from Xcode).
-* Free Apple account: no Push Notifications and no Time Sensitive capabilities (signing fails). Local notifications work.
-* `plugins/withoutPushEntitlement.js` removes the push entitlement added by `expo-notifications`; it must be declared **before** `expo-notifications` in `app.json` (iOS mods run in reverse order).
-* `ios.appleTeamId` in `app.json` keeps the signing team after `npx expo prebuild --clean`.
+- Max 64 pending local notifications at the same time: use daily repeating reminders (1 slot each), rescheduled when an intake is validated.
+- Silent mode: no sound, but vibration if "Play Haptics in Silent Mode" is enabled.
+- Free Apple account: the installed app expires every 7 days (reinstall from Xcode).
+- Free Apple account: no Push Notifications and no Time Sensitive capabilities (signing fails). Local notifications work.
+- `plugins/withoutPushEntitlement.js` removes the push entitlement added by `expo-notifications`; it must be declared **before** `expo-notifications` in `app.json` (iOS mods run in reverse order).
+- `ios.appleTeamId` in `app.json` keeps the signing team after `npx expo prebuild --clean`.
+
+## Commands
+
+Package manager is **pnpm**. Use the `Makefile` (`make help` lists everything):
+
+- `make start`: Metro only (Fast Refresh, no native rebuild).
+- `make build-simulator` / `make build-device` / `make build-release`: Debug on simulator, Debug on iPhone, standalone Release on iPhone (`DEVICE_ID` from `.env`).
+- `make clean`: `expo prebuild --clean`.
+- `make tests`: lint, prettier, TypeScript, Jest and audit. Must pass before considering a step done.
+- `make test-e2e`: Maestro flows in `e2e/` (app must be installed on a booted simulator).
 
 ## Code conventions
 
@@ -57,22 +72,23 @@ Conventions will be updated with the project advancement.
 
 Conventions :
 
-* Never run any git operation (commit, add, branch, stash, push, etc.), only reading is allowed (log, diff, show, status).
-* Code (symbol names, file names) is written in English.
-* Never hardcode UI text, always use i18n.
-* Keep it concise and modular.
-* Always favor small components.
-* Prefer keeping the design and the logic separated.
-* Never write code comments unless they are vital for logic or edge case comprehension.
-* Never abbreviate symbol names (variables, components name, props, etc.).
-* Accessibility: the app must be conform to the WCAG AA, a special effort must be dedicated to achieve this, I will test with screen readers and assistive technologies to make sure it's valid. Concretely:
-  * Proper `accessibilityLabel`, `accessibilityRole` and `accessibilityState` on interactive elements.
-  * Respect the iOS text size setting (Dynamic Type) without breaking layouts.
-  * AA color contrast.
-  * Reduce animations only when the iOS "Reduce Motion" setting is enabled.
-  * Touch targets of at least 44pt.
-* Always use tokens for font size/weight, colors, sizing, margins, etc.
-* Components can go into the design-system or the features directory.
+- Architecture and folder rules: see `./docs/architecture.md`, it must be respected.
+- Never run any git operation (commit, add, branch, stash, push, etc.), only reading is allowed (log, diff, show, status).
+- Code (symbol names, file names) is written in English.
+- UI text is hardcoded for now, i18n will be added later (only when I say so).
+- Keep it concise and modular.
+- Always favor small components.
+- Prefer keeping the design and the logic separated.
+- Never write code comments unless they are vital for logic or edge case comprehension.
+- Never abbreviate symbol names (variables, components name, props, etc.).
+- Accessibility: the app must be conform to the WCAG AA, a special effort must be dedicated to achieve this, I will test with screen readers and assistive technologies to make sure it's valid. Concretely:
+  - Proper `accessibilityLabel`, `accessibilityRole` and `accessibilityState` on interactive elements.
+  - Respect the iOS text size setting (Dynamic Type) without breaking layouts.
+  - AA color contrast.
+  - Reduce animations only when the iOS "Reduce Motion" setting is enabled.
+  - Touch targets of at least 44pt.
+- Always use tokens for font size/weight, colors, sizing, margins, etc.
+- Components can go into the design-system or the features directory.
 
 ## Plans and answers
 
