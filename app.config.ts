@@ -31,6 +31,7 @@ const config: ExpoConfig = {
         sounds: ["./assets/sounds/beep.wav"],
       },
     ],
+    "expo-sqlite",
   ],
   experiments: {
     typedRoutes: true,

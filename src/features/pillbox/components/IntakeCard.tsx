@@ -9,7 +9,7 @@ import {
   formatIntakeAccessibilityLabel,
   formatIntakeSchedule,
   formatIntakeTime,
-} from "../formatters";
+} from "@/features/pillbox/utils/formatters";
 import { styles } from "./IntakeCard.styles";
 import { IntakeMedRow } from "./IntakeMedRow";
 

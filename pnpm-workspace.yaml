@@ -1,6 +1,9 @@
 allowBuilds:
+  better-sqlite3: true
+  esbuild: false
   unrs-resolver: true
 overrides:
+  esbuild@<0.24.3: ">=0.25.0 <0.26"
   uuid@<11.1.1: ">=11.1.1 <12"
 # Unfixable advisories, all in dev/build tooling, never shipped in the app bundle:
 # - decode-uri-component@0.2.2 (expo-router > query-string@7): the patched releases are ESM-only,
