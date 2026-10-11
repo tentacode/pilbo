@@ -6,3 +6,4 @@ dist
 pnpm-lock.yaml
 expo-env.d.ts
 .claude
+src/shared/database/migrations

@@ -4,9 +4,11 @@ import { ScreenHeader } from "@/design-system/components/ScreenHeader/ScreenHead
 
 import { IntakeList } from "./components/IntakeList";
 import { UnscheduledSection } from "./components/UnscheduledSection";
-import { hydroxyzine25, intakes } from "./fixtures";
+import { usePillboxData } from "@/features/pillbox/hooks/usePillboxData";
 
 export function PillboxScreen() {
+  const { intakes, asNeededMeds } = usePillboxData();
+
   return (
     <Screen>
       <ScreenHeader
@@ -14,7 +16,7 @@ export function PillboxScreen() {
         action={<IconButton icon="plus" accessibilityLabel="Nouvelle prise" />}
       />
       <IntakeList intakes={intakes} />
-      <UnscheduledSection meds={[hydroxyzine25]} />
+      <UnscheduledSection meds={asNeededMeds} />
     </Screen>
   );
 }

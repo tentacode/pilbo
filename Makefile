@@ -1,6 +1,6 @@
 -include .env
 
-.PHONY: help install start doctor clean build-simulator build-device build-release check-device-id prettier lint typescript test-unit audit test-e2e tests
+.PHONY: help install start doctor clean build-simulator build-device build-release check-device-id db-generate prettier lint typescript test-unit audit test-e2e tests
 
 # Colors
 CYAN = \033[0;36m
@@ -36,6 +36,9 @@ build-release: check-device-id ## Build and install the standalone Release app o
 
 check-device-id:
 	@test -n "$(DEVICE_ID)" || (echo "$(RED)DEVICE_ID is missing in .env$(NC)" && exit 1)
+
+db-generate: ## Generate a SQLite migration from the Drizzle schema
+	pnpm drizzle-kit generate
 
 prettier: ## Fix prettier issues
 	pnpm run prettier --log-level warn

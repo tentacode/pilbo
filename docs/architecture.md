@@ -16,12 +16,14 @@ src/
     components/<Name>/  // composants génériques
   domain/               // types métier partagés (Med, Intake…)
   features/<feature>/   // une feature = un domaine fonctionnel, pas un écran
-    <Feature>Screen.tsx
+    <Feature>Screen.tsx       // points d'entrée à la racine
     <Feature>Screen.spec.tsx  // test à côté du fichier testé
-    components/
-    fixtures.ts         // si besoin
-    formatters.ts       // si besoin
+    components/         // composants internes
+    hooks/              // hooks React (ex. use<Feature>Data.ts)
+    queries/            // requêtes SQLite
+    utils/              // fonctions pures (formatters.ts, sorters.ts…)
   shared/               // transverse : navigation, intégrations tierces…
+    database/           // SQLite : schéma, migrations, seed (voir docs/database.md)
 ```
 
 ## Règles
@@ -40,10 +42,23 @@ src/
 - **`features/`** : logique et écrans d'un domaine. Un composant utilisé par une seule feature reste dans la feature.
 - **Navigation** : barre d'onglets sur mesure. `design-system/components/TabBar` (visuel) + `shared/navigation/NavigationTabBar` (branchement Expo Router).
 
+## Données
+
+Détails : [`docs/database.md`](database.md).
+
+- Les requêtes vivent dans la feature qui possède la donnée (ex. les prises appartiennent au pilulier : `features/pillbox/queries/getAllIntakes.ts`).
+- La base est passée en paramètre des requêtes (`getAllIntakes(database)`) : testable avec une base en mémoire.
+- Un écran lit ses données via un hook de la feature (`hooks/usePillboxData.ts`) : lecture synchrone, relue quand l'onglet reprend le focus (`useFocusEffect`).
+- Tri en SQL (`ORDER BY`) quand il est simple. Tri alphanumérique (« 50 mg » avant « 100 mg ») dans une fonction pure (`utils/sorters.ts`), appelée par le hook.
+- Données persistées : SQLite uniquement, jamais dans un state global.
+
 ## Conventions de fichiers
 
+- Racine d'une feature (ou d'un module de `shared/`) : uniquement les points d'entrée (écrans `*Screen.tsx`, cœur du module).
+- Le reste est rangé par type, même pour un seul fichier : `components/`, `hooks/`, `queries/`, `utils/`.
+
 - Un composant par fichier : `<Name>.tsx` + `<Name>.styles.ts` (`StyleSheet.create`).
-- Logique et rendu séparés : formatage dans `formatters.ts`, données dans `fixtures.ts`.
+- Logique et rendu séparés : formatage dans `utils/formatters.ts`, tri dans `utils/sorters.ts` (fonctions pures testées).
 - Tests unitaires au même niveau que le fichier testé, suffixe `.spec.ts(x)` (ex. `src/features/pillbox/PillboxScreen.spec.tsx`).
 - Imports absolus via `@/` (ex. `@/design-system/tokens`), relatifs dans un même dossier.
 - Aucune valeur en dur dans les styles : toujours un token (`tokens.ts`).

@@ -10,6 +10,7 @@ export interface Med {
   name: string;
   strength: string;
   design: PillDesign;
+  isAsNeeded: boolean;
 }
 
 export interface MedQuantity {
