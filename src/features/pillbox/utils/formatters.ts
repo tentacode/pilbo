@@ -35,10 +35,6 @@ function formatDays(days: Weekday[], dayNames: Record<Weekday, string>): string 
   );
 }
 
-export function formatIntakeTime({ hour, minute }: Intake["time"]): string {
-  return `${String(hour).padStart(2, "0")}:${String(minute).padStart(2, "0")}`;
-}
-
 export function formatIntakeSchedule(intake: Intake): string {
   return `${formatDays(intake.days, SHORT_DAY_NAMES)} · rappel toutes les ${intake.reminderIntervalMinutes} min`;
 }

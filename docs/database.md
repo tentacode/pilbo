@@ -13,9 +13,12 @@ types.ts                // type Database (base Drizzle synchrone, app et tests)
 migrations/             // généré par drizzle-kit, ne pas modifier à la main
 fixtures.ts             // données de debug insérées à la création de la base
 seed.ts                 // seedDatabase(database)
+clearDatabase.ts        // clearDatabase(database) : vide med, intake, intake_med
+resetDatabase.ts        // resetDatabase(database) : clearDatabase puis seedDatabase
 hooks/useDatabaseReady.ts // migration + seed au démarrage
 DatabaseErrorScreen.tsx // écran affiché si la migration ou le seed échoue
 testDatabase.ts         // base better-sqlite3 en mémoire pour Jest
+testHelpers.ts          // utilitaires de test (countRows)
 sql.d.ts                // import des fichiers .sql (migrations)
 ```
 
@@ -28,6 +31,10 @@ sql.d.ts                // import des fichiers .sql (migrations)
 
 - La base vit dans le dossier par défaut d'`expo-sqlite`.
 - Une réinstallation depuis Xcode conserve les données. Pour repartir de zéro : supprimer l'app.
+- Réglages (debug uniquement, `__DEV__`) :
+  - « Vider la base » : supprime toutes les données. Le seed revient au prochain lancement de l'app (table `med` vide).
+  - « Réinitialiser la base » : vide puis réinsère les fixtures.
+  - Les écrans relisent la base au focus de l'onglet.
 - Le seed est temporaire (debug), il disparaîtra quand on pourra créer des prises dans l'app.
 
 ## Écrire une migration

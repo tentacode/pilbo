@@ -1,0 +1,43 @@
+appId: com.tentacode.pilbo
+name: Today lists the intakes of the day
+---
+- launchApp:
+    clearState: true
+- extendedWaitUntil:
+    visible: "Pilulier"
+    timeout: 10000
+- tapOn: "Aujourd'hui"
+- assertVisible:
+    text: "Aujourd'hui"
+- evalScript: |
+    ${
+      const days = ["Dimanche", "Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi"];
+      const months = ["janvier", "février", "mars", "avril", "mai", "juin", "juillet", "août", "septembre", "octobre", "novembre", "décembre"];
+      const now = new Date();
+      output.today = days[now.getDay()] + " " + now.getDate() + " " + months[now.getMonth()];
+    }
+- assertVisible:
+    text: ${output.today}
+- assertVisible:
+    text: "Hors planning|Ajouter une prise hors planning"
+- scrollUntilVisible:
+    element:
+      text: "08:20.*"
+- scrollUntilVisible:
+    element:
+      text: "Lamictal 50 mg, quantité 1"
+- scrollUntilVisible:
+    element:
+      text: "12:20.*"
+- scrollUntilVisible:
+    element:
+      text: "20:20.*"
+- scrollUntilVisible:
+    element:
+      text: "Lithium 250 mg, quantité 2"
+- scrollUntilVisible:
+    element:
+      text: "22:00.*"
+- scrollUntilVisible:
+    element:
+      text: "Quviviq 50 mg, quantité 1"

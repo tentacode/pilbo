@@ -6,5 +6,6 @@ export const styles = StyleSheet.create({
   developerSection: {
     paddingHorizontal: spacing.large,
     alignItems: "flex-start",
+    gap: spacing.medium,
   },
 });

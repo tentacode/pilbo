@@ -9,7 +9,7 @@ describe("getAsNeededMeds", () => {
     expect(meds).toEqual([
       {
         id: expect.any(String),
-        name: "Hydroxyzine",
+        name: "Prazépam",
         strength: "25 mg",
         design: {
           shape: "capsule",

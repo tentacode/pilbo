@@ -3,14 +3,7 @@ import { sql } from "drizzle-orm";
 import { intakeMedTable, intakeTable, medTable } from "./schema";
 import { seedDatabase } from "./seed";
 import { createTestDatabase } from "./testDatabase";
-import type { Database } from "./types";
-
-function countRows(
-  database: Database,
-  table: typeof medTable | typeof intakeTable | typeof intakeMedTable,
-) {
-  return database.get<{ count: number }>(sql`SELECT COUNT(*) AS count FROM ${table}`).count;
-}
+import { countRows } from "./testHelpers";
 
 describe("seedDatabase", () => {
   it("inserts the meds, the intakes and their links", () => {

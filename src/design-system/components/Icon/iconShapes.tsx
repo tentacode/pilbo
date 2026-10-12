@@ -29,6 +29,20 @@ export const iconShapes = {
   ),
   plus: <Path d="M12 5v14M5 12h14" />,
   chevronRight: <Path d="M9.5 6l6 6-6 6" />,
+  clock: (
+    <>
+      <Circle cx={12} cy={12} r={9} />
+      <Path d="M12 7.5V12l3 2" />
+    </>
+  ),
+  alert: (
+    <>
+      <Circle cx={12} cy={12} r={9} />
+      <Path d="M12 7.5v5.2" />
+      <Path d="M12 16.4v.1" />
+    </>
+  ),
+  check: <Path d="M5 12.5l4.5 4.5L19 7.5" />,
 } satisfies Record<string, ReactNode>;
 
 export type IconName = keyof typeof iconShapes;

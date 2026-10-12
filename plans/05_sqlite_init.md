@@ -46,7 +46,7 @@ Je m'arrête et j'attends ta validation.
 
 ## Étape 5 — Seed à la création de la base
 
-- [x] Déplacer les données de `src/features/pillbox/fixtures.ts` vers `src/shared/database/fixtures.ts` (Hydroxyzine avec `isAsNeeded: true`), supprimer l'ancien fichier.
+- [x] Déplacer les données de `src/features/pillbox/fixtures.ts` vers `src/shared/database/fixtures.ts` (Prazépam avec `isAsNeeded: true`), supprimer l'ancien fichier.
 - [x] `src/shared/database/seed.ts` : `seedDatabase(database)` insère médicaments, prises et liaisons dans **une transaction**.
 - [x] Seed temporaire (debug) : uniquement si la table `med` est vide.
 - [x] Démarrage dans `src/app/_layout.tsx` (via `shared/database/hooks/useDatabaseReady.ts`) : `migrate` (version promesse de `useMigrations`), puis seed, avant de masquer le splash.

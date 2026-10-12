@@ -3,12 +3,11 @@ import { Pressable, View } from "react-native";
 import { Icon } from "@/design-system/components/Icon/Icon";
 import { Text } from "@/design-system/components/Text/Text";
 import { colors } from "@/design-system/tokens";
-import type { Intake } from "@/domain/intake";
+import { formatIntakeTime, type Intake } from "@/domain/intake";
 
 import {
   formatIntakeAccessibilityLabel,
   formatIntakeSchedule,
-  formatIntakeTime,
 } from "@/features/pillbox/utils/formatters";
 import { styles } from "./IntakeCard.styles";
 import { IntakeMedRow } from "./IntakeMedRow";
