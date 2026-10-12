@@ -7,6 +7,8 @@ import { useDesignSystemFonts } from "@/design-system/fonts";
 import { DatabaseErrorScreen } from "@/shared/database/DatabaseErrorScreen";
 import { useDatabaseReady } from "@/shared/database/hooks/useDatabaseReady";
 
+export { ErrorBoundary } from "@/shared/error-handling/ErrorBoundary";
+
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {

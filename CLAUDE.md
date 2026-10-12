@@ -92,6 +92,15 @@ Conventions :
 - Always use tokens for font size/weight, colors, sizing, margins, etc.
 - Components can go into the design-system or the features directory.
 
+## App tone
+
+UI texts (French) sit between friendly and corporate:
+
+- Formal "vous".
+- Short, light sentences.
+- Suggestions rather than orders ("Essayez de…").
+- No technical jargon in main messages (technical details only as secondary text).
+
 ## Plans and answers
 
 Every plans and answers must be written in French (even when I ask in English).

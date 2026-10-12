@@ -14,6 +14,8 @@ src/
     tokens.ts           // couleurs, espacements, rayons, tailles, polices
     fonts.ts            // chargement des polices
     components/<Name>/  // composants génériques
+    hooks/              // hooks génériques (ex. useReduceMotion)
+    utils/              // fonctions génériques (ex. playPressHaptic)
   domain/               // types métier partagés (Med, Intake…)
   features/<feature>/   // une feature = un domaine fonctionnel, pas un écran
     <Feature>Screen.tsx       // points d'entrée à la racine
@@ -24,6 +26,7 @@ src/
     utils/              // fonctions pures (formatters.ts, sorters.ts…)
   shared/               // transverse : navigation, intégrations tierces…
     database/           // SQLite : schéma, migrations, seed (voir docs/database.md)
+    error-handling/     // écran d'erreur générique, ErrorBoundary global
 ```
 
 ## Règles
@@ -54,6 +57,7 @@ Détails : [`docs/database.md`](database.md).
 
 ## Conventions de fichiers
 
+- Dossiers en kebab-case quand le nom a plusieurs mots (ex. `shared/error-handling/`).
 - Racine d'une feature (ou d'un module de `shared/`) : uniquement les points d'entrée (écrans `*Screen.tsx`, cœur du module).
 - Le reste est rangé par type, même pour un seul fichier : `components/`, `hooks/`, `queries/`, `utils/`.
 

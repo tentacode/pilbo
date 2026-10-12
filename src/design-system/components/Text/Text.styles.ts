@@ -17,4 +17,5 @@ export const variantStyles = StyleSheet.create({
 export const toneStyles = StyleSheet.create({
   primary: { color: colors.ink },
   secondary: { color: colors.inkSecondary },
+  onInk: { color: colors.onInk },
 });

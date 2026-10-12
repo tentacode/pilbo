@@ -3,6 +3,7 @@ import { Pressable } from "react-native";
 import { colors, sizes } from "../../tokens";
 import { Icon } from "../Icon/Icon";
 import type { IconName } from "../Icon/iconShapes";
+import { playPressHaptic } from "../../utils/playPressHaptic";
 import { styles } from "./IconButton.styles";
 
 type IconButtonProps = {
@@ -16,6 +17,7 @@ export function IconButton({ icon, accessibilityLabel, onPress }: IconButtonProp
     <Pressable
       accessibilityRole="button"
       accessibilityLabel={accessibilityLabel}
+      onPressIn={playPressHaptic}
       onPress={onPress}
       style={({ pressed }) => [styles.button, pressed && styles.pressed]}
     >
