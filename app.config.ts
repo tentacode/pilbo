@@ -32,6 +32,7 @@ const config: ExpoConfig = {
       },
     ],
     "expo-sqlite",
+    "./plugins/withSqliteHeader",
   ],
   experiments: {
     typedRoutes: true,
