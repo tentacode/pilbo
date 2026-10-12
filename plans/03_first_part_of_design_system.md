@@ -100,7 +100,7 @@ Toutes les prises : tous les jours, rappel toutes les 10 min.
 - 20:20 : 2× Lithium 250 mg
 - 22:00 : 1× Lamictal 100 mg + 1× Quviviq 50 mg + 1× Prégabaline 50 mg
 
-« Hors planning » (en dur, sans logique) : Hydroxyzine 25 mg, `capsule` `medium` rose `#F58FB8` / blanc `#FFFFFF`, sous-titre « Si besoin », aide « À prendre si besoin, depuis l'accueil. », ligne « Ajouter un médicament ».
+« Hors planning » (en dur, sans logique) : Prazépam 25 mg, `capsule` `medium` rose `#F58FB8` / blanc `#FFFFFF`, sous-titre « Si besoin », aide « À prendre si besoin, depuis l'accueil. », ligne « Ajouter un médicament ».
 
 ---
 

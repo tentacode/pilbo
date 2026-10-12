@@ -16,7 +16,7 @@ src/
     components/<Name>/  // composants génériques
     hooks/              // hooks génériques (ex. useReduceMotion)
     utils/              // fonctions génériques (ex. playPressHaptic)
-  domain/               // types métier partagés (Med, Intake…)
+  domain/               // types métier et fonctions pures partagées (Med, Intake, compareMeds…)
   features/<feature>/   // une feature = un domaine fonctionnel, pas un écran
     <Feature>Screen.tsx       // points d'entrée à la racine
     <Feature>Screen.spec.tsx  // test à côté du fichier testé
@@ -31,17 +31,20 @@ src/
 
 ## Règles
 
-| Dossier          | Peut importer                            | Ne doit pas importer   |
-| ---------------- | ---------------------------------------- | ---------------------- |
-| `app/`           | `features/`, `shared/`, `design-system/` | —                      |
-| `features/`      | `design-system/`, `domain/`, `shared/`   | une autre feature      |
-| `shared/`        | `design-system/`, `domain/`              | `features/`            |
-| `design-system/` | `domain/` (types seulement)              | `features/`, `shared/` |
-| `domain/`        | rien                                     | tout le reste          |
+| Dossier          | Peut importer                                                 | Ne doit pas importer   |
+| ---------------- | ------------------------------------------------------------- | ---------------------- |
+| `app/`           | `features/`, `shared/`, `design-system/`                      | —                      |
+| `features/`      | `design-system/`, `domain/`, `shared/`, une autre feature (*) | `app/`                 |
+| `shared/`        | `design-system/`, `domain/`                                   | `features/`            |
+| `design-system/` | `domain/` (types seulement)                                   | `features/`, `shared/` |
+| `domain/`        | rien (types et fonctions pures)                               | tout le reste          |
+
+(*) Quand c'est raisonnable (ex. réutiliser un composant ou une requête du pilulier).
 
 - **`app/`** : aucun écran écrit ici. Une route réexporte l'écran de la feature :
   `export { PillboxScreen as default } from "@/features/pillbox/PillboxScreen";`
 - **`design-system/`** : générique, sans logique métier, sans texte en dur.
+- **`domain/`** : types métier et fonctions pures utilisées par plusieurs features (ex. `formatIntakeTime`, `sortIntakeMeds`), testées à côté (`intake.spec.ts`).
 - **`features/`** : logique et écrans d'un domaine. Un composant utilisé par une seule feature reste dans la feature.
 - **Navigation** : barre d'onglets sur mesure. `design-system/components/TabBar` (visuel) + `shared/navigation/NavigationTabBar` (branchement Expo Router).
 
@@ -54,6 +57,8 @@ Détails : [`docs/database.md`](database.md).
 - Un écran lit ses données via un hook de la feature (`hooks/usePillboxData.ts`) : lecture synchrone, relue quand l'onglet reprend le focus (`useFocusEffect`).
 - Tri en SQL (`ORDER BY`) quand il est simple. Tri alphanumérique (« 50 mg » avant « 100 mg ») dans une fonction pure (`utils/sorters.ts`), appelée par le hook.
 - Données persistées : SQLite uniquement, jamais dans un state global.
+- Calculs qui dépendent de l'heure (ex. prise en retard) : fonctions pures dans `utils/`, avec `now: Date` en paramètre (testées avec une heure fixée).
+- Rafraîchissement à la minute : `features/today/hooks/useCurrentMinute.ts` (minute suivante + retour au premier plan). Les états sont recalculés en mémoire (`useMemo`), sans relire la base.
 
 ## Conventions de fichiers
 

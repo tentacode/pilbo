@@ -17,4 +17,4 @@ name: Pillbox lists the intakes
       text: "22 h.*Lamictal 100 mg, quantité 1. Prégabaline 50 mg, quantité 1. Quviviq 50 mg, quantité 1"
 - scrollUntilVisible:
     element:
-      text: "Hydroxyzine.*"
+      text: "Prazépam.*"

@@ -45,8 +45,8 @@ export const medFixtures = {
     strength: "50 mg",
     design: { shape: "round", color: BUTTER, hasScoreLine: false, size: "medium" },
   },
-  hydroxyzine25: {
-    name: "Hydroxyzine",
+  prazepam25: {
+    name: "Prazépam",
     strength: "25 mg",
     design: { shape: "capsule", firstHalfColor: DEEP_ROSE, secondHalfColor: WHITE, size: "medium" },
     isAsNeeded: true,

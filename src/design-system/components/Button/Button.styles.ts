@@ -1,24 +1,53 @@
 import { StyleSheet } from "react-native";
 
-import { colors, pressedScale, radius, sizes, spacing } from "../../tokens";
+import { borderWidth, colors, pressedScale, radius, sizes, spacing } from "../../tokens";
 
 export const styles = StyleSheet.create({
   button: {
-    minHeight: sizes.buttonMinimumHeight,
-    paddingHorizontal: spacing.buttonHorizontal,
-    paddingVertical: spacing.medium,
-    borderRadius: radius.round,
-    backgroundColor: colors.ink,
+    flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-  },
-  pressed: {
-    backgroundColor: colors.inkPressed,
+    paddingVertical: spacing.medium,
+    borderRadius: radius.round,
   },
   pressedScaled: {
     transform: [{ scale: pressedScale }],
   },
   label: {
+    flexShrink: 1,
     textAlign: "center",
   },
+});
+
+export const variantStyles = StyleSheet.create({
+  primary: {
+    minHeight: sizes.buttonMinimumHeight,
+    paddingHorizontal: spacing.buttonHorizontal,
+    gap: spacing.small,
+    backgroundColor: colors.ink,
+  },
+  secondary: {
+    minHeight: sizes.touchTarget,
+    paddingHorizontal: spacing.buttonHorizontalCompact,
+    gap: spacing.buttonIconGap,
+    borderWidth: borderWidth.regular,
+    borderColor: colors.lineStrong,
+    backgroundColor: colors.surfaceTranslucent,
+  },
+  text: {
+    minHeight: sizes.buttonMinimumHeight,
+    paddingHorizontal: spacing.buttonHorizontalCompact,
+    gap: spacing.buttonIconGap,
+  },
+});
+
+export const pressedVariantStyles = StyleSheet.create({
+  primary: { backgroundColor: colors.inkPressed },
+  secondary: { backgroundColor: colors.fill },
+  text: { backgroundColor: colors.fill },
+});
+
+export const sizeStyles = StyleSheet.create({
+  regular: {},
+  large: { minHeight: sizes.buttonMinimumHeight },
 });

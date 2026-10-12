@@ -1,13 +1,36 @@
 import { fireEvent, render, screen } from "@testing-library/react-native";
 import * as Haptics from "expo-haptics";
 
-import { Button } from "./Button";
+import { Button, type ButtonVariant } from "./Button";
+
+const VARIANTS: ButtonVariant[] = ["primary", "secondary", "text"];
 
 describe("Button", () => {
   it("is exposed as a labelled button", async () => {
     await render(<Button label="Contactez-nous" onPress={jest.fn()} />);
 
     expect(screen.getByRole("button", { name: "Contactez-nous" })).toBeOnTheScreen();
+  });
+
+  it.each(VARIANTS)("renders the label of the %s variant", async (variant) => {
+    await render(<Button label="Prendre" variant={variant} icon="plus" onPress={jest.fn()} />);
+
+    expect(screen.getByRole("button", { name: "Prendre" })).toBeOnTheScreen();
+    expect(screen.getByText("Prendre")).toBeOnTheScreen();
+  });
+
+  it("renders the large size", async () => {
+    await render(<Button label="Prendre" variant="secondary" size="large" onPress={jest.fn()} />);
+
+    expect(screen.getByRole("button", { name: "Prendre" })).toBeOnTheScreen();
+  });
+
+  it("uses the custom accessibility label instead of the label", async () => {
+    await render(
+      <Button label="Prendre" accessibilityLabel="Prendre la prise de 12:20" onPress={jest.fn()} />,
+    );
+
+    expect(screen.getByRole("button", { name: "Prendre la prise de 12:20" })).toBeOnTheScreen();
   });
 
   it("calls onPress when pressed", async () => {

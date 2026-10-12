@@ -6,10 +6,14 @@ import type { MedQuantity } from "@/domain/med";
 
 import { styles } from "./IntakeMedRow.styles";
 
-export function IntakeMedRow({ med, quantity }: MedQuantity) {
+type IntakeMedRowProps = MedQuantity & {
+  pillSize?: number;
+};
+
+export function IntakeMedRow({ med, quantity, pillSize }: IntakeMedRowProps) {
   return (
     <View style={styles.row}>
-      <Pill design={med.design} />
+      <Pill design={med.design} displaySize={pillSize} />
       <Text variant="bodyBold" style={styles.name}>
         {med.name} <Text>{med.strength}</Text>
       </Text>

@@ -59,7 +59,7 @@ test-e2e: ## Run Maestro end to end tests (needs the app running on a simulator)
 	maestro test e2e/
 
 tests: ## Run all tests (without Maestro)
-	( pnpm run lint --fix && \
+	pnpm run lint --fix && \
 	echo "$(GREEN)eslint passed!$(NC)" && \
 	pnpm run prettier --log-level warn && \
 	echo "$(GREEN)prettier passed!$(NC)" && \
@@ -68,5 +68,4 @@ tests: ## Run all tests (without Maestro)
 	pnpm run test --silent && \
 	echo "$(GREEN)unit tests passed!$(NC)" && \
 	pnpm audit && \
-	echo "$(GREEN)audit passed!$(NC)" && \
-	say -v 'good news' 'Success' ) || say -v 'bad news' 'Tests Failed'
+	echo "$(GREEN)audit passed!$(NC)"

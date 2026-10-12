@@ -1,4 +1,4 @@
-import type { MedQuantity } from "./med";
+import { compareMeds, type MedQuantity } from "./med";
 
 export type Weekday =
   "monday" | "tuesday" | "wednesday" | "thursday" | "friday" | "saturday" | "sunday";
@@ -19,4 +19,17 @@ export interface Intake {
   days: Weekday[];
   reminderIntervalMinutes: number;
   medQuantities: MedQuantity[];
+}
+
+export function sortIntakeMeds(intake: Intake): Intake {
+  return {
+    ...intake,
+    medQuantities: [...intake.medQuantities].sort((first, second) =>
+      compareMeds(first.med, second.med),
+    ),
+  };
+}
+
+export function formatIntakeTime({ hour, minute }: Intake["time"]): string {
+  return `${String(hour).padStart(2, "0")}:${String(minute).padStart(2, "0")}`;
 }
