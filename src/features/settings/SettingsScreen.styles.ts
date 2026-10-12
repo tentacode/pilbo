@@ -3,8 +3,8 @@ import { StyleSheet } from "react-native";
 import { spacing } from "@/design-system/tokens";
 
 export const styles = StyleSheet.create({
-  content: {
+  developerSection: {
     paddingHorizontal: spacing.large,
-    gap: spacing.medium,
+    alignItems: "flex-start",
   },
 });

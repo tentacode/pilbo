@@ -1,5 +1,6 @@
 export const colors = {
   ink: "#2E2A5C",
+  inkPressed: "#211E46",
   inkSecondary: "#5C5780",
   background: "#FDFCFF",
   surface: "#FFFFFF",
@@ -19,6 +20,7 @@ export const spacing = {
   large: 16,
   extraLarge: 24,
   huge: 32,
+  buttonHorizontal: 22,
 } as const;
 
 export const radius = {
@@ -42,6 +44,7 @@ export const sizes = {
   iconBadge: 36,
   listRowMinimumHeight: 56,
   tabBarMinimumHeight: 64,
+  buttonMinimumHeight: 52,
 } as const;
 
 export const fontFamily = {
@@ -60,6 +63,8 @@ export const fontSize = {
   time: 30,
   title: 34,
 } as const;
+
+export const pressedScale = 0.96;
 
 export const maximumFontScale = {
   tabLabel: 1.5,

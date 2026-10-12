@@ -1,4 +1,5 @@
 import { fireEvent, render, screen } from "@testing-library/react-native";
+import * as Haptics from "expo-haptics";
 
 import { IconButton } from "./IconButton";
 
@@ -16,5 +17,13 @@ describe("IconButton", () => {
     await fireEvent.press(screen.getByRole("button", { name: "Nouvelle prise" }));
 
     expect(onPress).toHaveBeenCalledTimes(1);
+  });
+
+  it("plays a light haptic feedback on press in", async () => {
+    await render(<IconButton icon="plus" accessibilityLabel="Nouvelle prise" />);
+
+    await fireEvent(screen.getByRole("button", { name: "Nouvelle prise" }), "pressIn");
+
+    expect(Haptics.impactAsync).toHaveBeenCalledWith(Haptics.ImpactFeedbackStyle.Light);
   });
 });
