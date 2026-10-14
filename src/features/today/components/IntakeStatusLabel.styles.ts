@@ -12,12 +12,15 @@ export const styles = StyleSheet.create({
     paddingLeft: spacing.chipStart,
     paddingRight: spacing.chipEnd,
     borderRadius: radius.round,
-    backgroundColor: colors.accentSoft,
-  },
-  lateChip: {
-    backgroundColor: colors.alertChip,
   },
   text: {
     flexShrink: 1,
   },
+});
+
+export const appearanceStyles = StyleSheet.create({
+  upcoming: { backgroundColor: colors.accentSoft },
+  late: { backgroundColor: colors.alertChip },
+  taken: { backgroundColor: colors.successChip },
+  skipped: { backgroundColor: colors.skipChip },
 });

@@ -14,11 +14,18 @@ export const colors = {
   butterSoft: "#FFF5D8",
   turquoiseSoft: "#E1F6F2",
   turquoise: "#B3E8E0",
+  lavender: "#D6C9F5",
   onInk: "#FFFFFF",
   alertBackground: "#FFE0DA",
   alertLine: "#FFCBC2",
   alertChip: "#FFCBC2",
   alertInk: "#8A2A1A",
+  doneBackground: "#F2F1F5",
+  doneLine: "#E4E1EA",
+  skipLine: "#B9B2D0",
+  skipChip: "#ECE8F5",
+  successChip: "#DDF3E4",
+  successInk: "#1E5A34",
   pillHighlight: "#FFFFFF",
 } as const;
 
@@ -43,6 +50,10 @@ export const spacing = {
   emptyStateHorizontal: 20,
   emptyStateBottom: 22,
   emptyStateGap: 10,
+  compactCardVertical: 14,
+  compactTimeBottom: 7,
+  compactNamesTop: 10,
+  pillStripOverlap: -7,
 } as const;
 
 export const radius = {
@@ -65,6 +76,7 @@ export const sizes = {
   tabIcon: 22,
   pillInList: 28,
   pillInRow: 36,
+  pillInStrip: 30,
   iconBadge: 36,
   listRowMinimumHeight: 56,
   tabBarMinimumHeight: 64,
@@ -89,11 +101,14 @@ export const fontSize = {
   buttonSmall: 16,
   body: 17,
   heading: 21,
+  compactTime: 24,
   time: 30,
   title: 34,
 } as const;
 
 export const pressedScale = 0.96;
+
+export const disabledOpacity = 0.5;
 
 export const maximumFontScale = {
   tabLabel: 1.5,

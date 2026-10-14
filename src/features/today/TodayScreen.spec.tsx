@@ -1,18 +1,27 @@
-import { render, screen } from "@testing-library/react-native";
+import { fireEvent, render, screen } from "@testing-library/react-native";
+import { sql } from "drizzle-orm";
 import type { ReactNode } from "react";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 
+import { intakeLogTable, intakeTable } from "@/shared/database/schema";
 import { createTestDatabase } from "@/shared/database/testDatabase";
 import type { Database } from "@/shared/database/types";
 
 import { TodayScreen } from "./TodayScreen";
 
 let mockDatabase: Database;
+let mockPermissionGranted = true;
 
 jest.mock("@/shared/database/database", () => ({
   get database() {
     return mockDatabase;
   },
+}));
+jest.mock("@/features/notifications/notifications", () => ({
+  getPermissionGranted: () => Promise.resolve(mockPermissionGranted),
+}));
+jest.mock("@/features/notifications/rescheduleReminders", () => ({
+  rescheduleReminders: jest.fn(() => Promise.resolve()),
 }));
 jest.mock("expo-router", () => {
   const { useEffect } = jest.requireActual<typeof import("react")>("react");
@@ -28,6 +37,25 @@ function wrapper({ children }: { children: ReactNode }) {
   return <SafeAreaProvider initialMetrics={safeAreaMetrics}>{children}</SafeAreaProvider>;
 }
 
+function logIntakes(hours: number[], status: "taken" | "skipped") {
+  const intakes = mockDatabase.all<{ id: string; hour: number; minute: number }>(sql`
+    SELECT ${intakeTable.id} AS id, ${intakeTable.hour} AS hour, ${intakeTable.minute} AS minute
+    FROM ${intakeTable}
+  `);
+  for (const { id, hour, minute } of intakes.filter(({ hour }) => hours.includes(hour))) {
+    const time = `${String(hour).padStart(2, "0")}:${String(minute).padStart(2, "0")}`;
+    mockDatabase
+      .insert(intakeLogTable)
+      .values({
+        intakeId: id,
+        expectedIntakeAt: `2026-10-04T${time}`,
+        createdAt: `2026-10-04T${time}`,
+        status,
+      })
+      .run();
+  }
+}
+
 async function renderAt(hour: number, minute: number) {
   jest.setSystemTime(new Date(2026, 9, 4, hour, minute));
   await render(<TodayScreen />, { wrapper });
@@ -37,6 +65,7 @@ describe("TodayScreen", () => {
   beforeEach(() => {
     jest.useFakeTimers();
     mockDatabase = createTestDatabase();
+    mockPermissionGranted = true;
   });
 
   afterEach(() => {
@@ -95,5 +124,56 @@ describe("TodayScreen", () => {
     expect(
       screen.getByRole("button", { name: "Ajouter une prise hors planning" }),
     ).toBeOnTheScreen();
+  });
+
+  it("shows the handled intakes in the earlier section", async () => {
+    logIntakes([8], "taken");
+    logIntakes([12], "skipped");
+    await renderAt(13, 0);
+
+    expect(screen.getByLabelText("2 prises sur 4, prochaine à 20:20")).toBeOnTheScreen();
+    expect(screen.getByRole("header", { name: "Plus tôt" })).toBeOnTheScreen();
+    expect(screen.getByText("Pris à 08:20")).toBeOnTheScreen();
+    expect(screen.getByText("Ignorée")).toBeOnTheScreen();
+    expect(screen.queryByText(/en retard/)).not.toBeOnTheScreen();
+  });
+
+  it("shows the done state above the earlier section when everything is handled", async () => {
+    logIntakes([8, 12, 20, 22], "taken");
+    await renderAt(23, 0);
+
+    expect(screen.getByLabelText("4 prises sur 4")).toBeOnTheScreen();
+    expect(screen.getByRole("header", { name: "C'est tout pour aujourd'hui" })).toBeOnTheScreen();
+    expect(screen.getByRole("header", { name: "Plus tôt" })).toBeOnTheScreen();
+    expect(screen.queryByRole("header", { name: "Prochaine prise" })).not.toBeOnTheScreen();
+  });
+
+  it("moves a taken intake to the earlier section", async () => {
+    await renderAt(21, 0);
+
+    await fireEvent.press(screen.getByRole("button", { name: "Prendre la prise de 22:00" }));
+
+    expect(screen.getByRole("header", { name: "Plus tôt" })).toBeOnTheScreen();
+    expect(screen.getByText("Pris à 21:00")).toBeOnTheScreen();
+    expect(
+      screen.queryByRole("button", { name: "Prendre la prise de 22:00" }),
+    ).not.toBeOnTheScreen();
+  });
+
+  it("shows the disabled reminders notice without the notification permission", async () => {
+    mockPermissionGranted = false;
+    await renderAt(7, 0);
+
+    expect(
+      await screen.findByRole("header", { name: "Les rappels sont désactivés" }),
+    ).toBeOnTheScreen();
+  });
+
+  it("hides the notice with the notification permission", async () => {
+    await renderAt(7, 0);
+
+    expect(
+      screen.queryByRole("header", { name: "Les rappels sont désactivés" }),
+    ).not.toBeOnTheScreen();
   });
 });

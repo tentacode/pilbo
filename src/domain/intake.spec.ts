@@ -1,4 +1,4 @@
-import { formatIntakeTime, type Intake, sortIntakeMeds } from "./intake";
+import { formatIntakeTime, type Intake, intakeDateOn, sortIntakeMeds } from "./intake";
 import type { Med } from "./med";
 
 function createMed(name: string, strength: string): Med {
@@ -37,5 +37,13 @@ describe("formatIntakeTime", () => {
 
   it("keeps two digit values", () => {
     expect(formatIntakeTime({ hour: 22, minute: 30 })).toBe("22:30");
+  });
+});
+
+describe("intakeDateOn", () => {
+  it("places the intake time on the given day", () => {
+    expect(intakeDateOn(new Date(2026, 9, 14, 23, 59), { hour: 8, minute: 20 })).toEqual(
+      new Date(2026, 9, 14, 8, 20),
+    );
   });
 });

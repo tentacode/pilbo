@@ -1,12 +1,32 @@
 import { View } from "react-native";
 
 import { Icon } from "@/design-system/components/Icon/Icon";
-import { Text } from "@/design-system/components/Text/Text";
+import type { IconName } from "@/design-system/components/Icon/iconShapes";
+import { Text, type TextTone } from "@/design-system/components/Text/Text";
 import { colors, sizes } from "@/design-system/tokens";
 
 import { formatIntakeStatus } from "@/features/today/utils/formatters";
 import type { TodayIntake } from "@/features/today/utils/todayTypes";
-import { styles } from "./IntakeStatusLabel.styles";
+import { appearanceStyles, styles } from "./IntakeStatusLabel.styles";
+
+type Appearance = keyof typeof appearanceStyles;
+
+const APPEARANCES: Record<Appearance, { icon: IconName; tone: TextTone; iconColor: string }> = {
+  upcoming: { icon: "clock", tone: "primary", iconColor: colors.ink },
+  late: { icon: "alert", tone: "alert", iconColor: colors.alertInk },
+  taken: { icon: "checkCircle", tone: "success", iconColor: colors.successInk },
+  skipped: { icon: "dashCircle", tone: "secondary", iconColor: colors.inkSecondary },
+};
+
+function appearanceOf({ status, validation }: TodayIntake): Appearance {
+  if (status === "late" || (status === "taken" && validation?.isTakenLate)) {
+    return "late";
+  }
+  if (status === "taken" || status === "skipped") {
+    return status;
+  }
+  return "upcoming";
+}
 
 type IntakeStatusLabelProps = {
   todayIntake: TodayIntake;
@@ -14,20 +34,17 @@ type IntakeStatusLabelProps = {
 
 export function IntakeStatusLabel({ todayIntake }: IntakeStatusLabelProps) {
   const { text, accessibilityLabel } = formatIntakeStatus(todayIntake);
-  const isLate = todayIntake.status === "late";
+  const appearance = appearanceOf(todayIntake);
+  const { icon, tone, iconColor } = APPEARANCES[appearance];
 
   return (
     <View
       accessible
       accessibilityLabel={accessibilityLabel}
-      style={[styles.chip, isLate && styles.lateChip]}
+      style={[styles.chip, appearanceStyles[appearance]]}
     >
-      <Icon
-        name={isLate ? "alert" : "clock"}
-        size={sizes.iconSmall}
-        color={isLate ? colors.alertInk : colors.ink}
-      />
-      <Text variant="helpBold" tone={isLate ? "alert" : "primary"} style={styles.text}>
+      <Icon name={icon} size={sizes.iconSmall} color={iconColor} />
+      <Text variant="helpBold" tone={tone} style={styles.text}>
         {text}
       </Text>
     </View>

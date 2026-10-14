@@ -6,6 +6,11 @@ export const variantStyles = StyleSheet.create({
   title: { fontFamily: fontFamily.display, fontSize: fontSize.title },
   heading: { fontFamily: fontFamily.display, fontSize: fontSize.heading },
   time: { fontFamily: fontFamily.display, fontSize: fontSize.time, fontVariant: ["tabular-nums"] },
+  compactTime: {
+    fontFamily: fontFamily.display,
+    fontSize: fontSize.compactTime,
+    fontVariant: ["tabular-nums"],
+  },
   body: { fontFamily: fontFamily.regular, fontSize: fontSize.body },
   bodyBold: { fontFamily: fontFamily.bold, fontSize: fontSize.body },
   small: { fontFamily: fontFamily.regular, fontSize: fontSize.small },
@@ -22,4 +27,5 @@ export const toneStyles = StyleSheet.create({
   secondary: { color: colors.inkSecondary },
   onInk: { color: colors.onInk },
   alert: { color: colors.alertInk },
+  success: { color: colors.successInk },
 });

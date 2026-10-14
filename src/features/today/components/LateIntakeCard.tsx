@@ -8,18 +8,25 @@ import { TodayMedList } from "./TodayMedList";
 
 type LateIntakeCardProps = {
   todayIntake: TodayIntake;
+  isDisabled?: boolean;
   onTake: (intakeId: string) => void;
   onSkip: (intakeId: string) => void;
 };
 
-export function LateIntakeCard({ todayIntake, onTake, onSkip }: LateIntakeCardProps) {
+export function LateIntakeCard({ todayIntake, isDisabled, onTake, onSkip }: LateIntakeCardProps) {
   return (
     <View style={styles.card}>
       <View style={styles.head}>
         <IntakeCardHeading todayIntake={todayIntake} />
       </View>
       <TodayMedList medQuantities={todayIntake.intake.medQuantities} isLate />
-      <IntakeCardActions intake={todayIntake.intake} isLate onTake={onTake} onSkip={onSkip} />
+      <IntakeCardActions
+        intake={todayIntake.intake}
+        isDisabled={isDisabled}
+        isLate
+        onTake={onTake}
+        onSkip={onSkip}
+      />
     </View>
   );
 }

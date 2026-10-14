@@ -1,6 +1,14 @@
 import { StyleSheet } from "react-native";
 
-import { borderWidth, colors, pressedScale, radius, sizes, spacing } from "../../tokens";
+import {
+  borderWidth,
+  colors,
+  disabledOpacity,
+  pressedScale,
+  radius,
+  sizes,
+  spacing,
+} from "../../tokens";
 
 export const styles = StyleSheet.create({
   button: {
@@ -12,6 +20,9 @@ export const styles = StyleSheet.create({
   },
   pressedScaled: {
     transform: [{ scale: pressedScale }],
+  },
+  disabled: {
+    opacity: disabledOpacity,
   },
   label: {
     flexShrink: 1,

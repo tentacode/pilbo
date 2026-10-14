@@ -12,6 +12,7 @@ import { styles } from "./IntakeCardActions.styles";
 type IntakeCardActionsProps = {
   intake: Intake;
   isLate?: boolean;
+  isDisabled?: boolean;
   onTake: (intakeId: string) => void;
   onSkip: (intakeId: string) => void;
 };
@@ -19,6 +20,7 @@ type IntakeCardActionsProps = {
 export function IntakeCardActions({
   intake,
   isLate = false,
+  isDisabled = false,
   onTake,
   onSkip,
 }: IntakeCardActionsProps) {
@@ -31,6 +33,7 @@ export function IntakeCardActions({
           size="large"
           icon={isLate ? "check" : undefined}
           accessibilityLabel={formatTakeAccessibilityLabel(intake)}
+          isDisabled={isDisabled}
           onPress={() => onTake(intake.id)}
         />
       </View>
@@ -38,6 +41,7 @@ export function IntakeCardActions({
         label="Ignorer"
         variant="text"
         accessibilityLabel={formatSkipAccessibilityLabel(intake)}
+        isDisabled={isDisabled}
         onPress={() => onSkip(intake.id)}
       />
     </View>

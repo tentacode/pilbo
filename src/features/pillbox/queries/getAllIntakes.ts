@@ -37,6 +37,7 @@ export function getAllIntakes(database: Database): Intake[] {
     FROM ${intakeTable}
     LEFT JOIN ${intakeMedTable} ON ${intakeMedTable.intakeId} = ${intakeTable.id}
     LEFT JOIN ${medTable} ON ${medTable.id} = ${intakeMedTable.medId}
+    WHERE ${intakeTable.isArchived} = 0
     ORDER BY ${intakeTable.hour}, ${intakeTable.minute}
   `);
 

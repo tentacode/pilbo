@@ -8,7 +8,7 @@ export function ResetDatabaseButton() {
       label="Réinitialiser la base"
       variant="secondary"
       accessibilityHint="Remplace les données par les données de test"
-      onPress={() => resetDatabase(database)}
+      onPress={() => resetDatabase(database, { withLogs: __DEV__ })}
     />
   );
 }

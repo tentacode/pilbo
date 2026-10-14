@@ -45,7 +45,8 @@ export function TodayHeader({ date, summary, onAddUnscheduled }: TodayHeaderProp
           accessibilityLabel={summary.accessibilityLabel}
           style={styles.summary}
         >
-          <Text variant="smallBold">{summary.progress}</Text> · {summary.detail}
+          <Text variant="smallBold">{summary.progress}</Text>
+          {summary.detail ? ` · ${summary.detail}` : null}
         </Text>
       ) : null}
     </View>

@@ -13,7 +13,7 @@ types.ts                // type Database (base Drizzle synchrone, app et tests)
 migrations/             // généré par drizzle-kit, ne pas modifier à la main
 fixtures.ts             // données de debug insérées à la création de la base
 seed.ts                 // seedDatabase(database)
-clearDatabase.ts        // clearDatabase(database) : vide med, intake, intake_med
+clearDatabase.ts        // clearDatabase(database) : vide intake_log, med, intake, intake_med
 resetDatabase.ts        // resetDatabase(database) : clearDatabase puis seedDatabase
 hooks/useDatabaseReady.ts // migration + seed au démarrage
 DatabaseErrorScreen.tsx // écran affiché si la migration ou le seed échoue
@@ -111,6 +111,7 @@ Test à côté de la requête : `queries/getAllIntakes.spec.ts`.
 - **UUID** : `$defaultFn(generateId)` (`randomUUID` d'`expo-crypto`), uniquement pour les écritures Drizzle. `expo-crypto` est chargé à la demande car `drizzle-kit` lit le schéma dans Node. En test, il est remplacé par `crypto.randomUUID` (`jest.setup.ts`).
 - **Transactions** : `database.transaction((transaction) => { ... })`, callback **synchrone**, utiliser `transaction` et pas `database` à l'intérieur.
 - **Clés étrangères** : désactivées par défaut dans SQLite, activées à l'ouverture (`PRAGMA foreign_keys = ON`), y compris dans la base de test.
+- **Dates en texte local** : `intake_log` stocke ses dates en heure locale, sans fuseau (`"2026-10-14T08:20"`). Filtre du jour simple (`LIKE '2026-10-14%'`), lisible depuis Swift. Conversion avec `toLocalDate`, `toLocalDateTime`, `fromLocalDateTime` (`src/domain/intakeLog.ts`).
 - **Résultats bruts = casts** : `database.all<Type>(...)` ne vérifie rien. Toute requête doit avoir son test.
 
 ## Schéma
@@ -127,13 +128,14 @@ Test à côté de la requête : `queries/getAllIntakes.spec.ts`.
 
 ### `intake`
 
-| Colonne                     | Type                    | Contraintes        |
-| --------------------------- | ----------------------- | ------------------ |
-| `id`                        | text (UUID)             | clé primaire       |
-| `hour`                      | integer                 | obligatoire (0–23) |
-| `minute`                    | integer                 | obligatoire (0–59) |
-| `days`                      | text (JSON `Weekday[]`) | obligatoire        |
-| `reminder_interval_minutes` | integer                 | obligatoire        |
+| Colonne                     | Type                    | Contraintes                     |
+| --------------------------- | ----------------------- | ------------------------------- |
+| `id`                        | text (UUID)             | clé primaire                    |
+| `hour`                      | integer                 | obligatoire (0–23)              |
+| `minute`                    | integer                 | obligatoire (0–59)              |
+| `days`                      | text (JSON `Weekday[]`) | obligatoire                     |
+| `reminder_interval_minutes` | integer                 | obligatoire                     |
+| `is_archived`               | integer (booléen)       | obligatoire, `false` par défaut |
 
 ### `intake_med`
 
@@ -144,3 +146,15 @@ Test à côté de la requête : `queries/getAllIntakes.spec.ts`.
 | `quantity`  | integer | obligatoire                                         |
 
 Clé primaire : (`intake_id`, `med_id`).
+
+### `intake_log`
+
+Historique des prises validées. Une prise archivée garde ses logs.
+
+| Colonne              | Type        | Contraintes                                            |
+| -------------------- | ----------- | ------------------------------------------------------ |
+| `id`                 | text (UUID) | clé primaire                                           |
+| `intake_id`          | text        | → `intake.id`, suppression de la prise bloquée         |
+| `expected_intake_at` | text        | obligatoire, jour et heure prévus (`2026-10-14T08:20`) |
+| `created_at`         | text        | obligatoire, moment de l'appui (`2026-10-14T09:05`)    |
+| `status`             | text        | obligatoire, `"taken"` ou `"skipped"`                  |

@@ -10,10 +10,11 @@ import { TodayMedList } from "./TodayMedList";
 
 type LaterIntakeCardProps = {
   todayIntake: TodayIntake;
+  isDisabled?: boolean;
   onTake: (intakeId: string) => void;
 };
 
-export function LaterIntakeCard({ todayIntake, onTake }: LaterIntakeCardProps) {
+export function LaterIntakeCard({ todayIntake, isDisabled = false, onTake }: LaterIntakeCardProps) {
   const { intake } = todayIntake;
 
   return (
@@ -24,6 +25,7 @@ export function LaterIntakeCard({ todayIntake, onTake }: LaterIntakeCardProps) {
           label="Prendre"
           variant="secondary"
           accessibilityLabel={formatTakeAccessibilityLabel(intake)}
+          isDisabled={isDisabled}
           onPress={() => onTake(intake.id)}
         />
       </View>

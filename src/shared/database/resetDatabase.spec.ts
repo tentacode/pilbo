@@ -8,7 +8,7 @@ describe("resetDatabase", () => {
     const database = createTestDatabase();
     database.delete(intakeTable).run();
 
-    resetDatabase(database);
+    resetDatabase(database, { withLogs: false });
 
     expect(countRows(database, medTable)).toBe(6);
     expect(countRows(database, intakeTable)).toBe(4);
@@ -18,7 +18,7 @@ describe("resetDatabase", () => {
   it("seeds an empty database", () => {
     const database = createTestDatabase({ seed: false });
 
-    resetDatabase(database);
+    resetDatabase(database, { withLogs: false });
 
     expect(countRows(database, medTable)).toBe(6);
   });

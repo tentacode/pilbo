@@ -1,12 +1,15 @@
 import { useFocusEffect } from "expo-router";
 import { useCallback, useMemo, useState } from "react";
 
-import { sortIntakeMeds, type Intake, type Weekday } from "@/domain/intake";
+import { sortIntakeMeds, type Intake } from "@/domain/intake";
+import { type IntakeLog, toLocalDate } from "@/domain/intakeLog";
 import { database } from "@/shared/database/database";
 
 import { useCurrentMinute } from "@/features/today/hooks/useCurrentMinute";
+import { getIntakeLogsOfDay } from "@/features/today/queries/getIntakeLogsOfDay";
 import { getTodayIntakes } from "@/features/today/queries/getTodayIntakes";
 import {
+  areAllIntakesHandled,
   computeTodayIntakes,
   countTodayIntakes,
   weekdayOf,
@@ -16,33 +19,53 @@ import type { TodaySections, TodaySummary } from "@/features/today/utils/todayTy
 
 type TodayData = {
   date: Date;
+  intakes: Intake[];
   sections: TodaySections;
   summary: TodaySummary | null;
   isEmpty: boolean;
+  isAllHandled: boolean;
+  refresh: () => void;
 };
 
-function readTodayIntakes(weekday: Weekday): Intake[] {
-  return getTodayIntakes(database, weekday).map(sortIntakeMeds);
+type StoredData = {
+  localDate: string;
+  intakes: Intake[];
+  intakeLogs: IntakeLog[];
+};
+
+function readTodayData(date: Date): StoredData {
+  return {
+    localDate: toLocalDate(date),
+    intakes: getTodayIntakes(database, weekdayOf(date)).map(sortIntakeMeds),
+    intakeLogs: getIntakeLogsOfDay(database, toLocalDate(date)),
+  };
 }
 
 export function useTodayData(): TodayData {
   const now = useCurrentMinute();
-  const weekday = weekdayOf(now);
-  const [intakes, setIntakes] = useState(() => readTodayIntakes(weekday));
+  const localDate = toLocalDate(now);
+  const [storedData, setStoredData] = useState(() => readTodayData(now));
 
-  useFocusEffect(
-    useCallback(() => {
-      setIntakes(readTodayIntakes(weekday));
-    }, [weekday]),
-  );
+  const refresh = useCallback(() => {
+    setStoredData(readTodayData(new Date()));
+  }, []);
+
+  useFocusEffect(refresh);
+
+  if (storedData.localDate !== localDate) {
+    setStoredData(readTodayData(now));
+  }
 
   return useMemo(() => {
-    const sections = computeTodayIntakes(intakes, now);
+    const sections = computeTodayIntakes(storedData.intakes, storedData.intakeLogs, now);
     return {
       date: now,
+      intakes: storedData.intakes,
       sections,
       summary: formatTodaySummary(sections),
       isEmpty: countTodayIntakes(sections) === 0,
+      isAllHandled: areAllIntakesHandled(sections),
+      refresh,
     };
-  }, [intakes, now]);
+  }, [storedData, now, refresh]);
 }
