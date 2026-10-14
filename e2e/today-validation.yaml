@@ -1,0 +1,22 @@
+appId: com.tentacode.pilbo
+name: Taking an intake moves it to the earlier section
+---
+- launchApp:
+    clearState: true
+- runFlow:
+    when:
+      visible: "Autoriser"
+    commands:
+      - tapOn: "Autoriser"
+- extendedWaitUntil:
+    visible: "Pilulier"
+    timeout: 10000
+- tapOn: "Aujourd'hui"
+- scrollUntilVisible:
+    element:
+      text: "Prendre la prise de 22:00"
+- tapOn: "Prendre la prise de 22:00"
+- assertNotVisible: "Prendre la prise de 22:00"
+- scrollUntilVisible:
+    element:
+      text: "22:00, Pris.*"

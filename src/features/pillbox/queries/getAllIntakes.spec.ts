@@ -50,4 +50,20 @@ describe("getAllIntakes", () => {
       },
     ]);
   });
+
+  it("hides an archived intake", () => {
+    const database = createTestDatabase({ seed: false });
+    database
+      .insert(intakeTable)
+      .values({
+        hour: 7,
+        minute: 0,
+        days: ["monday"],
+        reminderIntervalMinutes: 5,
+        isArchived: true,
+      })
+      .run();
+
+    expect(getAllIntakes(database)).toEqual([]);
+  });
 });

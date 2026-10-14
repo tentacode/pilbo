@@ -42,6 +42,17 @@ describe("Button", () => {
     expect(onPress).toHaveBeenCalledTimes(1);
   });
 
+  it("is disabled and ignores presses when isDisabled is set", async () => {
+    const onPress = jest.fn();
+    await render(<Button label="Prendre" isDisabled onPress={onPress} />);
+
+    const button = screen.getByRole("button", { name: "Prendre" });
+    await fireEvent.press(button);
+
+    expect(button).toBeDisabled();
+    expect(onPress).not.toHaveBeenCalled();
+  });
+
   it("plays a light haptic feedback on press in", async () => {
     await render(<Button label="Contactez-nous" onPress={jest.fn()} />);
 

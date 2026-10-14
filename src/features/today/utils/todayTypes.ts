@@ -1,22 +1,29 @@
 import type { Intake } from "@/domain/intake";
 
-export type IntakeStatus = "late" | "next" | "later";
+export type IntakeStatus = "late" | "next" | "later" | "taken" | "skipped";
+
+export type IntakeValidation = {
+  time: Intake["time"];
+  isTakenLate: boolean;
+};
 
 export type TodayIntake = {
   intake: Intake;
   status: IntakeStatus;
   minutesFromNow: number;
+  validation?: IntakeValidation;
 };
 
 export type TodaySections = {
   late: TodayIntake[];
   next: TodayIntake | null;
   later: TodayIntake[];
+  earlier: TodayIntake[];
 };
 
 export type TodaySummary = {
   progress: string;
-  detail: string;
+  detail: string | null;
   accessibilityLabel: string;
 };
 

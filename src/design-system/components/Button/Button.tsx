@@ -19,6 +19,7 @@ type ButtonProps = {
   icon?: IconName;
   accessibilityLabel?: string;
   accessibilityHint?: string;
+  isDisabled?: boolean;
 };
 
 function labelVariant(variant: ButtonVariant, size: ButtonSize): TextVariant {
@@ -33,6 +34,7 @@ export function Button({
   icon,
   accessibilityLabel,
   accessibilityHint,
+  isDisabled = false,
 }: ButtonProps) {
   const reduceMotion = useReduceMotion();
   const isPrimary = variant === "primary";
@@ -42,6 +44,8 @@ export function Button({
       accessibilityRole="button"
       accessibilityLabel={accessibilityLabel ?? label}
       accessibilityHint={accessibilityHint}
+      accessibilityState={{ disabled: isDisabled }}
+      disabled={isDisabled}
       onPressIn={playPressHaptic}
       onPress={onPress}
       style={({ pressed }) => [
@@ -50,6 +54,7 @@ export function Button({
         sizeStyles[size],
         pressed && pressedVariantStyles[variant],
         pressed && !reduceMotion && styles.pressedScaled,
+        isDisabled && styles.disabled,
       ]}
     >
       {icon ? <Icon name={icon} color={isPrimary ? colors.onInk : colors.ink} /> : null}

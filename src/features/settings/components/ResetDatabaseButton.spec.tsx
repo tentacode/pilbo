@@ -14,6 +14,6 @@ describe("ResetDatabaseButton", () => {
 
     await fireEvent.press(screen.getByRole("button", { name: "Réinitialiser la base" }));
 
-    expect(resetDatabase).toHaveBeenCalledWith(database);
+    expect(resetDatabase).toHaveBeenCalledWith(database, { withLogs: true });
   });
 });

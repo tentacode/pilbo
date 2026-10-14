@@ -37,7 +37,8 @@ export function getTodayIntakes(database: Database, weekday: Weekday): Intake[] 
     FROM ${intakeTable}
     INNER JOIN ${intakeMedTable} ON ${intakeMedTable.intakeId} = ${intakeTable.id}
     INNER JOIN ${medTable} ON ${medTable.id} = ${intakeMedTable.medId}
-    WHERE EXISTS (SELECT 1 FROM json_each(${intakeTable.days}) WHERE value = ${weekday})
+    WHERE ${intakeTable.isArchived} = 0
+      AND EXISTS (SELECT 1 FROM json_each(${intakeTable.days}) WHERE value = ${weekday})
     ORDER BY ${intakeTable.hour}, ${intakeTable.minute}
   `);
 

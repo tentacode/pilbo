@@ -2,14 +2,16 @@ import { computeTodayIntakes } from "./computeTodayIntakes";
 import {
   formatDuration,
   formatDurationAccessibilityLabel,
+  formatEarlierIntakeAccessibilityLabel,
   formatIntakeStatus,
   formatLateSectionTitle,
+  formatMedNames,
   formatSkipAccessibilityLabel,
   formatTakeAccessibilityLabel,
   formatTodayDate,
   formatTodaySummary,
 } from "./formatters";
-import { createDate, createIntake } from "./testIntakes";
+import { createDate, createIntake, createIntakeLog } from "./testIntakes";
 import type { TodayIntake } from "./todayTypes";
 
 const INTAKES = [
@@ -86,6 +88,34 @@ describe("formatIntakeStatus", () => {
     });
   });
 
+  it("formats an intake taken on time", () => {
+    const todayIntake: TodayIntake = {
+      ...createTodayIntake("taken", -40),
+      validation: { time: { hour: 9, minute: 5 }, isTakenLate: false },
+    };
+
+    expect(formatIntakeStatus(todayIntake)).toEqual({
+      text: "Pris à 09:05",
+      accessibilityLabel: "Pris à 09:05",
+    });
+  });
+
+  it("formats an intake taken late", () => {
+    const todayIntake: TodayIntake = {
+      ...createTodayIntake("taken", -40),
+      validation: { time: { hour: 9, minute: 5 }, isTakenLate: true },
+    };
+
+    expect(formatIntakeStatus(todayIntake).text).toBe("Pris en retard à 09:05");
+  });
+
+  it("formats a skipped intake", () => {
+    expect(formatIntakeStatus(createTodayIntake("skipped", -40))).toEqual({
+      text: "Ignorée",
+      accessibilityLabel: "Ignorée",
+    });
+  });
+
   it("formats a later intake", () => {
     expect(formatIntakeStatus(createTodayIntake("later", 300))).toEqual({
       text: "À venir",
@@ -96,7 +126,7 @@ describe("formatIntakeStatus", () => {
 
 describe("formatTodaySummary", () => {
   it("shows the next intake when nothing is late", () => {
-    expect(formatTodaySummary(computeTodayIntakes(INTAKES, createDate(7, 0)))).toEqual({
+    expect(formatTodaySummary(computeTodayIntakes(INTAKES, [], createDate(7, 0)))).toEqual({
       progress: "0 prise sur 4",
       detail: "prochaine à 08:20",
       accessibilityLabel: "0 prise sur 4, prochaine à 08:20",
@@ -104,7 +134,7 @@ describe("formatTodaySummary", () => {
   });
 
   it("shows the number of late intakes", () => {
-    expect(formatTodaySummary(computeTodayIntakes(INTAKES, createDate(13, 0)))).toEqual({
+    expect(formatTodaySummary(computeTodayIntakes(INTAKES, [], createDate(13, 0)))).toEqual({
       progress: "0 prise sur 4",
       detail: "2 en retard",
       accessibilityLabel: "0 prise sur 4, 2 en retard",
@@ -112,13 +142,36 @@ describe("formatTodaySummary", () => {
   });
 
   it("shows the late intakes when every intake is late", () => {
-    expect(formatTodaySummary(computeTodayIntakes(INTAKES, createDate(23, 45)))?.detail).toBe(
+    expect(formatTodaySummary(computeTodayIntakes(INTAKES, [], createDate(23, 45)))?.detail).toBe(
       "4 en retard",
     );
   });
 
+  it("counts the taken and skipped intakes as done", () => {
+    const logs = [
+      createIntakeLog(INTAKES[0], "taken", { hour: 8, minute: 30 }),
+      createIntakeLog(INTAKES[1], "skipped", { hour: 12, minute: 30 }),
+    ];
+
+    expect(formatTodaySummary(computeTodayIntakes(INTAKES, logs, createDate(13, 0)))).toEqual({
+      progress: "2 prises sur 4",
+      detail: "prochaine à 20:20",
+      accessibilityLabel: "2 prises sur 4, prochaine à 20:20",
+    });
+  });
+
+  it("shows only the progress when every intake is handled", () => {
+    const logs = INTAKES.map((intake) => createIntakeLog(intake, "taken", intake.time));
+
+    expect(formatTodaySummary(computeTodayIntakes(INTAKES, logs, createDate(23, 0)))).toEqual({
+      progress: "4 prises sur 4",
+      detail: null,
+      accessibilityLabel: "4 prises sur 4",
+    });
+  });
+
   it("returns nothing without intakes", () => {
-    expect(formatTodaySummary(computeTodayIntakes([], createDate(10, 0)))).toBeNull();
+    expect(formatTodaySummary(computeTodayIntakes([], [], createDate(10, 0)))).toBeNull();
   });
 });
 
@@ -130,6 +183,33 @@ describe("formatLateSectionTitle", () => {
   it("counts the late intakes from two", () => {
     expect(formatLateSectionTitle(2)).toBe("2 prises en retard");
     expect(formatLateSectionTitle(3)).toBe("3 prises en retard");
+  });
+});
+
+describe("formatMedNames", () => {
+  it("joins the meds and shows a quantity above one", () => {
+    const intake = createIntake(8, 20);
+    const [lithium] = intake.medQuantities;
+    const lamictal = {
+      med: { ...lithium.med, id: "lamictal", name: "Lamictal", strength: "50 mg" },
+      quantity: 1,
+    };
+
+    expect(formatMedNames([lithium, lamictal])).toBe("Lithium 250 mg · Lamictal 50 mg");
+    expect(formatMedNames([{ ...lithium, quantity: 2 }])).toBe("Lithium 250 mg (2 ×)");
+  });
+});
+
+describe("formatEarlierIntakeAccessibilityLabel", () => {
+  it("names the time, the status and the meds", () => {
+    const todayIntake: TodayIntake = {
+      ...createTodayIntake("taken", -40),
+      validation: { time: { hour: 13, minute: 0 }, isTakenLate: true },
+    };
+
+    expect(formatEarlierIntakeAccessibilityLabel(todayIntake)).toBe(
+      "12:20, Pris en retard à 13:00, Lithium 250 mg, quantité 1",
+    );
   });
 });
 

@@ -8,6 +8,13 @@
       "when": 1791736417025,
       "tag": "0000_smooth_greymalkin",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "6",
+      "when": 1791975249192,
+      "tag": "0001_living_hellfire_club",
+      "breakpoints": true
     }
   ]
 }

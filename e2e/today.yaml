@@ -3,6 +3,11 @@ name: Today lists the intakes of the day
 ---
 - launchApp:
     clearState: true
+- runFlow:
+    when:
+      visible: "Autoriser"
+    commands:
+      - tapOn: "Autoriser"
 - extendedWaitUntil:
     visible: "Pilulier"
     timeout: 10000
@@ -22,12 +27,6 @@ name: Today lists the intakes of the day
     text: "Hors planning|Ajouter une prise hors planning"
 - scrollUntilVisible:
     element:
-      text: "08:20.*"
-- scrollUntilVisible:
-    element:
-      text: "Lamictal 50 mg, quantité 1"
-- scrollUntilVisible:
-    element:
       text: "12:20.*"
 - scrollUntilVisible:
     element:
@@ -41,3 +40,9 @@ name: Today lists the intakes of the day
 - scrollUntilVisible:
     element:
       text: "Quviviq 50 mg, quantité 1"
+- scrollUntilVisible:
+    element:
+      text: "Plus tôt"
+- scrollUntilVisible:
+    element:
+      text: "08:20, Pris en retard à 09:05, Lamictal 50 mg, quantité 1, Lithium 250 mg, quantité 1"

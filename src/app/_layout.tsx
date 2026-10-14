@@ -4,6 +4,7 @@ import { StatusBar } from "expo-status-bar";
 import { useEffect } from "react";
 
 import { useDesignSystemFonts } from "@/design-system/fonts";
+import { useReminderScheduling } from "@/features/notifications/hooks/useReminderScheduling";
 import { DatabaseErrorScreen } from "@/shared/database/DatabaseErrorScreen";
 import { useDatabaseReady } from "@/shared/database/hooks/useDatabaseReady";
 
@@ -15,6 +16,7 @@ export default function RootLayout() {
   const fontsReady = useDesignSystemFonts();
   const { isReady: databaseReady, error: databaseError } = useDatabaseReady();
   const canHideSplash = fontsReady && (databaseReady || databaseError !== undefined);
+  useReminderScheduling(databaseReady);
 
   useEffect(() => {
     if (canHideSplash) {

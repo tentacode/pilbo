@@ -1,5 +1,7 @@
 import { WEEKDAYS } from "@/domain/intake";
 
+import type { IntakeLogStatus } from "@/domain/intakeLog";
+
 import type { NewIntakeRow, NewMedRow } from "./schema";
 
 const LAVENDER = "#D6C9F5";
@@ -99,3 +101,13 @@ export const intakeFixtures: IntakeFixture[] = [
     ],
   },
 ];
+
+export const intakeLogFixture: {
+  intake: IntakeFixture;
+  status: IntakeLogStatus;
+  minutesAfterExpected: number;
+} = {
+  intake: intakeFixtures[0],
+  status: "taken",
+  minutesAfterExpected: 45,
+};

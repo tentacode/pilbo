@@ -1,6 +1,7 @@
 import { formatIntakeTime, type Intake } from "@/domain/intake";
+import type { MedQuantity } from "@/domain/med";
 
-import { countTodayIntakes, weekdayOf } from "./computeTodayIntakes";
+import { areAllIntakesHandled, countTodayIntakes, weekdayOf } from "./computeTodayIntakes";
 import type { FormattedText, TodayIntake, TodaySections, TodaySummary } from "./todayTypes";
 
 const DAY_NAMES = {
@@ -64,7 +65,22 @@ export function formatDurationAccessibilityLabel(totalMinutes: number): string {
   return `${hoursText} ${minutesText}`;
 }
 
-export function formatIntakeStatus({ status, minutesFromNow }: TodayIntake): FormattedText {
+function same(text: string): FormattedText {
+  return { text, accessibilityLabel: text };
+}
+
+export function formatIntakeStatus({
+  status,
+  minutesFromNow,
+  validation,
+}: TodayIntake): FormattedText {
+  if (status === "skipped") {
+    return same("Ignorée");
+  }
+  if (status === "taken" && validation) {
+    const time = formatIntakeTime(validation.time);
+    return same(validation.isTakenLate ? `Pris en retard à ${time}` : `Pris à ${time}`);
+  }
   if (status === "late") {
     return {
       text: `En retard · ${formatDuration(minutesFromNow)}`,
@@ -78,9 +94,9 @@ export function formatIntakeStatus({ status, minutesFromNow }: TodayIntake): For
     };
   }
   if (status === "next") {
-    return { text: "C'est l'heure", accessibilityLabel: "C'est l'heure" };
+    return same("C'est l'heure");
   }
-  return { text: "À venir", accessibilityLabel: "À venir" };
+  return same("À venir");
 }
 
 export function formatTodaySummary(sections: TodaySections): TodaySummary | null {
@@ -88,14 +104,36 @@ export function formatTodaySummary(sections: TodaySections): TodaySummary | null
   if (total === 0) {
     return null;
   }
-  const { late, next } = sections;
-  const takenCount = 0;
-  const progress = `${pluralize(takenCount, "prise", "prises")} sur ${total}`;
+  const { late, next, earlier } = sections;
+  const progress = `${pluralize(earlier.length, "prise", "prises")} sur ${total}`;
+  if (areAllIntakesHandled(sections)) {
+    return { progress, detail: null, accessibilityLabel: progress };
+  }
   const detail =
     next && late.length === 0
       ? `prochaine à ${formatIntakeTime(next.intake.time)}`
       : `${late.length} en retard`;
   return { progress, detail, accessibilityLabel: `${progress}, ${detail}` };
+}
+
+export function formatMedNames(medQuantities: MedQuantity[]): string {
+  return medQuantities
+    .map(({ med, quantity }) => {
+      const name = `${med.name} ${med.strength}`;
+      return quantity >= 2 ? `${name} (${quantity} ×)` : name;
+    })
+    .join(" · ");
+}
+
+export function formatEarlierIntakeAccessibilityLabel(todayIntake: TodayIntake): string {
+  const meds = todayIntake.intake.medQuantities.map(
+    ({ med, quantity }) => `${med.name} ${med.strength}, quantité ${quantity}`,
+  );
+  return [
+    formatIntakeTime(todayIntake.intake.time),
+    formatIntakeStatus(todayIntake).accessibilityLabel,
+    ...meds,
+  ].join(", ");
 }
 
 export function formatLateSectionTitle(lateCount: number): string | null {

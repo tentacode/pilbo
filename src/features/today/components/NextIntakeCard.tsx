@@ -8,18 +8,24 @@ import { TodayMedList } from "./TodayMedList";
 
 type NextIntakeCardProps = {
   todayIntake: TodayIntake;
+  isDisabled?: boolean;
   onTake: (intakeId: string) => void;
   onSkip: (intakeId: string) => void;
 };
 
-export function NextIntakeCard({ todayIntake, onTake, onSkip }: NextIntakeCardProps) {
+export function NextIntakeCard({ todayIntake, isDisabled, onTake, onSkip }: NextIntakeCardProps) {
   return (
     <View style={styles.card}>
       <View style={styles.head}>
         <IntakeCardHeading todayIntake={todayIntake} />
       </View>
       <TodayMedList medQuantities={todayIntake.intake.medQuantities} />
-      <IntakeCardActions intake={todayIntake.intake} onTake={onTake} onSkip={onSkip} />
+      <IntakeCardActions
+        intake={todayIntake.intake}
+        isDisabled={isDisabled}
+        onTake={onTake}
+        onSkip={onSkip}
+      />
     </View>
   );
 }

@@ -43,6 +43,18 @@ export const iconShapes = {
     </>
   ),
   check: <Path d="M5 12.5l4.5 4.5L19 7.5" />,
+  checkCircle: (
+    <>
+      <Circle cx={12} cy={12} r={9} />
+      <Path d="M8 12.4l2.8 2.8L16 9.6" />
+    </>
+  ),
+  dashCircle: (
+    <>
+      <Circle cx={12} cy={12} r={9} />
+      <Path d="M8 12h8" />
+    </>
+  ),
 } satisfies Record<string, ReactNode>;
 
 export type IconName = keyof typeof iconShapes;

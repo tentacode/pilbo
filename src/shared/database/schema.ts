@@ -1,6 +1,7 @@
 import { integer, primaryKey, sqliteTable, text } from "drizzle-orm/sqlite-core";
 
 import type { Weekday } from "@/domain/intake";
+import type { IntakeLogStatus } from "@/domain/intakeLog";
 import type { PillDesign } from "@/domain/med";
 
 function generateId(): string {
@@ -24,6 +25,7 @@ export const intakeTable = sqliteTable("intake", {
   minute: integer("minute").notNull(),
   days: text("days", { mode: "json" }).$type<Weekday[]>().notNull(),
   reminderIntervalMinutes: integer("reminder_interval_minutes").notNull(),
+  isArchived: integer("is_archived", { mode: "boolean" }).notNull().default(false),
 });
 
 export const intakeMedTable = sqliteTable(
@@ -40,9 +42,21 @@ export const intakeMedTable = sqliteTable(
   (table) => [primaryKey({ columns: [table.intakeId, table.medId] })],
 );
 
+export const intakeLogTable = sqliteTable("intake_log", {
+  id: text("id").primaryKey().$defaultFn(generateId),
+  intakeId: text("intake_id")
+    .notNull()
+    .references(() => intakeTable.id, { onDelete: "restrict" }),
+  expectedIntakeAt: text("expected_intake_at").notNull(),
+  createdAt: text("created_at").notNull(),
+  status: text("status").$type<IntakeLogStatus>().notNull(),
+});
+
 export type MedRow = typeof medTable.$inferSelect;
 export type NewMedRow = typeof medTable.$inferInsert;
 export type IntakeRow = typeof intakeTable.$inferSelect;
 export type NewIntakeRow = typeof intakeTable.$inferInsert;
 export type IntakeMedRow = typeof intakeMedTable.$inferSelect;
 export type NewIntakeMedRow = typeof intakeMedTable.$inferInsert;
+export type IntakeLogRow = typeof intakeLogTable.$inferSelect;
+export type NewIntakeLogRow = typeof intakeLogTable.$inferInsert;

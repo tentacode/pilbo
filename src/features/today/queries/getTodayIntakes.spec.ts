@@ -47,6 +47,27 @@ describe("getTodayIntakes", () => {
     expect(getTodayIntakes(database, "tuesday").map(({ id }) => id)).not.toContain(intakeId);
   });
 
+  it("hides an archived intake", () => {
+    const database = createTestDatabase();
+    const { id: medId } = database.get<{ id: string }>(
+      sql`SELECT ${medTable.id} AS id FROM ${medTable} LIMIT 1`,
+    );
+    const { id: intakeId } = database
+      .insert(intakeTable)
+      .values({
+        hour: 7,
+        minute: 0,
+        days: ["monday"],
+        reminderIntervalMinutes: 5,
+        isArchived: true,
+      })
+      .returning({ id: intakeTable.id })
+      .get();
+    database.insert(intakeMedTable).values({ intakeId, medId, quantity: 1 }).run();
+
+    expect(getTodayIntakes(database, "monday").map(({ id }) => id)).not.toContain(intakeId);
+  });
+
   it("hides an intake without meds", () => {
     const database = createTestDatabase({ seed: false });
     database

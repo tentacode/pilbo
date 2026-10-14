@@ -13,7 +13,7 @@ export function useDatabaseReady(): DatabaseState {
   useEffect(() => {
     migrate(database, migrations)
       .then(() => {
-        seedDatabase(database);
+        seedDatabase(database, { withLogs: __DEV__ });
         setState({ isReady: true });
       })
       .catch((error: Error) => setState({ isReady: false, error }));
