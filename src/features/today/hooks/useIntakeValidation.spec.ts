@@ -1,4 +1,6 @@
 import { act, renderHook } from "@testing-library/react-native";
+import * as Haptics from "expo-haptics";
+import { AccessibilityInfo } from "react-native";
 
 import { createTestDatabase } from "@/shared/database/testDatabase";
 import type { Database } from "@/shared/database/types";
@@ -62,6 +64,30 @@ describe("useIntakeValidation", () => {
     expect(onValidated).toHaveBeenCalledTimes(1);
     expect(rescheduleReminders).toHaveBeenCalledWith(mockDatabase, NOW);
     expect(result.current.validatingIntakeId).toBeNull();
+  });
+
+  it("plays a success haptic and announces a taken intake", async () => {
+    const announce = jest.spyOn(AccessibilityInfo, "announceForAccessibility");
+    const intakes = getTodayIntakes(mockDatabase, "wednesday");
+    const { result } = await renderHook(() => useIntakeValidation(intakes, jest.fn()));
+
+    await act(() => result.current.validate(intakes[0].id, "taken"));
+
+    expect(Haptics.notificationAsync).toHaveBeenCalledWith(
+      Haptics.NotificationFeedbackType.Success,
+    );
+    expect(announce).toHaveBeenCalledWith(expect.stringContaining("validée"));
+  });
+
+  it("announces a skipped intake without the success haptic", async () => {
+    const announce = jest.spyOn(AccessibilityInfo, "announceForAccessibility");
+    const intakes = getTodayIntakes(mockDatabase, "wednesday");
+    const { result } = await renderHook(() => useIntakeValidation(intakes, jest.fn()));
+
+    await act(() => result.current.validate(intakes[0].id, "skipped"));
+
+    expect(Haptics.notificationAsync).not.toHaveBeenCalled();
+    expect(announce).toHaveBeenCalledWith(expect.stringContaining("ignorée"));
   });
 
   it("keeps the log when the reminders cannot be rescheduled", async () => {
