@@ -1,0 +1,3 @@
+- [ ] NE PAS FAIRE AUJOURD'HUI Idée : anonymiser la notification de prise.
+- [ ] Le fond "pillule" en haut de today devrait scroller avec la page.
+- [ ] Léger padding sur les tabs pour pas que le label soit complétement collé si il est trop grand.

@@ -3,7 +3,7 @@
 ## Dossiers
 
 ```
-.env / .env.dist        // variables locales (ex. APPLE_TEAM_ID), .env non versionné
+.env / .env.dist        // variables locales (ex. APPLE_TEAM_ID, EXPO_PUBLIC_DEBUG_MODE), .env non versionné
 app.config.ts           // config Expo, lit .env
 assets/icon/icon.svg    // source de l'icône de l'app
 e2e/                    // tests end to end Maestro (YAML)
@@ -58,6 +58,7 @@ Détails : [`docs/database.md`](database.md).
 - Tri en SQL (`ORDER BY`) quand il est simple. Tri alphanumérique (« 50 mg » avant « 100 mg ») dans une fonction pure (`utils/sorters.ts`), appelée par le hook.
 - Données persistées : SQLite uniquement, jamais dans un state global.
 - Calculs qui dépendent de l'heure (ex. prise en retard) : fonctions pures dans `utils/`, avec `now: Date` en paramètre (testées avec une heure fixée).
+- Hors écran (ex. point sur l'onglet « Aujourd'hui ») : relecture à chaque écriture en base via `subscribeToDatabaseChanges` (`shared/database/database.ts`).
 - Rafraîchissement à la minute : `features/today/hooks/useCurrentMinute.ts` (minute suivante + retour au premier plan). Les états sont recalculés en mémoire (`useMemo`), sans relire la base.
 
 ## Conventions de fichiers

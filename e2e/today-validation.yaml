@@ -9,12 +9,12 @@ name: Taking an intake moves it to the earlier section
     commands:
       - tapOn: "Autoriser"
 - extendedWaitUntil:
-    visible: "Pilulier"
+    visible: "Aujourd'hui"
     timeout: 10000
-- tapOn: "Aujourd'hui"
 - scrollUntilVisible:
     element:
       text: "Prendre la prise de 22:00"
+    centerElement: true
 - tapOn: "Prendre la prise de 22:00"
 - assertNotVisible: "Prendre la prise de 22:00"
 - scrollUntilVisible:

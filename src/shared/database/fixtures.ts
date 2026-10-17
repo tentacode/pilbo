@@ -109,5 +109,5 @@ export const intakeLogFixture: {
 } = {
   intake: intakeFixtures[0],
   status: "taken",
-  minutesAfterExpected: 45,
+  minutesAfterExpected: 75,
 };

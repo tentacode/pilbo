@@ -2,6 +2,7 @@ import {
   areAllIntakesHandled,
   computeTodayIntakes,
   countTodayIntakes,
+  countPendingPastIntakes,
   weekdayOf,
 } from "./computeTodayIntakes";
 import { createDate, createIntake, createIntakeLog } from "./testIntakes";
@@ -41,26 +42,26 @@ describe("computeTodayIntakes", () => {
     expect(sections.next?.status).toBe("next");
   });
 
-  it("keeps the intake as next 29 minutes after its time", () => {
-    const sections = computeTodayIntakes(INTAKES, [], createDate(8, 49));
+  it("keeps the intake as next 59 minutes after its time", () => {
+    const sections = computeTodayIntakes(INTAKES, [], createDate(9, 19));
 
     expect(sections.late).toEqual([]);
     expect(sections.next?.intake.id).toBe("intake-8-20");
-    expect(sections.next?.minutesFromNow).toBe(-29);
+    expect(sections.next?.minutesFromNow).toBe(-59);
   });
 
-  it("keeps the intake as next 30 minutes after its time", () => {
-    const sections = computeTodayIntakes(INTAKES, [], createDate(8, 50));
+  it("keeps the intake as next 60 minutes after its time", () => {
+    const sections = computeTodayIntakes(INTAKES, [], createDate(9, 20));
 
     expect(sections.next?.intake.id).toBe("intake-8-20");
   });
 
-  it("marks the intake as late 31 minutes after its time", () => {
-    const sections = computeTodayIntakes(INTAKES, [], createDate(8, 51));
+  it("marks the intake as late 61 minutes after its time", () => {
+    const sections = computeTodayIntakes(INTAKES, [], createDate(9, 21));
 
     expect(summarize(sections)).toEqual({
-      late: [["intake-8-20", -31]],
-      next: ["intake-12-20", 209],
+      late: [["intake-8-20", -61]],
+      next: ["intake-12-20", 179],
       later: ["intake-20-20", "intake-22-0"],
     });
     expect(sections.late[0].status).toBe("late");
@@ -68,14 +69,14 @@ describe("computeTodayIntakes", () => {
   });
 
   it("marks several intakes as late", () => {
-    const sections = computeTodayIntakes(INTAKES, [], createDate(13, 0));
+    const sections = computeTodayIntakes(INTAKES, [], createDate(13, 30));
 
     expect(summarize(sections)).toEqual({
       late: [
-        ["intake-8-20", -280],
-        ["intake-12-20", -40],
+        ["intake-8-20", -310],
+        ["intake-12-20", -70],
       ],
-      next: ["intake-20-20", 440],
+      next: ["intake-20-20", 410],
       later: ["intake-22-0"],
     });
   });
@@ -98,28 +99,28 @@ describe("computeTodayIntakes", () => {
   });
 
   it("moves an intake taken on time to earlier", () => {
-    const logs = [createIntakeLog(INTAKES[0], "taken", { hour: 8, minute: 50 })];
+    const logs = [createIntakeLog(INTAKES[0], "taken", { hour: 9, minute: 20 })];
 
-    const sections = computeTodayIntakes(INTAKES, logs, createDate(9, 0));
+    const sections = computeTodayIntakes(INTAKES, logs, createDate(9, 30));
 
     expect(sections.earlier).toEqual([
       {
         intake: INTAKES[0],
         status: "taken",
-        minutesFromNow: -40,
-        validation: { time: { hour: 8, minute: 50 }, isTakenLate: false },
+        minutesFromNow: -70,
+        validation: { time: { hour: 9, minute: 20 }, isTakenLate: false },
       },
     ]);
     expect(sections.late).toEqual([]);
     expect(sections.next?.intake.id).toBe("intake-12-20");
   });
 
-  it("marks an intake taken more than 30 minutes after its time as taken late", () => {
-    const logs = [createIntakeLog(INTAKES[0], "taken", { hour: 8, minute: 51 })];
+  it("marks an intake taken more than 60 minutes after its time as taken late", () => {
+    const logs = [createIntakeLog(INTAKES[0], "taken", { hour: 9, minute: 21 })];
 
-    const [earlier] = computeTodayIntakes(INTAKES, logs, createDate(9, 0)).earlier;
+    const [earlier] = computeTodayIntakes(INTAKES, logs, createDate(9, 30)).earlier;
 
-    expect(earlier.validation).toEqual({ time: { hour: 8, minute: 51 }, isTakenLate: true });
+    expect(earlier.validation).toEqual({ time: { hour: 9, minute: 21 }, isTakenLate: true });
   });
 
   it("never marks a skipped intake as taken late", () => {
@@ -186,6 +187,26 @@ describe("areAllIntakesHandled", () => {
 
   it("is false without intakes", () => {
     expect(areAllIntakesHandled(computeTodayIntakes([], [], createDate(23, 0)))).toBe(false);
+  });
+});
+
+describe("countPendingPastIntakes", () => {
+  it("is 0 before the time of the next intake", () => {
+    expect(countPendingPastIntakes(computeTodayIntakes(INTAKES, [], createDate(8, 19)))).toBe(0);
+  });
+
+  it("counts the next intake from its time", () => {
+    expect(countPendingPastIntakes(computeTodayIntakes(INTAKES, [], createDate(8, 20)))).toBe(1);
+  });
+
+  it("counts the late intakes and the next one", () => {
+    expect(countPendingPastIntakes(computeTodayIntakes(INTAKES, [], createDate(12, 30)))).toBe(2);
+  });
+
+  it("is 0 once the past intakes are logged", () => {
+    const logs = [createIntakeLog(INTAKES[0], "skipped", { hour: 9, minute: 0 })];
+
+    expect(countPendingPastIntakes(computeTodayIntakes(INTAKES, logs, createDate(9, 0)))).toBe(0);
   });
 });
 

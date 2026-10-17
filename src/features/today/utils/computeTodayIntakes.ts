@@ -3,7 +3,7 @@ import { fromLocalDateTime, type IntakeLog } from "@/domain/intakeLog";
 
 import type { IntakeValidation, TodaySections } from "./todayTypes";
 
-export const LATE_THRESHOLD_MINUTES = 30;
+export const LATE_THRESHOLD_MINUTES = 60;
 
 const MILLISECONDS_PER_MINUTE = 60_000;
 
@@ -66,6 +66,10 @@ export function computeTodayIntakes(
 
 export function countPendingIntakes({ late, next, later }: TodaySections): number {
   return late.length + (next ? 1 : 0) + later.length;
+}
+
+export function countPendingPastIntakes({ late, next }: TodaySections): number {
+  return late.length + (next !== null && next.minutesFromNow <= 0 ? 1 : 0);
 }
 
 export function countTodayIntakes(sections: TodaySections): number {

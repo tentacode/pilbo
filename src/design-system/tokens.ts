@@ -74,6 +74,8 @@ export const sizes = {
   icon: 20,
   iconLarge: 24,
   tabIcon: 22,
+  tabBadge: 18,
+  pillStackCount: 24,
   pillInList: 28,
   pillInRow: 36,
   pillInStrip: 30,
@@ -107,6 +109,8 @@ export const fontSize = {
 } as const;
 
 export const pressedScale = 0.96;
+
+export const pillStackOverlapRatio = 0.5;
 
 export const duration = {
   short: 200,

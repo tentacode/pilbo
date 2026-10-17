@@ -1,13 +1,18 @@
 import { Tabs } from "expo-router";
 
+import { useOpenTodayOnNotification } from "@/features/notifications/hooks/useOpenTodayOnNotification";
+import { usePendingPastIntakeCount } from "@/features/today/hooks/usePendingPastIntakeCount";
 import { NavigationTabBar } from "@/shared/navigation/NavigationTabBar";
 
 export default function TabsLayout() {
+  useOpenTodayOnNotification();
+  const badgeCounts = { today: usePendingPastIntakeCount() };
+
   return (
     <Tabs
-      initialRouteName="pillbox"
+      initialRouteName="today"
       screenOptions={{ headerShown: false }}
-      tabBar={(props) => <NavigationTabBar {...props} />}
+      tabBar={(props) => <NavigationTabBar {...props} badgeCounts={badgeCounts} />}
     >
       <Tabs.Screen name="today" />
       <Tabs.Screen name="pillbox" />

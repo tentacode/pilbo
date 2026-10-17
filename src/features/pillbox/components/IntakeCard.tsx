@@ -9,6 +9,7 @@ import {
   formatIntakeAccessibilityLabel,
   formatIntakeSchedule,
 } from "@/features/pillbox/utils/formatters";
+import { pillStackLayoutOf } from "@/features/pillbox/utils/pillStack";
 import { styles } from "./IntakeCard.styles";
 import { IntakeMedRow } from "./IntakeMedRow";
 
@@ -17,6 +18,7 @@ type IntakeCardProps = {
 };
 
 export function IntakeCard({ intake }: IntakeCardProps) {
+  const pillStackLayout = pillStackLayoutOf(intake.medQuantities);
   return (
     <Pressable
       accessibilityRole="button"
@@ -32,7 +34,11 @@ export function IntakeCard({ intake }: IntakeCardProps) {
       </Text>
       <View style={styles.meds}>
         {intake.medQuantities.map((medQuantity) => (
-          <IntakeMedRow key={medQuantity.med.id} {...medQuantity} />
+          <IntakeMedRow
+            key={medQuantity.med.id}
+            {...medQuantity}
+            pillStackLayout={pillStackLayout}
+          />
         ))}
       </View>
     </Pressable>

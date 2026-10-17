@@ -8,8 +8,10 @@ name: Pillbox lists the intakes
       visible: "Autoriser"
     commands:
       - tapOn: "Autoriser"
-- assertVisible:
-    text: "Pilulier"
+- extendedWaitUntil:
+    visible: "Pilulier"
+    timeout: 10000
+- tapOn: "Pilulier"
 - assertVisible:
     text: "8 h 20.*Lamictal 50 mg, quantité 1. Lithium 250 mg, quantité 1"
 - assertVisible:
