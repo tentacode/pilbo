@@ -24,7 +24,7 @@ name: Today lists the intakes of the day
 - assertVisible:
     text: ${output.today}
 - assertVisible:
-    text: "Hors planning|Ajouter une prise hors planning"
+    text: "Si besoin|Ajouter une prise au besoin"
 - scrollUntilVisible:
     element:
       text: "12:20.*"
@@ -42,7 +42,7 @@ name: Today lists the intakes of the day
       text: "Quviviq 50 mg, quantité 1"
 - scrollUntilVisible:
     element:
-      text: "Plus tôt"
+      text: "Déjà prise "
 - scrollUntilVisible:
     element:
       text: "08:20, Pris en retard à 09:05, Lamictal 50 mg, quantité 1, Lithium 250 mg, quantité 1"

@@ -26,6 +26,9 @@ export function TabBarItem({ label, icon, selected, onPress }: TabBarItemProps) 
       <Text
         variant={selected ? "tabLabelSelected" : "tabLabel"}
         tone={selected ? "primary" : "secondary"}
+        adjustsFontSizeToFit={true}
+        numberOfLines={1}
+        minimumFontScale={0.8}
         maxFontSizeMultiplier={maximumFontScale.tabLabel}
         style={styles.label}
       >

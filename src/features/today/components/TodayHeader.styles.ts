@@ -5,7 +5,7 @@ import { spacing } from "@/design-system/tokens";
 export const styles = StyleSheet.create({
   header: {
     paddingHorizontal: spacing.large,
-    paddingBottom: spacing.huge,
+    paddingBottom: spacing.large,
   },
   decoration: {
     position: "absolute",

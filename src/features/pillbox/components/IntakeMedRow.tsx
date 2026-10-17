@@ -15,9 +15,8 @@ export function IntakeMedRow({ med, quantity, pillSize }: IntakeMedRowProps) {
     <View style={styles.row}>
       <Pill design={med.design} displaySize={pillSize} />
       <Text variant="bodyBold" style={styles.name}>
-        {med.name} <Text>{med.strength}</Text>
+        {quantity} × {med.name} <Text>{med.strength}</Text>
       </Text>
-      <Text variant="bodyBold">{quantity} ×</Text>
     </View>
   );
 }

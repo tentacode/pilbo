@@ -7,7 +7,7 @@ export const styles = StyleSheet.create({
     borderRadius: radius.largeCard,
     borderWidth: borderWidth.regular,
     borderColor: colors.line,
-    backgroundColor: colors.background,
+    backgroundColor: "transparent",
     paddingTop: spacing.large,
     paddingHorizontal: spacing.large,
     paddingBottom: spacing.cardBottom,

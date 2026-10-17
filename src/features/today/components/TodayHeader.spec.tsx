@@ -14,15 +14,10 @@ function wrapper({ children }: { children: ReactNode }) {
 }
 
 const DATE = new Date(2026, 9, 4, 10, 0);
-const SUMMARY = {
-  progress: "0 prise sur 4",
-  detail: "prochaine à 12:20",
-  accessibilityLabel: "0 prise sur 4, prochaine à 12:20",
-};
 
 describe("TodayHeader", () => {
   it("shows the title as a header and the date", async () => {
-    await render(<TodayHeader date={DATE} summary={SUMMARY} onAddUnscheduled={jest.fn()} />, {
+    await render(<TodayHeader date={DATE} onAddUnscheduled={jest.fn()} />, {
       wrapper,
     });
 
@@ -30,27 +25,11 @@ describe("TodayHeader", () => {
     expect(screen.getByText("Dimanche 4 octobre")).toBeOnTheScreen();
   });
 
-  it("shows the summary", async () => {
-    await render(<TodayHeader date={DATE} summary={SUMMARY} onAddUnscheduled={jest.fn()} />, {
-      wrapper,
-    });
-
-    expect(screen.getByLabelText("0 prise sur 4, prochaine à 12:20")).toBeOnTheScreen();
-  });
-
-  it("hides the summary when there is none", async () => {
-    await render(<TodayHeader date={DATE} summary={null} onAddUnscheduled={jest.fn()} />, {
-      wrapper,
-    });
-
-    expect(screen.queryByText(/prise sur/)).not.toBeOnTheScreen();
-  });
-
   it("calls onAddUnscheduled from the unscheduled button", async () => {
     const onAddUnscheduled = jest.fn();
     await render(<TodayHeader date={DATE} onAddUnscheduled={onAddUnscheduled} />, { wrapper });
 
-    await fireEvent.press(screen.getByRole("button", { name: "Ajouter une prise hors planning" }));
+    await fireEvent.press(screen.getByRole("button", { name: "Ajouter une prise au besoin" }));
 
     expect(onAddUnscheduled).toHaveBeenCalledTimes(1);
   });

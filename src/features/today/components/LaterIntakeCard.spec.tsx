@@ -25,7 +25,7 @@ describe("LaterIntakeCard", () => {
 
     await fireEvent.press(screen.getByRole("button", { name: "Prendre la prise de 20:20" }));
 
-    expect(screen.getByText("Prendre")).toBeOnTheScreen();
+    expect(screen.getByText("Prendre en avance")).toBeOnTheScreen();
     expect(screen.queryByRole("button", { name: /Ignorer/ })).not.toBeOnTheScreen();
     expect(onTake).toHaveBeenCalledWith("intake-20-20");
   });

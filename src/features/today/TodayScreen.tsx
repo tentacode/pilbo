@@ -13,7 +13,7 @@ import { useTodayData } from "@/features/today/hooks/useTodayData";
 import { styles } from "./TodayScreen.styles";
 
 export function TodayScreen() {
-  const { date, intakes, sections, summary, isEmpty, isAllHandled, refresh } = useTodayData();
+  const { date, intakes, sections, isEmpty, isAllHandled, refresh } = useTodayData();
   const { validatingIntakeId, validate } = useIntakeValidation(intakes, refresh);
   const remindersEnabled = useRemindersEnabled();
 
@@ -23,7 +23,7 @@ export function TodayScreen() {
 
   return (
     <Screen>
-      <TodayHeader date={date} summary={summary} onAddUnscheduled={handleAddUnscheduled} />
+      <TodayHeader date={date} onAddUnscheduled={handleAddUnscheduled} />
       <View style={styles.content}>
         {remindersEnabled === false ? <RemindersDisabledNotice /> : null}
         {isEmpty ? <TodayEmptyState /> : null}

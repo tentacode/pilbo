@@ -1,8 +1,8 @@
 import { formatIntakeTime, type Intake } from "@/domain/intake";
 import type { MedQuantity } from "@/domain/med";
 
-import { areAllIntakesHandled, countTodayIntakes, weekdayOf } from "./computeTodayIntakes";
-import type { FormattedText, TodayIntake, TodaySections, TodaySummary } from "./todayTypes";
+import { weekdayOf } from "./computeTodayIntakes";
+import type { FormattedText, TodayIntake } from "./todayTypes";
 
 const DAY_NAMES = {
   monday: "Lundi",
@@ -97,23 +97,6 @@ export function formatIntakeStatus({
     return same("C'est l'heure");
   }
   return same("À venir");
-}
-
-export function formatTodaySummary(sections: TodaySections): TodaySummary | null {
-  const total = countTodayIntakes(sections);
-  if (total === 0) {
-    return null;
-  }
-  const { late, next, earlier } = sections;
-  const progress = `${pluralize(earlier.length, "prise", "prises")} sur ${total}`;
-  if (areAllIntakesHandled(sections)) {
-    return { progress, detail: null, accessibilityLabel: progress };
-  }
-  const detail =
-    next && late.length === 0
-      ? `prochaine à ${formatIntakeTime(next.intake.time)}`
-      : `${late.length} en retard`;
-  return { progress, detail, accessibilityLabel: `${progress}, ${detail}` };
 }
 
 export function formatMedNames(medQuantities: MedQuantity[]): string {

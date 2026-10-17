@@ -21,12 +21,6 @@ export type TodaySections = {
   earlier: TodayIntake[];
 };
 
-export type TodaySummary = {
-  progress: string;
-  detail: string | null;
-  accessibilityLabel: string;
-};
-
 export type FormattedText = {
   text: string;
   accessibilityLabel: string;

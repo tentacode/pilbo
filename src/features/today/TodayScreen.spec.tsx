@@ -77,7 +77,6 @@ describe("TodayScreen", () => {
 
     expect(screen.getByRole("header", { name: "Aujourd'hui" })).toBeOnTheScreen();
     expect(screen.getByText("Dimanche 4 octobre")).toBeOnTheScreen();
-    expect(screen.getByLabelText("0 prise sur 4, prochaine à 08:20")).toBeOnTheScreen();
     expect(screen.getByRole("header", { name: "Prochaine prise" })).toBeOnTheScreen();
     expect(screen.getByLabelText("08:20, Dans 1 heure 20 minutes")).toBeOnTheScreen();
     expect(screen.getByRole("header", { name: "Plus tard" })).toBeOnTheScreen();
@@ -90,7 +89,6 @@ describe("TodayScreen", () => {
   it("shows a single late intake without a section title", async () => {
     await renderAt(9, 0);
 
-    expect(screen.getByLabelText("0 prise sur 4, 1 en retard")).toBeOnTheScreen();
     expect(screen.getByLabelText("08:20, En retard de 40 minutes")).toBeOnTheScreen();
     expect(screen.queryByRole("header", { name: /en retard/ })).not.toBeOnTheScreen();
     expect(screen.getByRole("header", { name: "Ensuite" })).toBeOnTheScreen();
@@ -121,9 +119,7 @@ describe("TodayScreen", () => {
 
     expect(screen.getByRole("header", { name: "Rien à prendre aujourd'hui" })).toBeOnTheScreen();
     expect(screen.queryByText(/prise sur/)).not.toBeOnTheScreen();
-    expect(
-      screen.getByRole("button", { name: "Ajouter une prise hors planning" }),
-    ).toBeOnTheScreen();
+    expect(screen.getByRole("button", { name: "Ajouter une prise au besoin" })).toBeOnTheScreen();
   });
 
   it("shows the handled intakes in the earlier section", async () => {
@@ -131,8 +127,7 @@ describe("TodayScreen", () => {
     logIntakes([12], "skipped");
     await renderAt(13, 0);
 
-    expect(screen.getByLabelText("2 prises sur 4, prochaine à 20:20")).toBeOnTheScreen();
-    expect(screen.getByRole("header", { name: "Plus tôt" })).toBeOnTheScreen();
+    expect(screen.getByRole("header", { name: "Déjà prise" })).toBeOnTheScreen();
     expect(screen.getByText("Pris à 08:20")).toBeOnTheScreen();
     expect(screen.getByText("Ignorée")).toBeOnTheScreen();
     expect(screen.queryByText(/en retard/)).not.toBeOnTheScreen();
@@ -142,9 +137,8 @@ describe("TodayScreen", () => {
     logIntakes([8, 12, 20, 22], "taken");
     await renderAt(23, 0);
 
-    expect(screen.getByLabelText("4 prises sur 4")).toBeOnTheScreen();
     expect(screen.getByRole("header", { name: "C'est tout pour aujourd'hui" })).toBeOnTheScreen();
-    expect(screen.getByRole("header", { name: "Plus tôt" })).toBeOnTheScreen();
+    expect(screen.getByRole("header", { name: "Déjà prise" })).toBeOnTheScreen();
     expect(screen.queryByRole("header", { name: "Prochaine prise" })).not.toBeOnTheScreen();
   });
 
@@ -153,7 +147,7 @@ describe("TodayScreen", () => {
 
     await fireEvent.press(screen.getByRole("button", { name: "Prendre la prise de 22:00" }));
 
-    expect(screen.getByRole("header", { name: "Plus tôt" })).toBeOnTheScreen();
+    expect(screen.getByRole("header", { name: "Déjà prise" })).toBeOnTheScreen();
     expect(screen.getByText("Pris à 21:00")).toBeOnTheScreen();
     expect(
       screen.queryByRole("button", { name: "Prendre la prise de 22:00" }),

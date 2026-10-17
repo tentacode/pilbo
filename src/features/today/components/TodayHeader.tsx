@@ -6,17 +6,15 @@ import { Text } from "@/design-system/components/Text/Text";
 import { spacing } from "@/design-system/tokens";
 
 import { formatTodayDate } from "@/features/today/utils/formatters";
-import type { TodaySummary } from "@/features/today/utils/todayTypes";
 import { styles } from "./TodayHeader.styles";
 import { TodayHeaderDecoration } from "./TodayHeaderDecoration";
 
 type TodayHeaderProps = {
   date: Date;
-  summary?: TodaySummary | null;
   onAddUnscheduled: () => void;
 };
 
-export function TodayHeader({ date, summary, onAddUnscheduled }: TodayHeaderProps) {
+export function TodayHeader({ date, onAddUnscheduled }: TodayHeaderProps) {
   const insets = useSafeAreaInsets();
 
   return (
@@ -29,26 +27,16 @@ export function TodayHeader({ date, summary, onAddUnscheduled }: TodayHeaderProp
           {formatTodayDate(date)}
         </Text>
         <Button
-          label="Hors planning"
+          label="Si besoin"
           variant="secondary"
           icon="plus"
-          accessibilityLabel="Ajouter une prise hors planning"
+          accessibilityLabel="Ajouter une prise au besoin"
           onPress={onAddUnscheduled}
         />
       </View>
       <Text variant="title" accessibilityRole="header" style={styles.title}>
         {"Aujourd'hui"}
       </Text>
-      {summary ? (
-        <Text
-          variant="small"
-          accessibilityLabel={summary.accessibilityLabel}
-          style={styles.summary}
-        >
-          <Text variant="smallBold">{summary.progress}</Text>
-          {summary.detail ? ` · ${summary.detail}` : null}
-        </Text>
-      ) : null}
     </View>
   );
 }

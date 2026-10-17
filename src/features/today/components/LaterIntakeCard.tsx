@@ -22,7 +22,7 @@ export function LaterIntakeCard({ todayIntake, isDisabled = false, onTake }: Lat
       <View style={styles.head}>
         <IntakeCardHeading todayIntake={todayIntake} />
         <Button
-          label="Prendre"
+          label="Prendre en avance"
           variant="secondary"
           accessibilityLabel={formatTakeAccessibilityLabel(intake)}
           isDisabled={isDisabled}

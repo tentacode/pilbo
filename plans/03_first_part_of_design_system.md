@@ -12,7 +12,7 @@ Implémenter une première partie du design Claude Design (projet « Pilbo ») :
 
 - **Onglets** : barre d'onglets **sur mesure** (icônes SVG du design), pas de `NativeTabs`.
 - **Textes** : en dur (en français, comme le design). i18n plus tard (CLAUDE.md corrigé).
-- **« Hors planning »** : inclus, textes en dur, sans logique.
+- **« Si besoin »** : inclus, textes en dur, sans logique.
 - **Bouton « + » et tap sur les cartes** : visibles et accessibles, sans action.
 - **Polices** : Atkinson Hyperlegible Next (texte) + Young Serif (titres), via `expo-font`.
 - **Thème** : clair forcé (`userInterfaceStyle: "light"`), couleurs en tokens.
@@ -100,7 +100,7 @@ Toutes les prises : tous les jours, rappel toutes les 10 min.
 - 20:20 : 2× Lithium 250 mg
 - 22:00 : 1× Lamictal 100 mg + 1× Quviviq 50 mg + 1× Prégabaline 50 mg
 
-« Hors planning » (en dur, sans logique) : Prazépam 25 mg, `capsule` `medium` rose `#F58FB8` / blanc `#FFFFFF`, sous-titre « Si besoin », aide « À prendre si besoin, depuis l'accueil. », ligne « Ajouter un médicament ».
+« Si besoin » (en dur, sans logique) : Prazépam 25 mg, `capsule` `medium` rose `#F58FB8` / blanc `#FFFFFF`, sous-titre « Si besoin », aide « À prendre si besoin, depuis l'accueil. », ligne « Ajouter un médicament ».
 
 ---
 
@@ -154,7 +154,7 @@ Toutes les prises : tous les jours, rappel toutes les 10 min.
 - [x] En-tête : titre « Pilulier » + bouton « + » (sans action, `accessibilityLabel` « Nouvelle prise »).
 - [x] `IntakeCard` : heure, jours + intervalle, liste des médicaments (pilule, nom, dosage, quantité), chevron. Carte accessible comme un bouton (sans action).
 - [x] `IntakeList`.
-- [x] Section « Hors planning » (textes en dur, sans action).
+- [x] Section « Si besoin » (textes en dur, sans action).
 - [x] Défilement, Dynamic Type sans casse, VoiceOver. VoiceOver non testé, à revérifier.
 - [x] Chaque composant dans son propre fichier (+ `.styles.ts`).
 - [x] Tu vérifies sur l'iPhone.

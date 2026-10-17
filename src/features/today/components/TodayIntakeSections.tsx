@@ -84,7 +84,7 @@ export function TodayIntakeSections({
       ) : null}
       {earlier.length > 0 ? (
         <View>
-          <TodaySectionTitle title="Plus tôt" />
+          <TodaySectionTitle title="Déjà prise" />
           <View style={styles.list}>
             {earlier.map((todayIntake) => (
               <EarlierIntakeCard key={todayIntake.intake.id} todayIntake={todayIntake} />

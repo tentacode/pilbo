@@ -15,7 +15,7 @@ export function UnscheduledSection({ meds }: UnscheduledSectionProps) {
   return (
     <View style={styles.section}>
       <Text variant="heading" accessibilityRole="header" style={styles.heading}>
-        Hors planning
+        Si besoin
       </Text>
       <Text variant="help" tone="secondary" style={styles.help}>
         À prendre si besoin, depuis l’accueil.

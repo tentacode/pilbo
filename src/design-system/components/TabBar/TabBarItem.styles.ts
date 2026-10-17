@@ -16,6 +16,7 @@ export const styles = StyleSheet.create({
     backgroundColor: colors.accentSoft,
   },
   label: {
+    alignSelf: "stretch",
     textAlign: "center",
   },
 });

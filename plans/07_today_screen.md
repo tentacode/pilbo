@@ -76,7 +76,6 @@ Tout dans `src/features/today/utils/`, fonctions pures, `now: Date` en paramètr
   - Date : « Dimanche 4 octobre » (tableaux de jours et mois en dur).
   - Durée écran : « 45 min », « 2 h 05 », « 3 h » ; durée VoiceOver : « 45 minutes », « 2 heures 5 minutes », « 1 heure ».
   - Statut : « Dans 2 h 25 », « C'est l'heure », « En retard · 40 min », « À venir » (+ versions VoiceOver).
-  - Résumé de l'en-tête : « 0 prise sur 4 · prochaine à 12:30 » / « 0 prise sur 4 · 1 en retard » (pluriel « prises » à partir de 2).
   - Titre de section en retard : `null` pour 1, « N prises en retard » à partir de 2.
   - Libellés d'accessibilité des boutons : « Prendre la prise de 12:20 », « Ignorer la prise de 12:20 ».
 - [x] Tests (`computeTodayIntakes.spec.ts`, `formatters.spec.ts`) avec une heure fixée : avant toutes les prises, pile à l'heure, +29 min (prochaine, « C'est l'heure »), +31 min (en retard), plusieurs en retard, toutes en retard (pas de prochaine), aucune prise ; tous les formats de durée et de date.
@@ -99,7 +98,7 @@ Référence : `hero-pilules.dc.html` (classes `.hero`, `.hero-row`, `.ttl`, `.sm
 - [x] Tokens des couleurs ton sur ton (`#FDEAF2`, `#EFEAFC`, `#FFF5D8`, `#E1F6F2`) et tailles utiles.
 - [x] `features/today/components/TodayHeaderDecoration.tsx` : SVG décoratif (`react-native-svg`) en absolu derrière le contenu, non accessible.
 - [x] `features/today/components/TodayHeader.tsx` + `.styles.ts` : props `date`, `summary?`, `onAddUnscheduled`.
-  - Ligne date (`small`, `secondary`) + `Button` `secondary` icône `plus` « Hors planning » (libellé VoiceOver « Ajouter une prise hors planning »).
+  - Ligne date (`small`, `secondary`) + `Button` `secondary` icône `plus` « Si besoin » (libellé VoiceOver « Ajouter une prise au besoin »).
   - Titre « Aujourd'hui » (`title`, `accessibilityRole="header"`).
   - Résumé (absent si `summary` est vide).
   - Dynamic Type : la ligne date / bouton passe à la ligne si besoin.

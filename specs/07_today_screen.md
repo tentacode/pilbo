@@ -22,7 +22,7 @@ Pas d'interaction pour l'instant, mais tout est prêt pour la prochaine spec (va
 - [ ] Requête `features/today/queries/getTodayIntakes(database, weekday)` : prises du jour filtrées en SQL, triées par heure, avec leurs médicaments. Spécifique à « Aujourd'hui » (peut diverger du pilulier). Tests `better-sqlite3`.
 - [ ] Calcul des états (fonction pure, testée avec une heure fixée) : en retard, prochaine, plus tard, durées (« Dans 2 h 25 », « En retard · 40 min »), résumé de l'en-tête.
 - [ ] Hook `useTodayData` : lecture au focus de l'onglet, recalcul des états à chaque changement de minute et au retour de l'app au premier plan (pas de nouvelle lecture SQL à chaque minute).
-- [ ] En-tête « Pilules ton sur ton » : date du jour, bouton « Hors planning », titre, résumé.
+- [ ] En-tête « Pilules ton sur ton » : date du jour, bouton « Si besoin », titre, résumé.
 - [ ] Cartes de prise (un composant par fichier) : en retard, prochaine, plus tard.
 - [ ] Assemblage de l'écran : sections, état vide.
 - [ ] Test Maestro simple.
@@ -46,8 +46,7 @@ Sans historique en base, l'état dépend uniquement de l'heure :
 ### En-tête
 
 - Date du jour en français (« Dimanche 4 octobre »).
-- Résumé : « 0 prise sur 4 · prochaine à 12:30 » ou « 0 prise sur 4 · 1 en retard ».
-- Bouton « Hors planning » visible.
+- Bouton « Si besoin » visible.
 
 ### État vide
 
@@ -67,7 +66,7 @@ Aucune prise prévue aujourd'hui : carte de l'artboard « Vide · Aujourd'hui, r
 ## Hors scope
 
 - Validation des prises, historique en base, section « Plus tôt » (Pris, Ignorée), toast « Annuler ».
-- Ajout d'une prise hors planning (le bouton est affiché sans effet).
+- Ajout d'une prise au besoin (le bouton est affiché sans effet).
 - « Rappel à 13:20 » sur les prises en retard (ne sera pas affiché).
 - Notes de médicament (« Avec le repas ») : absentes du schéma.
 - Vraie recherche de la prochaine prise dans les jours suivants (état vide).

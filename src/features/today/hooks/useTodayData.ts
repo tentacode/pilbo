@@ -14,14 +14,12 @@ import {
   countTodayIntakes,
   weekdayOf,
 } from "@/features/today/utils/computeTodayIntakes";
-import { formatTodaySummary } from "@/features/today/utils/formatters";
-import type { TodaySections, TodaySummary } from "@/features/today/utils/todayTypes";
+import type { TodaySections } from "@/features/today/utils/todayTypes";
 
 type TodayData = {
   date: Date;
   intakes: Intake[];
   sections: TodaySections;
-  summary: TodaySummary | null;
   isEmpty: boolean;
   isAllHandled: boolean;
   refresh: () => void;
@@ -62,7 +60,6 @@ export function useTodayData(): TodayData {
       date: now,
       intakes: storedData.intakes,
       sections,
-      summary: formatTodaySummary(sections),
       isEmpty: countTodayIntakes(sections) === 0,
       isAllHandled: areAllIntakesHandled(sections),
       refresh,

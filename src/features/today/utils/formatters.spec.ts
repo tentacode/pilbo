@@ -1,4 +1,3 @@
-import { computeTodayIntakes } from "./computeTodayIntakes";
 import {
   formatDuration,
   formatDurationAccessibilityLabel,
@@ -9,17 +8,9 @@ import {
   formatSkipAccessibilityLabel,
   formatTakeAccessibilityLabel,
   formatTodayDate,
-  formatTodaySummary,
 } from "./formatters";
-import { createDate, createIntake, createIntakeLog } from "./testIntakes";
+import { createIntake } from "./testIntakes";
 import type { TodayIntake } from "./todayTypes";
-
-const INTAKES = [
-  createIntake(8, 20),
-  createIntake(12, 20),
-  createIntake(20, 20),
-  createIntake(22, 0),
-];
 
 function createTodayIntake(status: TodayIntake["status"], minutesFromNow: number): TodayIntake {
   return { intake: createIntake(12, 20), status, minutesFromNow };
@@ -121,57 +112,6 @@ describe("formatIntakeStatus", () => {
       text: "À venir",
       accessibilityLabel: "À venir",
     });
-  });
-});
-
-describe("formatTodaySummary", () => {
-  it("shows the next intake when nothing is late", () => {
-    expect(formatTodaySummary(computeTodayIntakes(INTAKES, [], createDate(7, 0)))).toEqual({
-      progress: "0 prise sur 4",
-      detail: "prochaine à 08:20",
-      accessibilityLabel: "0 prise sur 4, prochaine à 08:20",
-    });
-  });
-
-  it("shows the number of late intakes", () => {
-    expect(formatTodaySummary(computeTodayIntakes(INTAKES, [], createDate(13, 0)))).toEqual({
-      progress: "0 prise sur 4",
-      detail: "2 en retard",
-      accessibilityLabel: "0 prise sur 4, 2 en retard",
-    });
-  });
-
-  it("shows the late intakes when every intake is late", () => {
-    expect(formatTodaySummary(computeTodayIntakes(INTAKES, [], createDate(23, 45)))?.detail).toBe(
-      "4 en retard",
-    );
-  });
-
-  it("counts the taken and skipped intakes as done", () => {
-    const logs = [
-      createIntakeLog(INTAKES[0], "taken", { hour: 8, minute: 30 }),
-      createIntakeLog(INTAKES[1], "skipped", { hour: 12, minute: 30 }),
-    ];
-
-    expect(formatTodaySummary(computeTodayIntakes(INTAKES, logs, createDate(13, 0)))).toEqual({
-      progress: "2 prises sur 4",
-      detail: "prochaine à 20:20",
-      accessibilityLabel: "2 prises sur 4, prochaine à 20:20",
-    });
-  });
-
-  it("shows only the progress when every intake is handled", () => {
-    const logs = INTAKES.map((intake) => createIntakeLog(intake, "taken", intake.time));
-
-    expect(formatTodaySummary(computeTodayIntakes(INTAKES, logs, createDate(23, 0)))).toEqual({
-      progress: "4 prises sur 4",
-      detail: null,
-      accessibilityLabel: "4 prises sur 4",
-    });
-  });
-
-  it("returns nothing without intakes", () => {
-    expect(formatTodaySummary(computeTodayIntakes([], [], createDate(10, 0)))).toBeNull();
   });
 });
 
