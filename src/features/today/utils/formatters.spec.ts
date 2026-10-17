@@ -8,6 +8,7 @@ import {
   formatSkipAccessibilityLabel,
   formatTakeAccessibilityLabel,
   formatTodayDate,
+  formatValidationAnnouncement,
 } from "./formatters";
 import { createIntake } from "./testIntakes";
 import type { TodayIntake } from "./todayTypes";
@@ -159,5 +160,14 @@ describe("button accessibility labels", () => {
 
     expect(formatTakeAccessibilityLabel(intake)).toBe("Prendre la prise de 12:20");
     expect(formatSkipAccessibilityLabel(intake)).toBe("Ignorer la prise de 12:20");
+  });
+});
+
+describe("formatValidationAnnouncement", () => {
+  it.each([
+    ["taken", "Prise de 12:20 validée"],
+    ["skipped", "Prise de 12:20 ignorée"],
+  ] as const)("announces a %s intake", (status, expected) => {
+    expect(formatValidationAnnouncement(createIntake(12, 20), status)).toBe(expected);
   });
 });

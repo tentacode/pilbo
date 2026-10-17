@@ -1,6 +1,12 @@
+import type { ReactNode } from "react";
+import { StyleSheet, View } from "react-native";
+import Animated from "react-native-reanimated";
 import Svg, { Circle, Path } from "react-native-svg";
 
 import { colors, sizes } from "@/design-system/tokens";
+
+import { useDoneIllustrationAnimation } from "@/features/today/hooks/useDoneIllustrationAnimation";
+import { styles } from "./TodayDoneIllustration.styles";
 
 const STROKE_WIDTH = 2.5;
 
@@ -15,7 +21,11 @@ const outline = {
   strokeLinejoin: "round",
 } as const;
 
-export function TodayDoneIllustration() {
+type IllustrationLayerProps = {
+  children: ReactNode;
+};
+
+function IllustrationLayer({ children }: IllustrationLayerProps) {
   return (
     <Svg
       width={sizes.emptyIllustrationWidth}
@@ -23,11 +33,31 @@ export function TodayDoneIllustration() {
       viewBox="0 0 160 120"
       accessible={false}
     >
-      <Circle cx={80} cy={62} r={50} fill={colors.surface} />
-      <Path d={MOON_PATH} {...outline} fill={colors.lavender} />
-      <Path d="M112 30v10M107 35h10" {...outline} />
-      <Path d="M124 56v6M121 59h6" {...outline} />
-      <Circle cx={36} cy={40} r={3} fill={colors.ink} />
+      {children}
     </Svg>
+  );
+}
+
+export function TodayDoneIllustration() {
+  const { moonStyle, starsStyle } = useDoneIllustrationAnimation();
+
+  return (
+    <View style={styles.illustration} accessible={false}>
+      <IllustrationLayer>
+        <Circle cx={80} cy={62} r={50} fill={colors.surface} />
+      </IllustrationLayer>
+      <Animated.View style={[StyleSheet.absoluteFill, moonStyle]}>
+        <IllustrationLayer>
+          <Path d={MOON_PATH} {...outline} fill={colors.lavender} />
+        </IllustrationLayer>
+      </Animated.View>
+      <Animated.View style={[StyleSheet.absoluteFill, starsStyle]}>
+        <IllustrationLayer>
+          <Path d="M112 30v10M107 35h10" {...outline} />
+          <Path d="M124 56v6M121 59h6" {...outline} />
+          <Circle cx={36} cy={40} r={3} fill={colors.ink} />
+        </IllustrationLayer>
+      </Animated.View>
+    </View>
   );
 }

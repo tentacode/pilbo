@@ -4,3 +4,4 @@
 - [x] Le 2 x à droite du médicament devrait être à gauche, ex: 2 x Lithium 250mg. Si un seul médicament, ne pas mettre "1 x".
 - [ ] Idée: à la place de 2 x, mettre deux pillules qui se chevauchent.
 - [ ] Idée : anonymiser la notification de prise.
+- [ ] Un badge à ajouter sur Aujourd'hui quand il y a des prises précédentes sur la journée (à prendre ou en retard).

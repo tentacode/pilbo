@@ -1,4 +1,5 @@
 import { formatIntakeTime, type Intake } from "@/domain/intake";
+import type { IntakeLogStatus } from "@/domain/intakeLog";
 import type { MedQuantity } from "@/domain/med";
 
 import { weekdayOf } from "./computeTodayIntakes";
@@ -129,4 +130,9 @@ export function formatTakeAccessibilityLabel(intake: Intake): string {
 
 export function formatSkipAccessibilityLabel(intake: Intake): string {
   return `Ignorer la prise de ${formatIntakeTime(intake.time)}`;
+}
+
+export function formatValidationAnnouncement(intake: Intake, status: IntakeLogStatus): string {
+  const time = formatIntakeTime(intake.time);
+  return status === "taken" ? `Prise de ${time} validée` : `Prise de ${time} ignorée`;
 }

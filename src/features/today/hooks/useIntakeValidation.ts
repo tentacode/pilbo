@@ -1,11 +1,14 @@
 import { useState } from "react";
+import { AccessibilityInfo } from "react-native";
 
 import { type Intake, intakeDateOn } from "@/domain/intake";
 import { type IntakeLogStatus, toLocalDateTime } from "@/domain/intakeLog";
+import { playSuccessHaptic } from "@/design-system/utils/playSuccessHaptic";
 import { database } from "@/shared/database/database";
 
 import { rescheduleReminders } from "@/features/notifications/rescheduleReminders";
 import { insertIntakeLog } from "@/features/today/queries/insertIntakeLog";
+import { formatValidationAnnouncement } from "@/features/today/utils/formatters";
 
 type IntakeValidation = {
   validatingIntakeId: string | null;
@@ -34,6 +37,10 @@ export function useIntakeValidation(intakes: Intake[], onValidated: () => void):
       setValidatingIntakeId(null);
       return;
     }
+    if (status === "taken") {
+      playSuccessHaptic();
+    }
+    AccessibilityInfo.announceForAccessibility(formatValidationAnnouncement(intake, status));
     onValidated();
     try {
       await rescheduleReminders(database, now);

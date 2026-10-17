@@ -108,6 +108,14 @@ export const fontSize = {
 
 export const pressedScale = 0.96;
 
+export const duration = {
+  short: 200,
+  medium: 320,
+  long: 480,
+  twinkle: 1600,
+  float: 2400,
+} as const;
+
 export const disabledOpacity = 0.5;
 
 export const maximumFontScale = {
