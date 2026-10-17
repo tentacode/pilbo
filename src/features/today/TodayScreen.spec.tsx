@@ -87,22 +87,22 @@ describe("TodayScreen", () => {
   });
 
   it("shows a single late intake without a section title", async () => {
-    await renderAt(9, 0);
+    await renderAt(9, 30);
 
-    expect(screen.getByLabelText("08:20, En retard de 40 minutes")).toBeOnTheScreen();
+    expect(screen.getByLabelText("08:20, En retard de 1 heure 10 minutes")).toBeOnTheScreen();
     expect(screen.queryByRole("header", { name: /en retard/ })).not.toBeOnTheScreen();
     expect(screen.getByRole("header", { name: "Ensuite" })).toBeOnTheScreen();
-    expect(screen.getByLabelText("12:20, Dans 3 heures 20 minutes")).toBeOnTheScreen();
+    expect(screen.getByLabelText("12:20, Dans 2 heures 50 minutes")).toBeOnTheScreen();
     expect(screen.queryByRole("header", { name: "Prochaine prise" })).not.toBeOnTheScreen();
     expect(screen.queryByRole("header", { name: "Plus tard" })).not.toBeOnTheScreen();
   });
 
   it("groups several late intakes under a title", async () => {
-    await renderAt(13, 0);
+    await renderAt(13, 30);
 
     expect(screen.getByRole("header", { name: "2 prises en retard" })).toBeOnTheScreen();
-    expect(screen.getByLabelText("08:20, En retard de 4 heures 40 minutes")).toBeOnTheScreen();
-    expect(screen.getByLabelText("12:20, En retard de 40 minutes")).toBeOnTheScreen();
+    expect(screen.getByLabelText("08:20, En retard de 5 heures 10 minutes")).toBeOnTheScreen();
+    expect(screen.getByLabelText("12:20, En retard de 1 heure 10 minutes")).toBeOnTheScreen();
     expect(screen.getByRole("header", { name: "Ensuite" })).toBeOnTheScreen();
   });
 

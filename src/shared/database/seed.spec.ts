@@ -59,7 +59,7 @@ describe("seedDatabase", () => {
       {
         hour: 8,
         expectedIntakeAt: "2026-10-14T08:20",
-        createdAt: "2026-10-14T09:05",
+        createdAt: "2026-10-14T09:35",
         status: "taken",
       },
     ]);

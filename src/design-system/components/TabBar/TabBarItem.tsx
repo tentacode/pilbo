@@ -1,4 +1,4 @@
-import { Pressable } from "react-native";
+import { Pressable, View } from "react-native";
 
 import { colors, maximumFontScale, sizes } from "../../tokens";
 import { Icon } from "../Icon/Icon";
@@ -10,19 +10,48 @@ export type TabBarItemProps = {
   label: string;
   icon: IconName;
   selected: boolean;
+  badgeCount?: number;
+  badgeAccessibilityLabel?: string;
   onPress: () => void;
 };
 
-export function TabBarItem({ label, icon, selected, onPress }: TabBarItemProps) {
+export function TabBarItem({
+  label,
+  icon,
+  selected,
+  badgeCount = 0,
+  badgeAccessibilityLabel,
+  onPress,
+}: TabBarItemProps) {
+  const hasBadge = badgeCount > 0;
   return (
     <Pressable
       accessibilityRole="tab"
-      accessibilityLabel={label}
+      accessibilityLabel={
+        hasBadge && badgeAccessibilityLabel ? `${label}, ${badgeAccessibilityLabel}` : label
+      }
       accessibilityState={{ selected }}
       onPress={onPress}
       style={[styles.item, selected && styles.selected]}
     >
-      <Icon name={icon} size={sizes.tabIcon} color={selected ? colors.ink : colors.inkSecondary} />
+      <View>
+        <Icon
+          name={icon}
+          size={sizes.tabIcon}
+          color={selected ? colors.ink : colors.inkSecondary}
+        />
+        {hasBadge ? (
+          <View style={styles.badge}>
+            <Text
+              variant="tabLabelSelected"
+              tone="onInk"
+              maxFontSizeMultiplier={maximumFontScale.tabLabel}
+            >
+              {badgeCount}
+            </Text>
+          </View>
+        ) : null}
+      </View>
       <Text
         variant={selected ? "tabLabelSelected" : "tabLabel"}
         tone={selected ? "primary" : "secondary"}

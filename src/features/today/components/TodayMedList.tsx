@@ -4,6 +4,7 @@ import { sizes } from "@/design-system/tokens";
 import type { MedQuantity } from "@/domain/med";
 
 import { IntakeMedRow } from "@/features/pillbox/components/IntakeMedRow";
+import { pillStackLayoutOf } from "@/features/pillbox/utils/pillStack";
 import { styles } from "./TodayMedList.styles";
 
 type TodayMedListProps = {
@@ -12,6 +13,7 @@ type TodayMedListProps = {
 };
 
 export function TodayMedList({ medQuantities, isLate = false }: TodayMedListProps) {
+  const pillStackLayout = pillStackLayoutOf(medQuantities);
   return (
     <View>
       {medQuantities.map(({ med, quantity }) => (
@@ -21,7 +23,12 @@ export function TodayMedList({ medQuantities, isLate = false }: TodayMedListProp
           accessibilityLabel={`${med.name} ${med.strength}, quantité ${quantity}`}
           style={[styles.row, isLate && styles.lateRow]}
         >
-          <IntakeMedRow med={med} quantity={quantity} pillSize={sizes.pillInRow} />
+          <IntakeMedRow
+            med={med}
+            quantity={quantity}
+            pillStackLayout={pillStackLayout}
+            pillSize={sizes.pillInRow}
+          />
         </View>
       ))}
     </View>

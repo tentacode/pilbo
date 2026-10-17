@@ -1,7 +1,0 @@
-- [ ] Aujourd'hui dans le tab de navigation ne s'affiche pas en entier sur mon petit téléphone
-- [ ] Aujourd'hui doit être l'écran par défaut, et il faut forcément l'ouvrir depuis une notification.
-- [ ] Une prise n'est pas considérée "en retard" si elle est marqué pendant l'heure qui suit la prise.
-- [x] Le 2 x à droite du médicament devrait être à gauche, ex: 2 x Lithium 250mg. Si un seul médicament, ne pas mettre "1 x".
-- [ ] Idée: à la place de 2 x, mettre deux pillules qui se chevauchent.
-- [ ] Idée : anonymiser la notification de prise.
-- [ ] Un badge à ajouter sur Aujourd'hui quand il y a des prises précédentes sur la journée (à prendre ou en retard).
