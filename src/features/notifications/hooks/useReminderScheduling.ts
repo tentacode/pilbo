@@ -3,7 +3,6 @@ import { AppState } from "react-native";
 
 import { database } from "@/shared/database/database";
 
-import { requestPermission } from "@/features/notifications/notifications";
 import { rescheduleReminders } from "@/features/notifications/rescheduleReminders";
 
 function reschedule(): Promise<void> {
@@ -17,9 +16,7 @@ export function useReminderScheduling(isDatabaseReady: boolean): void {
     if (!isDatabaseReady) {
       return;
     }
-    requestPermission()
-      .catch((error: unknown) => console.error("Notification permission failed", error))
-      .finally(reschedule);
+    reschedule();
 
     const subscription = AppState.addEventListener("change", (state) => {
       if (state === "active") {

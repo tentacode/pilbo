@@ -1,0 +1,23 @@
+appId: com.tentacode.pilbo
+name: Onboarding can be restarted from the settings
+---
+- launchApp:
+    clearState: true
+- extendedWaitUntil:
+    visible: "Réglages"
+    timeout: 10000
+- tapOn: "Réglages"
+- tapOn: "Refaire l'onboarding"
+- assertVisible: "Vos médicaments, regroupés en prises"
+- tapOn: "Continuer"
+- assertVisible: "Un rappel, puis un autre"
+- tapOn: "Plus tard"
+- assertVisible: "Pilbo n'est pas une application médicale"
+- tapOn: "J'ai compris"
+- assertVisible: "Vos données restent sur ce téléphone"
+- tapOn: "Créer ma première prise"
+- extendedWaitUntil:
+    visible:
+      text: "Pilulier"
+    timeout: 5000
+- assertVisible: "Nouvelle prise"

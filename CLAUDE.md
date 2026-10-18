@@ -41,6 +41,7 @@ Basically we are looking for a proof of concept, in doubt ask if it's in the sco
   - Writes: Drizzle ORM (`insert`, `update`, `delete`), conditions written with `sql`.
   - Raw SQL result types are casts: cover repositories with Jest tests.
 - UI state: local state or React context first. **Zustand** only if a UI state must be shared between distant components. Never for persisted data (SQLite only).
+  - Exception: small persisted UI settings (e.g. `onboardingDone`) use Zustand `persist` with `expo-sqlite/kv-store`, through its **sync** methods (`getItemSync`…) to avoid a flash at startup.
 - Data is **100% local**: no backend, no user account.
 - i18n: **i18next + react-i18next + expo-localization** (French and English), but only implement in the future when I say so.
 - Notifications: **expo-notifications** (scheduled local notifications).
@@ -65,7 +66,7 @@ Package manager is **pnpm**. Use the `Makefile` (`make help` lists everything):
 - `make build-simulator` / `make build-device` / `make build-release`: Debug on simulator, Debug on iPhone, standalone Release on iPhone (`DEVICE_ID` from `.env`).
 - `make clean`: `expo prebuild --clean`.
 - `make tests`: lint, prettier, TypeScript, Jest and audit. Must pass before considering a step done.
-- `make test-e2e`: Maestro flows in `e2e/` (app must be installed on a booted simulator).
+- `make test-e2e`: Maestro flows in `e2e/` (app must be installed on a booted simulator). If the iPhone is plugged in, Maestro targets it and fails: run `maestro --device <simulator id> test e2e/`.
 - `make db-generate`: generate a SQLite migration from `src/shared/database/schema.ts`.
 
 ## Code conventions

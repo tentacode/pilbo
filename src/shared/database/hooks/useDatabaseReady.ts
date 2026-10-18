@@ -3,21 +3,21 @@ import { useEffect, useState } from "react";
 
 import { database } from "@/shared/database/database";
 import migrations from "@/shared/database/migrations/migrations";
-import { seedDatabase } from "@/shared/database/seed";
+import type { Database } from "@/shared/database/types";
 
 type DatabaseState = { isReady: boolean; error?: Error };
 
-export function useDatabaseReady(): DatabaseState {
+export function useDatabaseReady(onMigrated?: (database: Database) => void): DatabaseState {
   const [state, setState] = useState<DatabaseState>({ isReady: false });
 
   useEffect(() => {
     migrate(database, migrations)
       .then(() => {
-        seedDatabase(database, { withLogs: __DEV__ });
+        onMigrated?.(database);
         setState({ isReady: true });
       })
       .catch((error: Error) => setState({ isReady: false, error }));
-  }, []);
+  }, [onMigrated]);
 
   return state;
 }

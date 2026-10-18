@@ -6,16 +6,17 @@ Validé sur iPhone (spec 02) : notifications app fermée, son custom, badge, ann
 
 ## Fichiers
 
-| Fichier                                                     | Rôle                                                          |
-| ----------------------------------------------------------- | ------------------------------------------------------------- |
-| `src/config/notifications.ts`                               | Nombre de rappels, délai minimum, plafond de 64.              |
-| `src/features/notifications/notifications.ts`               | Appels iOS : permission, nettoyage, planification.            |
-| `src/features/notifications/rescheduleReminders.ts`         | Lit la base, calcule les rappels, les replanifie.             |
-| `src/features/notifications/utils/planReminders.ts`         | Calcul pur des rappels et des badges (`now` en paramètre).    |
-| `src/features/notifications/hooks/useReminderScheduling.ts` | Permission + replanification au lancement et au premier plan. |
-| `assets/sounds/beep.wav`                                    | Son custom.                                                   |
-| `plugins/withoutPushEntitlement.js`                         | Retire la permission push (compte gratuit).                   |
-| `app.config.ts`                                             | Déclare le son, les plugins et la Team de signature.          |
+| Fichier                                                         | Rôle                                                          |
+| --------------------------------------------------------------- | ------------------------------------------------------------- |
+| `src/config/notifications.ts`                                   | Nombre de rappels, délai minimum, plafond de 64.              |
+| `src/features/notifications/notifications.ts`                   | Appels iOS : permission, nettoyage, planification.            |
+| `src/features/notifications/rescheduleReminders.ts`             | Lit la base, calcule les rappels, les replanifie.             |
+| `src/features/notifications/utils/planReminders.ts`             | Calcul pur des rappels et des badges (`now` en paramètre).    |
+| `src/features/notifications/hooks/useReminderScheduling.ts`     | Replanification au lancement et au premier plan.              |
+| `src/features/notifications/hooks/useNotificationPermission.ts` | Statut de la permission (`isGranted`) et demande (`request`). |
+| `assets/sounds/beep.wav`                                        | Son custom.                                                   |
+| `plugins/withoutPushEntitlement.js`                             | Retire la permission push (compte gratuit).                   |
+| `app.config.ts`                                                 | Déclare le son, les plugins et la Team de signature.          |
 
 ## Configuration (`app.config.ts`)
 
@@ -29,7 +30,8 @@ Validé sur iPhone (spec 02) : notifications app fermée, son custom, badge, ann
 
 Déclencheurs :
 
-- lancement de l'app (après la demande de permission) ;
+- lancement de l'app ;
+- permission accordée depuis la popup ;
 - retour au premier plan (`AppState` → `active`) ;
 - appui sur « Je l'ai pris » / « Ignorer ».
 
@@ -65,9 +67,13 @@ Fonctionne app fermée : chaque rappel porte un chiffre calculé à l'avance. C'
 
 ## Permission
 
-- Demandée au lancement (`requestPermission()`), lue sans demander avec `getPermissionGranted()`.
+- **Jamais demandée au lancement.** Demandée depuis l'onboarding (« Autoriser les notifications ») et les Réglages (« Accepter les notifications »).
+- `useNotificationPermission()` : `isGranted` relu au focus de l'écran et au retour au premier plan. `request()` selon `getPermissionStatus()` :
+  - `undetermined` (jamais demandée) : popup système (`requestPermission()`), puis replanification si accordée.
+  - `denied` : ouvre les Réglages iOS (`Linking.openSettings()`).
+  - `granted` : rien.
 - iOS n'affiche la fenêtre qu'**une seule fois**. Ensuite → Réglages → Pilbo → Notifications.
-- Refusée : message « Les rappels sont désactivés » sur l'écran « Aujourd'hui », avec un lien vers les Réglages.
+- Pas accordée : message « Les rappels sont désactivés » sur l'écran « Aujourd'hui », bouton « Activer les notifications » (`request()`).
 
 ## Niveaux de priorité (`interruptionLevel`)
 

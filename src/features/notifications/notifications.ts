@@ -12,6 +12,8 @@ Notifications.setNotificationHandler({
   }),
 });
 
+export type PermissionStatus = "granted" | "denied" | "undetermined";
+
 export async function requestPermission(): Promise<boolean> {
   const { granted } = await Notifications.requestPermissionsAsync({
     ios: { allowAlert: true, allowSound: true, allowBadge: true },
@@ -22,6 +24,14 @@ export async function requestPermission(): Promise<boolean> {
 export async function getPermissionGranted(): Promise<boolean> {
   const { granted } = await Notifications.getPermissionsAsync();
   return granted;
+}
+
+export async function getPermissionStatus(): Promise<PermissionStatus> {
+  const { granted, canAskAgain } = await Notifications.getPermissionsAsync();
+  if (granted) {
+    return "granted";
+  }
+  return canAskAgain ? "undetermined" : "denied";
 }
 
 export async function resetReminders(plannedReminders: PlannedReminder[]): Promise<void> {

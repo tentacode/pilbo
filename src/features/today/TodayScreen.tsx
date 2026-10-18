@@ -7,15 +7,15 @@ import { TodayEmptyState } from "./components/TodayEmptyState";
 import { TodayHeader } from "./components/TodayHeader";
 import { RemindersDisabledNotice } from "./components/RemindersDisabledNotice";
 import { TodayIntakeSections } from "./components/TodayIntakeSections";
+import { useNotificationPermission } from "@/features/notifications/hooks/useNotificationPermission";
 import { useIntakeValidation } from "@/features/today/hooks/useIntakeValidation";
-import { useRemindersEnabled } from "@/features/today/hooks/useRemindersEnabled";
 import { useTodayData } from "@/features/today/hooks/useTodayData";
 import { styles } from "./TodayScreen.styles";
 
 export function TodayScreen() {
   const { date, intakes, sections, isEmpty, isAllHandled, refresh } = useTodayData();
   const { validatingIntakeId, validate } = useIntakeValidation(intakes, refresh);
-  const remindersEnabled = useRemindersEnabled();
+  const { isGranted: remindersEnabled, request: enableReminders } = useNotificationPermission();
 
   const handleTake = (intakeId: string) => validate(intakeId, "taken");
   const handleSkip = (intakeId: string) => validate(intakeId, "skipped");
@@ -25,7 +25,7 @@ export function TodayScreen() {
     <Screen>
       <TodayHeader date={date} onAddUnscheduled={handleAddUnscheduled} />
       <View style={styles.content}>
-        {remindersEnabled === false ? <RemindersDisabledNotice /> : null}
+        {remindersEnabled === false ? <RemindersDisabledNotice onEnable={enableReminders} /> : null}
         {isEmpty ? <TodayEmptyState /> : null}
         {isAllHandled ? <TodayDoneState /> : null}
         {isEmpty ? null : (

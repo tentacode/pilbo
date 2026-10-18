@@ -3,11 +3,6 @@ name: Taking an intake moves it to the earlier section
 ---
 - launchApp:
     clearState: true
-- runFlow:
-    when:
-      visible: "Autoriser"
-    commands:
-      - tapOn: "Autoriser"
 - extendedWaitUntil:
     visible: "Aujourd'hui"
     timeout: 10000

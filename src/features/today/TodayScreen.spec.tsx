@@ -18,7 +18,7 @@ jest.mock("@/shared/database/database", () => ({
   },
 }));
 jest.mock("@/features/notifications/notifications", () => ({
-  getPermissionGranted: () => Promise.resolve(mockPermissionGranted),
+  getPermissionStatus: () => Promise.resolve(mockPermissionGranted ? "granted" : "denied"),
 }));
 jest.mock("@/features/notifications/rescheduleReminders", () => ({
   rescheduleReminders: jest.fn(() => Promise.resolve()),

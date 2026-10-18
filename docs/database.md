@@ -11,11 +11,11 @@ database.ts             // ouvre pilbo.db (expo-sqlite) + drizzle, active les cl
 schema.ts               // tables Drizzle : source de vérité des types
 types.ts                // type Database (base Drizzle synchrone, app et tests)
 migrations/             // généré par drizzle-kit, ne pas modifier à la main
-fixtures.ts             // données de debug insérées à la création de la base
+fixtures.ts             // données de debug insérées au premier lancement (debug)
 seed.ts                 // seedDatabase(database)
 clearDatabase.ts        // clearDatabase(database) : vide intake_log, med, intake, intake_med
 resetDatabase.ts        // resetDatabase(database) : clearDatabase puis seedDatabase
-hooks/useDatabaseReady.ts // migration + seed au démarrage
+hooks/useDatabaseReady.ts // migration au démarrage, puis callback onMigrated
 DatabaseErrorScreen.tsx // écran affiché si la migration ou le seed échoue
 testDatabase.ts         // base better-sqlite3 en mémoire pour Jest
 testHelpers.ts          // utilitaires de test (countRows)
@@ -26,14 +26,17 @@ sql.d.ts                // import des fichiers .sql (migrations)
 
 1. `src/app/_layout.tsx` appelle `useDatabaseReady()`.
 2. `migrate()` applique les migrations pas encore jouées (table `__drizzle_migrations`).
-3. `seedDatabase()` insère les fixtures **si la table `med` est vide**, dans une transaction (tout ou rien).
+3. Callback `onMigrated` : `setupFirstLaunch()` (`features/onboarding/utils/`).
+   - Debug (`EXPO_PUBLIC_DEBUG_MODE=true`) et premier lancement après installation : `seedDatabase()` insère les fixtures (si la table `med` est vide, dans une transaction), et l'onboarding est marqué comme fait.
+   - Sinon : rien. Plus de re-seed quand la base est vide.
+   - Premier lancement = clé `onboarding` absente du kv-store (`expo-sqlite/kv-store`, voir le store `features/onboarding/store/onboardingStore.ts`).
 4. Le splash est masqué quand polices et base sont prêtes. En cas d'erreur : `DatabaseErrorScreen`.
 
 - La base vit dans le dossier par défaut d'`expo-sqlite`.
 - Une réinstallation depuis Xcode conserve les données. Pour repartir de zéro : supprimer l'app.
-- Réglages (debug uniquement, `__DEV__`) :
-  - « Vider la base » : supprime toutes les données. Le seed revient au prochain lancement de l'app (table `med` vide).
-  - « Réinitialiser la base » : vide puis réinsère les fixtures.
+- Réglages (debug uniquement, `IS_DEBUG_MODE`) :
+  - « Vider la base » : supprime toutes les données et réaffiche l'onboarding. Pas de seed au lancement suivant.
+  - « Réinitialiser la base » : vide puis réinsère les fixtures, onboarding marqué comme fait.
   - Les écrans relisent la base au focus de l'onglet.
 - Le seed est temporaire (debug), il disparaîtra quand on pourra créer des prises dans l'app.
 
