@@ -1,5 +1,8 @@
 import { Redirect } from "expo-router";
 
+import { useOnboardingStore } from "@/features/onboarding/store/onboardingStore";
+
 export default function Index() {
-  return <Redirect href="/today" />;
+  const onboardingDone = useOnboardingStore((state) => state.onboardingDone);
+  return <Redirect href={onboardingDone ? "/today" : "/onboarding"} />;
 }

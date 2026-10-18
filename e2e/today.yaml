@@ -3,11 +3,6 @@ name: Today lists the intakes of the day
 ---
 - launchApp:
     clearState: true
-- runFlow:
-    when:
-      visible: "Autoriser"
-    commands:
-      - tapOn: "Autoriser"
 - extendedWaitUntil:
     visible: "Aujourd'hui"
     timeout: 10000

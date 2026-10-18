@@ -15,6 +15,10 @@ export const colors = {
   turquoiseSoft: "#E1F6F2",
   turquoise: "#B3E8E0",
   lavender: "#D6C9F5",
+  butter: "#FBE29A",
+  rose: "#F8C6DA",
+  roseStrong: "#F58FB8",
+  stepIndicatorInactive: "#D4CEE5",
   onInk: "#FFFFFF",
   alertBackground: "#FFE0DA",
   alertLine: "#FFCBC2",
@@ -54,12 +58,16 @@ export const spacing = {
   compactTimeBottom: 7,
   compactNamesTop: 10,
   pillStripOverlap: -7,
+  onboardingTextGap: 14,
+  stepIndicatorGap: 6,
+  pageEmptyTop: 28,
 } as const;
 
 export const radius = {
   group: 22,
   card: 24,
   largeCard: 26,
+  illustration: 40,
   round: 999,
 } as const;
 
@@ -87,6 +95,13 @@ export const sizes = {
   headerDecorationHeight: 250,
   emptyIllustrationWidth: 160,
   emptyIllustrationHeight: 120,
+  onboardingIllustrationHeight: 392,
+  onboardingIllustrationArt: 320,
+  pageEmptyIllustrationWidth: 220,
+  pageEmptyIllustrationHeight: 186,
+  stepIndicatorDot: 8,
+  stepIndicatorCurrentDot: 24,
+  pageEmptyTextMaxWidth: 300,
 } as const;
 
 export const fontFamily = {
@@ -101,12 +116,23 @@ export const fontSize = {
   help: 14,
   small: 15,
   buttonSmall: 16,
+  callout: 16,
   body: 17,
+  lead: 18,
   heading: 21,
+  mediumHeading: 26,
   compactTime: 24,
   time: 30,
+  largeHeading: 30,
   title: 34,
 } as const;
+
+export const lineHeight = {
+  lead: 26,
+  callout: 22,
+} as const;
+
+export const onboardingIllustrationScreenRatio = 0.4;
 
 export const pressedScale = 0.96;
 

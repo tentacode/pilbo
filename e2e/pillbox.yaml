@@ -3,11 +3,6 @@ name: Pillbox lists the intakes
 ---
 - launchApp:
     clearState: true
-- runFlow:
-    when:
-      visible: "Autoriser"
-    commands:
-      - tapOn: "Autoriser"
 - extendedWaitUntil:
     visible: "Pilulier"
     timeout: 10000

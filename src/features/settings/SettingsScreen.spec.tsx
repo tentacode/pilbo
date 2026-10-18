@@ -12,6 +12,9 @@ jest.mock("@/config/debug", () => ({
   },
 }));
 jest.mock("@/shared/database/database", () => ({ database: {} }));
+jest.mock("@/features/notifications/hooks/useNotificationPermission", () => ({
+  useNotificationPermission: () => ({ isGranted: false, request: jest.fn() }),
+}));
 
 const DEBUG_BUTTON_NAMES = ["Simuler une erreur", "Vider la base", "Réinitialiser la base"];
 
@@ -25,6 +28,18 @@ function wrapper({ children }: { children: ReactNode }) {
 }
 
 describe("SettingsScreen", () => {
+  it.each([true, false])(
+    "always shows the notification and onboarding buttons (debug mode: %s)",
+    async (isDebugMode) => {
+      mockIsDebugMode = isDebugMode;
+
+      await render(<SettingsScreen />, { wrapper });
+
+      expect(screen.getByRole("button", { name: "Accepter les notifications" })).toBeOnTheScreen();
+      expect(screen.getByRole("button", { name: "Refaire l'onboarding" })).toBeOnTheScreen();
+    },
+  );
+
   it("shows the debug buttons when debug mode is enabled", async () => {
     mockIsDebugMode = true;
 

@@ -14,7 +14,8 @@ src/
     tokens.ts           // couleurs, espacements, rayons, tailles, polices
     fonts.ts            // chargement des polices
     components/<Name>/  // composants génériques
-    hooks/              // hooks génériques (ex. useReduceMotion)
+    components/Illustration/  // pièces d'illustration SVG (pilules, traits)
+    hooks/              // hooks génériques (ex. useReduceMotion, useAccessibilityFocusOnMount)
     utils/              // fonctions génériques (ex. playPressHaptic)
   domain/               // types métier et fonctions pures partagées (Med, Intake, compareMeds…)
   features/<feature>/   // une feature = un domaine fonctionnel, pas un écran
@@ -23,6 +24,7 @@ src/
     components/         // composants internes
     hooks/              // hooks React (ex. use<Feature>Data.ts)
     queries/            // requêtes SQLite
+    store/              // store Zustand persisté (petits réglages d'UI uniquement)
     utils/              // fonctions pures (formatters.ts, sorters.ts…)
   shared/               // transverse : navigation, intégrations tierces…
     database/           // SQLite : schéma, migrations, seed (voir docs/database.md)
