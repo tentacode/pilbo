@@ -17,8 +17,6 @@ name: Today lists the intakes of the day
     }
 - assertVisible:
     text: ${output.today}
-- assertVisible:
-    text: "Si besoin|Ajouter une prise au besoin"
 - scrollUntilVisible:
     element:
       text: "12:20.*"
@@ -27,7 +25,7 @@ name: Today lists the intakes of the day
       text: "20:20.*"
 - scrollUntilVisible:
     element:
-      text: "Lithium 250 mg, quantité 2"
+      text: "Lithium 250 mg, Avec le repas, quantité 2"
 - scrollUntilVisible:
     element:
       text: "22:00.*"
@@ -40,3 +38,9 @@ name: Today lists the intakes of the day
 - scrollUntilVisible:
     element:
       text: "08:20, Pris en retard à 09:35, Lamictal 50 mg, quantité 1, Lithium 250 mg, quantité 1"
+- scrollUntilVisible:
+    element:
+      text: "Hors planning"
+- scrollUntilVisible:
+    element:
+      text: "Prazépam 25 mg, Si besoin"

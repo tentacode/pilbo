@@ -3,8 +3,12 @@ import { sql } from "drizzle-orm";
 import type { ReactNode } from "react";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 
-import { intakeLogTable, intakeTable } from "@/shared/database/schema";
+import * as Haptics from "expo-haptics";
+
+import { insertMed } from "@/features/pillbox/queries/insertMed";
+import { intakeLogTable, intakeTable, medLogTable } from "@/shared/database/schema";
 import { createTestDatabase } from "@/shared/database/testDatabase";
+import { countRows } from "@/shared/database/testHelpers";
 import type { Database } from "@/shared/database/types";
 
 import { TodayScreen } from "./TodayScreen";
@@ -119,7 +123,60 @@ describe("TodayScreen", () => {
 
     expect(screen.getByRole("header", { name: "Rien à prendre aujourd'hui" })).toBeOnTheScreen();
     expect(screen.queryByText(/prise sur/)).not.toBeOnTheScreen();
-    expect(screen.getByRole("button", { name: "Ajouter une prise au besoin" })).toBeOnTheScreen();
+    expect(screen.queryByRole("button", { name: /Si besoin|au besoin/ })).not.toBeOnTheScreen();
+  });
+
+  describe("as needed meds", () => {
+    const TAKE_PRAZEPAM = "Prendre Prazépam 25 mg";
+    const CANCEL_PRAZEPAM = "Annuler les prises de Prazépam 25 mg aujourd’hui";
+
+    it("lists the as needed meds at the bottom", async () => {
+      await renderAt(7, 0);
+
+      expect(screen.getByRole("header", { name: "Hors planning" })).toBeOnTheScreen();
+      expect(screen.getByLabelText("Prazépam 25 mg, Si besoin")).toBeOnTheScreen();
+      expect(screen.queryByRole("button", { name: CANCEL_PRAZEPAM })).not.toBeOnTheScreen();
+    });
+
+    it("shows the as needed meds even without intakes", async () => {
+      mockDatabase = createTestDatabase({ seed: false });
+      insertMed(mockDatabase, {
+        name: "Doliprane",
+        strength: "1 g",
+        detail: "Si besoin",
+        design: { shape: "round", colors: ["#FFFFFF", "#FFFFFF"], size: "medium" },
+        isAsNeeded: true,
+      });
+      await renderAt(7, 0);
+
+      expect(screen.getByRole("header", { name: "Rien à prendre aujourd'hui" })).toBeOnTheScreen();
+      expect(screen.getByRole("button", { name: "Prendre Doliprane 1 g" })).toBeOnTheScreen();
+    });
+
+    it("takes an as needed med and shows the time of the last intake", async () => {
+      await renderAt(7, 0);
+
+      await fireEvent.press(screen.getByRole("button", { name: TAKE_PRAZEPAM }));
+      jest.setSystemTime(new Date(2026, 9, 4, 9, 30));
+      await fireEvent.press(screen.getByRole("button", { name: TAKE_PRAZEPAM }));
+
+      expect(screen.getByText("Pris à 09:30")).toBeOnTheScreen();
+      expect(countRows(mockDatabase, medLogTable)).toBe(2);
+      expect(Haptics.notificationAsync).toHaveBeenCalledWith(
+        Haptics.NotificationFeedbackType.Success,
+      );
+    });
+
+    it("cancels every intake of the day of the med", async () => {
+      await renderAt(7, 0);
+      await fireEvent.press(screen.getByRole("button", { name: TAKE_PRAZEPAM }));
+      await fireEvent.press(screen.getByRole("button", { name: TAKE_PRAZEPAM }));
+
+      await fireEvent.press(screen.getByRole("button", { name: CANCEL_PRAZEPAM }));
+
+      expect(screen.queryByText(/^Pris à/)).not.toBeOnTheScreen();
+      expect(countRows(mockDatabase, medLogTable)).toBe(0);
+    });
   });
 
   it("shows the handled intakes in the earlier section", async () => {

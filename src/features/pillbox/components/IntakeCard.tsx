@@ -15,15 +15,17 @@ import { IntakeMedRow } from "./IntakeMedRow";
 
 type IntakeCardProps = {
   intake: Intake;
+  onPress: () => void;
 };
 
-export function IntakeCard({ intake }: IntakeCardProps) {
+export function IntakeCard({ intake, onPress }: IntakeCardProps) {
   const pillStackLayout = pillStackLayoutOf(intake.medQuantities);
   return (
     <Pressable
       accessibilityRole="button"
       accessibilityLabel={formatIntakeAccessibilityLabel(intake)}
-      style={styles.card}
+      onPress={onPress}
+      style={({ pressed }) => [styles.card, pressed && styles.pressed]}
     >
       <View style={styles.header}>
         <Text variant="time">{formatIntakeTime(intake.time)}</Text>

@@ -31,6 +31,12 @@ describe("getAllIntakes", () => {
     );
     expect(morning.medQuantities[0].med.design.shape).toEqual(expect.any(String));
     expect(morning.medQuantities[0].med.isAsNeeded).toBe(false);
+    expect(morning.medQuantities.map(({ med }) => [med.name, med.detail])).toEqual(
+      expect.arrayContaining([
+        ["Lithium", "Avec le repas"],
+        ["Lamictal", ""],
+      ]),
+    );
   });
 
   it("returns an intake without meds", () => {

@@ -13,7 +13,7 @@ types.ts                // type Database (base Drizzle synchrone, app et tests)
 migrations/             // généré par drizzle-kit, ne pas modifier à la main
 fixtures.ts             // données de debug insérées au premier lancement (debug)
 seed.ts                 // seedDatabase(database)
-clearDatabase.ts        // clearDatabase(database) : vide intake_log, med, intake, intake_med
+clearDatabase.ts        // clearDatabase(database) : vide intake_log, med_log, med, intake, intake_med
 resetDatabase.ts        // resetDatabase(database) : clearDatabase puis seedDatabase
 hooks/useDatabaseReady.ts // migration au démarrage, puis callback onMigrated
 DatabaseErrorScreen.tsx // écran affiché si la migration ou le seed échoue
@@ -114,20 +114,35 @@ Test à côté de la requête : `queries/getAllIntakes.spec.ts`.
 - **UUID** : `$defaultFn(generateId)` (`randomUUID` d'`expo-crypto`), uniquement pour les écritures Drizzle. `expo-crypto` est chargé à la demande car `drizzle-kit` lit le schéma dans Node. En test, il est remplacé par `crypto.randomUUID` (`jest.setup.ts`).
 - **Transactions** : `database.transaction((transaction) => { ... })`, callback **synchrone**, utiliser `transaction` et pas `database` à l'intérieur.
 - **Clés étrangères** : désactivées par défaut dans SQLite, activées à l'ouverture (`PRAGMA foreign_keys = ON`), y compris dans la base de test.
-- **Dates en texte local** : `intake_log` stocke ses dates en heure locale, sans fuseau (`"2026-10-14T08:20"`). Filtre du jour simple (`LIKE '2026-10-14%'`), lisible depuis Swift. Conversion avec `toLocalDate`, `toLocalDateTime`, `fromLocalDateTime` (`src/domain/intakeLog.ts`).
+- **Dates en texte local** : `intake_log` et `med_log` stockent ses dates en heure locale, sans fuseau (`"2026-10-14T08:20"`). Filtre du jour simple (`LIKE '2026-10-14%'`), lisible depuis Swift. Conversion avec `toLocalDate`, `toLocalDateTime`, `fromLocalDateTime` (`src/domain/intakeLog.ts`).
 - **Résultats bruts = casts** : `database.all<Type>(...)` ne vérifie rien. Toute requête doit avoir son test.
 
 ## Schéma
 
+> Migration `0002` (spec 12) : nouveau format de `design`, sans conversion des données existantes. Base à vider après cette migration : supprimer puis réinstaller l'app.
+
 ### `med`
 
-| Colonne        | Type                     | Contraintes                     |
-| -------------- | ------------------------ | ------------------------------- |
-| `id`           | text (UUID)              | clé primaire                    |
-| `name`         | text                     | obligatoire                     |
-| `strength`     | text                     | obligatoire (« 250 mg »)        |
-| `design`       | text (JSON `PillDesign`) | obligatoire                     |
-| `is_as_needed` | integer (booléen)        | obligatoire, `false` par défaut |
+Un médicament existe indépendamment des prises. Il peut être dans une ou plusieurs prises et hors planning en même temps.
+
+| Colonne        | Type                     | Contraintes                                           |
+| -------------- | ------------------------ | ----------------------------------------------------- |
+| `id`           | text (UUID)              | clé primaire                                          |
+| `name`         | text                     | obligatoire                                           |
+| `strength`     | text                     | obligatoire, texte libre, `""` si absent (« 250 mg ») |
+| `detail`       | text                     | obligatoire, `""` par défaut (« Avec le repas »)      |
+| `design`       | text (JSON `PillDesign`) | obligatoire                                           |
+| `is_as_needed` | integer (booléen)        | obligatoire, `false` par défaut (hors planning)       |
+
+Format de `design` (`src/domain/med.ts`) :
+
+```json
+{ "shape": "capsule", "size": "medium", "colors": ["#F58FB8", "#FFFFFF"] }
+```
+
+- `shape` : `round`, `oval`, `capsule`, `softgel`. Configuration par forme dans `PILL_SHAPES`.
+- `size` : `small`, `medium`, `large`.
+- `colors` : toujours 2 couleurs, une par moitié, pour toutes les formes (identiques pour une pilule unie). Une ancienne valeur à 1 couleur est relue comme unie.
 
 ### `intake`
 
@@ -161,3 +176,13 @@ Historique des prises validées. Une prise archivée garde ses logs.
 | `expected_intake_at` | text        | obligatoire, jour et heure prévus (`2026-10-14T08:20`) |
 | `created_at`         | text        | obligatoire, moment de l'appui (`2026-10-14T09:05`)    |
 | `status`             | text        | obligatoire, `"taken"` ou `"skipped"`                  |
+
+### `med_log`
+
+Prises des médicaments hors planning. Un médicament peut être pris plusieurs fois par jour.
+
+| Colonne    | Type        | Contraintes                                          |
+| ---------- | ----------- | ---------------------------------------------------- |
+| `id`       | text (UUID) | clé primaire                                         |
+| `med_id`   | text        | → `med.id`, suppression du médicament bloquée        |
+| `taken_at` | text        | obligatoire, moment de la prise (`2026-10-14T15:40`) |

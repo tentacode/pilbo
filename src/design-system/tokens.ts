@@ -31,7 +31,35 @@ export const colors = {
   successChip: "#DDF3E4",
   successInk: "#1E5A34",
   pillHighlight: "#FFFFFF",
+  grabber: "#D3CEE2",
+  stepperBorder: "#D6CFE7",
+  backdrop: "rgba(46, 42, 92, 0.4)",
+  swatchOutline: "rgba(46, 42, 92, 0.2)",
+  colorDotOutline: "rgba(46, 42, 92, 0.28)",
+  sliderOutline: "rgba(46, 42, 92, 0.14)",
 } as const;
+
+export const pillSwatches = {
+  white: "#FFFFFF",
+  yellow: "#FBE29A",
+  pink: "#F8C6DA",
+  lilac: "#D6C9F5",
+  skyBlue: "#C4DDF7",
+  mint: "#B3E8E0",
+} as const;
+
+export type PillSwatch = keyof typeof pillSwatches;
+
+export const customColorWheel = [
+  "#FFC8D9",
+  "#FED1AD",
+  "#EDD9A6",
+  "#BBE8C3",
+  "#A8EBDC",
+  "#B1E2FF",
+  "#E1D1FF",
+  "#F6CBF1",
+] as const;
 
 export const spacing = {
   tiny: 2,
@@ -61,9 +89,28 @@ export const spacing = {
   onboardingTextGap: 14,
   stepIndicatorGap: 6,
   pageEmptyTop: 28,
+  navigationButtonHorizontal: 6,
+  sheetTop: 8,
+  sheetFooterTop: 12,
+  fieldVertical: 10,
+  dialogPadding: 24,
+  fieldTop: 10,
+  fieldBottom: 8,
+  inputVertical: 4,
+  previewTop: 20,
+  previewBottom: 14,
+  swatchRingGap: 3,
+  colorPanelPadding: 14,
+  previewRowVertical: 10,
+  previewRowHorizontal: 14,
 } as const;
 
 export const radius = {
+  segmentItem: 12,
+  segment: 16,
+  shapeOption: 18,
+  previewRow: 18,
+  colorPanel: 20,
   group: 22,
   card: 24,
   largeCard: 26,
@@ -74,6 +121,8 @@ export const radius = {
 export const borderWidth = {
   thin: 1,
   regular: 1.5,
+  selected: 2,
+  thick: 3,
 } as const;
 
 export const sizes = {
@@ -86,6 +135,7 @@ export const sizes = {
   pillStackCount: 24,
   pillInList: 28,
   pillInRow: 36,
+  pillInPicker: 32,
   pillInStrip: 30,
   iconBadge: 36,
   listRowMinimumHeight: 56,
@@ -102,6 +152,23 @@ export const sizes = {
   stepIndicatorDot: 8,
   stepIndicatorCurrentDot: 24,
   pageEmptyTextMaxWidth: 300,
+  grabberWidth: 40,
+  grabberHeight: 5,
+  navigationBarMinimumHeight: 52,
+  stepperValueMinimumWidth: 40,
+  chipValueMinimumHeight: 48,
+  dialogMaximumWidth: 340,
+  dialogIconBadge: 72,
+  dialogIcon: 40,
+  inputMinimumHeight: 32,
+  pillPreview: 96,
+  pillPreviewButton: 128,
+  pillPreviewLarge: 112,
+  pillShapeOption: 40,
+  colorDot: 24,
+  sliderThumb: 36,
+  halfOptionMinimumHeight: 48,
+  shapeOptionMinimumHeight: 84,
 } as const;
 
 export const fontFamily = {
@@ -148,11 +215,19 @@ export const duration = {
 
 export const disabledOpacity = 0.5;
 
+export const pressedOpacity = 0.6;
+
 export const maximumFontScale = {
   tabLabel: 1.5,
 } as const;
 
 export const shadow = {
+  raised: {
+    shadowColor: colors.ink,
+    shadowOpacity: 0.14,
+    shadowRadius: 2,
+    shadowOffset: { width: 0, height: 1 },
+  },
   floating: {
     shadowColor: colors.ink,
     shadowOpacity: 0.07,

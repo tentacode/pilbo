@@ -29,6 +29,12 @@ describe("getTodayIntakes", () => {
       ]),
     );
     expect(morning.medQuantities[0].med.design.shape).toEqual(expect.any(String));
+    expect(morning.medQuantities.map(({ med }) => [med.name, med.detail])).toEqual(
+      expect.arrayContaining([
+        ["Lithium", "Avec le repas"],
+        ["Lamictal", ""],
+      ]),
+    );
   });
 
   it("keeps only the intakes planned on the given weekday", () => {

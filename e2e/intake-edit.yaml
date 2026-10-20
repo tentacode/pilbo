@@ -1,0 +1,47 @@
+appId: com.tentacode.pilbo
+name: An intake can be created, edited and deleted
+---
+- launchApp:
+    clearState: true
+- extendedWaitUntil:
+    visible: "Pilulier"
+    timeout: 10000
+- tapOn: "Pilulier"
+- tapOn: "Nouvelle prise"
+- tapOn: "Ajouter un médicament"
+- tapOn: "Nouveau médicament"
+- tapOn: "Nom"
+- inputText: "Zolpidem"
+- tapOn: "Ajouter à la prise"
+- assertVisible: "Quantité de Zolpidem"
+- tapOn: "Ajouter un comprimé de Zolpidem"
+- tapOn: "Enregistrer"
+- scrollUntilVisible:
+    element:
+      text: "8 h\\. Tous les jours.*Zolpidem, quantité 2"
+    centerElement: true
+- tapOn: "8 h\\. Tous les jours.*Zolpidem, quantité 2"
+- assertVisible: "Prise de 08:00"
+- tapOn: "Heure : 08:00"
+- swipe:
+    start: "42%,36%"
+    end: "42%,30%"
+    duration: 400
+- tapOn:
+    id: "PopoverDismissRegion"
+- assertNotVisible: "Heure : 08:00"
+- tapOn: "Dimanche"
+- tapOn: "Retirer un comprimé de Zolpidem"
+- tapOn: "Enregistrer"
+- scrollUntilVisible:
+    element:
+      text: ".*Lundi, mardi, mercredi, jeudi, vendredi, samedi.*Zolpidem, quantité 1"
+    centerElement: true
+- tapOn: ".*Lundi, mardi, mercredi, jeudi, vendredi, samedi.*Zolpidem, quantité 1"
+- scrollUntilVisible:
+    element:
+      text: "Supprimer cette prise"
+    centerElement: true
+- tapOn: "Supprimer cette prise"
+- tapOn: "Supprimer"
+- assertNotVisible: ".*Zolpidem.*"

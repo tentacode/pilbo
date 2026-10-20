@@ -2,6 +2,8 @@ import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
 import { useEffect } from "react";
+import { StyleSheet } from "react-native";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 import { IS_DEBUG_MODE } from "@/config/debug";
 import { useDesignSystemFonts } from "@/design-system/fonts";
@@ -38,7 +40,7 @@ export default function RootLayout() {
   }
 
   return (
-    <>
+    <GestureHandlerRootView style={styles.root}>
       <StatusBar style="dark" />
       {databaseError ? (
         <DatabaseErrorScreen error={databaseError} />
@@ -50,9 +52,17 @@ export default function RootLayout() {
           </Stack.Protected>
           <Stack.Protected guard={onboardingDone}>
             <Stack.Screen name="(tabs)" />
+            <Stack.Screen name="intake" options={{ presentation: "modal" }} />
+            <Stack.Screen name="as-needed" options={{ presentation: "modal" }} />
           </Stack.Protected>
         </Stack>
       )}
-    </>
+    </GestureHandlerRootView>
   );
 }
+
+const styles = StyleSheet.create({
+  root: {
+    flex: 1,
+  },
+});

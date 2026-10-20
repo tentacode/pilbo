@@ -1,4 +1,5 @@
 import {
+  formatAsNeededTakenAt,
   formatDuration,
   formatDurationAccessibilityLabel,
   formatEarlierIntakeAccessibilityLabel,
@@ -169,5 +170,11 @@ describe("formatValidationAnnouncement", () => {
     ["skipped", "Prise de 12:20 ignorée"],
   ] as const)("announces a %s intake", (status, expected) => {
     expect(formatValidationAnnouncement(createIntake(12, 20), status)).toBe(expected);
+  });
+});
+
+describe("formatAsNeededTakenAt", () => {
+  it("shows the time of the last intake", () => {
+    expect(formatAsNeededTakenAt("2026-10-14T09:05")).toBe("Pris à 09:05");
   });
 });

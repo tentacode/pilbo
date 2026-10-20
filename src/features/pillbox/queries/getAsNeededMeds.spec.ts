@@ -11,12 +11,8 @@ describe("getAsNeededMeds", () => {
         id: expect.any(String),
         name: "Prazépam",
         strength: "25 mg",
-        design: {
-          shape: "capsule",
-          firstHalfColor: "#F58FB8",
-          secondHalfColor: "#FFFFFF",
-          size: "medium",
-        },
+        detail: "Si besoin",
+        design: { shape: "capsule", colors: ["#F58FB8", "#FFFFFF"], size: "medium" },
         isAsNeeded: true,
       },
     ]);
