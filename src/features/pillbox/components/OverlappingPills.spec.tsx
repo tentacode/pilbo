@@ -6,8 +6,7 @@ import { OverlappingPills } from "./OverlappingPills";
 
 const DESIGN: PillDesign = {
   shape: "round",
-  color: "#D6C9F5",
-  hasScoreLine: true,
+  colors: ["#D6C9F5", "#D6C9F5"],
   size: "medium",
 };
 const LAYOUT = { pillSlotCount: 4, hasHiddenCountSlot: true };

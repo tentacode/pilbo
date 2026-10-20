@@ -15,42 +15,34 @@ export const medFixtures = {
   lithium250: {
     name: "Lithium",
     strength: "250 mg",
-    design: { shape: "round", color: LAVENDER, hasScoreLine: true, size: "medium" },
+    detail: "Avec le repas",
+    design: { shape: "round", colors: [LAVENDER, LAVENDER], size: "medium" },
   },
   lamictal50: {
     name: "Lamictal",
     strength: "50 mg",
-    design: {
-      shape: "capsule",
-      firstHalfColor: TURQUOISE,
-      secondHalfColor: TURQUOISE,
-      size: "small",
-    },
+    design: { shape: "capsule", colors: [TURQUOISE, TURQUOISE], size: "small" },
   },
   lamictal100: {
     name: "Lamictal",
     strength: "100 mg",
-    design: {
-      shape: "capsule",
-      firstHalfColor: TURQUOISE,
-      secondHalfColor: TURQUOISE,
-      size: "large",
-    },
+    design: { shape: "capsule", colors: [TURQUOISE, TURQUOISE], size: "large" },
   },
   quviviq50: {
     name: "Quviviq",
     strength: "50 mg",
-    design: { shape: "oval", color: ROSE, size: "medium" },
+    design: { shape: "softgel", colors: [ROSE, ROSE], size: "medium" },
   },
   pregabalin50: {
     name: "Prégabaline",
     strength: "50 mg",
-    design: { shape: "round", color: BUTTER, hasScoreLine: false, size: "medium" },
+    design: { shape: "oval", colors: [BUTTER, BUTTER], size: "medium" },
   },
   prazepam25: {
     name: "Prazépam",
     strength: "25 mg",
-    design: { shape: "capsule", firstHalfColor: DEEP_ROSE, secondHalfColor: WHITE, size: "medium" },
+    detail: "Si besoin",
+    design: { shape: "capsule", colors: [DEEP_ROSE, WHITE], size: "medium" },
     isAsNeeded: true,
   },
 } satisfies Record<string, NewMedRow>;

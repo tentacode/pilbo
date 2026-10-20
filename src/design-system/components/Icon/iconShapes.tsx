@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { Circle, Path } from "react-native-svg";
+import { Circle, G, Path, Rect } from "react-native-svg";
 
 export const iconShapes = {
   today: (
@@ -28,7 +28,18 @@ export const iconShapes = {
     </>
   ),
   plus: <Path d="M12 5v14M5 12h14" />,
+  minus: <Path d="M6 12h12" />,
+  close: <Path d="M6.5 6.5l11 11M17.5 6.5l-11 11" />,
   chevronRight: <Path d="M9.5 6l6 6-6 6" />,
+  chevronLeft: <Path d="M14.5 6l-6 6 6 6" />,
+  pencil: <Path d="M15.5 5.5l3 3L9 18l-4 1 1-4z" />,
+  trash: (
+    <>
+      <Path d="M4.5 7h15M9.5 7V4.5h5V7" />
+      <Path d="M6.5 7l1 12.5h9l1-12.5" />
+      <Path d="M10 11v5M14 11v5" />
+    </>
+  ),
   clock: (
     <>
       <Circle cx={12} cy={12} r={9} />
@@ -43,6 +54,16 @@ export const iconShapes = {
     </>
   ),
   check: <Path d="M5 12.5l4.5 4.5L19 7.5" />,
+  pillAlert: (
+    <>
+      <G rotation={-45} originX={9} originY={13}>
+        <Rect x={2} y={9.5} width={14} height={7} rx={3.5} />
+        <Path d="M9 9.5v7" />
+      </G>
+      <Path d="M19.5 7v8" />
+      <Path d="M19.5 19v.1" />
+    </>
+  ),
   checkCircle: (
     <>
       <Circle cx={12} cy={12} r={9} />

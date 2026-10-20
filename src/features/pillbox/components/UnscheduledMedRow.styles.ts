@@ -1,6 +1,6 @@
 import { StyleSheet } from "react-native";
 
-import { sizes, spacing } from "@/design-system/tokens";
+import { borderWidth, colors, sizes, spacing } from "@/design-system/tokens";
 
 export const styles = StyleSheet.create({
   row: {
@@ -10,6 +10,13 @@ export const styles = StyleSheet.create({
     minHeight: sizes.listRowMinimumHeight,
     paddingVertical: spacing.small,
     paddingHorizontal: spacing.large,
+  },
+  topBorder: {
+    borderTopWidth: borderWidth.regular,
+    borderTopColor: colors.separator,
+  },
+  pressed: {
+    backgroundColor: colors.separator,
   },
   texts: {
     flex: 1,

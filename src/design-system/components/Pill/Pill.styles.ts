@@ -12,10 +12,24 @@ export const pillScales: Record<PillSize, number> = {
   large: 1.15,
 };
 
-export function pillStrokes(scale: number) {
+const LARGE_DISPLAY_SIZE = 96;
+const MEDIUM_DISPLAY_SIZE = 64;
+
+export function outlineRatioFor(displaySize: number): number {
+  if (displaySize >= LARGE_DISPLAY_SIZE) {
+    return 1.15 / 1.8;
+  }
+  return displaySize >= MEDIUM_DISPLAY_SIZE ? 1.4 / 1.8 : 1;
+}
+
+export function pillStrokes(scale: number, outlineRatio = 1) {
   return {
-    outline: { stroke: colors.ink, strokeWidth: 1.8 / scale, strokeLinejoin: "round" },
-    junction: { stroke: colors.ink, strokeWidth: 1.5 / scale, fill: "none" },
+    outline: {
+      stroke: colors.ink,
+      strokeWidth: (1.8 * outlineRatio) / scale,
+      strokeLinejoin: "round",
+    },
+    junction: { stroke: colors.ink, strokeWidth: (1.5 * outlineRatio) / scale, fill: "none" },
     scoreLine: {
       stroke: colors.ink,
       strokeOpacity: 0.35,

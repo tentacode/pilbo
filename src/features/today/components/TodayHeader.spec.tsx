@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from "@testing-library/react-native";
+import { render, screen } from "@testing-library/react-native";
 import type { ReactNode } from "react";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 
@@ -17,20 +17,9 @@ const DATE = new Date(2026, 9, 4, 10, 0);
 
 describe("TodayHeader", () => {
   it("shows the title as a header and the date", async () => {
-    await render(<TodayHeader date={DATE} onAddUnscheduled={jest.fn()} />, {
-      wrapper,
-    });
+    await render(<TodayHeader date={DATE} />, { wrapper });
 
     expect(screen.getByRole("header", { name: "Aujourd'hui" })).toBeOnTheScreen();
     expect(screen.getByText("Dimanche 4 octobre")).toBeOnTheScreen();
-  });
-
-  it("calls onAddUnscheduled from the unscheduled button", async () => {
-    const onAddUnscheduled = jest.fn();
-    await render(<TodayHeader date={DATE} onAddUnscheduled={onAddUnscheduled} />, { wrapper });
-
-    await fireEvent.press(screen.getByRole("button", { name: "Ajouter une prise au besoin" }));
-
-    expect(onAddUnscheduled).toHaveBeenCalledTimes(1);
   });
 });

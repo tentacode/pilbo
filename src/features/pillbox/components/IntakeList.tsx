@@ -7,13 +7,14 @@ import { styles } from "./IntakeList.styles";
 
 type IntakeListProps = {
   intakes: Intake[];
+  onIntakePress: (intakeId: string) => void;
 };
 
-export function IntakeList({ intakes }: IntakeListProps) {
+export function IntakeList({ intakes, onIntakePress }: IntakeListProps) {
   return (
     <View style={styles.list}>
       {intakes.map((intake) => (
-        <IntakeCard key={intake.id} intake={intake} />
+        <IntakeCard key={intake.id} intake={intake} onPress={() => onIntakePress(intake.id)} />
       ))}
     </View>
   );

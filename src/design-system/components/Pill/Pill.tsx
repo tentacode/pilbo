@@ -5,8 +5,9 @@ import type { PillDesign } from "@/domain/med";
 import { sizes } from "../../tokens";
 import { CapsulePill } from "./CapsulePill";
 import { OvalPill } from "./OvalPill";
-import { PILL_CENTER, PILL_VIEWBOX, pillScales } from "./Pill.styles";
+import { outlineRatioFor, PILL_CENTER, PILL_VIEWBOX, pillScales } from "./Pill.styles";
 import { RoundPill } from "./RoundPill";
+import { SoftgelPill } from "./SoftgelPill";
 
 type PillProps = {
   design: PillDesign;
@@ -18,25 +19,27 @@ export function Pill({ design, displaySize = sizes.pillInList }: PillProps) {
   return (
     <Svg width={displaySize} height={displaySize} viewBox={PILL_VIEWBOX} accessible={false}>
       <G scale={scale} originX={PILL_CENTER} originY={PILL_CENTER}>
-        <PillShape design={design} scale={scale} />
+        <PillShape design={design} scale={scale} outlineRatio={outlineRatioFor(displaySize)} />
       </G>
     </Svg>
   );
 }
 
-function PillShape({ design, scale }: { design: PillDesign; scale: number }) {
+type PillShapeProps = {
+  design: PillDesign;
+  scale: number;
+  outlineRatio: number;
+};
+
+function PillShape({ design, ...strokeProps }: PillShapeProps) {
   switch (design.shape) {
     case "round":
-      return <RoundPill color={design.color} hasScoreLine={design.hasScoreLine} scale={scale} />;
+      return <RoundPill colors={design.colors} {...strokeProps} />;
     case "oval":
-      return <OvalPill color={design.color} scale={scale} />;
+      return <OvalPill colors={design.colors} {...strokeProps} />;
     case "capsule":
-      return (
-        <CapsulePill
-          firstHalfColor={design.firstHalfColor}
-          secondHalfColor={design.secondHalfColor}
-          scale={scale}
-        />
-      );
+      return <CapsulePill colors={design.colors} {...strokeProps} />;
+    case "softgel":
+      return <SoftgelPill colors={design.colors} {...strokeProps} />;
   }
 }

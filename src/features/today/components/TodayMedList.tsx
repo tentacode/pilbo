@@ -1,7 +1,7 @@
 import { View } from "react-native";
 
 import { sizes } from "@/design-system/tokens";
-import type { MedQuantity } from "@/domain/med";
+import { formatMedLabel, type MedQuantity } from "@/domain/med";
 
 import { IntakeMedRow } from "@/features/pillbox/components/IntakeMedRow";
 import { pillStackLayoutOf } from "@/features/pillbox/utils/pillStack";
@@ -20,7 +20,9 @@ export function TodayMedList({ medQuantities, isLate = false }: TodayMedListProp
         <View
           key={med.id}
           accessible
-          accessibilityLabel={`${med.name} ${med.strength}, quantité ${quantity}`}
+          accessibilityLabel={[formatMedLabel(med), med.detail, `quantité ${quantity}`]
+            .filter(Boolean)
+            .join(", ")}
           style={[styles.row, isLate && styles.lateRow]}
         >
           <IntakeMedRow
@@ -28,6 +30,7 @@ export function TodayMedList({ medQuantities, isLate = false }: TodayMedListProp
             quantity={quantity}
             pillStackLayout={pillStackLayout}
             pillSize={sizes.pillInRow}
+            isDetailShown
           />
         </View>
       ))}

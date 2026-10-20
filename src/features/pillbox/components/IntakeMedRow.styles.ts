@@ -10,5 +10,6 @@ export const styles = StyleSheet.create({
   },
   name: {
     flex: 1,
+    gap: spacing.tiny,
   },
 });

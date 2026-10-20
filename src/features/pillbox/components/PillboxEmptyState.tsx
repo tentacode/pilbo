@@ -6,7 +6,12 @@ import { Text } from "@/design-system/components/Text/Text";
 import { PillboxEmptyIllustration } from "./PillboxEmptyIllustration";
 import { styles } from "./PillboxEmptyState.styles";
 
-export function PillboxEmptyState() {
+type PillboxEmptyStateProps = {
+  onCreateIntake: () => void;
+  onAddAsNeededMed: () => void;
+};
+
+export function PillboxEmptyState({ onCreateIntake, onAddAsNeededMed }: PillboxEmptyStateProps) {
   return (
     <View style={styles.container}>
       <PillboxEmptyIllustration />
@@ -17,8 +22,12 @@ export function PillboxEmptyState() {
         Une prise regroupe une heure, des jours et les médicaments à prendre ensemble.
       </Text>
       <View style={styles.actions}>
-        <Button label="Créer une prise" icon="plus" onPress={() => {}} />
-        <Button label="Ajouter un médicament hors planning" variant="text" onPress={() => {}} />
+        <Button label="Créer une prise" icon="plus" onPress={onCreateIntake} />
+        <Button
+          label="Ajouter un médicament hors planning"
+          variant="text"
+          onPress={onAddAsNeededMed}
+        />
       </View>
     </View>
   );

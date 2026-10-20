@@ -2,33 +2,33 @@ import { Pressable, View } from "react-native";
 
 import { Icon } from "@/design-system/components/Icon/Icon";
 import { Pill } from "@/design-system/components/Pill/Pill";
-import { Text } from "@/design-system/components/Text/Text";
 import { colors, sizes } from "@/design-system/tokens";
-import type { Med } from "@/domain/med";
+import { formatMedLabel, type Med } from "@/domain/med";
 
+import { MedName } from "./MedName";
 import { styles } from "./UnscheduledMedRow.styles";
-
-const AS_NEEDED = "Si besoin";
 
 type UnscheduledMedRowProps = {
   med: Med;
+  hasTopBorder: boolean;
+  onPress: () => void;
 };
 
-export function UnscheduledMedRow({ med }: UnscheduledMedRowProps) {
+export function UnscheduledMedRow({ med, hasTopBorder, onPress }: UnscheduledMedRowProps) {
   return (
     <Pressable
       accessibilityRole="button"
-      accessibilityLabel={`${med.name} ${med.strength}, ${AS_NEEDED}`}
-      style={styles.row}
+      accessibilityLabel={[formatMedLabel(med), med.detail].filter(Boolean).join(", ")}
+      onPress={onPress}
+      style={({ pressed }) => [
+        styles.row,
+        hasTopBorder && styles.topBorder,
+        pressed && styles.pressed,
+      ]}
     >
       <Pill design={med.design} displaySize={sizes.pillInRow} />
       <View style={styles.texts}>
-        <Text variant="bodyBold">
-          {med.name} <Text>{med.strength}</Text>
-        </Text>
-        <Text variant="small" tone="secondary">
-          {AS_NEEDED}
-        </Text>
+        <MedName med={med} />
       </View>
       <Icon name="chevronRight" color={colors.inkSecondary} />
     </Pressable>

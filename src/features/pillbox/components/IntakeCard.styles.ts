@@ -10,6 +10,9 @@ export const styles = StyleSheet.create({
     paddingHorizontal: spacing.large,
     paddingBottom: spacing.large,
   },
+  pressed: {
+    backgroundColor: colors.separator,
+  },
   header: {
     flexDirection: "row",
     alignItems: "center",

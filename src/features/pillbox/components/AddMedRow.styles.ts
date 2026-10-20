@@ -10,8 +10,13 @@ export const styles = StyleSheet.create({
     minHeight: sizes.listRowMinimumHeight,
     paddingVertical: spacing.small,
     paddingHorizontal: spacing.large,
+  },
+  topBorder: {
     borderTopWidth: borderWidth.regular,
     borderTopColor: colors.separator,
+  },
+  pressed: {
+    backgroundColor: colors.separator,
   },
   iconBadge: {
     width: sizes.iconBadge,

@@ -1,0 +1,31 @@
+appId: com.tentacode.pilbo
+name: An as needed med can be taken and cancelled from today
+---
+- launchApp:
+    clearState: true
+- extendedWaitUntil:
+    visible: "Pilulier"
+    timeout: 10000
+- tapOn: "Pilulier"
+- scrollUntilVisible:
+    element:
+      text: "Ajouter un médicament"
+    centerElement: true
+- tapOn: "Ajouter un médicament"
+- tapOn: "Ajouter Lithium 250 mg, Avec le repas"
+- scrollUntilVisible:
+    element:
+      text: "Lithium 250 mg, Avec le repas"
+- tapOn: "Aujourd'hui.*"
+- scrollUntilVisible:
+    element:
+      text: "Prendre Lithium 250 mg"
+    centerElement: true
+- tapOn: "Prendre Lithium 250 mg"
+- scrollUntilVisible:
+    element:
+      text: "Pris à \\d\\d:\\d\\d"
+    centerElement: true
+- tapOn: "Annuler les prises de Lithium 250 mg aujourd’hui"
+- assertNotVisible: "Pris à \\d\\d:\\d\\d"
+- assertVisible: "Prendre Lithium 250 mg"

@@ -1,6 +1,6 @@
 import { formatIntakeTime, type Intake } from "@/domain/intake";
 import type { IntakeLogStatus } from "@/domain/intakeLog";
-import type { MedQuantity } from "@/domain/med";
+import { formatMedLabel, type MedQuantity } from "@/domain/med";
 
 import { weekdayOf } from "./computeTodayIntakes";
 import type { FormattedText, TodayIntake } from "./todayTypes";
@@ -29,6 +29,8 @@ const MONTH_NAMES = [
   "novembre",
   "décembre",
 ] as const;
+
+const TIME_START_INDEX = "2026-10-14T".length;
 
 function pluralize(count: number, singular: string, plural: string): string {
   return `${count} ${count >= 2 ? plural : singular}`;
@@ -103,7 +105,7 @@ export function formatIntakeStatus({
 export function formatMedNames(medQuantities: MedQuantity[]): string {
   return medQuantities
     .map(({ med, quantity }) => {
-      const name = `${med.name} ${med.strength}`;
+      const name = formatMedLabel(med);
       return quantity >= 2 ? `${name} (${quantity} ×)` : name;
     })
     .join(" · ");
@@ -111,7 +113,7 @@ export function formatMedNames(medQuantities: MedQuantity[]): string {
 
 export function formatEarlierIntakeAccessibilityLabel(todayIntake: TodayIntake): string {
   const meds = todayIntake.intake.medQuantities.map(
-    ({ med, quantity }) => `${med.name} ${med.strength}, quantité ${quantity}`,
+    ({ med, quantity }) => `${formatMedLabel(med)}, quantité ${quantity}`,
   );
   return [
     formatIntakeTime(todayIntake.intake.time),
@@ -135,4 +137,8 @@ export function formatSkipAccessibilityLabel(intake: Intake): string {
 export function formatValidationAnnouncement(intake: Intake, status: IntakeLogStatus): string {
   const time = formatIntakeTime(intake.time);
   return status === "taken" ? `Prise de ${time} validée` : `Prise de ${time} ignorée`;
+}
+
+export function formatAsNeededTakenAt(takenAt: string): string {
+  return `Pris à ${takenAt.slice(TIME_START_INDEX)}`;
 }

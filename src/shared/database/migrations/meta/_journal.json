@@ -15,6 +15,13 @@
       "when": 1791975249192,
       "tag": "0001_living_hellfire_club",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1792499990721,
+      "tag": "0002_overrated_eternals",
+      "breakpoints": true
     }
   ]
 }

@@ -1,19 +1,23 @@
-import { Ellipse, G } from "react-native-svg";
+import { G, Path, Rect } from "react-native-svg";
 
-import { colors } from "../../tokens";
 import { PILL_CENTER, PILL_ROTATION, pillStrokes } from "./Pill.styles";
 
 type OvalPillProps = {
-  color: string;
+  colors: [string, string];
   scale: number;
+  outlineRatio: number;
 };
 
-export function OvalPill({ color, scale }: OvalPillProps) {
-  const strokes = pillStrokes(scale);
+export function OvalPill({ colors, scale, outlineRatio }: OvalPillProps) {
+  const strokes = pillStrokes(scale, outlineRatio);
+  const [firstHalfColor, secondHalfColor] = colors;
   return (
     <G rotation={PILL_ROTATION} originX={PILL_CENTER} originY={PILL_CENTER}>
-      <Ellipse cx={20} cy={20} rx={12} ry={8.5} fill={color} {...strokes.outline} />
-      <Ellipse cx={17.8} cy={15.5} rx={3.4} ry={1.7} fill={colors.pillHighlight} opacity={0.8} />
+      <Rect x={5} y={13} width={30} height={14} rx={7} fill={secondHalfColor} />
+      <Path d="M20 13h-8a7 7 0 0 0 0 14h8z" fill={firstHalfColor} />
+      <Rect x={5} y={13} width={30} height={14} rx={7} fill="none" {...strokes.outline} />
+      <Path d="M20 16v8" {...strokes.scoreLine} />
+      <Path d="M10.5 17.3h5" {...strokes.highlight} />
     </G>
   );
 }

@@ -3,13 +3,14 @@ import { G, Path, Rect } from "react-native-svg";
 import { PILL_CENTER, PILL_ROTATION, pillStrokes } from "./Pill.styles";
 
 type CapsulePillProps = {
-  firstHalfColor: string;
-  secondHalfColor: string;
+  colors: [string, string];
   scale: number;
+  outlineRatio: number;
 };
 
-export function CapsulePill({ firstHalfColor, secondHalfColor, scale }: CapsulePillProps) {
-  const strokes = pillStrokes(scale);
+export function CapsulePill({ colors, scale, outlineRatio }: CapsulePillProps) {
+  const strokes = pillStrokes(scale, outlineRatio);
+  const [firstHalfColor, secondHalfColor] = colors;
   return (
     <G rotation={PILL_ROTATION} originX={PILL_CENTER} originY={PILL_CENTER}>
       <Path d="M20 13.5h-7.5a6.5 6.5 0 0 0 0 13H20z" fill={firstHalfColor} />

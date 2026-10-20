@@ -15,6 +15,7 @@ export const medTable = sqliteTable("med", {
   id: text("id").primaryKey().$defaultFn(generateId),
   name: text("name").notNull(),
   strength: text("strength").notNull(),
+  detail: text("detail").notNull().default(""),
   design: text("design", { mode: "json" }).$type<PillDesign>().notNull(),
   isAsNeeded: integer("is_as_needed", { mode: "boolean" }).notNull().default(false),
 });
@@ -52,6 +53,14 @@ export const intakeLogTable = sqliteTable("intake_log", {
   status: text("status").$type<IntakeLogStatus>().notNull(),
 });
 
+export const medLogTable = sqliteTable("med_log", {
+  id: text("id").primaryKey().$defaultFn(generateId),
+  medId: text("med_id")
+    .notNull()
+    .references(() => medTable.id, { onDelete: "restrict" }),
+  takenAt: text("taken_at").notNull(),
+});
+
 export type MedRow = typeof medTable.$inferSelect;
 export type NewMedRow = typeof medTable.$inferInsert;
 export type IntakeRow = typeof intakeTable.$inferSelect;
@@ -60,3 +69,5 @@ export type IntakeMedRow = typeof intakeMedTable.$inferSelect;
 export type NewIntakeMedRow = typeof intakeMedTable.$inferInsert;
 export type IntakeLogRow = typeof intakeLogTable.$inferSelect;
 export type NewIntakeLogRow = typeof intakeLogTable.$inferInsert;
+export type MedLogRow = typeof medLogTable.$inferSelect;
+export type NewMedLogRow = typeof medLogTable.$inferInsert;

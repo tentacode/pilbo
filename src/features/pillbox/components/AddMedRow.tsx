@@ -5,14 +5,32 @@ import { Text } from "@/design-system/components/Text/Text";
 
 import { styles } from "./AddMedRow.styles";
 
-export function AddMedRow() {
+type AddMedRowProps = {
+  onPress: () => void;
+  label?: string;
+  hasTopBorder?: boolean;
+};
+
+export function AddMedRow({
+  onPress,
+  label = "Ajouter un médicament",
+  hasTopBorder = true,
+}: AddMedRowProps) {
   return (
-    <Pressable accessibilityRole="button" style={styles.row}>
+    <Pressable
+      accessibilityRole="button"
+      onPress={onPress}
+      style={({ pressed }) => [
+        styles.row,
+        hasTopBorder && styles.topBorder,
+        pressed && styles.pressed,
+      ]}
+    >
       <View style={styles.iconBadge}>
         <Icon name="plus" />
       </View>
       <Text variant="bodyBold" style={styles.label}>
-        Ajouter un médicament
+        {label}
       </Text>
     </Pressable>
   );

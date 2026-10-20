@@ -15,6 +15,7 @@ type TodayIntakeMedRecord = {
   medId: string;
   medName: string;
   medStrength: string;
+  medDetail: string;
   medDesign: string;
   medIsAsNeeded: number;
   quantity: number;
@@ -31,6 +32,7 @@ export function getTodayIntakes(database: Database, weekday: Weekday): Intake[] 
       ${medTable.id} AS medId,
       ${medTable.name} AS medName,
       ${medTable.strength} AS medStrength,
+      ${medTable.detail} AS medDetail,
       ${medTable.design} AS medDesign,
       ${medTable.isAsNeeded} AS medIsAsNeeded,
       ${intakeMedTable.quantity} AS quantity
@@ -58,6 +60,7 @@ export function getTodayIntakes(database: Database, weekday: Weekday): Intake[] 
         id: record.medId,
         name: record.medName,
         strength: record.medStrength,
+        detail: record.medDetail,
         design: record.medDesign,
         isAsNeeded: record.medIsAsNeeded,
       }),

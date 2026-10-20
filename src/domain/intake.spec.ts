@@ -6,7 +6,8 @@ function createMed(name: string, strength: string): Med {
     id: `${name}-${strength}`,
     name,
     strength,
-    design: { shape: "oval", color: "#FFFFFF", size: "medium" },
+    detail: "",
+    design: { shape: "oval", colors: ["#FFFFFF", "#FFFFFF"], size: "medium" },
     isAsNeeded: false,
   };
 }

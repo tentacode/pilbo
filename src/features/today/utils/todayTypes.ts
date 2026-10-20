@@ -1,4 +1,5 @@
 import type { Intake } from "@/domain/intake";
+import type { Med } from "@/domain/med";
 
 export type IntakeStatus = "late" | "next" | "later" | "taken" | "skipped";
 
@@ -24,4 +25,9 @@ export type TodaySections = {
 export type FormattedText = {
   text: string;
   accessibilityLabel: string;
+};
+
+export type AsNeededMedOfDay = {
+  med: Med;
+  lastTakenAt?: string;
 };
