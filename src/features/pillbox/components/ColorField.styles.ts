@@ -24,4 +24,7 @@ export const styles = StyleSheet.create({
     gap: spacing.extraSmall,
     marginTop: spacing.large,
   },
+  customColorButton: {
+    marginTop: spacing.customColorButtonTop,
+  },
 });

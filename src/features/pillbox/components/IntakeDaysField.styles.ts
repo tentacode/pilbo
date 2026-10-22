@@ -4,8 +4,13 @@ import { spacing } from "@/design-system/tokens";
 
 export const styles = StyleSheet.create({
   days: {
-    flexDirection: "row",
-    gap: spacing.buttonIconGap,
+    gap: spacing.dayButtonGap,
     marginTop: spacing.small,
+  },
+  row: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "center",
+    gap: spacing.dayButtonGap,
   },
 });

@@ -18,7 +18,6 @@ export const styles = StyleSheet.create({
   },
   color: {
     flex: 1,
-    overflow: "hidden",
     borderRadius: radius.round,
     borderWidth: borderWidth.thin,
     borderColor: colors.swatchOutline,

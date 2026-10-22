@@ -70,7 +70,7 @@ export function AppearanceScreen({ previewContext }: AppearanceScreenProps) {
         <ColorField
           design={design}
           activeHalf={colorEditing.activeHalf}
-          isCustomColorSelected={colorEditing.isCustomColorPanelOpen}
+          isCustomColorPanelOpen={colorEditing.isCustomColorPanelOpen}
           onActiveHalfChange={colorEditing.selectHalf}
           onColorChange={colorEditing.selectSwatchColor}
           onCustomColorPress={openCustomColorPanel}
