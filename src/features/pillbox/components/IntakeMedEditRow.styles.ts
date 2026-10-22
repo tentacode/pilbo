@@ -11,6 +11,18 @@ export const styles = StyleSheet.create({
     paddingVertical: spacing.small,
     paddingRight: spacing.large,
   },
+  stackedRow: {
+    flexDirection: "column",
+    alignItems: "stretch",
+    gap: 0,
+    paddingBottom: spacing.medium,
+  },
+  stackedMedButton: {
+    flex: 0,
+  },
+  stackedStepper: {
+    alignSelf: "flex-end",
+  },
   topBorder: {
     borderTopWidth: borderWidth.regular,
     borderTopColor: colors.separator,

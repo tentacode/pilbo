@@ -122,9 +122,12 @@ describe("AppearanceScreen", () => {
   it("selects the other color choice", async () => {
     await renderAsNeededAppearance();
 
-    await fireEvent.press(screen.getByRole("radio", { name: "Autre couleur" }));
+    expect(screen.getByRole("button", { name: "Autre couleur" })).toBeCollapsed();
 
-    expect(screen.getByRole("radio", { name: "Autre couleur" })).toBeSelected();
+    await fireEvent.press(screen.getByRole("button", { name: "Autre couleur" }));
+
+    expect(screen.getByRole("button", { name: "Autre couleur" })).toBeSelected();
+    expect(screen.getByRole("button", { name: "Autre couleur" })).toBeExpanded();
     expect(screen.getByRole("radio", { name: "Lilas" })).not.toBeSelected();
   });
 
@@ -137,13 +140,13 @@ describe("AppearanceScreen", () => {
   it("applies a custom color to the selected half with the sliders", async () => {
     await renderAsNeededAppearance();
     await fireEvent.press(screen.getByRole("radio", { name: "Couleur 2 : lilas" }));
-    await fireEvent.press(screen.getByRole("radio", { name: "Autre couleur" }));
+    await fireEvent.press(screen.getByRole("button", { name: "Autre couleur" }));
 
     const intensity = screen.getByRole("adjustable", { name: "Intensité, du clair au foncé" });
     await fireEvent(intensity, "accessibilityAction", { nativeEvent: { actionName: "increment" } });
 
     expect(previewLabel()).toBe("Aperçu : rond, moyenne, lilas et couleur personnalisée");
-    expect(screen.getByRole("radio", { name: "Autre couleur" })).toBeSelected();
+    expect(screen.getByRole("button", { name: "Autre couleur" })).toBeSelected();
   });
 
   it("shows the sliders for a color outside the swatches", async () => {
@@ -168,12 +171,12 @@ describe("AppearanceScreen", () => {
 
   it("keeps the sliders open when switching to the other half", async () => {
     await renderAsNeededAppearance();
-    await fireEvent.press(screen.getByRole("radio", { name: "Autre couleur" }));
+    await fireEvent.press(screen.getByRole("button", { name: "Autre couleur" }));
 
     await fireEvent.press(screen.getByRole("radio", { name: "Couleur 2 : lilas" }));
 
     expect(screen.getByRole("adjustable", { name: "Teinte" })).toBeOnTheScreen();
-    expect(screen.getByRole("radio", { name: "Autre couleur" })).toBeSelected();
+    expect(screen.getByRole("button", { name: "Autre couleur" })).toBeSelected();
   });
 
   it("keeps the sliders closed when switching to a custom colored half", async () => {
@@ -196,11 +199,13 @@ describe("AppearanceScreen", () => {
     await fireEvent.press(screen.getByRole("radio", { name: /^Couleur 2/ }));
 
     expect(screen.queryByRole("adjustable", { name: "Teinte" })).not.toBeOnTheScreen();
+    expect(screen.getByRole("button", { name: "Autre couleur" })).toBeSelected();
+    expect(screen.getByRole("button", { name: "Autre couleur" })).toBeCollapsed();
   });
 
   it("closes the sliders when choosing a swatch", async () => {
     await renderAsNeededAppearance();
-    await fireEvent.press(screen.getByRole("radio", { name: "Autre couleur" }));
+    await fireEvent.press(screen.getByRole("button", { name: "Autre couleur" }));
 
     await fireEvent.press(screen.getByRole("radio", { name: "Menthe" }));
 

@@ -3,18 +3,18 @@ import { View } from "react-native";
 
 import { ColorSwatch } from "@/design-system/components/ColorSwatch/ColorSwatch";
 import { Text } from "@/design-system/components/Text/Text";
-import { customColorWheel, type PillSwatch, pillSwatches } from "@/design-system/tokens";
+import { type PillSwatch, pillSwatches } from "@/design-system/tokens";
 import type { PillDesign } from "@/domain/med";
 
 import { findSwatch, formatColorTitle } from "@/features/pillbox/utils/formatters";
 import { ColorHalfOption } from "./ColorHalfOption";
+import { CustomColorButton } from "./CustomColorButton";
 import { styles } from "./ColorField.styles";
 
 export type ColorHalf = 0 | 1;
 
 const HALVES: ColorHalf[] = [0, 1];
 const SWATCHES = Object.keys(pillSwatches) as PillSwatch[];
-const CUSTOM_COLOR_LABEL = "Autre couleur";
 
 function halfLabel(half: ColorHalf): string {
   return `Couleur ${half + 1}`;
@@ -23,7 +23,7 @@ function halfLabel(half: ColorHalf): string {
 type ColorFieldProps = {
   design: PillDesign;
   activeHalf: ColorHalf;
-  isCustomColorSelected: boolean;
+  isCustomColorPanelOpen: boolean;
   onActiveHalfChange: (half: ColorHalf) => void;
   onColorChange: (color: string) => void;
   onCustomColorPress: () => void;
@@ -33,14 +33,14 @@ type ColorFieldProps = {
 export function ColorField({
   design,
   activeHalf,
-  isCustomColorSelected,
+  isCustomColorPanelOpen,
   onActiveHalfChange,
   onColorChange,
   onCustomColorPress,
   children,
 }: ColorFieldProps) {
   const activeColor = design.colors[activeHalf];
-  const activeSwatch = isCustomColorSelected ? undefined : findSwatch(activeColor);
+  const activeSwatch = isCustomColorPanelOpen ? undefined : findSwatch(activeColor);
   return (
     <View>
       <View style={styles.labelRow}>
@@ -75,15 +75,17 @@ export function ColorField({
           <ColorSwatch
             key={swatch}
             label={formatColorTitle(pillSwatches[swatch])}
-            colors={[pillSwatches[swatch]]}
+            color={pillSwatches[swatch]}
             isSelected={swatch === activeSwatch}
             onPress={() => onColorChange(pillSwatches[swatch])}
           />
         ))}
-        <ColorSwatch
-          label={CUSTOM_COLOR_LABEL}
-          colors={customColorWheel}
+      </View>
+      <View style={styles.customColorButton}>
+        <CustomColorButton
+          color={activeColor}
           isSelected={activeSwatch === undefined}
+          isExpanded={isCustomColorPanelOpen}
           onPress={onCustomColorPress}
         />
       </View>

@@ -51,6 +51,7 @@ Basically we are looking for a proof of concept, in doubt ask if it's in the sco
 
 ### iOS constraints to keep in mind
 
+- I have a very small phone (iPhone 12 mini), so design should be responsive and work well on this phone.
 - Max 64 pending local notifications at the same time: use daily repeating reminders (1 slot each), rescheduled when an intake is validated.
 - Silent mode: no sound, but vibration if "Play Haptics in Silent Mode" is enabled.
 - Free Apple account: the installed app expires every 7 days (reinstall from Xcode).

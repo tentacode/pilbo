@@ -103,6 +103,8 @@ export const spacing = {
   colorPanelPadding: 14,
   previewRowVertical: 10,
   previewRowHorizontal: 14,
+  dayButtonGap: 6,
+  customColorButtonTop: 12,
 } as const;
 
 export const radius = {
@@ -169,6 +171,9 @@ export const sizes = {
   sliderThumb: 36,
   halfOptionMinimumHeight: 48,
   shapeOptionMinimumHeight: 84,
+  dayButton: 44,
+  medTextMinimumWidth: 120,
+  colorWheelCenter: 18,
 } as const;
 
 export const fontFamily = {

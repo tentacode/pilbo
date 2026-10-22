@@ -84,6 +84,7 @@ Détails : [`docs/database.md`](database.md).
 - Cibles tactiles ≥ 44 pt (`sizes.touchTarget`).
 - Dynamic Type : pas de hauteur fixe sur un conteneur de texte (`minHeight`). Plafond (`maximumFontScale`) seulement si indispensable (libellés d'onglets).
 - Contraste AA vérifié pour toutes les paires de couleurs des tokens.
+- Petits écrans et Dynamic Type : quand une ligne ne tient pas, changer de disposition avec `useFitsInWidth` (mesure `onLayout`) plutôt que tasser ou déformer les éléments.
 
 ## Icône de l'app
 

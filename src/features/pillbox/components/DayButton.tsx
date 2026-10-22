@@ -10,10 +10,11 @@ import { styles } from "./DayButton.styles";
 type DayButtonProps = {
   day: Weekday;
   isSelected: boolean;
+  diameter: number;
   onPress: () => void;
 };
 
-export function DayButton({ day, isSelected, onPress }: DayButtonProps) {
+export function DayButton({ day, isSelected, diameter, onPress }: DayButtonProps) {
   return (
     <Pressable
       accessibilityRole="button"
@@ -21,7 +22,7 @@ export function DayButton({ day, isSelected, onPress }: DayButtonProps) {
       accessibilityState={{ selected: isSelected }}
       onPressIn={playPressHaptic}
       onPress={onPress}
-      style={[styles.button, isSelected && styles.selected]}
+      style={[styles.button, { width: diameter, height: diameter }, isSelected && styles.selected]}
     >
       <Text variant="smallBold" tone={isSelected ? "onInk" : "primary"} style={styles.label}>
         {formatDayInitials(day)}
