@@ -4,16 +4,22 @@ import { View } from "react-native";
 import { OnboardingPager } from "./OnboardingPager";
 import { styles } from "./OnboardingFooter.styles";
 
-type OnboardingFooterProps = {
+type OnboardingProgress = {
   currentIndex: number;
   count: number;
+};
+
+type OnboardingFooterProps = {
+  progress?: OnboardingProgress;
   children: ReactNode;
 };
 
-export function OnboardingFooter({ currentIndex, count, children }: OnboardingFooterProps) {
+export function OnboardingFooter({ progress, children }: OnboardingFooterProps) {
   return (
     <View style={styles.footer}>
-      <OnboardingPager currentIndex={currentIndex} count={count} />
+      {progress ? (
+        <OnboardingPager currentIndex={progress.currentIndex} count={progress.count} />
+      ) : null}
       <View style={styles.actions}>{children}</View>
     </View>
   );

@@ -1,22 +1,24 @@
-import { render, screen } from "@testing-library/react-native";
+import { fireEvent, render, screen } from "@testing-library/react-native";
+import { getLocales } from "expo-localization";
 import type { ReactNode } from "react";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 
+import { DEBUG_MODE_PRESS_COUNT } from "./hooks/useDebugModeToggle";
 import { SettingsScreen } from "./SettingsScreen";
+import { useSettingsStore } from "./store/settingsStore";
 
-let mockIsDebugMode = false;
-
-jest.mock("@/config/debug", () => ({
-  get IS_DEBUG_MODE() {
-    return mockIsDebugMode;
-  },
-}));
 jest.mock("@/shared/database/database", () => ({ database: {} }));
 jest.mock("@/features/notifications/hooks/useNotificationPermission", () => ({
   useNotificationPermission: () => ({ isGranted: false, request: jest.fn() }),
 }));
+jest.mock("expo-router", () => ({ router: { push: jest.fn() } }));
+jest.mock("expo-localization", () => ({ getLocales: jest.fn() }));
+jest.mock("expo-application", () => ({
+  nativeApplicationVersion: "1.0.0",
+  nativeBuildVersion: "12",
+}));
 
-const DEBUG_BUTTON_NAMES = ["Simuler une erreur", "Vider la base", "Réinitialiser la base"];
+const SECTION_TITLES = ["Rappels", "Stock", "Langue", "Vos données", "À propos"];
 
 const safeAreaMetrics = {
   frame: { x: 0, y: 0, width: 0, height: 0 },
@@ -27,36 +29,62 @@ function wrapper({ children }: { children: ReactNode }) {
   return <SafeAreaProvider initialMetrics={safeAreaMetrics}>{children}</SafeAreaProvider>;
 }
 
+async function pressVersion(times: number) {
+  for (let index = 0; index < times; index += 1) {
+    await fireEvent.press(screen.getByLabelText("Version 1.0.0 (12)"));
+  }
+}
+
 describe("SettingsScreen", () => {
-  it.each([true, false])(
-    "always shows the notification and onboarding buttons (debug mode: %s)",
-    async (isDebugMode) => {
-      mockIsDebugMode = isDebugMode;
+  beforeEach(() => {
+    useSettingsStore.setState({ language: null });
+    jest
+      .mocked(getLocales)
+      .mockReturnValue([{ languageCode: "fr" } as ReturnType<typeof getLocales>[0]]);
+  });
 
-      await render(<SettingsScreen />, { wrapper });
-
-      expect(screen.getByRole("button", { name: "Accepter les notifications" })).toBeOnTheScreen();
-      expect(screen.getByRole("button", { name: "Refaire l'onboarding" })).toBeOnTheScreen();
-    },
-  );
-
-  it("shows the debug buttons when debug mode is enabled", async () => {
-    mockIsDebugMode = true;
-
+  it("shows every section", async () => {
     await render(<SettingsScreen />, { wrapper });
 
-    for (const name of DEBUG_BUTTON_NAMES) {
-      expect(screen.getByRole("button", { name })).toBeOnTheScreen();
+    for (const title of SECTION_TITLES) {
+      expect(screen.getByRole("header", { name: title })).toBeOnTheScreen();
     }
   });
 
-  it("hides the debug buttons when debug mode is disabled", async () => {
-    mockIsDebugMode = false;
-
+  it("shows the title in the app language", async () => {
     await render(<SettingsScreen />, { wrapper });
 
-    for (const name of DEBUG_BUTTON_NAMES) {
-      expect(screen.queryByRole("button", { name })).not.toBeOnTheScreen();
-    }
+    expect(screen.getByRole("header", { name: "Réglages" })).toBeOnTheScreen();
+  });
+
+  it("translates the title as soon as the language changes", async () => {
+    await render(<SettingsScreen />, { wrapper });
+
+    await fireEvent.press(screen.getByRole("radio", { name: "English" }));
+
+    expect(screen.getByRole("header", { name: "Settings" })).toBeOnTheScreen();
+  });
+
+  it("hides the debug section by default", async () => {
+    await render(<SettingsScreen />, { wrapper });
+
+    expect(screen.queryByRole("header", { name: "Debug" })).not.toBeOnTheScreen();
+  });
+
+  it("toggles the debug section with 10 presses on the version", async () => {
+    await render(<SettingsScreen />, { wrapper });
+
+    await pressVersion(DEBUG_MODE_PRESS_COUNT);
+
+    expect(screen.getByRole("header", { name: "Debug" })).toBeOnTheScreen();
+    expect(screen.getByRole("button", { name: "Supprimer les données" })).toBeOnTheScreen();
+    expect(
+      screen.getByRole("button", { name: "Réinitialiser avec des données de test" }),
+    ).toBeOnTheScreen();
+    expect(screen.getByRole("button", { name: "Simuler une erreur" })).toBeOnTheScreen();
+
+    await pressVersion(DEBUG_MODE_PRESS_COUNT);
+
+    expect(screen.queryByRole("header", { name: "Debug" })).not.toBeOnTheScreen();
   });
 });

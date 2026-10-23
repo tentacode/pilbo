@@ -34,9 +34,9 @@ sql.d.ts                // import des fichiers .sql (migrations)
 
 - La base vit dans le dossier par défaut d'`expo-sqlite`.
 - Une réinstallation depuis Xcode conserve les données. Pour repartir de zéro : supprimer l'app.
-- Réglages (debug uniquement, `IS_DEBUG_MODE`) :
-  - « Vider la base » : supprime toutes les données et réaffiche l'onboarding. Pas de seed au lancement suivant.
-  - « Réinitialiser la base » : vide puis réinsère les fixtures, onboarding marqué comme fait.
+- Réglages, section « Debug » (10 appuis sur « Version », state local non persisté, indépendant de `EXPO_PUBLIC_DEBUG_MODE`) :
+  - « Supprimer les données » : après confirmation, supprime toutes les données et réaffiche l'onboarding. Pas de seed au lancement suivant.
+  - « Réinitialiser avec des données de test » : après confirmation, vide puis réinsère les fixtures, onboarding marqué comme fait.
   - Les écrans relisent la base au focus de l'onglet.
 - Le seed est temporaire (debug), il disparaîtra quand on pourra créer des prises dans l'app.
 

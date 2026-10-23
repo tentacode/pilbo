@@ -10,6 +10,9 @@ export const styles = StyleSheet.create({
     borderRadius: radius.segment,
     backgroundColor: colors.fill,
   },
+  stackedControl: {
+    flexDirection: "column",
+  },
   option: {
     flex: 1,
     minHeight: sizes.touchTarget,
@@ -18,11 +21,32 @@ export const styles = StyleSheet.create({
     paddingHorizontal: spacing.extraSmall,
     borderRadius: radius.segmentItem,
   },
+  stackedOption: {
+    flex: 0,
+    paddingVertical: spacing.small,
+  },
   selectedOption: {
     ...shadow.raised,
     backgroundColor: colors.surface,
   },
   label: {
     textAlign: "center",
+  },
+  measureContainer: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    width: sizes.unconstrainedMeasureWidth,
+    flexDirection: "row",
+    alignItems: "flex-start",
+    opacity: 0,
+  },
+  measureRow: {
+    flexDirection: "row",
+    gap: spacing.extraSmall,
+    padding: spacing.extraSmall,
+  },
+  measureOption: {
+    paddingHorizontal: spacing.extraSmall,
   },
 });

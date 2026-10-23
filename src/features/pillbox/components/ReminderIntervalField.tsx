@@ -1,12 +1,7 @@
 import { SegmentedControl } from "@/design-system/components/SegmentedControl/SegmentedControl";
 
+import { REMINDER_INTERVAL_OPTIONS } from "../utils/reminderIntervalOptions";
 import { FormSection } from "./FormSection";
-
-const REMINDER_INTERVAL_OPTIONS = [5, 10, 15, 30].map((minutes) => ({
-  value: minutes,
-  label: `${minutes} min`,
-  accessibilityLabel: `${minutes} minutes`,
-}));
 
 type ReminderIntervalFieldProps = {
   minutes: number;

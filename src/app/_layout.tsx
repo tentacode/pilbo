@@ -52,6 +52,7 @@ export default function RootLayout() {
           </Stack.Protected>
           <Stack.Protected guard={onboardingDone}>
             <Stack.Screen name="(tabs)" />
+            <Stack.Screen name="not-medical" />
             <Stack.Screen name="intake" options={{ presentation: "modal" }} />
             <Stack.Screen name="as-needed" options={{ presentation: "modal" }} />
           </Stack.Protected>

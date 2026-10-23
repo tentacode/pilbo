@@ -15,19 +15,21 @@ export type IntakeDraft = {
 };
 
 const NEW_INTAKE_TIME = { hour: 8, minute: 0 };
-const NEW_INTAKE_REMINDER_INTERVAL_MINUTES = 10;
 
 function isEveryDay(days: Weekday[]): boolean {
   return WEEKDAYS.every((day) => days.includes(day));
 }
 
-export function createIntakeDraft(intake?: Intake): IntakeDraft {
+export function createIntakeDraft(
+  defaultReminderIntervalMinutes: number,
+  intake?: Intake,
+): IntakeDraft {
   if (intake === undefined) {
     return {
       time: NEW_INTAKE_TIME,
       dayMode: "everyDay",
       days: [...WEEKDAYS],
-      reminderIntervalMinutes: NEW_INTAKE_REMINDER_INTERVAL_MINUTES,
+      reminderIntervalMinutes: defaultReminderIntervalMinutes,
       medQuantities: [],
     };
   }
