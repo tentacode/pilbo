@@ -3,7 +3,7 @@
 ## Dossiers
 
 ```
-.env / .env.dist        // variables locales (ex. APPLE_TEAM_ID, EXPO_PUBLIC_DEBUG_MODE), .env non versionné
+.env / .env.dist        // variables locales (ex. APPLE_TEAM_ID, EXPO_PUBLIC_DEBUG_MODE : seed + onboarding sauté au 1er lancement, pour l'e2e), .env non versionné
 app.config.ts           // config Expo, lit .env
 assets/icon/icon.svg    // source de l'icône de l'app
 e2e/                    // tests end to end Maestro (YAML)
@@ -29,6 +29,7 @@ src/
   shared/               // transverse : navigation, intégrations tierces…
     database/           // SQLite : schéma, migrations, seed (voir docs/database.md)
     error-handling/     // écran d'erreur générique, ErrorBoundary global
+    storage/            // stockage sync (kv-store) partagé par les stores Zustand persistés
 ```
 
 ## Règles

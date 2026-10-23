@@ -67,7 +67,7 @@ Fonctionne app fermée : chaque rappel porte un chiffre calculé à l'avance. C'
 
 ## Permission
 
-- **Jamais demandée au lancement.** Demandée depuis l'onboarding (« Autoriser les notifications ») et les Réglages (« Accepter les notifications »).
+- **Jamais demandée au lancement.** Demandée depuis l'onboarding (« Autoriser les notifications ») et la ligne « Notifications » des Réglages (« Activer » tant qu'elles ne sont pas autorisées, « ✓ Autorisées » sinon).
 - `useNotificationPermission()` : `isGranted` relu au focus de l'écran et au retour au premier plan. `request()` selon `getPermissionStatus()` :
   - `undetermined` (jamais demandée) : popup système (`requestPermission()`), puis replanification si accordée.
   - `denied` : ouvre les Réglages iOS (`Linking.openSettings()`).

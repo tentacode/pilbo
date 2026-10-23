@@ -27,7 +27,7 @@ export function OnboardingScreen() {
           <OnboardingStep step={onboardingSteps[displayedStepIndex]} />
         </ScrollView>
       </Animated.View>
-      <OnboardingFooter currentIndex={stepIndex} count={onboardingSteps.length}>
+      <OnboardingFooter progress={{ currentIndex: stepIndex, count: onboardingSteps.length }}>
         <OnboardingActions
           stepIndex={stepIndex}
           onNext={goToNextStep}

@@ -8,6 +8,8 @@ import { rescheduleReminders } from "@/features/notifications/rescheduleReminder
 import { createTestDatabase } from "@/shared/database/testDatabase";
 import type { Database } from "@/shared/database/types";
 
+import { useSettingsStore } from "@/features/settings/store/settingsStore";
+
 import { IntakeDraftProvider, useIntakeDraft } from "./hooks/useIntakeDraft";
 import { IntakeEditScreen } from "./IntakeEditScreen";
 import { getAllIntakes } from "./queries/getAllIntakes";
@@ -81,6 +83,7 @@ beforeEach(() => {
   jest.restoreAllMocks();
   jest.clearAllMocks();
   mockDatabase = createTestDatabase();
+  useSettingsStore.setState({ defaultReminderIntervalMinutes: 10 });
 });
 
 describe("IntakeEditScreen", () => {
@@ -96,6 +99,14 @@ describe("IntakeEditScreen", () => {
       expect(screen.getByRole("button", { name: "Lundi" })).toBeSelected();
       expect(screen.getByRole("radio", { name: "10 minutes" })).toBeSelected();
       expect(screen.queryByRole("button", { name: "Supprimer cette prise" })).not.toBeOnTheScreen();
+    });
+
+    it("uses the default reminder interval from the settings", async () => {
+      useSettingsStore.setState({ defaultReminderIntervalMinutes: 30 });
+
+      await renderScreen();
+
+      expect(screen.getByRole("radio", { name: "30 minutes" })).toBeSelected();
     });
 
     it("opens the med picker", async () => {
@@ -142,6 +153,14 @@ describe("IntakeEditScreen", () => {
       await renderScreen(morning.id);
 
       expect(screen.getByRole("header", { name: "Prise de 08:20" })).toBeOnTheScreen();
+    });
+
+    it("keeps its own reminder interval", async () => {
+      useSettingsStore.setState({ defaultReminderIntervalMinutes: 30 });
+      const [morning] = getAllIntakes(mockDatabase);
+      await renderScreen(morning.id);
+
+      expect(screen.getByRole("radio", { name: "10 minutes" })).toBeSelected();
     });
 
     it("updates the quantities and the days in place", async () => {

@@ -42,3 +42,36 @@ describe("SegmentedControl", () => {
     expect(onChange).toHaveBeenCalledWith(5);
   });
 });
+
+function layoutEvent(width: number) {
+  return { nativeEvent: { layout: { x: 0, y: 0, width, height: 0 } } };
+}
+
+describe("SegmentedControl layout", () => {
+  it.each([
+    { layout: "side by side", controlWidth: 300, flexDirection: "row" as const },
+    { layout: "stacked", controlWidth: 100, flexDirection: "column" as const },
+  ])("shows the options $layout", async ({ controlWidth, flexDirection }) => {
+    await render(
+      <SegmentedControl
+        options={OPTIONS}
+        selectedValue={10}
+        onChange={jest.fn()}
+        accessibilityLabel="Intervalle des rappels"
+      />,
+    );
+
+    await fireEvent(
+      screen.getByTestId("segmented-control-measure", { includeHiddenElements: true }),
+      "layout",
+      layoutEvent(150),
+    );
+    await fireEvent(
+      screen.getByLabelText("Intervalle des rappels"),
+      "layout",
+      layoutEvent(controlWidth),
+    );
+
+    expect(screen.getByLabelText("Intervalle des rappels")).toHaveStyle({ flexDirection });
+  });
+});

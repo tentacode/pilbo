@@ -15,6 +15,7 @@ import {
   toggleDay as toggleDayOf,
 } from "@/features/pillbox/utils/intakeDraft";
 import { MINIMUM_MED_QUANTITY } from "@/features/pillbox/utils/validators";
+import { useSettingsStore } from "@/features/settings/store/settingsStore";
 
 type IntakeDraftContextValue = {
   draft: IntakeDraft;
@@ -38,8 +39,14 @@ type IntakeDraftProviderProps = {
 };
 
 export function IntakeDraftProvider({ intakeId, children }: IntakeDraftProviderProps) {
+  const defaultReminderIntervalMinutes = useSettingsStore(
+    (state) => state.defaultReminderIntervalMinutes,
+  );
   const [initialDraft] = useState(() =>
-    createIntakeDraft(intakeId === undefined ? undefined : getIntakeById(database, intakeId)),
+    createIntakeDraft(
+      defaultReminderIntervalMinutes,
+      intakeId === undefined ? undefined : getIntakeById(database, intakeId),
+    ),
   );
   const [draft, setDraft] = useState(initialDraft);
 

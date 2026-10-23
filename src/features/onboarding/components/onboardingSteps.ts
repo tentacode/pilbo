@@ -19,6 +19,14 @@ export type OnboardingStepContent = {
   illustrationBackground: string;
 };
 
+export const notMedicalStep: OnboardingStepContent = {
+  title: "Pilbo n'est pas une application médicale",
+  body: "Elle ne donne aucun conseil et ne remplace pas l'avis de votre médecin ou de votre pharmacien. Elle vous aide à suivre ce que vous y avez noté.",
+  Illustration: OnboardingNotMedicalIllustration,
+  illustrationLabel: "Un carnet ouvert : des notes d'un côté, des pilules de l'autre",
+  illustrationBackground: colors.roseSoft,
+};
+
 export const onboardingSteps: OnboardingStepContent[] = [
   {
     title: "Vos médicaments, regroupés en prises",
@@ -34,13 +42,7 @@ export const onboardingSteps: OnboardingStepContent[] = [
     illustrationLabel: "Une cloche et trois rappels à 20:30, 20:40 et 20:50, le dernier validé",
     illustrationBackground: colors.butterSoft,
   },
-  {
-    title: "Pilbo n'est pas une application médicale",
-    body: "Elle ne donne aucun conseil et ne remplace pas l'avis de votre médecin ou de votre pharmacien. Elle vous aide à suivre ce que vous y avez noté.",
-    Illustration: OnboardingNotMedicalIllustration,
-    illustrationLabel: "Un carnet ouvert : des notes d'un côté, des pilules de l'autre",
-    illustrationBackground: colors.roseSoft,
-  },
+  notMedicalStep,
   {
     title: "Vos données restent sur ce téléphone",
     body: "Pas de compte, rien n'est envoyé ailleurs. Si vous supprimez l'app, tout disparaît avec elle.",

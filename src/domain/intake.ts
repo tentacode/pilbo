@@ -13,6 +13,10 @@ export const WEEKDAYS: readonly Weekday[] = [
   "sunday",
 ];
 
+export const REMINDER_INTERVALS_MINUTES = [5, 10, 15, 30] as const;
+
+export const DEFAULT_REMINDER_INTERVAL_MINUTES = 10;
+
 export interface Intake {
   id: string;
   time: { hour: number; minute: number };

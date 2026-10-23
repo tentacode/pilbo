@@ -2,7 +2,7 @@ import { fireEvent, render, screen } from "@testing-library/react-native";
 import { Component, type ReactNode } from "react";
 import { Text } from "react-native";
 
-import { CrashTestButton } from "./CrashTestButton";
+import { SimulateErrorRow } from "./SimulateErrorRow";
 
 class TestErrorBoundary extends Component<{ children: ReactNode }, { error?: Error }> {
   state: { error?: Error } = {};
@@ -16,12 +16,12 @@ class TestErrorBoundary extends Component<{ children: ReactNode }, { error?: Err
   }
 }
 
-describe("CrashTestButton", () => {
-  it("throws a render error when pressed", async () => {
+describe("SimulateErrorRow", () => {
+  it("throws a render error when pressed, without confirmation", async () => {
     jest.spyOn(console, "error").mockImplementation(() => {});
     await render(
       <TestErrorBoundary>
-        <CrashTestButton />
+        <SimulateErrorRow />
       </TestErrorBoundary>,
     );
 

@@ -2,20 +2,13 @@ import Storage from "expo-sqlite/kv-store";
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 
+import { synchronousStorage } from "@/shared/storage/synchronousStorage";
+
 const ONBOARDING_STORAGE_KEY = "onboarding";
 
 type OnboardingState = {
   onboardingDone: boolean;
   setOnboardingDone: (value: boolean) => void;
-};
-
-// Sync methods: the store is hydrated before the first render, no onboarding flash.
-const synchronousStorage = {
-  getItem: (key: string) => Storage.getItemSync(key),
-  setItem: (key: string, value: string) => Storage.setItemSync(key, value),
-  removeItem: (key: string) => {
-    Storage.removeItemSync(key);
-  },
 };
 
 export function isFirstLaunch(): boolean {

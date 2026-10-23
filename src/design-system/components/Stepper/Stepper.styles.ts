@@ -6,7 +6,7 @@ export const styles = StyleSheet.create({
   stepper: {
     flexDirection: "row",
     alignItems: "center",
-    gap: spacing.tiny,
+    gap: spacing.small,
     flexShrink: 0,
   },
   button: {

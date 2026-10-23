@@ -54,6 +54,12 @@ export const iconShapes = {
     </>
   ),
   check: <Path d="M5 12.5l4.5 4.5L19 7.5" />,
+  lock: (
+    <>
+      <Rect x={5} y={10.5} width={14} height={10} rx={3} />
+      <Path d="M8.5 10.5V8a3.5 3.5 0 0 1 7 0v2.5" />
+    </>
+  ),
   pillAlert: (
     <>
       <G rotation={-45} originX={9} originY={13}>

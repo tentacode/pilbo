@@ -7,7 +7,11 @@ name: Onboarding can be restarted from the settings
     visible: "Réglages"
     timeout: 10000
 - tapOn: "Réglages"
-- tapOn: "Refaire l'onboarding"
+- scrollUntilVisible:
+    element:
+      text: "Revoir la présentation"
+    centerElement: true
+- tapOn: "Revoir la présentation"
 - assertVisible: "Vos médicaments, regroupés en prises"
 - tapOn: "Continuer"
 - assertVisible: "Un rappel, puis un autre"

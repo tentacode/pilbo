@@ -14,6 +14,7 @@ export const colors = {
   butterSoft: "#FFF5D8",
   turquoiseSoft: "#E1F6F2",
   turquoise: "#B3E8E0",
+  turquoiseInk: "#0B5A55",
   lavender: "#D6C9F5",
   butter: "#FBE29A",
   rose: "#F8C6DA",
@@ -173,6 +174,8 @@ export const sizes = {
   shapeOptionMinimumHeight: 84,
   dayButton: 44,
   medTextMinimumWidth: 120,
+  settingsLabelMinimumWidth: 120,
+  unconstrainedMeasureWidth: 10000,
   colorWheelCenter: 18,
 } as const;
 

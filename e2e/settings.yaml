@@ -1,0 +1,72 @@
+appId: com.tentacode.pilbo
+name: Settings can be changed
+---
+- launchApp:
+    clearState: true
+- extendedWaitUntil:
+    visible: "Réglages"
+    timeout: 10000
+- tapOn: "Réglages"
+
+# Default reminder interval, used by a new intake
+- tapOn: "30 minutes"
+- tapOn: "Pilulier"
+- tapOn: "Nouvelle prise"
+- assertVisible:
+    text: "30 minutes"
+    selected: true
+- tapOn: "Annuler"
+- tapOn: "Réglages"
+
+# Low stock and language
+- tapOn: "Un jour de plus"
+- assertVisible: "8 jours"
+- scrollUntilVisible:
+    element:
+      text: "English"
+    centerElement: true
+- tapOn: "English"
+- scrollUntilVisible:
+    element:
+      text: "Settings"
+    direction: UP
+- assertVisible: "Settings"
+- scrollUntilVisible:
+    element:
+      text: "Français"
+    centerElement: true
+- tapOn: "Français"
+
+# Not a medical app
+- scrollUntilVisible:
+    element:
+      text: "Pilbo n'est pas une application médicale"
+    centerElement: true
+- tapOn: "Pilbo n'est pas une application médicale"
+- assertVisible: ".*ne remplace pas l'avis de votre médecin.*"
+- tapOn: "Retour"
+- assertVisible: "Revoir la présentation"
+
+# Debug mode
+- scrollUntilVisible:
+    element:
+      text: "Version.*"
+    centerElement: true
+- assertNotVisible: "Supprimer les données"
+- tapOn:
+    text: "Version.*"
+    repeat: 10
+    delay: 100
+- assertVisible: "Simuler une erreur"
+- assertVisible: "Supprimer les données"
+- assertVisible: "Réinitialiser avec des données de test"
+- scrollUntilVisible:
+    element:
+      text: "Version.*"
+    direction: UP
+    centerElement: true
+- tapOn:
+    text: "Version.*"
+    repeat: 10
+    delay: 100
+- assertNotVisible: "Supprimer les données"

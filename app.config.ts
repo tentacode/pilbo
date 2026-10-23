@@ -33,6 +33,7 @@ const config: ExpoConfig = {
     ],
     "expo-sqlite",
     "./plugins/withSqliteHeader",
+    "expo-localization",
   ],
   experiments: {
     typedRoutes: true,

@@ -4,7 +4,7 @@ import { createIntakeDraft, type IntakeDraft } from "./intakeDraft";
 import { validateIntakeDraft } from "./validators";
 
 function validDraft(): IntakeDraft {
-  return createIntakeDraft(createIntake(8, 0));
+  return createIntakeDraft(10, createIntake(8, 0));
 }
 
 function draftWithQuantity(quantity: number): IntakeDraft {
@@ -18,7 +18,7 @@ describe("validateIntakeDraft", () => {
   });
 
   it("requires at least one med", () => {
-    expect(validateIntakeDraft(createIntakeDraft())).toBe("missingMed");
+    expect(validateIntakeDraft(createIntakeDraft(10))).toBe("missingMed");
   });
 
   it("requires at least one day with some days", () => {
