@@ -10,7 +10,7 @@ describe("withShape", () => {
 
 describe("pillShapes", () => {
   it("lists the shapes in the configuration order", () => {
-    expect(pillShapes()).toEqual(["round", "oval", "capsule", "softgel"]);
+    expect(pillShapes()).toEqual(["round", "oval", "capsule", "softgel", "triangle", "square"]);
   });
 });
 

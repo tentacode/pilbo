@@ -4,7 +4,8 @@ import { borderWidth, colors, radius, sizes, spacing } from "@/design-system/tok
 
 export const styles = StyleSheet.create({
   option: {
-    flex: 1,
+    flexBasis: "30%",
+    flexGrow: 1,
     minHeight: sizes.shapeOptionMinimumHeight,
     alignItems: "center",
     justifyContent: "center",

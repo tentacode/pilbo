@@ -1,4 +1,4 @@
-export type PillShape = "round" | "oval" | "capsule" | "softgel";
+export type PillShape = "round" | "oval" | "capsule" | "softgel" | "triangle" | "square";
 
 export type PillSize = "small" | "medium" | "large";
 
@@ -17,6 +17,8 @@ export const PILL_SHAPES: Record<PillShape, PillShapeConfiguration> = {
   oval: { hasScoreLine: true },
   capsule: { hasScoreLine: false },
   softgel: { hasScoreLine: false },
+  triangle: { hasScoreLine: false },
+  square: { hasScoreLine: false },
 };
 
 export interface Med {

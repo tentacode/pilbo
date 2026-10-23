@@ -26,7 +26,7 @@ export function ShapeOption({ design, isSelected, onPress }: ShapeOptionProps) {
       onPress={onPress}
       style={[styles.option, isSelected && styles.selected]}
     >
-      <Pill design={{ ...design, size: "medium" }} displaySize={sizes.pillShapeOption} />
+      <Pill design={design} displaySize={sizes.pillShapeOption} />
       <Text
         variant={isSelected ? "helpBold" : "help"}
         tone={isSelected ? "primary" : "secondary"}

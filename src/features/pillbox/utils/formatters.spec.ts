@@ -54,6 +54,7 @@ describe("formatPillDescription", () => {
 describe("formatShapeName", () => {
   it("returns the capitalized shape name", () => {
     expect(formatShapeName("softgel")).toBe("Capsule molle");
+    expect(formatShapeName("square")).toBe("Carré");
   });
 });
 

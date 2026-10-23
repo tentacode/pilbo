@@ -8,6 +8,8 @@ import { OvalPill } from "./OvalPill";
 import { outlineRatioFor, PILL_CENTER, PILL_VIEWBOX, pillScales } from "./Pill.styles";
 import { RoundPill } from "./RoundPill";
 import { SoftgelPill } from "./SoftgelPill";
+import { SquarePill } from "./SquarePill";
+import { TrianglePill } from "./TrianglePill";
 
 type PillProps = {
   design: PillDesign;
@@ -41,5 +43,9 @@ function PillShape({ design, ...strokeProps }: PillShapeProps) {
       return <CapsulePill colors={design.colors} {...strokeProps} />;
     case "softgel":
       return <SoftgelPill colors={design.colors} {...strokeProps} />;
+    case "triangle":
+      return <TrianglePill colors={design.colors} {...strokeProps} />;
+    case "square":
+      return <SquarePill colors={design.colors} {...strokeProps} />;
   }
 }
