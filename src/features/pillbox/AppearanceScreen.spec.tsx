@@ -72,12 +72,12 @@ describe("AppearanceScreen", () => {
     expect(screen.getByText("Doliprane 1 g", { includeHiddenElements: true })).toBeOnTheScreen();
   });
 
-  it("offers the four shapes, the current one selected", async () => {
+  it("offers the six shapes, the current one selected", async () => {
     await renderAsNeededAppearance();
 
     expect(
-      screen.getAllByRole("radio", { name: /^(Rond|Ovale|Gélule|Capsule molle)$/ }),
-    ).toHaveLength(4);
+      screen.getAllByRole("radio", { name: /^(Rond|Ovale|Gélule|Capsule molle|Triangle|Carré)$/ }),
+    ).toHaveLength(6);
     expect(screen.getByRole("radio", { name: "Rond" })).toBeSelected();
   });
 
@@ -88,6 +88,14 @@ describe("AppearanceScreen", () => {
 
     expect(screen.getByRole("radio", { name: "Gélule" })).toBeSelected();
     expect(previewLabel()).toBe("Aperçu : gélule, moyenne, lilas");
+  });
+
+  it("offers the triangle shape", async () => {
+    await renderAsNeededAppearance();
+
+    await fireEvent.press(screen.getByRole("radio", { name: "Triangle" }));
+
+    expect(previewLabel()).toBe("Aperçu : triangle, moyenne, lilas");
   });
 
   it("changes the size", async () => {

@@ -140,7 +140,7 @@ Format de `design` (`src/domain/med.ts`) :
 { "shape": "capsule", "size": "medium", "colors": ["#F58FB8", "#FFFFFF"] }
 ```
 
-- `shape` : `round`, `oval`, `capsule`, `softgel`. Configuration par forme dans `PILL_SHAPES`.
+- `shape` : `round`, `oval`, `capsule`, `softgel`, `triangle`, `square`. Configuration par forme dans `PILL_SHAPES`.
 - `size` : `small`, `medium`, `large`.
 - `colors` : toujours 2 couleurs, une par moitié, pour toutes les formes (identiques pour une pilule unie). Une ancienne valeur à 1 couleur est relue comme unie.
 

@@ -53,5 +53,7 @@ describe("PILL_SHAPES", () => {
     expect(PILL_SHAPES.oval.hasScoreLine).toBe(true);
     expect(PILL_SHAPES.capsule.hasScoreLine).toBe(false);
     expect(PILL_SHAPES.softgel.hasScoreLine).toBe(false);
+    expect(PILL_SHAPES.triangle.hasScoreLine).toBe(false);
+    expect(PILL_SHAPES.square.hasScoreLine).toBe(false);
   });
 });

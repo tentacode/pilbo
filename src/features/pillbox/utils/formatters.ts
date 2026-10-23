@@ -74,6 +74,8 @@ const SHAPE_NAMES: Record<PillShape, string> = {
   oval: "ovale",
   capsule: "gélule",
   softgel: "capsule molle",
+  triangle: "triangle",
+  square: "carré",
 };
 
 const SIZE_NAMES: Record<PillSize, string> = {
