@@ -7,7 +7,7 @@ import { FormSection } from "@/features/pillbox/components/FormSection";
 import { styles } from "./SettingsSection.styles";
 
 type SettingsSectionProps = {
-  title: string;
+  title?: string;
   help?: string;
   children: ReactNode;
 };

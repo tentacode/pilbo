@@ -61,6 +61,15 @@ export const medLogTable = sqliteTable("med_log", {
   takenAt: text("taken_at").notNull(),
 });
 
+export const stockTable = sqliteTable("stock", {
+  medId: text("med_id")
+    .primaryKey()
+    .references(() => medTable.id, { onDelete: "cascade" }),
+  quantity: integer("quantity").notNull(),
+  boxSize: integer("box_size").notNull(),
+  lowStockDays: integer("low_stock_days").notNull(),
+});
+
 export type MedRow = typeof medTable.$inferSelect;
 export type NewMedRow = typeof medTable.$inferInsert;
 export type IntakeRow = typeof intakeTable.$inferSelect;
@@ -71,3 +80,5 @@ export type IntakeLogRow = typeof intakeLogTable.$inferSelect;
 export type NewIntakeLogRow = typeof intakeLogTable.$inferInsert;
 export type MedLogRow = typeof medLogTable.$inferSelect;
 export type NewMedLogRow = typeof medLogTable.$inferInsert;
+export type StockRow = typeof stockTable.$inferSelect;
+export type NewStockRow = typeof stockTable.$inferInsert;

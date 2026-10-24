@@ -5,7 +5,13 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 
 import * as Haptics from "expo-haptics";
 
+import { router } from "expo-router";
+
+import { rescheduleReminders } from "@/features/notifications/rescheduleReminders";
 import { insertMed } from "@/features/pillbox/queries/insertMed";
+import { getStockByMedId } from "@/features/stocks/queries/getStockByMedId";
+import { saveStock } from "@/features/stocks/queries/saveStock";
+import { findMedId } from "@/features/stocks/queries/testStocks";
 import { intakeLogTable, intakeTable, medLogTable } from "@/shared/database/schema";
 import { createTestDatabase } from "@/shared/database/testDatabase";
 import { countRows } from "@/shared/database/testHelpers";
@@ -20,6 +26,7 @@ jest.mock("@/shared/database/database", () => ({
   get database() {
     return mockDatabase;
   },
+  subscribeToDatabaseChanges: () => () => {},
 }));
 jest.mock("@/features/notifications/notifications", () => ({
   getPermissionStatus: () => Promise.resolve(mockPermissionGranted ? "granted" : "denied"),
@@ -29,7 +36,10 @@ jest.mock("@/features/notifications/rescheduleReminders", () => ({
 }));
 jest.mock("expo-router", () => {
   const { useEffect } = jest.requireActual<typeof import("react")>("react");
-  return { useFocusEffect: (effect: () => void) => useEffect(effect, [effect]) };
+  return {
+    router: { navigate: jest.fn() },
+    useFocusEffect: (effect: () => void) => useEffect(effect, [effect]),
+  };
 });
 
 const safeAreaMetrics = {
@@ -141,7 +151,21 @@ describe("TodayScreen", () => {
 
   describe("as needed meds", () => {
     const TAKE_PRAZEPAM = "Prendre Prazépam 25 mg";
-    const CANCEL_PRAZEPAM = "Annuler les prises de Prazépam 25 mg aujourd’hui";
+    const CANCEL_PRAZEPAM = /^Annuler la prise de Prazépam 25 mg/;
+
+    function setPrazepamStock(quantity: number) {
+      saveStock(mockDatabase, {
+        medId: findMedId(mockDatabase, "Prazépam", "25 mg"),
+        quantity,
+        boxSize: 30,
+        lowStockDays: 7,
+      });
+    }
+
+    function prazepamStock() {
+      return getStockByMedId(mockDatabase, findMedId(mockDatabase, "Prazépam", "25 mg"))?.stock
+        .quantity;
+    }
 
     it("lists the as needed meds at the bottom", async () => {
       await renderAt(7, 0);
@@ -180,15 +204,82 @@ describe("TodayScreen", () => {
       );
     });
 
-    it("cancels every intake of the day of the med", async () => {
+    it("cancels only the last intake of the day and gives back a pill", async () => {
+      setPrazepamStock(5);
       await renderAt(7, 0);
       await fireEvent.press(screen.getByRole("button", { name: TAKE_PRAZEPAM }));
+      jest.setSystemTime(new Date(2026, 9, 4, 9, 30));
+      await fireEvent.press(screen.getByRole("button", { name: TAKE_PRAZEPAM }));
+      expect(prazepamStock()).toBe(3);
+      jest.mocked(rescheduleReminders).mockClear();
+
+      await fireEvent.press(
+        screen.getByRole("button", { name: "Annuler la prise de Prazépam 25 mg de 09:30" }),
+      );
+
+      expect(screen.getByText("Pris à 07:00")).toBeOnTheScreen();
+      expect(
+        screen.getByRole("button", { name: "Annuler la prise de Prazépam 25 mg de 07:00" }),
+      ).toBeOnTheScreen();
+      expect(countRows(mockDatabase, medLogTable)).toBe(1);
+      expect(prazepamStock()).toBe(4);
+      expect(rescheduleReminders).toHaveBeenCalledTimes(1);
+    });
+
+    it("warns once when the stock goes below zero", async () => {
+      setPrazepamStock(0);
+      await renderAt(7, 0);
+
       await fireEvent.press(screen.getByRole("button", { name: TAKE_PRAZEPAM }));
 
-      await fireEvent.press(screen.getByRole("button", { name: CANCEL_PRAZEPAM }));
+      expect(screen.getByRole("header", { name: "Stock à mettre à jour" })).toBeOnTheScreen();
+      expect(
+        screen.getByText(
+          "Le stock de Prazépam 25 mg est passé sous zéro. Pensez à mettre à jour les quantités dans Stock.",
+        ),
+      ).toBeOnTheScreen();
 
-      expect(screen.queryByText(/^Pris à/)).not.toBeOnTheScreen();
-      expect(countRows(mockDatabase, medLogTable)).toBe(0);
+      await fireEvent.press(screen.getByRole("button", { name: "Plus tard" }));
+      await fireEvent.press(screen.getByRole("button", { name: TAKE_PRAZEPAM }));
+
+      expect(prazepamStock()).toBe(-2);
+      expect(screen.queryByRole("header", { name: "Stock à mettre à jour" })).toBeNull();
+    });
+
+    it("opens the stocks from the below zero warning", async () => {
+      setPrazepamStock(0);
+      await renderAt(7, 0);
+      await fireEvent.press(screen.getByRole("button", { name: TAKE_PRAZEPAM }));
+
+      await fireEvent.press(screen.getByRole("button", { name: "Voir le stock" }));
+
+      expect(router.navigate).toHaveBeenCalledWith("/stocks");
+      expect(screen.queryByRole("header", { name: "Stock à mettre à jour" })).toBeNull();
+    });
+  });
+
+  describe("low stock notice", () => {
+    const NOTICE =
+      "Stock bas. Le stock d’un de vos médicaments est trop bas, pensez à le renouveler.";
+
+    it("opens the stocks when a stock is low", async () => {
+      await renderAt(7, 0);
+
+      await fireEvent.press(screen.getByRole("button", { name: NOTICE }));
+
+      expect(router.navigate).toHaveBeenCalledWith("/stocks");
+    });
+
+    it("is hidden without low stock", async () => {
+      saveStock(mockDatabase, {
+        medId: findMedId(mockDatabase, "Lithium", "250 mg"),
+        quantity: 200,
+        boxSize: 100,
+        lowStockDays: 7,
+      });
+      await renderAt(7, 0);
+
+      expect(screen.queryByRole("button", { name: NOTICE })).toBeNull();
     });
   });
 

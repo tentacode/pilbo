@@ -12,17 +12,29 @@ import { styles } from "./PickerMedRow.styles";
 type PickerMedRowProps = {
   med: Med;
   hasTopBorder: boolean;
+  actionLabel?: string;
   unavailableLabel?: string;
+  statusLabel?: string;
   onPress: () => void;
 };
 
-export function PickerMedRow({ med, hasTopBorder, unavailableLabel, onPress }: PickerMedRowProps) {
+export function PickerMedRow({
+  med,
+  hasTopBorder,
+  actionLabel,
+  unavailableLabel,
+  statusLabel,
+  onPress,
+}: PickerMedRowProps) {
   const isUnavailable = unavailableLabel !== undefined;
-  const details = [formatMedLabel(med), med.detail, unavailableLabel].filter(Boolean).join(", ");
+  const label = unavailableLabel ?? statusLabel;
+  const details = [formatMedLabel(med), med.detail, label].filter(Boolean).join(", ");
   return (
     <Pressable
       accessibilityRole="button"
-      accessibilityLabel={isUnavailable ? details : `Ajouter ${details}`}
+      accessibilityLabel={
+        isUnavailable || actionLabel === undefined ? details : `${actionLabel} ${details}`
+      }
       accessibilityState={{ disabled: isUnavailable }}
       disabled={isUnavailable}
       onPress={onPress}
@@ -36,11 +48,11 @@ export function PickerMedRow({ med, hasTopBorder, unavailableLabel, onPress }: P
       <View style={styles.texts}>
         <MedName med={med} tone={isUnavailable ? "secondary" : "primary"} />
       </View>
-      {isUnavailable ? (
+      {label !== undefined ? (
         <View style={styles.status}>
           <Icon name="check" size={sizes.iconSmall} color={colors.inkSecondary} />
           <Text variant="small" tone="secondary">
-            {unavailableLabel}
+            {label}
           </Text>
         </View>
       ) : (

@@ -6,7 +6,7 @@ export const styles = StyleSheet.create({
   content: {
     gap: spacing.large,
   },
-  removeButton: {
+  centeredButton: {
     alignSelf: "center",
   },
 });

@@ -1,3 +1,4 @@
 export const REMINDER_COUNT = 6;
 export const MINIMUM_DELAY_BEFORE_REMINDER_SECONDS = 60;
 export const MAXIMUM_SCHEDULED_REMINDERS = 64;
+export const LOW_STOCK_ALERT_HOUR = 9;

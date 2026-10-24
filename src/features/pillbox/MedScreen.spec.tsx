@@ -30,7 +30,7 @@ jest.mock("@/features/notifications/rescheduleReminders", () => ({
   rescheduleReminders: jest.fn(() => Promise.resolve()),
 }));
 jest.mock("expo-router", () => ({
-  router: { back: jest.fn(), push: jest.fn(), dismissAll: jest.fn() },
+  router: { back: jest.fn(), push: jest.fn(), dismissAll: jest.fn(), navigate: jest.fn() },
   useLocalSearchParams: () => mockSearchParams,
   useNavigation: () => ({ getParent: () => mockParentNavigation }),
 }));
@@ -174,6 +174,33 @@ describe("MedScreen", () => {
       expect(findMed("Lithium")?.strength).toBe("400 mg");
       expect(draftMedQuantities.map(({ med }) => med.strength)).toEqual(["400 mg"]);
       expect(router.back).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe("stock button", () => {
+    it("is absent for a new med", async () => {
+      await renderIntakeMedScreen();
+
+      expect(screen.queryByRole("button", { name: "Ajouter un stock" })).toBeNull();
+      expect(screen.queryByRole("button", { name: "Modifier le stock" })).toBeNull();
+    });
+
+    it("adds the stock of a med without stock from the stock tab", async () => {
+      const medId = findMed("Quviviq")?.id;
+      mockSearchParams = { medId };
+      await renderIntakeMedScreen();
+
+      await fireEvent.press(screen.getByRole("button", { name: "Ajouter un stock" }));
+
+      expect(router.navigate).toHaveBeenCalledWith("/stocks");
+      expect(router.push).toHaveBeenCalledWith({ pathname: "/stock", params: { medId } });
+    });
+
+    it("edits the stock of a followed med", async () => {
+      mockSearchParams = { medId: findMed("Lithium")?.id };
+      await renderAsNeededMedScreen();
+
+      expect(screen.getByRole("button", { name: "Modifier le stock" })).toBeOnTheScreen();
     });
   });
 

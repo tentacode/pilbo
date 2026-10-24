@@ -8,7 +8,7 @@ import { colors, sizes } from "@/design-system/tokens";
 import { formatMedLabel } from "@/domain/med";
 
 import { MedName } from "@/features/pillbox/components/MedName";
-import { formatAsNeededTakenAt } from "@/features/today/utils/formatters";
+import { formatAsNeededTakenAt, formatTakenTime } from "@/features/today/utils/formatters";
 import type { AsNeededMedOfDay } from "@/features/today/utils/todayTypes";
 import { styles } from "./AsNeededMedRow.styles";
 
@@ -57,7 +57,7 @@ export function AsNeededMedRow({
           <Button
             label="Annuler"
             variant="text"
-            accessibilityLabel={`Annuler les prises de ${label} aujourd’hui`}
+            accessibilityLabel={`Annuler la prise de ${label} de ${formatTakenTime(lastTakenAt)}`}
             onPress={onCancel}
           />
         </View>

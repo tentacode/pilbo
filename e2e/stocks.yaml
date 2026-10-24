@@ -1,0 +1,63 @@
+appId: com.tentacode.pilbo
+name: A stock can be added, decreases with an intake, goes below zero and can be removed
+---
+- launchApp:
+    clearState: true
+- extendedWaitUntil:
+    visible: "Aujourd'hui"
+    timeout: 10000
+- tapOn: "Stock.*"
+- scrollUntilVisible:
+    element:
+      text: "Stock d’un médicament"
+    centerElement: true
+- tapOn: "Stock d’un médicament"
+- tapOn: "Quviviq 50 mg"
+- tapOn: "Un comprimé de plus"
+- tapOn: "Enregistrer"
+- scrollUntilVisible:
+    element:
+      text: "Quviviq 50 mg, 1 comprimé.*"
+    centerElement: true
+- tapOn: "Aujourd'hui.*"
+- scrollUntilVisible:
+    element:
+      text: "Prendre la prise de 22:00"
+    centerElement: true
+- tapOn: "Prendre la prise de 22:00"
+- assertNotVisible: "Stock à mettre à jour"
+- tapOn: "Stock.*"
+- scrollUntilVisible:
+    element:
+      text: "Quviviq 50 mg, 0 comprimé.*"
+    centerElement: true
+- tapOn: "Aujourd'hui.*"
+- scrollUntilVisible:
+    element:
+      text: "Prendre Prazépam 25 mg"
+    centerElement: true
+- tapOn: "Stock.*"
+- scrollUntilVisible:
+    element:
+      text: "Stock d’un médicament"
+    centerElement: true
+- tapOn: "Stock d’un médicament"
+- tapOn: "Prazépam 25 mg, Si besoin"
+- tapOn: "Enregistrer"
+- tapOn: "Aujourd'hui.*"
+- scrollUntilVisible:
+    element:
+      text: "Prendre Prazépam 25 mg"
+    centerElement: true
+- tapOn: "Prendre Prazépam 25 mg"
+- assertVisible: "Stock à mettre à jour"
+- tapOn: "Voir le stock"
+- scrollUntilVisible:
+    element:
+      text: "Prazépam 25 mg, -1 comprimé.*"
+    centerElement: true
+- tapOn: "Prazépam 25 mg, -1 comprimé.*"
+- scroll
+- tapOn: "Ne plus suivre le stock"
+- tapOn: "Ne plus suivre"
+- assertNotVisible: "Prazépam 25 mg, -1 comprimé.*"

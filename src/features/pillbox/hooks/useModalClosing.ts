@@ -4,12 +4,28 @@ import { useEffect, useState } from "react";
 
 type PreventedAction = Parameters<Parameters<typeof usePreventRemove>[1]>[0]["data"]["action"];
 
+let isLeavingWithoutConfirmation = false;
+
+// Runs a navigation that closes the open modals, even those with unsaved changes.
+export function leaveWithoutConfirmation(navigate: () => void) {
+  isLeavingWithoutConfirmation = true;
+  try {
+    navigate();
+  } finally {
+    isLeavingWithoutConfirmation = false;
+  }
+}
+
 export function useModalClosing(hasUnsavedChanges: boolean) {
   const navigation = useNavigation();
   const [preventedAction, setPreventedAction] = useState<PreventedAction | null>(null);
   const [isClosing, setIsClosing] = useState(false);
 
   usePreventRemove(hasUnsavedChanges && !isClosing, ({ data }) => {
+    if (isLeavingWithoutConfirmation) {
+      navigation.dispatch(data.action);
+      return;
+    }
     setPreventedAction(data.action);
   });
 

@@ -34,6 +34,7 @@ export const colors = {
   pillHighlight: "#FFFFFF",
   grabber: "#D3CEE2",
   stepperBorder: "#D6CFE7",
+  progressTrack: "#E0DAEF",
   backdrop: "rgba(46, 42, 92, 0.4)",
   swatchOutline: "rgba(46, 42, 92, 0.2)",
   colorDotOutline: "rgba(46, 42, 92, 0.28)",
@@ -140,6 +141,9 @@ export const sizes = {
   pillInRow: 36,
   pillInPicker: 32,
   pillInStrip: 30,
+  pillInStockCard: 40,
+  pillInHeader: 64,
+  progressBarHeight: 8,
   iconBadge: 36,
   listRowMinimumHeight: 56,
   tabBarMinimumHeight: 64,
@@ -159,6 +163,8 @@ export const sizes = {
   grabberHeight: 5,
   navigationBarMinimumHeight: 52,
   stepperValueMinimumWidth: 40,
+  stepperInputMinimumWidth: 56,
+  boxSizeInputMinimumWidth: 52,
   chipValueMinimumHeight: 48,
   dialogMaximumWidth: 340,
   dialogIconBadge: 72,
@@ -200,9 +206,11 @@ export const fontSize = {
   time: 30,
   largeHeading: 30,
   title: 34,
+  bigNumber: 56,
 } as const;
 
 export const lineHeight = {
+  bigNumber: 68,
   lead: 26,
   callout: 22,
 } as const;

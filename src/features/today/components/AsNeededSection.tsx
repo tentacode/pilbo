@@ -10,7 +10,7 @@ import { TodaySectionTitle } from "./TodaySectionTitle";
 type AsNeededSectionProps = {
   asNeededMeds: AsNeededMedOfDay[];
   onTake: (med: Med) => void;
-  onCancel: (med: Med) => void;
+  onCancel: (asNeededMed: AsNeededMedOfDay) => void;
 };
 
 export function AsNeededSection({ asNeededMeds, onTake, onCancel }: AsNeededSectionProps) {
@@ -24,7 +24,7 @@ export function AsNeededSection({ asNeededMeds, onTake, onCancel }: AsNeededSect
             {...asNeededMed}
             hasTopBorder={index > 0}
             onTake={() => onTake(asNeededMed.med)}
-            onCancel={() => onCancel(asNeededMed.med)}
+            onCancel={() => onCancel(asNeededMed)}
           />
         ))}
       </View>

@@ -13,6 +13,8 @@ import { RemoveAsNeededDialog } from "./components/RemoveAsNeededDialog";
 import { useIntakeDraft } from "./hooks/useIntakeDraft";
 import { useMedActions } from "./hooks/useMedActions";
 import { useMedDraft } from "./hooks/useMedDraft";
+import { useHasStock } from "@/features/stocks/hooks/useHasStock";
+import { openStockFromTab } from "@/features/stocks/utils/openStock";
 import { createMedDraft, type MedDraft, type MedFlowOrigin } from "./utils/medDraft";
 import { validateMedDraft } from "./utils/validators";
 import { styles } from "./MedScreen.styles";
@@ -43,6 +45,7 @@ export function MedScreen({ origin, onSaved, onRemovedFromAsNeeded }: MedScreenP
   const [isRemoveDialogVisible, setIsRemoveDialogVisible] = useState(false);
   const isEditing = draft.medId !== undefined;
   const editingMedId = draft.medId;
+  const hasStock = useHasStock(editingMedId);
 
   function handleChange(changes: Partial<MedDraft>) {
     if (changes.name !== undefined) {
@@ -96,8 +99,17 @@ export function MedScreen({ origin, onSaved, onRemovedFromAsNeeded }: MedScreenP
           }
         />
         <MedFields draft={draft} nameError={nameError} onChange={handleChange} />
+        {editingMedId === undefined ? null : (
+          <View style={styles.centeredButton}>
+            <Button
+              label={hasStock ? "Modifier le stock" : "Ajouter un stock"}
+              variant="secondary"
+              onPress={() => openStockFromTab(editingMedId)}
+            />
+          </View>
+        )}
         {origin === "asNeeded" && isEditing ? (
-          <View style={styles.removeButton}>
+          <View style={styles.centeredButton}>
             <Button
               label="Enlever de « Hors planning »"
               variant="text"

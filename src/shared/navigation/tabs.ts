@@ -10,6 +10,10 @@ export const tabs: Record<
     formatBadgeLabel: (count) => (count > 1 ? `${count} prises à valider` : "1 prise à valider"),
   },
   pillbox: { label: "Pilulier", icon: "pillbox" },
-  stocks: { label: "Stock", icon: "stocks" },
+  stocks: {
+    label: "Stock",
+    icon: "stocks",
+    formatBadgeLabel: (count) => (count > 1 ? `${count} stocks bas` : "1 stock bas"),
+  },
   settings: { label: "Réglages", icon: "settings" },
 };
