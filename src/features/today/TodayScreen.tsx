@@ -14,7 +14,7 @@ import { TodayIntakeSections } from "./components/TodayIntakeSections";
 import { useNotificationPermission } from "@/features/notifications/hooks/useNotificationPermission";
 import { LowStockNotice } from "@/features/stocks/components/LowStockNotice";
 import { StocksBelowZeroDialog } from "@/features/stocks/components/StocksBelowZeroDialog";
-import { useLowStockCount } from "@/features/stocks/hooks/useLowStockCount";
+import { useLowStockNotice } from "@/features/stocks/hooks/useLowStockNotice";
 import { useAsNeededTaking } from "@/features/today/hooks/useAsNeededTaking";
 import { useIntakeValidation } from "@/features/today/hooks/useIntakeValidation";
 import { useTodayData } from "@/features/today/hooks/useTodayData";
@@ -31,7 +31,7 @@ export function TodayScreen() {
   const { validatingIntakeId, validate } = useIntakeValidation(intakes, refresh, setMedsBelowZero);
   const asNeededTaking = useAsNeededTaking(refresh, setMedsBelowZero);
   const { isGranted: remindersEnabled, request: enableReminders } = useNotificationPermission();
-  const lowStockCount = useLowStockCount();
+  const lowStockNotice = useLowStockNotice();
 
   const handleTake = (intakeId: string) => validate(intakeId, "taken");
   const handleSkip = (intakeId: string) => validate(intakeId, "skipped");
@@ -46,8 +46,12 @@ export function TodayScreen() {
       <TodayHeader date={date} />
       <View style={styles.content}>
         {remindersEnabled === false ? <RemindersDisabledNotice onEnable={enableReminders} /> : null}
-        {lowStockCount > 0 ? (
-          <LowStockNotice lowStockCount={lowStockCount} onPress={openStocks} />
+        {lowStockNotice.isVisible ? (
+          <LowStockNotice
+            lowStockCount={lowStockNotice.lowStockCount}
+            onPress={openStocks}
+            onDismiss={lowStockNotice.dismiss}
+          />
         ) : null}
         {isEmpty ? <TodayEmptyState upcomingIntake={upcomingIntake} /> : null}
         {isAllHandled ? <TodayDoneState /> : null}

@@ -12,6 +12,7 @@ import { insertMed } from "@/features/pillbox/queries/insertMed";
 import { getStockByMedId } from "@/features/stocks/queries/getStockByMedId";
 import { saveStock } from "@/features/stocks/queries/saveStock";
 import { findMedId } from "@/features/stocks/queries/testStocks";
+import { useLowStockNoticeStore } from "@/features/stocks/store/lowStockNoticeStore";
 import { intakeLogTable, intakeTable, medLogTable } from "@/shared/database/schema";
 import { createTestDatabase } from "@/shared/database/testDatabase";
 import { countRows } from "@/shared/database/testHelpers";
@@ -80,6 +81,7 @@ describe("TodayScreen", () => {
     jest.useFakeTimers();
     mockDatabase = createTestDatabase();
     mockPermissionGranted = true;
+    useLowStockNoticeStore.setState({ dismissedMedIds: [] });
   });
 
   afterEach(() => {
@@ -280,6 +282,37 @@ describe("TodayScreen", () => {
       await renderAt(7, 0);
 
       expect(screen.queryByRole("button", { name: NOTICE })).toBeNull();
+    });
+
+    it("stays hidden once dismissed", async () => {
+      await renderAt(7, 0);
+
+      await fireEvent.press(screen.getByRole("button", { name: "Masquer l’alerte de stock bas" }));
+      expect(screen.queryByRole("button", { name: NOTICE })).toBeNull();
+
+      await screen.unmount();
+      await renderAt(7, 0);
+      expect(screen.queryByRole("button", { name: NOTICE })).toBeNull();
+    });
+
+    it("comes back when another stock gets low", async () => {
+      await renderAt(7, 0);
+      await fireEvent.press(screen.getByRole("button", { name: "Masquer l’alerte de stock bas" }));
+      await screen.unmount();
+
+      saveStock(mockDatabase, {
+        medId: findMedId(mockDatabase, "Lamictal", "50 mg"),
+        quantity: 3,
+        boxSize: 30,
+        lowStockDays: 7,
+      });
+      await renderAt(7, 0);
+
+      expect(
+        screen.getByRole("button", {
+          name: "Stock bas. Le stock de 2 de vos médicaments est trop bas, pensez à les renouveler.",
+        }),
+      ).toBeOnTheScreen();
     });
   });
 

@@ -5,6 +5,7 @@ allowBuilds:
 overrides:
   esbuild@<0.24.3: ">=0.25.0 <0.26"
   uuid@<11.1.1: ">=11.1.1 <12"
+  zod@<4.6.6: ">=4.6.6 <5"
 # Unfixable advisories, all in dev/build tooling, never shipped in the app bundle:
 # - decode-uri-component@0.2.2 (expo-router > query-string@7): the patched releases are ESM-only,
 #   which breaks query-string@7 (CommonJS require).
