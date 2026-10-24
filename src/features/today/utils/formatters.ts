@@ -3,7 +3,7 @@ import type { IntakeLogStatus } from "@/domain/intakeLog";
 import { formatMedLabel, type MedQuantity } from "@/domain/med";
 
 import { weekdayOf } from "./computeTodayIntakes";
-import type { FormattedText, TodayIntake } from "./todayTypes";
+import type { FormattedText, TodayIntake, UpcomingIntake } from "./todayTypes";
 
 const DAY_NAMES = {
   monday: "Lundi",
@@ -141,4 +141,17 @@ export function formatValidationAnnouncement(intake: Intake, status: IntakeLogSt
 
 export function formatAsNeededTakenAt(takenAt: string): string {
   return `Pris à ${takenAt.slice(TIME_START_INDEX)}`;
+}
+
+function formatUpcomingDay({ daysAhead, weekday }: UpcomingIntake): string {
+  const dayName = DAY_NAMES[weekday].toLowerCase();
+  if (daysAhead === 1) {
+    return "demain";
+  }
+  return daysAhead === 7 ? `${dayName} prochain` : dayName;
+}
+
+export function formatUpcomingIntakeSentence(upcomingIntake: UpcomingIntake): string {
+  const time = formatIntakeTime(upcomingIntake.intake.time);
+  return `Prochaine prise ${formatUpcomingDay(upcomingIntake)} à ${time}.`;
 }

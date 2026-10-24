@@ -1,4 +1,4 @@
-import type { Intake } from "@/domain/intake";
+import type { Intake, Weekday } from "@/domain/intake";
 import type { Med } from "@/domain/med";
 
 export type IntakeStatus = "late" | "next" | "later" | "taken" | "skipped";
@@ -30,4 +30,10 @@ export type FormattedText = {
 export type AsNeededMedOfDay = {
   med: Med;
   lastTakenAt?: string;
+};
+
+export type UpcomingIntake = {
+  daysAhead: number;
+  weekday: Weekday;
+  intake: Intake;
 };

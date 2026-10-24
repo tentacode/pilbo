@@ -9,6 +9,7 @@ import {
   formatSkipAccessibilityLabel,
   formatTakeAccessibilityLabel,
   formatTodayDate,
+  formatUpcomingIntakeSentence,
   formatValidationAnnouncement,
 } from "./formatters";
 import { createIntake } from "./testIntakes";
@@ -176,5 +177,17 @@ describe("formatValidationAnnouncement", () => {
 describe("formatAsNeededTakenAt", () => {
   it("shows the time of the last intake", () => {
     expect(formatAsNeededTakenAt("2026-10-14T09:05")).toBe("Pris à 09:05");
+  });
+});
+
+describe("formatUpcomingIntakeSentence", () => {
+  it.each([
+    [1, "sunday", "Prochaine prise demain à 08:05."],
+    [2, "monday", "Prochaine prise lundi à 08:05."],
+    [7, "saturday", "Prochaine prise samedi prochain à 08:05."],
+  ] as const)("formats %s day(s) ahead on %s", (daysAhead, weekday, expected) => {
+    expect(formatUpcomingIntakeSentence({ daysAhead, weekday, intake: createIntake(8, 5) })).toBe(
+      expected,
+    );
   });
 });

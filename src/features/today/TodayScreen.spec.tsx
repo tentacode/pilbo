@@ -124,6 +124,19 @@ describe("TodayScreen", () => {
     expect(screen.getByRole("header", { name: "Rien à prendre aujourd'hui" })).toBeOnTheScreen();
     expect(screen.queryByText(/prise sur/)).not.toBeOnTheScreen();
     expect(screen.queryByRole("button", { name: /Si besoin|au besoin/ })).not.toBeOnTheScreen();
+    expect(screen.getByText("Une journée tranquille côté pilulier.")).toBeOnTheScreen();
+  });
+
+  it("shows the upcoming intake in the empty state", async () => {
+    mockDatabase
+      .update(intakeTable)
+      .set({ days: ["tuesday"] })
+      .run();
+    await renderAt(7, 0);
+
+    expect(
+      screen.getByText("Une journée tranquille côté pilulier. Prochaine prise mardi à 08:20."),
+    ).toBeOnTheScreen();
   });
 
   describe("as needed meds", () => {

@@ -15,7 +15,8 @@ import { useTodayData } from "@/features/today/hooks/useTodayData";
 import { styles } from "./TodayScreen.styles";
 
 export function TodayScreen() {
-  const { date, intakes, sections, asNeededMeds, isEmpty, isAllHandled, refresh } = useTodayData();
+  const { date, intakes, sections, asNeededMeds, isEmpty, upcomingIntake, isAllHandled, refresh } =
+    useTodayData();
   const { validatingIntakeId, validate } = useIntakeValidation(intakes, refresh);
   const asNeededTaking = useAsNeededTaking(refresh);
   const { isGranted: remindersEnabled, request: enableReminders } = useNotificationPermission();
@@ -28,7 +29,7 @@ export function TodayScreen() {
       <TodayHeader date={date} />
       <View style={styles.content}>
         {remindersEnabled === false ? <RemindersDisabledNotice onEnable={enableReminders} /> : null}
-        {isEmpty ? <TodayEmptyState /> : null}
+        {isEmpty ? <TodayEmptyState upcomingIntake={upcomingIntake} /> : null}
         {isAllHandled ? <TodayDoneState /> : null}
         {isEmpty ? null : (
           <TodayIntakeSections
