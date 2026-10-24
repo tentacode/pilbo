@@ -1,9 +1,10 @@
-import { View } from "react-native";
+import { Pressable, View } from "react-native";
 import { useTranslation } from "react-i18next";
 
+import { Icon } from "@/design-system/components/Icon/Icon";
 import { Pill } from "@/design-system/components/Pill/Pill";
 import { Text } from "@/design-system/components/Text/Text";
-import { sizes } from "@/design-system/tokens";
+import { colors, sizes } from "@/design-system/tokens";
 
 import {
   formatEarlierIntakeAccessibilityLabel,
@@ -16,17 +17,24 @@ import { formatIntakeTime } from "@/shared/i18n/formatters";
 
 type EarlierIntakeCardProps = {
   todayIntake: TodayIntake;
+  onPress: () => void;
 };
 
-export function EarlierIntakeCard({ todayIntake }: EarlierIntakeCardProps) {
+export function EarlierIntakeCard({ todayIntake, onPress }: EarlierIntakeCardProps) {
   const { t } = useTranslation("today");
   const { intake, status } = todayIntake;
 
   return (
-    <View
-      accessible
+    <Pressable
+      accessibilityRole="button"
       accessibilityLabel={formatEarlierIntakeAccessibilityLabel(t, todayIntake)}
-      style={[styles.card, status === "skipped" ? styles.skippedCard : styles.takenCard]}
+      accessibilityHint={t("Modifie la prise.")}
+      onPress={onPress}
+      style={({ pressed }) => [
+        styles.card,
+        status === "skipped" ? styles.skippedCard : styles.takenCard,
+        pressed && styles.pressed,
+      ]}
     >
       <View style={styles.head}>
         <View style={styles.heading}>
@@ -41,11 +49,14 @@ export function EarlierIntakeCard({ todayIntake }: EarlierIntakeCardProps) {
               <Pill design={med.design} displaySize={sizes.pillInStrip} />
             </View>
           ))}
+          <View style={styles.chevron}>
+            <Icon name="chevronRight" size={sizes.iconSmall} color={colors.inkSecondary} />
+          </View>
         </View>
       </View>
       <Text variant="small" tone="secondary" style={styles.names}>
         {formatMedNames(intake.medQuantities)}
       </Text>
-    </View>
+    </Pressable>
   );
 }

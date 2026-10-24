@@ -18,6 +18,7 @@ type TodayIntakeSectionsProps = {
   validatingIntakeId: string | null;
   onTake: (intakeId: string) => void;
   onSkip: (intakeId: string) => void;
+  onEdit: (intakeId: string) => void;
 };
 
 export function TodayIntakeSections({
@@ -25,6 +26,7 @@ export function TodayIntakeSections({
   validatingIntakeId,
   onTake,
   onSkip,
+  onEdit,
 }: TodayIntakeSectionsProps) {
   const { t } = useTranslation("today");
   const { late, next, later, earlier } = sections;
@@ -98,7 +100,10 @@ export function TodayIntakeSections({
             <View style={styles.list}>
               {earlier.map((todayIntake) => (
                 <AnimatedIntakeItem key={todayIntake.intake.id}>
-                  <EarlierIntakeCard todayIntake={todayIntake} />
+                  <EarlierIntakeCard
+                    todayIntake={todayIntake}
+                    onPress={() => onEdit(todayIntake.intake.id)}
+                  />
                 </AnimatedIntakeItem>
               ))}
             </View>

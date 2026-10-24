@@ -1,6 +1,6 @@
 import { StyleSheet } from "react-native";
 
-import { borderWidth, colors, radius, spacing } from "@/design-system/tokens";
+import { borderWidth, colors, pressedOpacity, radius, spacing } from "@/design-system/tokens";
 
 export const styles = StyleSheet.create({
   card: {
@@ -12,7 +12,14 @@ export const styles = StyleSheet.create({
     paddingHorizontal: spacing.large,
     paddingBottom: spacing.cardBottom,
   },
+  pressed: {
+    opacity: pressedOpacity,
+  },
   head: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    gap: spacing.medium,
     paddingBottom: spacing.medium,
   },
 });

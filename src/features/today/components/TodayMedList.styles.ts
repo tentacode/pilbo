@@ -11,4 +11,7 @@ export const styles = StyleSheet.create({
   lateRow: {
     borderTopColor: colors.alertLine,
   },
+  borderlessRow: {
+    borderTopWidth: 0,
+  },
 });

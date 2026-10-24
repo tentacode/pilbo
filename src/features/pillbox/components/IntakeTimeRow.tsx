@@ -19,6 +19,8 @@ import { formatIntakeTime } from "@/shared/i18n/formatters";
 type IntakeTimeRowProps = {
   time: Intake["time"];
   onChange: (time: Intake["time"]) => void;
+  label?: string;
+  accessibilityLabel?: string;
 };
 
 function dateOf({ hour, minute }: Intake["time"]): Date {
@@ -27,13 +29,18 @@ function dateOf({ hour, minute }: Intake["time"]): Date {
   return date;
 }
 
-export function IntakeTimeRow({ time, onChange }: IntakeTimeRowProps) {
+export function IntakeTimeRow({
+  time,
+  onChange,
+  label,
+  accessibilityLabel: customAccessibilityLabel,
+}: IntakeTimeRowProps) {
   const { t } = useTranslation("pillbox");
   return (
     <FormGroup>
       <View style={styles.row}>
         <Text variant="bodyBold" accessibilityElementsHidden>
-          {t("Heure")}
+          {label ?? t("Heure")}
         </Text>
         <Host matchContents colorScheme="light">
           <DatePicker
@@ -44,7 +51,9 @@ export function IntakeTimeRow({ time, onChange }: IntakeTimeRowProps) {
               datePickerStyle("compact"),
               labelsHidden(),
               tint(colors.ink),
-              accessibilityLabel(t("Heure : {{time}}", { time: formatIntakeTime(time) })),
+              accessibilityLabel(
+                customAccessibilityLabel ?? t("Heure : {{time}}", { time: formatIntakeTime(time) }),
+              ),
             ]}
           />
         </Host>

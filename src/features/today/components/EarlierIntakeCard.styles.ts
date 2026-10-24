@@ -1,6 +1,6 @@
 import { StyleSheet } from "react-native";
 
-import { borderWidth, colors, radius, spacing } from "@/design-system/tokens";
+import { borderWidth, colors, pressedOpacity, radius, spacing } from "@/design-system/tokens";
 
 export const styles = StyleSheet.create({
   card: {
@@ -33,6 +33,12 @@ export const styles = StyleSheet.create({
   strip: {
     flexDirection: "row",
     alignItems: "center",
+  },
+  pressed: {
+    opacity: pressedOpacity,
+  },
+  chevron: {
+    marginLeft: spacing.small,
   },
   stripPill: {
     marginLeft: spacing.pillStripOverlap,

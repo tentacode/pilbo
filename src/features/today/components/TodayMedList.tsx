@@ -12,14 +12,19 @@ import { styles } from "./TodayMedList.styles";
 type TodayMedListProps = {
   medQuantities: MedQuantity[];
   isLate?: boolean;
+  hasFirstBorder?: boolean;
 };
 
-export function TodayMedList({ medQuantities, isLate = false }: TodayMedListProps) {
+export function TodayMedList({
+  medQuantities,
+  isLate = false,
+  hasFirstBorder = true,
+}: TodayMedListProps) {
   const { t } = useTranslation("today");
   const pillStackLayout = pillStackLayoutOf(medQuantities);
   return (
     <View>
-      {medQuantities.map(({ med, quantity }) => (
+      {medQuantities.map(({ med, quantity }, index) => (
         <View
           key={med.id}
           accessible
@@ -30,7 +35,11 @@ export function TodayMedList({ medQuantities, isLate = false }: TodayMedListProp
           ]
             .filter(Boolean)
             .join(", ")}
-          style={[styles.row, isLate && styles.lateRow]}
+          style={[
+            styles.row,
+            isLate && styles.lateRow,
+            index === 0 && !hasFirstBorder && styles.borderlessRow,
+          ]}
         >
           <IntakeMedRow
             med={med}

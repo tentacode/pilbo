@@ -1,0 +1,50 @@
+appId: com.tentacode.pilbo
+name: Editing an intake of a previous day and of today
+---
+- launchApp:
+    clearState: true
+- extendedWaitUntil:
+    visible: "Aujourd'hui"
+    timeout: 10000
+- tapOn: "Jour précédent.*"
+- assertVisible: "Hier"
+- scrollUntilVisible:
+    element:
+      text: "22:00, Pris à 22:05.*"
+    centerElement: true
+- tapOn: "22:00, Pris à 22:05.*"
+- assertVisible: "Prise de 22:00"
+- tapOn: "Supprimer"
+- tapOn: "Enregistrer"
+- scrollUntilVisible:
+    element:
+      text: "22:00, Non prise.*"
+    centerElement: true
+- tapOn: "22:00, Non prise.*"
+- tapOn: "Prise"
+- tapOn: "Enregistrer"
+- scrollUntilVisible:
+    element:
+      text: "22:00, Pris à 22:00.*"
+    centerElement: true
+- scrollUntilVisible:
+    element:
+      text: "Hier"
+    direction: UP
+- tapOn: "Revenir à aujourd'hui"
+- scrollUntilVisible:
+    element:
+      text: "Prendre la prise de 22:00"
+    centerElement: true
+- tapOn: "Prendre la prise de 22:00"
+- scrollUntilVisible:
+    element:
+      text: "22:00, Pris.*"
+    centerElement: true
+- tapOn: "22:00, Pris.*"
+- tapOn: "Supprimer"
+- tapOn: "Enregistrer"
+- scrollUntilVisible:
+    element:
+      text: "Prendre la prise de 22:00"
+    centerElement: true

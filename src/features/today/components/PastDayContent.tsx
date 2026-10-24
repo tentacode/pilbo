@@ -2,6 +2,7 @@ import { View } from "react-native";
 import { useTranslation } from "react-i18next";
 
 import { useDayData } from "@/features/today/hooks/useDayData";
+import { openIntakeLogEditing } from "@/features/today/utils/openIntakeLogEditing";
 import { styles } from "./PastDayContent.styles";
 import { EarlierIntakeCard } from "./EarlierIntakeCard";
 import { MissedIntakeCard } from "./MissedIntakeCard";
@@ -25,13 +26,22 @@ export function PastDayContent({ localDate }: PastDayContentProps) {
         <View>
           <TodaySectionTitle title={t("Prises prévues")} />
           <View style={styles.list}>
-            {dayIntakes.map((dayIntake) =>
-              dayIntake.status === "missed" ? (
-                <MissedIntakeCard key={dayIntake.intake.id} todayIntake={dayIntake} />
+            {dayIntakes.map((dayIntake) => {
+              const openEditing = () => openIntakeLogEditing(dayIntake.intake.id, localDate);
+              return dayIntake.status === "missed" ? (
+                <MissedIntakeCard
+                  key={dayIntake.intake.id}
+                  todayIntake={dayIntake}
+                  onPress={openEditing}
+                />
               ) : (
-                <EarlierIntakeCard key={dayIntake.intake.id} todayIntake={dayIntake} />
-              ),
-            )}
+                <EarlierIntakeCard
+                  key={dayIntake.intake.id}
+                  todayIntake={dayIntake}
+                  onPress={openEditing}
+                />
+              );
+            })}
           </View>
         </View>
       )}
