@@ -39,7 +39,7 @@ jest.mock("@/features/notifications/rescheduleReminders", () => ({
 jest.mock("expo-router", () => {
   const { useEffect } = jest.requireActual<typeof import("react")>("react");
   return {
-    router: { navigate: jest.fn() },
+    router: { navigate: jest.fn(), push: jest.fn(), back: jest.fn() },
     useFocusEffect: (effect: () => void) => useEffect(effect, [effect]),
   };
 });
@@ -51,6 +51,28 @@ const safeAreaMetrics = {
 
 function wrapper({ children }: { children: ReactNode }) {
   return <SafeAreaProvider initialMetrics={safeAreaMetrics}>{children}</SafeAreaProvider>;
+}
+
+function logIntakeOn(
+  localDate: string,
+  hour: number,
+  status: "taken" | "skipped",
+  createdAt: string,
+) {
+  const { id, minute } = mockDatabase.get<{ id: string; minute: number }>(sql`
+    SELECT ${intakeTable.id} AS id, ${intakeTable.minute} AS minute
+    FROM ${intakeTable}
+    WHERE ${intakeTable.hour} = ${hour}
+  `);
+  mockDatabase
+    .insert(intakeLogTable)
+    .values({
+      intakeId: id,
+      expectedIntakeAt: `${localDate}T${String(hour).padStart(2, "0")}:${String(minute).padStart(2, "0")}`,
+      createdAt: `${localDate}T${createdAt}`,
+      status,
+    })
+    .run();
 }
 
 function logIntakes(hours: number[], status: "taken" | "skipped") {
@@ -93,7 +115,7 @@ describe("TodayScreen", () => {
     await renderAt(7, 0);
 
     expect(screen.getByRole("header", { name: "Aujourd'hui" })).toBeOnTheScreen();
-    expect(screen.getByText("Dimanche 4 octobre")).toBeOnTheScreen();
+    expect(screen.getByText("4 oct. 2026")).toBeOnTheScreen();
     expect(screen.getByRole("header", { name: "Prochaine prise" })).toBeOnTheScreen();
     expect(screen.getByLabelText("08:20, Dans 1 heure 20 minutes")).toBeOnTheScreen();
     expect(screen.getByRole("header", { name: "Plus tard" })).toBeOnTheScreen();
@@ -108,7 +130,7 @@ describe("TodayScreen", () => {
     await renderInEnglish(<TodayScreen />, { wrapper });
 
     expect(screen.getByRole("header", { name: "Today" })).toBeOnTheScreen();
-    expect(screen.getByText("Sunday, October 4")).toBeOnTheScreen();
+    expect(screen.getByText("Oct 4, 2026")).toBeOnTheScreen();
     expect(screen.getByRole("header", { name: "2 late intakes" })).toBeOnTheScreen();
     expect(screen.getByLabelText("08:20, Late by 5 hours 10 minutes")).toBeOnTheScreen();
     expect(screen.getByRole("header", { name: "After that" })).toBeOnTheScreen();
@@ -376,5 +398,95 @@ describe("TodayScreen", () => {
     expect(
       screen.queryByRole("header", { name: "Les rappels sont désactivés" }),
     ).not.toBeOnTheScreen();
+  });
+
+  describe("past days", () => {
+    const PREVIOUS_DAY = "Jour précédent : samedi 3 octobre";
+
+    function logYesterday() {
+      logIntakeOn("2026-10-03", 8, "taken", "08:25");
+      logIntakeOn("2026-10-03", 12, "taken", "14:00");
+      logIntakeOn("2026-10-03", 20, "skipped", "20:30");
+      mockDatabase
+        .insert(medLogTable)
+        .values({
+          medId: findMedId(mockDatabase, "Prazépam", "25 mg"),
+          takenAt: "2026-10-03T15:40",
+        })
+        .run();
+    }
+
+    it("shows yesterday in read only, with the status of each intake", async () => {
+      logYesterday();
+      await renderAt(10, 0);
+
+      await fireEvent.press(screen.getByRole("button", { name: PREVIOUS_DAY }));
+
+      expect(screen.getByRole("header", { name: "Hier" })).toBeOnTheScreen();
+      expect(screen.getByText("3 oct. 2026")).toBeOnTheScreen();
+      expect(screen.getByRole("header", { name: "Prises prévues" })).toBeOnTheScreen();
+      expect(screen.getByLabelText(/^08:20, Pris à 08:25/)).toBeOnTheScreen();
+      expect(screen.getByLabelText(/^12:20, Pris en retard à 14:00/)).toBeOnTheScreen();
+      expect(screen.getByLabelText(/^20:20, Ignorée/)).toBeOnTheScreen();
+      expect(screen.getByLabelText("22:00, Non prise")).toBeOnTheScreen();
+      expect(screen.queryByRole("button", { name: /Prendre|Ignorer/ })).not.toBeOnTheScreen();
+    });
+
+    it("shows the as needed meds taken that day, without button", async () => {
+      logYesterday();
+      await renderAt(10, 0);
+
+      await fireEvent.press(screen.getByRole("button", { name: PREVIOUS_DAY }));
+
+      expect(screen.getByRole("header", { name: "Hors planning" })).toBeOnTheScreen();
+      expect(screen.getByLabelText("Prazépam 25 mg, Si besoin, Pris à 15:40")).toBeOnTheScreen();
+      expect(screen.queryByRole("button", { name: /Annuler/ })).not.toBeOnTheScreen();
+    });
+
+    it("shows neither notices nor the as needed section on a past day without them", async () => {
+      mockPermissionGranted = false;
+      await renderAt(10, 0);
+
+      await fireEvent.press(screen.getByRole("button", { name: PREVIOUS_DAY }));
+
+      expect(screen.queryByText("Les rappels sont désactivés")).not.toBeOnTheScreen();
+      expect(screen.queryByRole("header", { name: "Hors planning" })).not.toBeOnTheScreen();
+    });
+
+    it("shows a simple empty state on a past day without planned intake", async () => {
+      mockDatabase
+        .update(intakeTable)
+        .set({ days: ["sunday"] })
+        .run();
+      await renderAt(10, 0);
+
+      await fireEvent.press(screen.getByRole("button", { name: PREVIOUS_DAY }));
+
+      expect(screen.getByText("Aucune prise prévue ce jour-là.")).toBeOnTheScreen();
+      expect(screen.queryByRole("header", { name: "Prises prévues" })).not.toBeOnTheScreen();
+    });
+
+    it("goes back to today", async () => {
+      await renderAt(10, 0);
+      await fireEvent.press(screen.getByRole("button", { name: PREVIOUS_DAY }));
+      await fireEvent.press(
+        screen.getByRole("button", { name: "Jour précédent : vendredi 2 octobre" }),
+      );
+
+      expect(screen.getByRole("header", { name: "Avant-hier" })).toBeOnTheScreen();
+
+      await fireEvent.press(screen.getByRole("button", { name: "Revenir à aujourd'hui" }));
+
+      expect(screen.getByRole("header", { name: "Aujourd'hui" })).toBeOnTheScreen();
+      expect(screen.getByRole("button", { name: "Prendre la prise de 08:20" })).toBeOnTheScreen();
+    });
+
+    it("opens the calendar", async () => {
+      await renderAt(10, 0);
+
+      await fireEvent.press(screen.getByRole("button", { name: "Calendrier" }));
+
+      expect(router.push).toHaveBeenCalledWith("/today/calendar");
+    });
   });
 });

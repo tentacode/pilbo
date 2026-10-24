@@ -7,6 +7,9 @@ import { migrate } from "drizzle-orm/better-sqlite3/migrator";
 import { seedDatabase } from "./seed";
 import type { Database } from "./types";
 
+// Fixed so that the seeded intakes exist on every date used by the tests.
+const SEED_DATE = new Date(2026, 0, 1);
+
 type TestDatabaseOptions = {
   seed?: boolean;
   withLogs?: boolean;
@@ -16,7 +19,7 @@ type TestDatabaseOptions = {
 export function createTestDatabase({
   seed = true,
   withLogs = false,
-  now,
+  now = SEED_DATE,
 }: TestDatabaseOptions = {}): Database {
   const sqlite = new BetterSqlite3(":memory:");
   sqlite.pragma("foreign_keys = ON");

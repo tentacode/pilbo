@@ -11,7 +11,7 @@ database.ts             // ouvre pilbo.db (expo-sqlite) + drizzle, active les cl
 schema.ts               // tables Drizzle : source de vérité des types
 types.ts                // type Database (base Drizzle synchrone, app et tests)
 migrations/             // généré par drizzle-kit, ne pas modifier à la main
-fixtures.ts             // données de debug insérées au premier lancement (debug)
+fixtures.ts             // données de debug insérées au premier lancement (debug), avec ~45 jours d'historique
 seed.ts                 // seedDatabase(database)
 clearDatabase.ts        // clearDatabase(database) : vide intake_log, med_log, stock, med, intake, intake_med
 resetDatabase.ts        // resetDatabase(database) : clearDatabase puis seedDatabase
@@ -120,6 +120,8 @@ Test à côté de la requête : `queries/getAllIntakes.spec.ts`.
 ## Schéma
 
 > Migration `0002` (spec 12) : nouveau format de `design`, sans conversion des données existantes. Base à vider après cette migration : supprimer puis réinstaller l'app.
+>
+> Migration `0004` (spec 19) : colonnes `created_on` (obligatoire) et `archived_on` sur `intake`, sans conversion. Base à vider : supprimer puis réinstaller l'app.
 
 ### `med`
 
@@ -146,14 +148,23 @@ Format de `design` (`src/domain/med.ts`) :
 
 ### `intake`
 
-| Colonne                     | Type                    | Contraintes                     |
-| --------------------------- | ----------------------- | ------------------------------- |
-| `id`                        | text (UUID)             | clé primaire                    |
-| `hour`                      | integer                 | obligatoire (0–23)              |
-| `minute`                    | integer                 | obligatoire (0–59)              |
-| `days`                      | text (JSON `Weekday[]`) | obligatoire                     |
-| `reminder_interval_minutes` | integer                 | obligatoire                     |
-| `is_archived`               | integer (booléen)       | obligatoire, `false` par défaut |
+| Colonne                     | Type                    | Contraintes                             |
+| --------------------------- | ----------------------- | --------------------------------------- |
+| `id`                        | text (UUID)             | clé primaire                            |
+| `hour`                      | integer                 | obligatoire (0–23)                      |
+| `minute`                    | integer                 | obligatoire (0–59)                      |
+| `days`                      | text (JSON `Weekday[]`) | obligatoire                             |
+| `reminder_interval_minutes` | integer                 | obligatoire                             |
+| `is_archived`               | integer (booléen)       | obligatoire, `false` par défaut         |
+| `created_on`                | text                    | obligatoire, date locale (`2026-10-24`) |
+| `archived_on`               | text                    | facultatif, date locale                 |
+
+Une ligne `intake` est une **version** de prise, valable sur `[created_on, archived_on[` (historique exact pour le calendrier) :
+
+- Création : `created_on` = aujourd'hui.
+- Archivage : `is_archived` et `archived_on` = aujourd'hui.
+- Modification de l'heure, des jours, des médicaments ou des quantités d'une prise qui a des logs **avant aujourd'hui** (`saveIntake`) : l'ancienne version est archivée, une nouvelle est créée (`created_on` = aujourd'hui) et les logs du jour passent sur la nouvelle. Sinon (pas de log passé, ou seul l'intervalle de rappel change) : modification sur place.
+- Prises prévues un jour D (`getIntakesOfDay`) : `created_on ≤ D`, `archived_on` nul ou `> D`, jour de la semaine de D dans `days`. Une prise archivée aujourd'hui n'apparaît donc plus aujourd'hui.
 
 ### `intake_med`
 

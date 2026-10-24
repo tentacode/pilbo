@@ -1,0 +1,39 @@
+appId: com.tentacode.pilbo
+name: Calendar shows the history and the previous days
+---
+- launchApp:
+    clearState: true
+- extendedWaitUntil:
+    visible: "Aujourd'hui"
+    timeout: 10000
+- evalScript: |
+    ${
+      const months = ["janvier", "février", "mars", "avril", "mai", "juin", "juillet", "août", "septembre", "octobre", "novembre", "décembre"];
+      const now = new Date();
+      const day = now.getDate() === 1 ? "1er" : String(now.getDate());
+      output.month = months[now.getMonth()].charAt(0).toUpperCase() + months[now.getMonth()].slice(1) + " " + now.getFullYear();
+      output.todayCell = day + " " + months[now.getMonth()] + ", aujourd'hui.*";
+    }
+- tapOn: "Calendrier"
+- assertVisible:
+    text: ${output.month}
+- assertVisible: "Mois précédent.*"
+- tapOn: ${output.todayCell}
+- assertVisible: "Fermer"
+- assertNotVisible: "Jour précédent.*"
+- tapOn: "Fermer"
+- assertVisible:
+    text: ${output.month}
+- tapOn:
+    text: "Aujourd'hui"
+    index: 0
+- tapOn: "Jour précédent.*"
+- assertVisible: "Hier"
+- assertVisible: "Prises prévues"
+- tapOn: "Jour précédent.*"
+- assertVisible: "Avant-hier"
+- tapOn: "Jour suivant.*"
+- assertVisible: "Hier"
+- tapOn: "Revenir à aujourd'hui"
+- assertVisible: "Aujourd'hui"
+- assertNotVisible: "Revenir à aujourd'hui"

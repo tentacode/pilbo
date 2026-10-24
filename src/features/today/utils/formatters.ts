@@ -1,17 +1,64 @@
 import type { TFunction } from "i18next";
 
 import type { Intake } from "@/domain/intake";
-import type { IntakeLogStatus } from "@/domain/intakeLog";
+import { addDaysToLocalDate, fromLocalDate, type IntakeLogStatus } from "@/domain/intakeLog";
 import { formatMedLabel, type MedQuantity } from "@/domain/med";
-import { formatFullDate, formatIntakeTime, formatWeekday } from "@/shared/i18n/formatters";
+import {
+  formatFullDate,
+  formatIntakeTime,
+  formatLongDate,
+  formatLongDateWithYear,
+  formatShortDate,
+  formatWeekday,
+} from "@/shared/i18n/formatters";
 import type { Language } from "@/shared/i18n/resources";
 
 import type { FormattedText, TodayIntake, UpcomingIntake } from "./todayTypes";
 
 const TIME_START_INDEX = "2026-10-14T".length;
 
-export function formatTodayDate(date: Date, language: Language): string {
-  return formatFullDate(date, language);
+export function formatSwitcherDate(localDate: string, language: Language): FormattedText {
+  const date = fromLocalDate(localDate);
+  return {
+    text: formatShortDate(date, language),
+    accessibilityLabel: formatLongDateWithYear(date, language),
+  };
+}
+
+export function formatDayTitle(
+  t: TFunction<"today">,
+  localDate: string,
+  today: string,
+  language: Language,
+): string {
+  if (localDate === today) {
+    return t("Aujourd'hui");
+  }
+  if (localDate === addDaysToLocalDate(today, -1)) {
+    return t("Hier");
+  }
+  if (localDate === addDaysToLocalDate(today, -2)) {
+    return t("Avant-hier");
+  }
+  return formatFullDate(fromLocalDate(localDate), language);
+}
+
+export function formatPreviousDayAccessibilityLabel(
+  t: TFunction<"today">,
+  localDate: string,
+  language: Language,
+): string {
+  return t("Jour précédent : {{date}}", {
+    date: formatLongDate(fromLocalDate(localDate), language),
+  });
+}
+
+export function formatNextDayAccessibilityLabel(
+  t: TFunction<"today">,
+  localDate: string,
+  language: Language,
+): string {
+  return t("Jour suivant : {{date}}", { date: formatLongDate(fromLocalDate(localDate), language) });
 }
 
 function splitDuration(totalMinutes: number): { hours: number; minutes: number } {
@@ -56,6 +103,9 @@ export function formatIntakeStatus(
 ): FormattedText {
   if (status === "skipped") {
     return same(t("Ignorée"));
+  }
+  if (status === "missed") {
+    return same(t("Non prise"));
   }
   if (status === "taken" && validation) {
     const time = formatIntakeTime(validation.time);

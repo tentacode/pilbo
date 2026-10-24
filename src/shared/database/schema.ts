@@ -27,6 +27,8 @@ export const intakeTable = sqliteTable("intake", {
   days: text("days", { mode: "json" }).$type<Weekday[]>().notNull(),
   reminderIntervalMinutes: integer("reminder_interval_minutes").notNull(),
   isArchived: integer("is_archived", { mode: "boolean" }).notNull().default(false),
+  createdOn: text("created_on").notNull(),
+  archivedOn: text("archived_on"),
 });
 
 export const intakeMedTable = sqliteTable(

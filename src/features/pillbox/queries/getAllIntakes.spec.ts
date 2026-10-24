@@ -43,7 +43,13 @@ describe("getAllIntakes", () => {
     const database = createTestDatabase({ seed: false });
     database
       .insert(intakeTable)
-      .values({ hour: 7, minute: 0, days: ["monday"], reminderIntervalMinutes: 5 })
+      .values({
+        hour: 7,
+        minute: 0,
+        days: ["monday"],
+        reminderIntervalMinutes: 5,
+        createdOn: "2026-10-01",
+      })
       .run();
 
     expect(getAllIntakes(database)).toEqual([
@@ -67,6 +73,8 @@ describe("getAllIntakes", () => {
         days: ["monday"],
         reminderIntervalMinutes: 5,
         isArchived: true,
+        createdOn: "2026-10-01",
+        archivedOn: "2026-10-20",
       })
       .run();
 

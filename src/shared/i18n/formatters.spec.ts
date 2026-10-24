@@ -2,6 +2,8 @@ import {
   capitalize,
   formatDayAndMonth,
   formatFullDate,
+  formatLongDateWithYear,
+  formatShortDate,
   formatIntakeTime,
   formatWeekday,
 } from "./formatters";
@@ -49,6 +51,22 @@ describe("formatFullDate", () => {
   it("formats the weekday, the day and the month", () => {
     expect(formatFullDate(new Date(2026, 9, 14), "fr")).toBe("Mercredi 14 octobre");
     expect(formatFullDate(new Date(2026, 9, 14), "en")).toBe("Wednesday, October 14");
+  });
+});
+
+describe("formatShortDate", () => {
+  it("formats the day, the short month and the year", () => {
+    expect(formatShortDate(new Date(2026, 9, 15), "fr")).toBe("15 oct. 2026");
+    expect(formatShortDate(new Date(2026, 4, 1), "fr")).toBe("1er mai 2026");
+    expect(formatShortDate(new Date(2026, 9, 15), "en")).toBe("Oct 15, 2026");
+    expect(formatShortDate(new Date(2026, 9, 1), "en")).toBe("Oct 1, 2026");
+  });
+});
+
+describe("formatLongDateWithYear", () => {
+  it("formats the full date with the year", () => {
+    expect(formatLongDateWithYear(new Date(2026, 9, 15), "fr")).toBe("jeudi 15 octobre 2026");
+    expect(formatLongDateWithYear(new Date(2026, 9, 15), "en")).toBe("Thursday, October 15, 2026");
   });
 });
 

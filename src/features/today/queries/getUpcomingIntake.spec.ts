@@ -23,7 +23,15 @@ function insertIntake(
   });
   const { id: intakeId } = database
     .insert(intakeTable)
-    .values({ hour, minute: 15, days, reminderIntervalMinutes: 5, isArchived })
+    .values({
+      hour,
+      minute: 15,
+      days,
+      reminderIntervalMinutes: 5,
+      isArchived,
+      createdOn: "2026-10-01",
+      archivedOn: isArchived ? "2026-10-20" : null,
+    })
     .returning({ id: intakeTable.id })
     .get();
   database.insert(intakeMedTable).values({ intakeId, medId, quantity: 1 }).run();

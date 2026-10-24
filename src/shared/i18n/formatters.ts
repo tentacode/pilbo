@@ -49,10 +49,32 @@ export function formatDayAndMonth(date: Date, language: Language): string {
   return new Intl.DateTimeFormat(language, { day: "numeric", month: "long" }).format(date);
 }
 
+export function formatShortDate(date: Date, language: Language): string {
+  const text = new Intl.DateTimeFormat(language, {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+  }).format(date);
+  return language === "fr" && date.getDate() === 1 ? text.replace(/^1 /, "1er ") : text;
+}
+
+export function formatLongDateWithYear(date: Date, language: Language): string {
+  return new Intl.DateTimeFormat(language, {
+    weekday: "long",
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  }).format(date);
+}
+
+export function formatLongDate(date: Date, language: Language): string {
+  return new Intl.DateTimeFormat(language, {
+    weekday: "long",
+    day: "numeric",
+    month: "long",
+  }).format(date);
+}
+
 export function formatFullDate(date: Date, language: Language): string {
-  return capitalize(
-    new Intl.DateTimeFormat(language, { weekday: "long", day: "numeric", month: "long" }).format(
-      date,
-    ),
-  );
+  return capitalize(formatLongDate(date, language));
 }

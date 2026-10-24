@@ -11,7 +11,7 @@ import { saveStock } from "@/features/stocks/queries/saveStock";
 import { findMedId } from "@/features/stocks/queries/testStocks";
 import { getIntakeLogsOfDay } from "@/features/today/queries/getIntakeLogsOfDay";
 import { insertIntakeLog } from "@/features/today/queries/insertIntakeLog";
-import { getTodayIntakes } from "@/features/today/queries/getTodayIntakes";
+import { getIntakesOfDay } from "@/features/today/queries/getIntakesOfDay";
 
 import { useIntakeValidation } from "./useIntakeValidation";
 
@@ -50,7 +50,7 @@ describe("useIntakeValidation", () => {
   });
 
   it("saves the log, refreshes the screen and reschedules the reminders", async () => {
-    const intakes = getTodayIntakes(mockDatabase, "wednesday");
+    const intakes = getIntakesOfDay(mockDatabase, NOW);
     const onValidated = jest.fn();
     const { result } = await renderHook(() => useIntakeValidation(intakes, onValidated, jest.fn()));
 
@@ -71,7 +71,7 @@ describe("useIntakeValidation", () => {
 
   it("plays a success haptic and announces a taken intake", async () => {
     const announce = jest.spyOn(AccessibilityInfo, "announceForAccessibility");
-    const intakes = getTodayIntakes(mockDatabase, "wednesday");
+    const intakes = getIntakesOfDay(mockDatabase, NOW);
     const { result } = await renderHook(() => useIntakeValidation(intakes, jest.fn(), jest.fn()));
 
     await act(() => result.current.validate(intakes[0].id, "taken"));
@@ -84,7 +84,7 @@ describe("useIntakeValidation", () => {
 
   it("announces a skipped intake without the success haptic", async () => {
     const announce = jest.spyOn(AccessibilityInfo, "announceForAccessibility");
-    const intakes = getTodayIntakes(mockDatabase, "wednesday");
+    const intakes = getIntakesOfDay(mockDatabase, NOW);
     const { result } = await renderHook(() => useIntakeValidation(intakes, jest.fn(), jest.fn()));
 
     await act(() => result.current.validate(intakes[0].id, "skipped"));
@@ -95,7 +95,7 @@ describe("useIntakeValidation", () => {
 
   it("keeps the log when the reminders cannot be rescheduled", async () => {
     jest.mocked(rescheduleReminders).mockRejectedValueOnce(new Error("Notifications failed"));
-    const intakes = getTodayIntakes(mockDatabase, "wednesday");
+    const intakes = getIntakesOfDay(mockDatabase, NOW);
     const { result } = await renderHook(() => useIntakeValidation(intakes, jest.fn(), jest.fn()));
 
     await act(() => result.current.validate(intakes[0].id, "skipped"));
@@ -109,7 +109,7 @@ describe("useIntakeValidation", () => {
     jest.mocked(insertIntakeLog).mockImplementationOnce(() => {
       throw new Error("Database failed");
     });
-    const intakes = getTodayIntakes(mockDatabase, "wednesday");
+    const intakes = getIntakesOfDay(mockDatabase, NOW);
     const onValidated = jest.fn();
     const { result } = await renderHook(() => useIntakeValidation(intakes, onValidated, jest.fn()));
 
@@ -127,7 +127,7 @@ describe("useIntakeValidation", () => {
     }
 
     it("decreases the stocks of a taken intake and ignores the meds without stock", async () => {
-      const intakes = getTodayIntakes(mockDatabase, "wednesday");
+      const intakes = getIntakesOfDay(mockDatabase, NOW);
       const bedtime = intakes[3];
       const onStocksBelowZero = jest.fn();
       const { result } = await renderHook(() =>
@@ -142,7 +142,7 @@ describe("useIntakeValidation", () => {
     });
 
     it("keeps the stocks of a skipped intake", async () => {
-      const intakes = getTodayIntakes(mockDatabase, "wednesday");
+      const intakes = getIntakesOfDay(mockDatabase, NOW);
       const { result } = await renderHook(() => useIntakeValidation(intakes, jest.fn(), jest.fn()));
 
       await act(() => result.current.validate(intakes[0].id, "skipped"));
@@ -158,7 +158,7 @@ describe("useIntakeValidation", () => {
         boxSize: 100,
         lowStockDays: 7,
       });
-      const intakes = getTodayIntakes(mockDatabase, "wednesday");
+      const intakes = getIntakesOfDay(mockDatabase, NOW);
       const evening = intakes[2];
       const onStocksBelowZero = jest.fn();
       const { result } = await renderHook(() =>
@@ -177,7 +177,7 @@ describe("useIntakeValidation", () => {
       jest.mocked(insertIntakeLog).mockImplementationOnce(() => {
         throw new Error("Database failed");
       });
-      const intakes = getTodayIntakes(mockDatabase, "wednesday");
+      const intakes = getIntakesOfDay(mockDatabase, NOW);
       const { result } = await renderHook(() => useIntakeValidation(intakes, jest.fn(), jest.fn()));
 
       await act(() => result.current.validate(intakes[0].id, "taken"));

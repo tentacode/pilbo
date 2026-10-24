@@ -1,5 +1,6 @@
 import {
   areAllIntakesHandled,
+  computePastDayIntakes,
   computeTodayIntakes,
   countTodayIntakes,
   countPendingPastIntakes,
@@ -154,6 +155,37 @@ describe("computeTodayIntakes", () => {
     const { earlier } = computeTodayIntakes(INTAKES, logs, createDate(21, 0));
 
     expect(earlier.map(({ intake }) => intake.id)).toEqual(["intake-8-20", "intake-20-20"]);
+  });
+});
+
+describe("computePastDayIntakes", () => {
+  it("marks each intake as taken, taken late, skipped or missed, in order", () => {
+    const morning = createIntake(8, 20);
+    const lunch = createIntake(12, 20);
+    const evening = createIntake(20, 20);
+    const night = createIntake(22, 0);
+
+    const dayIntakes = computePastDayIntakes(
+      [morning, lunch, evening, night],
+      [
+        createIntakeLog(morning, "taken", { hour: 8, minute: 25 }),
+        createIntakeLog(lunch, "taken", { hour: 14, minute: 0 }),
+        createIntakeLog(night, "skipped", { hour: 22, minute: 5 }),
+      ],
+    );
+
+    expect(
+      dayIntakes.map(({ intake, status, validation }) => [intake.id, status, validation]),
+    ).toEqual([
+      [morning.id, "taken", { time: { hour: 8, minute: 25 }, isTakenLate: false }],
+      [lunch.id, "taken", { time: { hour: 14, minute: 0 }, isTakenLate: true }],
+      [evening.id, "missed", undefined],
+      [night.id, "skipped", { time: { hour: 22, minute: 5 }, isTakenLate: false }],
+    ]);
+  });
+
+  it("returns nothing without intakes", () => {
+    expect(computePastDayIntakes([], [])).toEqual([]);
   });
 });
 

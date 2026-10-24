@@ -1,14 +1,17 @@
 import {
   formatAsNeededTakenAt,
+  formatDayTitle,
   formatDuration,
   formatDurationAccessibilityLabel,
   formatEarlierIntakeAccessibilityLabel,
   formatIntakeStatus,
   formatLateSectionTitle,
   formatMedNames,
+  formatNextDayAccessibilityLabel,
+  formatPreviousDayAccessibilityLabel,
   formatSkipAccessibilityLabel,
   formatTakeAccessibilityLabel,
-  formatTodayDate,
+  formatSwitcherDate,
   formatUpcomingIntakeSentence,
   formatValidationAnnouncement,
 } from "./formatters";
@@ -23,15 +26,13 @@ function createTodayIntake(status: TodayIntake["status"], minutesFromNow: number
   return { intake: createIntake(12, 20), status, minutesFromNow };
 }
 
-describe("formatTodayDate", () => {
+describe("formatSwitcherDate", () => {
   it.each([
-    [new Date(2026, 9, 4), "Dimanche 4 octobre"],
-    [new Date(2026, 9, 5), "Lundi 5 octobre"],
-    [new Date(2026, 0, 1), "Jeudi 1 janvier"],
-    [new Date(2026, 7, 15), "Samedi 15 août"],
-    [new Date(2026, 11, 25), "Vendredi 25 décembre"],
-  ])("formats %s as %s", (date, expected) => {
-    expect(formatTodayDate(date, "fr")).toBe(expected);
+    ["2026-10-04", "4 oct. 2026", "dimanche 4 octobre 2026"],
+    ["2026-01-01", "1er janv. 2026", "jeudi 1 janvier 2026"],
+    ["2026-08-15", "15 août 2026", "samedi 15 août 2026"],
+  ])("formats %s as %s", (localDate, text, accessibilityLabel) => {
+    expect(formatSwitcherDate(localDate, "fr")).toEqual({ text, accessibilityLabel });
   });
 });
 
@@ -64,7 +65,41 @@ describe("formatDurationAccessibilityLabel", () => {
   });
 });
 
+describe("formatDayTitle", () => {
+  it.each([
+    ["2026-10-24", "Aujourd'hui"],
+    ["2026-10-23", "Hier"],
+    ["2026-10-22", "Avant-hier"],
+    ["2026-10-21", "Mercredi 21 octobre"],
+    ["2026-09-30", "Mercredi 30 septembre"],
+  ])("titles %s as %s", (localDate, expected) => {
+    expect(formatDayTitle(t, localDate, "2026-10-24", "fr")).toBe(expected);
+  });
+
+  it("handles yesterday across months", () => {
+    expect(formatDayTitle(t, "2026-10-31", "2026-11-01", "fr")).toBe("Hier");
+  });
+});
+
+describe("day navigation accessibility labels", () => {
+  it("names the target day", () => {
+    expect(formatPreviousDayAccessibilityLabel(t, "2026-10-19", "fr")).toBe(
+      "Jour précédent : lundi 19 octobre",
+    );
+    expect(formatNextDayAccessibilityLabel(t, "2026-10-21", "fr")).toBe(
+      "Jour suivant : mercredi 21 octobre",
+    );
+  });
+});
+
 describe("formatIntakeStatus", () => {
+  it("formats a missed intake", () => {
+    expect(formatIntakeStatus(t, createTodayIntake("missed", 0))).toEqual({
+      text: "Non prise",
+      accessibilityLabel: "Non prise",
+    });
+  });
+
   it("formats an upcoming next intake", () => {
     expect(formatIntakeStatus(t, createTodayIntake("next", 145))).toEqual({
       text: "Dans 2 h 25",
@@ -202,7 +237,21 @@ describe("in English", () => {
   });
 
   it("formats the date", () => {
-    expect(formatTodayDate(new Date(2026, 9, 5), "en")).toBe("Monday, October 5");
+    expect(formatSwitcherDate("2026-10-05", "en")).toEqual({
+      text: "Oct 5, 2026",
+      accessibilityLabel: "Monday, October 5, 2026",
+    });
+  });
+
+  it("formats the day titles and navigation labels", () => {
+    expect(formatDayTitle(t, "2026-10-24", "2026-10-24", "en")).toBe("Today");
+    expect(formatDayTitle(t, "2026-10-23", "2026-10-24", "en")).toBe("Yesterday");
+    expect(formatDayTitle(t, "2026-10-22", "2026-10-24", "en")).toBe("Day before yesterday");
+    expect(formatDayTitle(t, "2026-10-21", "2026-10-24", "en")).toBe("Wednesday, October 21");
+    expect(formatPreviousDayAccessibilityLabel(t, "2026-10-19", "en")).toBe(
+      "Previous day: Monday, October 19",
+    );
+    expect(formatIntakeStatus(t, createTodayIntake("missed", 0)).text).toBe("Not taken");
   });
 
   it("formats durations", () => {

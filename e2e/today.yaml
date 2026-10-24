@@ -10,10 +10,10 @@ name: Today lists the intakes of the day
     text: "Aujourd'hui"
 - evalScript: |
     ${
-      const days = ["Dimanche", "Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi"];
+      const days = ["dimanche", "lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi"];
       const months = ["janvier", "février", "mars", "avril", "mai", "juin", "juillet", "août", "septembre", "octobre", "novembre", "décembre"];
       const now = new Date();
-      output.today = days[now.getDay()] + " " + now.getDate() + " " + months[now.getMonth()];
+      output.today = days[now.getDay()] + " " + now.getDate() + " " + months[now.getMonth()] + " " + now.getFullYear();
     }
 - assertVisible:
     text: ${output.today}

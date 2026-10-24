@@ -1,0 +1,18 @@
+{
+  "{{date}} : {{status}}": "{{date}}: {{status}}",
+  "{{date}}, aujourd'hui": "{{date}}, today",
+  "{{date}}, aujourd'hui : {{status}}": "{{date}}, today: {{status}}",
+  "aucune prise": "no intake",
+  "Aujourd'hui": "Today",
+  "Calendrier": "Calendar",
+  "En retard": "Late",
+  "ignoré": "skipped",
+  "Ignoré": "Skipped",
+  "Mois précédent : {{month}}": "Previous month: {{month}}",
+  "Mois suivant : {{month}}": "Next month: {{month}}",
+  "non pris": "not taken",
+  "Non pris": "Not taken",
+  "pris": "taken",
+  "Pris": "Taken",
+  "pris en retard": "taken late"
+}

@@ -8,18 +8,24 @@ import { archiveIntake } from "./archiveIntake";
 import { getAllIntakes } from "./getAllIntakes";
 
 describe("archiveIntake", () => {
-  it("hides the intake and keeps its row and its logs", () => {
+  it("hides the intake, archived today, and keeps its row and its logs", () => {
     const database = createTestDatabase({ withLogs: true });
     const [morning] = getAllIntakes(database);
+    const logsBefore = countRows(database, intakeLogTable);
+    const intakesBefore = countRows(database, intakeTable);
 
-    archiveIntake(database, morning.id);
+    archiveIntake(database, morning.id, new Date(2026, 9, 24, 9, 0));
 
     expect(getAllIntakes(database).map(({ id }) => id)).not.toContain(morning.id);
-    expect(countRows(database, intakeTable)).toBe(4);
-    expect(countRows(database, intakeLogTable)).toBe(1);
-    const { isArchived } = database.get<{ isArchived: number }>(
-      sql`SELECT ${intakeTable.isArchived} AS isArchived FROM ${intakeTable} WHERE ${intakeTable.id} = ${morning.id}`,
-    );
-    expect(isArchived).toBe(1);
+    expect(countRows(database, intakeTable)).toBe(intakesBefore);
+    expect(countRows(database, intakeLogTable)).toBe(logsBefore);
+    const version = database.get<{ isArchived: number; archivedOn: string }>(sql`
+      SELECT
+        ${intakeTable.isArchived} AS isArchived,
+        ${intakeTable.archivedOn} AS archivedOn
+      FROM ${intakeTable}
+      WHERE ${intakeTable.id} = ${morning.id}
+    `);
+    expect(version).toEqual({ isArchived: 1, archivedOn: "2026-10-24" });
   });
 });

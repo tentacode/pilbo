@@ -20,7 +20,7 @@ describe("getIntakeById", () => {
     const database = createTestDatabase();
     const [morning] = getAllIntakes(database);
 
-    archiveIntake(database, morning.id);
+    archiveIntake(database, morning.id, new Date(2026, 9, 20));
 
     expect(getIntakeById(database, morning.id)).toBeUndefined();
   });

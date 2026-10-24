@@ -26,3 +26,16 @@ export function fromLocalDateTime(text: string): Date {
   const [hour, minute] = timePart.split(":").map(Number);
   return new Date(year, month - 1, day, hour, minute);
 }
+
+export function fromLocalDate(text: string): Date {
+  const [year, month, day] = text.split("-").map(Number);
+  return new Date(year, month - 1, day);
+}
+
+export function addDays(date: Date, days: number): Date {
+  return new Date(date.getFullYear(), date.getMonth(), date.getDate() + days);
+}
+
+export function addDaysToLocalDate(localDate: string, days: number): string {
+  return toLocalDate(addDays(fromLocalDate(localDate), days));
+}

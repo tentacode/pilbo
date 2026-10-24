@@ -14,7 +14,7 @@ describe("getStocksData", () => {
     const medId = findMedId(database, "Quviviq", "50 mg");
     saveStock(database, { medId, quantity: 12, boxSize: 28, lowStockDays: 5 });
     const [firstIntake, secondIntake] = getStocksData(database, NOW).intakes;
-    archiveIntake(database, secondIntake.id);
+    archiveIntake(database, secondIntake.id, NOW);
     for (const expectedIntakeAt of ["2026-10-18T08:20", "2026-10-19T08:20"]) {
       database
         .insert(intakeLogTable)

@@ -1,7 +1,7 @@
 import type { Intake, Weekday } from "@/domain/intake";
 import type { Med } from "@/domain/med";
 
-export type IntakeStatus = "late" | "next" | "later" | "taken" | "skipped";
+export type IntakeStatus = "late" | "next" | "later" | "taken" | "skipped" | "missed";
 
 export type IntakeValidation = {
   time: Intake["time"];
@@ -25,6 +25,12 @@ export type TodaySections = {
 export type FormattedText = {
   text: string;
   accessibilityLabel: string;
+};
+
+export type MedLogOfDay = {
+  id: string;
+  med: Med;
+  takenAt: string;
 };
 
 export type AsNeededMedOfDay = {

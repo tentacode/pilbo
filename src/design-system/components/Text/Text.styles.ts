@@ -42,4 +42,5 @@ export const toneStyles = StyleSheet.create({
   onInk: { color: colors.onInk },
   alert: { color: colors.alertInk },
   success: { color: colors.successInk },
+  warning: { color: colors.warningInk },
 });

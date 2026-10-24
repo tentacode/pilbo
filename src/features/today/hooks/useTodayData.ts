@@ -6,7 +6,7 @@ import { fromLocalDateTime, toLocalDate } from "@/domain/intakeLog";
 import { database } from "@/shared/database/database";
 
 import { useCurrentMinute } from "@/features/today/hooks/useCurrentMinute";
-import { getTodayData } from "@/features/today/queries/getTodayData";
+import { getDayData } from "@/features/today/queries/getDayData";
 import { getUpcomingIntake } from "@/features/today/queries/getUpcomingIntake";
 import {
   areAllIntakesHandled,
@@ -33,16 +33,16 @@ type TodayData = {
 export function useTodayData(): TodayData {
   const now = useCurrentMinute();
   const localDate = toLocalDate(now);
-  const [storedData, setStoredData] = useState(() => getTodayData(database, now));
+  const [storedData, setStoredData] = useState(() => getDayData(database, now));
 
   const refresh = useCallback(() => {
-    setStoredData(getTodayData(database, new Date()));
+    setStoredData(getDayData(database, new Date()));
   }, []);
 
   useFocusEffect(refresh);
 
   if (storedData.localDate !== localDate) {
-    setStoredData(getTodayData(database, now));
+    setStoredData(getDayData(database, now));
   }
 
   const upcomingIntake = useMemo(

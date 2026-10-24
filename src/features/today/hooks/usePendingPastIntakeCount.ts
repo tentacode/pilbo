@@ -3,7 +3,7 @@ import { useCallback, useSyncExternalStore } from "react";
 import { database, subscribeToDatabaseChanges } from "@/shared/database/database";
 
 import { useCurrentMinute } from "@/features/today/hooks/useCurrentMinute";
-import { getTodayData } from "@/features/today/queries/getTodayData";
+import { getDayData } from "@/features/today/queries/getDayData";
 import {
   computeTodayIntakes,
   countPendingPastIntakes,
@@ -13,7 +13,7 @@ export function usePendingPastIntakeCount(): number {
   const now = useCurrentMinute();
 
   const readPendingPastIntakeCount = useCallback(() => {
-    const { intakes, intakeLogs } = getTodayData(database, now);
+    const { intakes, intakeLogs } = getDayData(database, now);
     return countPendingPastIntakes(computeTodayIntakes(intakes, intakeLogs, now));
   }, [now]);
 

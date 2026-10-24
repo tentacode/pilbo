@@ -1,12 +1,14 @@
 import { sql } from "drizzle-orm";
 
 import type { Intake, Weekday } from "@/domain/intake";
+import { toLocalDate } from "@/domain/intakeLog";
 import { intakeMedTable, intakeTable, medTable } from "@/shared/database/schema";
 import type { Database } from "@/shared/database/types";
 
 import { toMed } from "@/features/pillbox/queries/medRecord";
+import { weekdayOf } from "@/features/today/utils/computeTodayIntakes";
 
-type TodayIntakeMedRecord = {
+type IntakeMedOfDayRecord = {
   intakeId: string;
   hour: number;
   minute: number;
@@ -21,8 +23,9 @@ type TodayIntakeMedRecord = {
   quantity: number;
 };
 
-export function getTodayIntakes(database: Database, weekday: Weekday): Intake[] {
-  const records = database.all<TodayIntakeMedRecord>(sql`
+export function getIntakesOfDay(database: Database, date: Date): Intake[] {
+  const localDate = toLocalDate(date);
+  const records = database.all<IntakeMedOfDayRecord>(sql`
     SELECT
       ${intakeTable.id} AS intakeId,
       ${intakeTable.hour} AS hour,
@@ -39,8 +42,9 @@ export function getTodayIntakes(database: Database, weekday: Weekday): Intake[] 
     FROM ${intakeTable}
     INNER JOIN ${intakeMedTable} ON ${intakeMedTable.intakeId} = ${intakeTable.id}
     INNER JOIN ${medTable} ON ${medTable.id} = ${intakeMedTable.medId}
-    WHERE ${intakeTable.isArchived} = 0
-      AND EXISTS (SELECT 1 FROM json_each(${intakeTable.days}) WHERE value = ${weekday})
+    WHERE ${intakeTable.createdOn} <= ${localDate}
+      AND (${intakeTable.archivedOn} IS NULL OR ${intakeTable.archivedOn} > ${localDate})
+      AND EXISTS (SELECT 1 FROM json_each(${intakeTable.days}) WHERE value = ${weekdayOf(date)})
     ORDER BY ${intakeTable.hour}, ${intakeTable.minute}
   `);
 

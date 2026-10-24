@@ -14,18 +14,15 @@ export const styles = StyleSheet.create({
   },
   row: {
     flexDirection: "row",
-    flexWrap: "wrap",
     alignItems: "center",
     justifyContent: "space-between",
     gap: spacing.medium,
   },
-  date: {
-    flexShrink: 1,
-  },
   title: {
     marginTop: spacing.extraSmall,
   },
-  summary: {
-    marginTop: spacing.small,
+  todayLink: {
+    alignSelf: "flex-start",
+    marginLeft: -spacing.buttonHorizontalCompact,
   },
 });

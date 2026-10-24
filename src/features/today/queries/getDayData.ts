@@ -4,25 +4,24 @@ import type { Database } from "@/shared/database/types";
 
 import { getAsNeededMeds } from "@/features/pillbox/queries/getAsNeededMeds";
 import { sortMeds } from "@/features/pillbox/utils/sorters";
-import { weekdayOf } from "@/features/today/utils/computeTodayIntakes";
 import type { AsNeededMedOfDay } from "@/features/today/utils/todayTypes";
 import { getIntakeLogsOfDay } from "./getIntakeLogsOfDay";
 import { getLastMedLogsOfDay } from "./getLastMedLogsOfDay";
-import { getTodayIntakes } from "./getTodayIntakes";
+import { getIntakesOfDay } from "./getIntakesOfDay";
 
-export type TodayStoredData = {
+export type DayStoredData = {
   localDate: string;
   intakes: Intake[];
   intakeLogs: IntakeLog[];
   asNeededMeds: AsNeededMedOfDay[];
 };
 
-export function getTodayData(database: Database, date: Date): TodayStoredData {
+export function getDayData(database: Database, date: Date): DayStoredData {
   const localDate = toLocalDate(date);
   const lastMedLogs = getLastMedLogsOfDay(database, localDate);
   return {
     localDate,
-    intakes: getTodayIntakes(database, weekdayOf(date)).map(sortIntakeMeds),
+    intakes: getIntakesOfDay(database, date).map(sortIntakeMeds),
     intakeLogs: getIntakeLogsOfDay(database, localDate),
     asNeededMeds: sortMeds(getAsNeededMeds(database)).map((med) => ({
       med,

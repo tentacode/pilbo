@@ -84,7 +84,7 @@ Détails : [`docs/database.md`](database.md).
 Stack : i18next + react-i18next, extraction avec `i18next-cli` (`i18next.config.ts`). Français et anglais.
 
 - **Clé = texte français** : `t("Valider la prise")`. Pas de séparateurs (`.` et `:` autorisés dans le texte).
-- **Un namespace par feature** : `today`, `pillbox`, `stocks`, `settings`, `onboarding`, `notifications`, et `common` (navigation, écrans d'erreur, textes partagés).
+- **Un namespace par feature** : `today`, `calendar`, `pillbox`, `stocks`, `settings`, `onboarding`, `notifications`, et `common` (navigation, écrans d'erreur, textes partagés).
 - **Fichiers** : `src/shared/i18n/locales/<fr|en>/<namespace>.json`. En FR la valeur est la clé (générée), sauf les pluriels.
 - **Clés typées** : une clé inconnue est une erreur TypeScript (`src/shared/i18n/i18next.d.ts`).
 

@@ -1,0 +1,18 @@
+{
+  "{{date}} : {{status}}": "{{date}} : {{status}}",
+  "{{date}}, aujourd'hui": "{{date}}, aujourd'hui",
+  "{{date}}, aujourd'hui : {{status}}": "{{date}}, aujourd'hui : {{status}}",
+  "aucune prise": "aucune prise",
+  "Aujourd'hui": "Aujourd'hui",
+  "Calendrier": "Calendrier",
+  "En retard": "En retard",
+  "ignoré": "ignoré",
+  "Ignoré": "Ignoré",
+  "Mois précédent : {{month}}": "Mois précédent : {{month}}",
+  "Mois suivant : {{month}}": "Mois suivant : {{month}}",
+  "non pris": "non pris",
+  "Non pris": "Non pris",
+  "pris": "pris",
+  "Pris": "Pris",
+  "pris en retard": "pris en retard"
+}

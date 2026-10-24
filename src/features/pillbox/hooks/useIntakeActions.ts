@@ -14,11 +14,11 @@ export function rescheduleAfterChange() {
 export function useIntakeActions() {
   return {
     save: (draft: IntakeDraft) => {
-      saveIntake(database, toIntakeToSave(draft));
+      saveIntake(database, toIntakeToSave(draft), new Date());
       rescheduleAfterChange();
     },
     archive: (intakeId: string) => {
-      archiveIntake(database, intakeId);
+      archiveIntake(database, intakeId, new Date());
       rescheduleAfterChange();
     },
   };

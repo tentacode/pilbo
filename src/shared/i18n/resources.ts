@@ -1,3 +1,4 @@
+import enCalendar from "./locales/en/calendar.json";
 import enCommon from "./locales/en/common.json";
 import enNotifications from "./locales/en/notifications.json";
 import enOnboarding from "./locales/en/onboarding.json";
@@ -5,6 +6,7 @@ import enPillbox from "./locales/en/pillbox.json";
 import enSettings from "./locales/en/settings.json";
 import enStocks from "./locales/en/stocks.json";
 import enToday from "./locales/en/today.json";
+import frCalendar from "./locales/fr/calendar.json";
 import frCommon from "./locales/fr/common.json";
 import frNotifications from "./locales/fr/notifications.json";
 import frOnboarding from "./locales/fr/onboarding.json";
@@ -24,6 +26,7 @@ export const resources = {
     settings: frSettings,
     onboarding: frOnboarding,
     notifications: frNotifications,
+    calendar: frCalendar,
   },
   en: {
     common: enCommon,
@@ -33,6 +36,7 @@ export const resources = {
     settings: enSettings,
     onboarding: enOnboarding,
     notifications: enNotifications,
+    calendar: enCalendar,
   },
 } as const;
 

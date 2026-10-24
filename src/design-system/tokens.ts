@@ -31,6 +31,9 @@ export const colors = {
   skipChip: "#ECE8F5",
   successChip: "#DDF3E4",
   successInk: "#1E5A34",
+  warningChip: "#FFEFC2",
+  warningInk: "#6B4A00",
+  calendarSkipLine: "#9F97BC",
   pillHighlight: "#FFFFFF",
   grabber: "#D3CEE2",
   stepperBorder: "#D6CFE7",
@@ -107,14 +110,23 @@ export const spacing = {
   previewRowHorizontal: 14,
   dayButtonGap: 6,
   customColorButtonTop: 12,
+  calendarGap: 4,
+  calendarWeekdaysTop: 16,
+  calendarLegendTop: 18,
+  legendVertical: 14,
+  legendRowGap: 10,
+  legendColumnGap: 18,
 } as const;
 
 export const radius = {
+  legendSwatch: 8,
   segmentItem: 12,
+  calendarDay: 14,
   segment: 16,
   shapeOption: 18,
   previewRow: 18,
   colorPanel: 20,
+  legend: 20,
   group: 22,
   card: 24,
   largeCard: 26,
@@ -126,11 +138,13 @@ export const borderWidth = {
   thin: 1,
   regular: 1.5,
   selected: 2,
+  today: 2.5,
   thick: 3,
 } as const;
 
 export const sizes = {
   touchTarget: 44,
+  iconTiny: 14,
   iconSmall: 16,
   icon: 20,
   iconLarge: 24,
@@ -183,6 +197,8 @@ export const sizes = {
   settingsLabelMinimumWidth: 120,
   unconstrainedMeasureWidth: 10000,
   colorWheelCenter: 18,
+  calendarDayMinimumHeight: 56,
+  legendSwatch: 26,
 } as const;
 
 export const fontFamily = {
@@ -235,6 +251,7 @@ export const pressedOpacity = 0.6;
 
 export const maximumFontScale = {
   tabLabel: 1.5,
+  calendarGrid: 1.6,
 } as const;
 
 export const shadow = {

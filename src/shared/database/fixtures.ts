@@ -49,7 +49,7 @@ export const medFixtures = {
 
 export type MedFixtureKey = keyof typeof medFixtures;
 
-export interface IntakeFixture extends NewIntakeRow {
+export interface IntakeFixture extends Omit<NewIntakeRow, "createdOn"> {
   medQuantities: { med: MedFixtureKey; quantity: number }[];
 }
 
@@ -103,6 +103,38 @@ export const stockFixtures: StockFixture[] = [
   { med: "lamictal50", quantity: 45, boxSize: 50, lowStockDays: 7 },
   { med: "lamictal100", quantity: 56, boxSize: 60, lowStockDays: 7 },
 ];
+
+export const HISTORY_DAYS = 45;
+
+export const intakeVersionFixture = {
+  intake: intakeFixtures[1],
+  previousTime: { hour: 12, minute: 0 },
+  daysAgo: 10,
+};
+
+export type HistoryDayKind = "late" | "partlyForgotten" | "allSkipped" | "allForgotten";
+
+export const historyDayFixtures: Record<number, HistoryDayKind> = {
+  3: "late",
+  6: "allSkipped",
+  9: "allForgotten",
+  12: "late",
+  15: "partlyForgotten",
+  20: "late",
+  27: "partlyForgotten",
+  33: "late",
+};
+
+export const historyLogFixture = {
+  minutesAfterExpected: 5,
+  lateMinutesAfterExpected: 95,
+};
+
+export const asNeededLogFixture: { med: MedFixtureKey; daysAgo: number[]; time: string } = {
+  med: "prazepam25",
+  daysAgo: [2, 5, 14, 21, 30],
+  time: "15:40",
+};
 
 export const intakeLogFixture: {
   intake: IntakeFixture;

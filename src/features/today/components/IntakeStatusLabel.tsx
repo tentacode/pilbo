@@ -20,7 +20,7 @@ const APPEARANCES: Record<Appearance, { icon: IconName; tone: TextTone; iconColo
 };
 
 function appearanceOf({ status, validation }: TodayIntake): Appearance {
-  if (status === "late" || (status === "taken" && validation?.isTakenLate)) {
+  if (status === "late" || status === "missed" || (status === "taken" && validation?.isTakenLate)) {
     return "late";
   }
   if (status === "taken" || status === "skipped") {

@@ -41,6 +41,7 @@ Basically we are looking for a proof of concept, in doubt ask if it's in the sco
   - Reads: raw SQL with the `sql` tag (``database.all<Type>(sql`...`)``), no query builder for selects. Reference schema columns (`${table.column}`) instead of hardcoded names, and alias columns to camelCase (`AS takenAt`).
   - Writes: Drizzle ORM (`insert`, `update`, `delete`), conditions written with `sql`.
   - Raw SQL result types are casts: cover repositories with Jest tests.
+  - Intakes are versioned (`created_on` / `archived_on`): always go through `saveIntake` / `archiveIntake`, never update the schedule of an intake with history directly. See `docs/database.md`.
 - UI state: local state or React context first. **Zustand** only if a UI state must be shared between distant components. Never for persisted data (SQLite only).
   - Exception: small persisted UI settings (e.g. `onboardingDone`, user preferences in `features/settings/store/settingsStore.ts`) use Zustand `persist` with `expo-sqlite/kv-store`, through the shared sync storage `shared/storage/synchronousStorage.ts` to avoid a flash at startup.
 - Data is **100% local**: no backend, no user account.
@@ -71,6 +72,7 @@ Package manager is **pnpm**. Use the `Makefile` (`make help` lists everything):
 - `make test-e2e`: Maestro flows in `e2e/` (app must be installed on a booted simulator). If the iPhone is plugged in, Maestro targets it and fails: run `maestro --device <simulator id> test e2e/`.
   - The Maestro CLI and the Maestro MCP server cannot drive the same simulator at the same time ("Unable to set permissions… Failed to connect"): use one or the other.
   - A button hidden under the footer of a modal (`Sheet`) is seen as visible by Maestro, and the tap lands on the footer: `scroll` before `tapOn`.
+  - If both the Maestro CLI and the MCP fail (`Failed to connect`), reboot the simulator: `xcrun simctl shutdown <id>` then `xcrun simctl boot <id>`.
 - `make db-generate`: generate a SQLite migration from `src/shared/database/schema.ts`.
 - Debug: `EXPO_PUBLIC_DEBUG_MODE=true` only seeds the test data and skips the onboarding on first launch (e2e). The in-app debug section (delete data, reset with test data, simulate an error) appears after 10 taps on « Version » in the settings.
 

@@ -26,4 +26,22 @@ describe("IconButton", () => {
 
     expect(Haptics.impactAsync).toHaveBeenCalledWith(Haptics.ImpactFeedbackStyle.Light);
   });
+
+  it("is disabled without calling onPress", async () => {
+    const onPress = jest.fn();
+    await render(
+      <IconButton
+        icon="chevronRight"
+        accessibilityLabel="Jour suivant"
+        onPress={onPress}
+        isDisabled
+      />,
+    );
+
+    const button = screen.getByRole("button", { name: "Jour suivant" });
+    await fireEvent.press(button);
+
+    expect(button).toBeDisabled();
+    expect(onPress).not.toHaveBeenCalled();
+  });
 });

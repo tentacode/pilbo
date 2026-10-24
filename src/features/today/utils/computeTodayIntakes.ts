@@ -1,7 +1,7 @@
 import type { Intake, Weekday } from "@/domain/intake";
 import { fromLocalDateTime, type IntakeLog } from "@/domain/intakeLog";
 
-import type { IntakeValidation, TodaySections } from "./todayTypes";
+import type { IntakeValidation, TodayIntake, TodaySections } from "./todayTypes";
 
 export const LATE_THRESHOLD_MINUTES = 60;
 
@@ -21,11 +21,11 @@ export function weekdayOf(date: Date): Weekday {
   return WEEKDAYS_FROM_SUNDAY[date.getDay()];
 }
 
-function minutesFromNow({ hour, minute }: Intake["time"], now: Date): number {
+export function minutesFromNow({ hour, minute }: Intake["time"], now: Date): number {
   return hour * 60 + minute - (now.getHours() * 60 + now.getMinutes());
 }
 
-function toValidation({ status, expectedIntakeAt, createdAt }: IntakeLog): IntakeValidation {
+export function toValidation({ status, expectedIntakeAt, createdAt }: IntakeLog): IntakeValidation {
   const expectedDate = fromLocalDateTime(expectedIntakeAt);
   const createdDate = fromLocalDateTime(createdAt);
   const minutesLate = (createdDate.getTime() - expectedDate.getTime()) / MILLISECONDS_PER_MINUTE;
@@ -62,6 +62,16 @@ export function computeTodayIntakes(
     }
   }
   return sections;
+}
+
+export function computePastDayIntakes(intakes: Intake[], intakeLogs: IntakeLog[]): TodayIntake[] {
+  const logsByIntakeId = new Map(intakeLogs.map((intakeLog) => [intakeLog.intakeId, intakeLog]));
+  return intakes.map((intake) => {
+    const intakeLog = logsByIntakeId.get(intake.id);
+    return intakeLog
+      ? { intake, status: intakeLog.status, minutesFromNow: 0, validation: toValidation(intakeLog) }
+      : { intake, status: "missed", minutesFromNow: 0 };
+  });
 }
 
 export function countPendingIntakes({ late, next, later }: TodaySections): number {

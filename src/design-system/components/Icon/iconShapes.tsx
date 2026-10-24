@@ -32,6 +32,12 @@ export const iconShapes = {
   close: <Path d="M6.5 6.5l11 11M17.5 6.5l-11 11" />,
   chevronRight: <Path d="M9.5 6l6 6-6 6" />,
   chevronLeft: <Path d="M14.5 6l-6 6 6 6" />,
+  calendar: (
+    <>
+      <Rect x={4} y={5.5} width={16} height={14.5} rx={3} />
+      <Path d="M4 10h16M8.5 3.5v4M15.5 3.5v4" />
+    </>
+  ),
   pencil: <Path d="M15.5 5.5l3 3L9 18l-4 1 1-4z" />,
   trash: (
     <>

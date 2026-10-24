@@ -61,6 +61,7 @@ export default function RootLayout() {
             <Stack.Screen name="intake" options={{ presentation: "modal" }} />
             <Stack.Screen name="as-needed" options={{ presentation: "modal" }} />
             <Stack.Screen name="stock" options={{ presentation: "modal" }} />
+            <Stack.Screen name="day/[date]" options={{ presentation: "modal" }} />
           </Stack.Protected>
         </Stack>
       )}
