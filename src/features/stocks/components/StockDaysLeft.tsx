@@ -1,4 +1,5 @@
 import { Text } from "@/design-system/components/Text/Text";
+import { useTranslation } from "react-i18next";
 
 import { formatDaysLeft } from "@/features/stocks/utils/formatters";
 import type { StockItem } from "@/features/stocks/utils/stockTypes";
@@ -10,7 +11,8 @@ type StockDaysLeftProps = {
 };
 
 export function StockDaysLeft({ stockItem, isStacked }: StockDaysLeftProps) {
-  const daysLeft = formatDaysLeft(stockItem);
+  const { t } = useTranslation("stocks");
+  const daysLeft = formatDaysLeft(t, stockItem);
   const alignment = isStacked ? styles.stacked : styles.trailing;
 
   if (daysLeft.kind === "text") {

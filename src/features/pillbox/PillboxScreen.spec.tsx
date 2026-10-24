@@ -5,6 +5,7 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 
 import { createTestDatabase } from "@/shared/database/testDatabase";
 import type { Database } from "@/shared/database/types";
+import { renderInEnglish } from "@/shared/i18n/testHelpers";
 
 import { PillboxScreen } from "./PillboxScreen";
 import { getAllIntakes } from "./queries/getAllIntakes";
@@ -91,7 +92,7 @@ describe("PillboxScreen", () => {
     const [morning] = getAllIntakes(mockDatabase);
     await render(<PillboxScreen />, { wrapper });
 
-    await fireEvent.press(screen.getByRole("button", { name: /^8 h 20/ }));
+    await fireEvent.press(screen.getByRole("button", { name: /^08:20/ }));
 
     expect(router.push).toHaveBeenCalledWith({
       pathname: "/intake",
@@ -112,5 +113,16 @@ describe("PillboxScreen", () => {
       params: { medId: prazepam.id },
     });
     expect(router.push).toHaveBeenCalledWith("/as-needed/med-picker");
+  });
+
+  it("is translated in English", async () => {
+    await renderInEnglish(<PillboxScreen />, { wrapper });
+
+    expect(screen.getByRole("header", { name: "Pillbox" })).toBeOnTheScreen();
+    expect(screen.getByRole("button", { name: "New intake" })).toBeOnTheScreen();
+    expect(screen.getByRole("header", { name: "As needed" })).toBeOnTheScreen();
+    expect(
+      screen.getByRole("button", { name: /^08:20\. .*, reminder every 10 minutes\./ }),
+    ).toBeOnTheScreen();
   });
 });

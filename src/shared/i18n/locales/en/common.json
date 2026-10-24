@@ -1,0 +1,22 @@
+{
+  "{{count}} minutes_one": "{{count}} minute",
+  "{{count}} minutes_other": "{{count}} minutes",
+  "{{count}} prises à valider_one": "{{count}} intake to confirm",
+  "{{count}} prises à valider_other": "{{count}} intakes to confirm",
+  "{{count}} stocks bas_one": "{{count}} low stock",
+  "{{count}} stocks bas_other": "{{count}} low stocks",
+  "{{minutes}} min": "{{minutes}} min",
+  "Aujourd'hui": "Today",
+  "Contactez-nous": "Contact us",
+  "Détail technique : {{details}}": "Technical details: {{details}}",
+  "Données indisponibles": "Data unavailable",
+  "Oups, petit contretemps": "Oops, a small hiccup",
+  "Ouvre un e-mail à l’équipe Pilbo": "Opens an e-mail to the Pilbo team",
+  "Pilbo : problème rencontré": "Pilbo: issue encountered",
+  "Pilulier": "Pillbox",
+  "Quelque chose ne s’est pas passé comme prévu. Fermez puis relancez l’app, et vérifiez si c’est corrigé.": "Something didn't go as planned. Try closing and reopening the app to see if it's fixed.",
+  "Réglages": "Settings",
+  "Si le problème persiste, écrivez-nous.": "If the problem persists, write to us.",
+  "Stock": "Stock",
+  "Vos données n’ont pas pu être chargées. Essayez de fermer puis relancer Pilbo.": "Your data could not be loaded. Try closing and reopening Pilbo."
+}

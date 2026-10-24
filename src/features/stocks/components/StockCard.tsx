@@ -1,4 +1,5 @@
 import { Pressable, View } from "react-native";
+import { useTranslation } from "react-i18next";
 
 import { Pill } from "@/design-system/components/Pill/Pill";
 import { Text } from "@/design-system/components/Text/Text";
@@ -17,6 +18,7 @@ import { StockDaysLeft } from "./StockDaysLeft";
 import { StockMedName } from "./StockMedName";
 import { StockProgressBar } from "./StockProgressBar";
 import { StockStatusLabel } from "./StockStatusLabel";
+import { useLanguage } from "@/shared/i18n/hooks/useLanguage";
 
 type StockCardProps = {
   stockItem: StockItem;
@@ -24,6 +26,8 @@ type StockCardProps = {
 };
 
 export function StockCard({ stockItem, onPress }: StockCardProps) {
+  const { t } = useTranslation("stocks");
+  const language = useLanguage();
   const { med, stock, forecast } = stockItem;
   const isLow = forecast.status === "low";
   const { onRowLayout, onTrailingLayout, isStacked } = useStockCardLayout();
@@ -31,7 +35,7 @@ export function StockCard({ stockItem, onPress }: StockCardProps) {
   return (
     <Pressable
       accessibilityRole="button"
-      accessibilityLabel={formatStockCardAccessibilityLabel(stockItem)}
+      accessibilityLabel={formatStockCardAccessibilityLabel(t, language, stockItem)}
       onPress={onPress}
       style={({ pressed }) => [
         styles.card,
@@ -44,7 +48,7 @@ export function StockCard({ stockItem, onPress }: StockCardProps) {
         <View style={[styles.texts, isStacked && styles.stackedTexts]}>
           <StockMedName med={med} />
           <Text variant="small" tone="secondary">
-            {formatPillCount(stock.quantity)}
+            {formatPillCount(t, stock.quantity)}
           </Text>
           {isStacked ? <StockDaysLeft stockItem={stockItem} isStacked /> : null}
         </View>
@@ -55,7 +59,9 @@ export function StockCard({ stockItem, onPress }: StockCardProps) {
         )}
       </View>
       <StockProgressBar ratio={stockRatio(stock)} isLow={isLow} />
-      {isLow ? <StockStatusLabel text={formatLowStockMention(stockItem)} isLow /> : null}
+      {isLow ? (
+        <StockStatusLabel text={formatLowStockMention(t, language, stockItem)} isLow />
+      ) : null}
     </Pressable>
   );
 }

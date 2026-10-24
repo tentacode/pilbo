@@ -1,9 +1,10 @@
 import { Pressable, View } from "react-native";
+import { useTranslation } from "react-i18next";
 
 import { Icon } from "@/design-system/components/Icon/Icon";
 import { Text } from "@/design-system/components/Text/Text";
 import { colors } from "@/design-system/tokens";
-import { formatIntakeTime, type Intake } from "@/domain/intake";
+import { type Intake } from "@/domain/intake";
 
 import {
   formatIntakeAccessibilityLabel,
@@ -12,6 +13,8 @@ import {
 import { pillStackLayoutOf } from "@/features/pillbox/utils/pillStack";
 import { styles } from "./IntakeCard.styles";
 import { IntakeMedRow } from "./IntakeMedRow";
+import { formatIntakeTime } from "@/shared/i18n/formatters";
+import { useLanguage } from "@/shared/i18n/hooks/useLanguage";
 
 type IntakeCardProps = {
   intake: Intake;
@@ -19,11 +22,13 @@ type IntakeCardProps = {
 };
 
 export function IntakeCard({ intake, onPress }: IntakeCardProps) {
+  const { t } = useTranslation("pillbox");
+  const language = useLanguage();
   const pillStackLayout = pillStackLayoutOf(intake.medQuantities);
   return (
     <Pressable
       accessibilityRole="button"
-      accessibilityLabel={formatIntakeAccessibilityLabel(intake)}
+      accessibilityLabel={formatIntakeAccessibilityLabel(t, language, intake)}
       onPress={onPress}
       style={({ pressed }) => [styles.card, pressed && styles.pressed]}
     >
@@ -32,7 +37,7 @@ export function IntakeCard({ intake, onPress }: IntakeCardProps) {
         <Icon name="chevronRight" color={colors.inkSecondary} />
       </View>
       <Text variant="small" tone="secondary" style={styles.schedule}>
-        {formatIntakeSchedule(intake)}
+        {formatIntakeSchedule(t, language, intake)}
       </Text>
       <View style={styles.meds}>
         {intake.medQuantities.map((medQuantity) => (

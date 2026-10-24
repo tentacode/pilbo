@@ -8,15 +8,15 @@ name: Pillbox lists the intakes
     timeout: 10000
 - tapOn: "Pilulier"
 - assertVisible:
-    text: "8 h 20.*Lamictal 50 mg, quantité 1. Lithium 250 mg, quantité 1"
+    text: "08:20.*Lamictal 50 mg, quantité 1. Lithium 250 mg, quantité 1"
 - assertVisible:
-    text: "12 h 20.*Lithium 250 mg, quantité 1"
+    text: "12:20.*Lithium 250 mg, quantité 1"
 - scrollUntilVisible:
     element:
-      text: "20 h 20.*Lithium 250 mg, quantité 2"
+      text: "20:20.*Lithium 250 mg, quantité 2"
 - scrollUntilVisible:
     element:
-      text: "22 h.*Lamictal 100 mg, quantité 1. Prégabaline 50 mg, quantité 1. Quviviq 50 mg, quantité 1"
+      text: "22:00.*Lamictal 100 mg, quantité 1. Prégabaline 50 mg, quantité 1. Quviviq 50 mg, quantité 1"
 - scrollUntilVisible:
     element:
       text: "Hors planning"

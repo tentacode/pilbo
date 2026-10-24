@@ -1,6 +1,7 @@
 import { useLocalSearchParams } from "expo-router";
 import { useState } from "react";
 import { AccessibilityInfo, View } from "react-native";
+import { useTranslation } from "react-i18next";
 
 import { Button } from "@/design-system/components/Button/Button";
 import { Sheet } from "@/design-system/components/Sheet/Sheet";
@@ -14,7 +15,6 @@ import { useModalClosing } from "@/features/pillbox/hooks/useModalClosing";
 import { SettingsRow } from "@/features/settings/components/SettingsRow";
 import { SettingsSection } from "@/features/settings/components/SettingsSection";
 import { LOW_STOCK_DAYS, useSettingsStore } from "@/features/settings/store/settingsStore";
-import { formatDayCount } from "@/features/settings/utils/formatters";
 import { useCurrentMinute } from "@/features/today/hooks/useCurrentMinute";
 import { BoxSizeInput } from "./components/BoxSizeInput";
 import { StockEditHeader } from "./components/StockEditHeader";
@@ -22,7 +22,7 @@ import { StockSummaryCard } from "./components/StockSummaryCard";
 import { StopTrackingDialog } from "./components/StopTrackingDialog";
 import { useStockActions } from "./hooks/useStockActions";
 import { useStockEditData } from "./hooks/useStockEditData";
-import { formatMedSchedule, formatThresholdHelp } from "./utils/formatters";
+import { formatDayCount, formatMedSchedule, formatThresholdHelp } from "./utils/formatters";
 import {
   addBox,
   createStockDraft,
@@ -39,8 +39,6 @@ import {
 } from "./utils/stockForecast";
 import { styles } from "./StockEditScreen.styles";
 
-const BOX_SIZE_ERROR = `Indiquez une taille de boîte entre ${BOX_SIZE.minimum} et ${BOX_SIZE.maximum} comprimés.`;
-
 export function StockEditScreen() {
   const { medId } = useLocalSearchParams<{ medId: string }>();
   const { med, stock, intakes, intakeLogs } = useStockEditData(medId);
@@ -55,7 +53,15 @@ type StockEditFormProps = Omit<ReturnType<typeof useStockEditData>, "med"> & {
 };
 
 function StockEditForm({ med, stock, intakes, intakeLogs }: StockEditFormProps) {
+  const { t } = useTranslation("stocks");
   const now = useCurrentMinute();
+  const boxSizeErrorText = t(
+    "Indiquez une taille de boîte entre {{minimum}} et {{maximum}} comprimés.",
+    {
+      minimum: BOX_SIZE.minimum,
+      maximum: BOX_SIZE.maximum,
+    },
+  );
   const defaultLowStockDays = useSettingsStore((state) => state.lowStockDays);
   const [initialDraft] = useState(() => createStockDraft(med.id, stock, defaultLowStockDays));
   const [draft, setDraft] = useState(initialDraft);
@@ -86,8 +92,8 @@ function StockEditForm({ med, stock, intakes, intakeLogs }: StockEditFormProps) 
   function handleSave() {
     const stockToSave = toStock(draft);
     if (stockToSave === undefined) {
-      setBoxSizeError(BOX_SIZE_ERROR);
-      AccessibilityInfo.announceForAccessibility(BOX_SIZE_ERROR);
+      setBoxSizeError(boxSizeErrorText);
+      AccessibilityInfo.announceForAccessibility(boxSizeErrorText);
       return;
     }
     stockActions.save(stockToSave);
@@ -102,12 +108,12 @@ function StockEditForm({ med, stock, intakes, intakeLogs }: StockEditFormProps) 
 
   return (
     <Sheet
-      title={stock === undefined ? "Ajouter un stock" : "Modifier le stock"}
-      leftAction={{ label: "Annuler", onPress: modalClosing.requestClose }}
-      footer={<Button label="Enregistrer" icon="check" onPress={handleSave} />}
+      title={stock === undefined ? t("Ajouter un stock") : t("Modifier le stock")}
+      leftAction={{ label: t("Annuler"), onPress: modalClosing.requestClose }}
+      footer={<Button label={t("Enregistrer")} icon="check" onPress={handleSave} />}
     >
       <View style={styles.content}>
-        <StockEditHeader med={med} schedule={formatMedSchedule(med, intakes)} />
+        <StockEditHeader med={med} schedule={formatMedSchedule(t, med, intakes)} />
         <StockSummaryCard
           med={med}
           quantity={draft.quantity}
@@ -115,15 +121,19 @@ function StockEditForm({ med, stock, intakes, intakeLogs }: StockEditFormProps) 
           ratio={boxSize === undefined ? 0 : stockRatio(draftStock)}
         />
         <Button
-          label={boxSize === undefined ? "Ajouter une boîte" : `Ajouter une boîte de ${boxSize}`}
+          label={
+            boxSize === undefined
+              ? t("Ajouter une boîte")
+              : t("Ajouter une boîte de {{boxSize}}", { boxSize })
+          }
           variant="secondary"
           size="large"
           icon="plus"
           isDisabled={boxSize === undefined}
           onPress={() => setDraft(addBox)}
         />
-        <SettingsSection title="Corriger le nombre">
-          <SettingsRow label="Comprimés restants">
+        <SettingsSection title={t("Corriger le nombre")}>
+          <SettingsRow label={t("Comprimés restants")}>
             <Stepper
               value={draft.quantity}
               min={STOCK_QUANTITY.minimum}
@@ -131,19 +141,20 @@ function StockEditForm({ med, stock, intakes, intakeLogs }: StockEditFormProps) 
               onChange={(quantity) => update({ quantity })}
               isEditable
               labels={{
-                value: "Comprimés restants",
-                decrement: "Un comprimé de moins",
-                increment: "Un comprimé de plus",
+                value: t("Comprimés restants"),
+                decrement: t("Un comprimé de moins"),
+                increment: t("Un comprimé de plus"),
               }}
             />
           </SettingsRow>
         </SettingsSection>
         <View>
           <SettingsSection
-            title={hasThreshold ? "Stock bas" : "Boîte"}
+            title={hasThreshold ? t("Stock bas") : t("Boîte")}
             help={
               hasThreshold
                 ? formatThresholdHelp(
+                    t,
                     countConsumedPills(med.id, draft.lowStockDays, intakes, intakeLogs, now),
                     draft.lowStockDays,
                   )
@@ -151,22 +162,22 @@ function StockEditForm({ med, stock, intakes, intakeLogs }: StockEditFormProps) 
             }
           >
             {hasThreshold ? (
-              <SettingsRow label="Me prévenir à">
+              <SettingsRow label={t("Me prévenir à")}>
                 <Stepper
                   value={draft.lowStockDays}
                   min={LOW_STOCK_DAYS.minimum}
                   max={LOW_STOCK_DAYS.maximum}
                   onChange={(lowStockDays) => update({ lowStockDays })}
-                  formatValue={formatDayCount}
+                  formatValue={(days) => formatDayCount(t, days)}
                   labels={{
-                    value: "Me prévenir à",
-                    decrement: "Un jour de moins",
-                    increment: "Un jour de plus",
+                    value: t("Me prévenir à"),
+                    decrement: t("Un jour de moins"),
+                    increment: t("Un jour de plus"),
                   }}
                 />
               </SettingsRow>
             ) : null}
-            <SettingsRow label="Taille d’une boîte">
+            <SettingsRow label={t("Taille d’une boîte")}>
               <BoxSizeInput
                 value={draft.boxSizeText}
                 error={boxSizeError}
@@ -183,7 +194,7 @@ function StockEditForm({ med, stock, intakes, intakeLogs }: StockEditFormProps) 
         {stock === undefined ? null : (
           <View style={styles.stopButton}>
             <Button
-              label="Ne plus suivre le stock"
+              label={t("Ne plus suivre le stock")}
               variant="text"
               onPress={() => setIsStopDialogVisible(true)}
             />

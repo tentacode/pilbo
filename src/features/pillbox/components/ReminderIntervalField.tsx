@@ -1,6 +1,7 @@
 import { SegmentedControl } from "@/design-system/components/SegmentedControl/SegmentedControl";
+import { useTranslation } from "react-i18next";
 
-import { REMINDER_INTERVAL_OPTIONS } from "../utils/reminderIntervalOptions";
+import { reminderIntervalOptions } from "../utils/reminderIntervalOptions";
 import { FormSection } from "./FormSection";
 
 type ReminderIntervalFieldProps = {
@@ -9,16 +10,18 @@ type ReminderIntervalFieldProps = {
 };
 
 export function ReminderIntervalField({ minutes, onChange }: ReminderIntervalFieldProps) {
+  const { t } = useTranslation("pillbox");
+  const { t: translateCommon } = useTranslation("common");
   return (
     <FormSection
-      label="Répéter le rappel toutes les"
-      help="Jusqu’à ce que vous preniez ou ignoriez la prise."
+      label={t("Répéter le rappel toutes les")}
+      help={t("Jusqu’à ce que vous preniez ou ignoriez la prise.")}
     >
       <SegmentedControl
-        options={REMINDER_INTERVAL_OPTIONS}
+        options={reminderIntervalOptions(translateCommon)}
         selectedValue={minutes}
         onChange={onChange}
-        accessibilityLabel="Intervalle des rappels"
+        accessibilityLabel={t("Intervalle des rappels")}
       />
     </FormSection>
   );

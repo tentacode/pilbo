@@ -1,6 +1,8 @@
 import { router, useLocalSearchParams, useNavigation } from "expo-router";
 import { useState } from "react";
 import { View } from "react-native";
+import type { TFunction } from "i18next";
+import { useTranslation } from "react-i18next";
 
 import { Button } from "@/design-system/components/Button/Button";
 import { Sheet } from "@/design-system/components/Sheet/Sheet";
@@ -19,26 +21,25 @@ import { createMedDraft, type MedDraft, type MedFlowOrigin } from "./utils/medDr
 import { validateMedDraft } from "./utils/validators";
 import { styles } from "./MedScreen.styles";
 
-const MISSING_NAME_ERROR = "Indiquez le nom du médicament.";
-
 type MedScreenProps = {
   origin: MedFlowOrigin;
   onSaved: (med: Med, isNew: boolean) => void;
   onRemovedFromAsNeeded?: () => void;
 };
 
-function submitLabelOf(origin: MedFlowOrigin, isEditing: boolean): string {
+function submitLabelOf(t: TFunction<"pillbox">, origin: MedFlowOrigin, isEditing: boolean): string {
   if (isEditing) {
-    return "Enregistrer";
+    return t("Enregistrer");
   }
-  return origin === "intake" ? "Ajouter à la prise" : "Ajouter au hors planning";
+  return origin === "intake" ? t("Ajouter à la prise") : t("Ajouter au hors planning");
 }
 
 export function MedScreen({ origin, onSaved, onRemovedFromAsNeeded }: MedScreenProps) {
+  const { t } = useTranslation("pillbox");
   const { medId } = useLocalSearchParams<{ medId?: string }>();
   const medActions = useMedActions();
   const { draft, update } = useMedDraft(() =>
-    createMedDraft(origin, medId === undefined ? undefined : medActions.getById(medId)),
+    createMedDraft(t, origin, medId === undefined ? undefined : medActions.getById(medId)),
   );
   const [nameError, setNameError] = useState<string>();
   const [duplicate, setDuplicate] = useState<Med | null>(null);
@@ -56,7 +57,7 @@ export function MedScreen({ origin, onSaved, onRemovedFromAsNeeded }: MedScreenP
 
   function handleSave() {
     if (validateMedDraft(draft) === "missingName") {
-      setNameError(MISSING_NAME_ERROR);
+      setNameError(t("Indiquez le nom du médicament."));
       return;
     }
     const result = medActions.save(draft, origin === "asNeeded");
@@ -77,15 +78,15 @@ export function MedScreen({ origin, onSaved, onRemovedFromAsNeeded }: MedScreenP
 
   return (
     <Sheet
-      title={isEditing ? "Modifier le médicament" : "Nouveau médicament"}
+      title={isEditing ? t("Modifier le médicament") : t("Nouveau médicament")}
       leftAction={
         isEditing
-          ? { label: "Annuler", onPress: () => router.back() }
-          : { label: "Retour", icon: "chevronLeft", onPress: () => router.back() }
+          ? { label: t("Annuler"), onPress: () => router.back() }
+          : { label: t("Retour"), icon: "chevronLeft", onPress: () => router.back() }
       }
       footer={
         <Button
-          label={submitLabelOf(origin, isEditing)}
+          label={submitLabelOf(t, origin, isEditing)}
           icon={isEditing ? "check" : "plus"}
           onPress={handleSave}
         />
@@ -102,7 +103,7 @@ export function MedScreen({ origin, onSaved, onRemovedFromAsNeeded }: MedScreenP
         {editingMedId === undefined ? null : (
           <View style={styles.centeredButton}>
             <Button
-              label={hasStock ? "Modifier le stock" : "Ajouter un stock"}
+              label={hasStock ? t("Modifier le stock") : t("Ajouter un stock")}
               variant="secondary"
               onPress={() => openStockFromTab(editingMedId)}
             />
@@ -111,7 +112,7 @@ export function MedScreen({ origin, onSaved, onRemovedFromAsNeeded }: MedScreenP
         {origin === "asNeeded" && isEditing ? (
           <View style={styles.centeredButton}>
             <Button
-              label="Enlever de « Hors planning »"
+              label={t("Enlever de « Hors planning »")}
               variant="text"
               onPress={() => setIsRemoveDialogVisible(true)}
             />

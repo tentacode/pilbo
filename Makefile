@@ -1,6 +1,6 @@
 -include .env
 
-.PHONY: help install start doctor clean build-simulator build-device build-release check-device-id db-generate prettier lint typescript test-unit audit test-e2e tests
+.PHONY: help install start doctor clean build-simulator build-device build-release check-device-id db-generate i18n-extract prettier lint typescript test-unit audit test-e2e tests
 
 # Colors
 CYAN = \033[0;36m
@@ -40,6 +40,9 @@ check-device-id:
 db-generate: ## Generate a SQLite migration from the Drizzle schema
 	pnpm drizzle-kit generate
 
+i18n-extract: ## Extract translation keys from the code to the locale files
+	pnpm run i18n:extract
+
 prettier: ## Fix prettier issues
 	pnpm run prettier --log-level warn
 
@@ -65,6 +68,8 @@ tests: ## Run all tests (without Maestro)
 	echo "$(GREEN)prettier passed!$(NC)" && \
 	pnpm run typescript && \
 	echo "$(GREEN)typescript passed!$(NC)" && \
+	pnpm run i18n:check && \
+	echo "$(GREEN)translations passed!$(NC)" && \
 	pnpm run test --silent && \
 	echo "$(GREEN)unit tests passed!$(NC)" && \
 	pnpm audit && \

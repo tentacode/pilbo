@@ -1,12 +1,16 @@
-const UNKNOWN_VERSION = "Inconnue";
+import type { TFunction } from "i18next";
 
-export function formatAppVersion(version: string | null, build: string | null): string {
+export function formatAppVersion(
+  t: TFunction<"settings">,
+  version: string | null,
+  build: string | null,
+): string {
   if (version === null) {
-    return UNKNOWN_VERSION;
+    return t("Inconnue");
   }
   return build === null ? version : `${version} (${build})`;
 }
 
-export function formatDayCount(days: number): string {
-  return days === 1 ? "1 jour" : `${days} jours`;
+export function formatDayCount(t: TFunction<"settings">, days: number): string {
+  return t("{{count}} jours", { count: days });
 }

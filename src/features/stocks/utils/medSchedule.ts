@@ -1,4 +1,5 @@
-import { formatIntakeTime, type Intake, WEEKDAYS } from "@/domain/intake";
+import { type Intake, WEEKDAYS } from "@/domain/intake";
+import { formatIntakeTime } from "@/shared/i18n/formatters";
 
 function intakesWithMed(medId: string, intakes: Intake[]): Intake[] {
   return intakes.filter(

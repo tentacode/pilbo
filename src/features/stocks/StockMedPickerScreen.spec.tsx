@@ -5,6 +5,7 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 
 import { createTestDatabase } from "@/shared/database/testDatabase";
 import type { Database } from "@/shared/database/types";
+import { i18n } from "@/shared/i18n/i18n";
 
 import { findMedId } from "./queries/testStocks";
 import { StockMedPickerScreen } from "./StockMedPickerScreen";
@@ -67,5 +68,14 @@ describe("StockMedPickerScreen", () => {
     await fireEvent.press(screen.getByRole("button", { name: "Ouvrir le pilulier" }));
 
     expect(router.navigate).toHaveBeenCalledWith("/pillbox");
+  });
+
+  it("is translated in English", async () => {
+    mockDatabase = createTestDatabase();
+    await i18n.changeLanguage("en");
+
+    await render(<StockMedPickerScreen />, { wrapper });
+
+    expect(screen.getByRole("header", { name: "Medication stock" })).toBeOnTheScreen();
   });
 });

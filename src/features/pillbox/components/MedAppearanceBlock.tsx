@@ -1,4 +1,5 @@
 import { Pressable, View } from "react-native";
+import { useTranslation } from "react-i18next";
 
 import { Button } from "@/design-system/components/Button/Button";
 import { Icon } from "@/design-system/components/Icon/Icon";
@@ -20,11 +21,14 @@ type MedAppearanceBlockProps = {
 };
 
 export function MedAppearanceBlock({ design, onEdit }: MedAppearanceBlockProps) {
+  const { t } = useTranslation("pillbox");
   return (
     <View style={styles.block}>
       <Pressable
         accessibilityRole="button"
-        accessibilityLabel={`Modifier l’apparence de la pilule : ${formatPillDescriptionParts(design).join(", ")}`}
+        accessibilityLabel={t("Modifier l’apparence de la pilule : {{description}}", {
+          description: formatPillDescriptionParts(t, design).join(", "),
+        })}
         onPressIn={playPressHaptic}
         onPress={onEdit}
         style={({ pressed }) => [styles.preview, pressed && styles.pressed]}
@@ -35,10 +39,10 @@ export function MedAppearanceBlock({ design, onEdit }: MedAppearanceBlockProps) 
         </View>
       </Pressable>
       <Text variant="small" tone="secondary" accessibilityElementsHidden style={styles.description}>
-        {formatPillDescription(design)}
+        {formatPillDescription(t, design)}
       </Text>
       <View accessibilityElementsHidden importantForAccessibility="no-hide-descendants">
-        <Button label="Modifier l’apparence" variant="secondary" onPress={onEdit} />
+        <Button label={t("Modifier l’apparence")} variant="secondary" onPress={onEdit} />
       </View>
     </View>
   );

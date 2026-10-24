@@ -1,9 +1,9 @@
 import { View } from "react-native";
+import { useTranslation } from "react-i18next";
 
 import { Pill } from "@/design-system/components/Pill/Pill";
 import { Text } from "@/design-system/components/Text/Text";
 import { sizes } from "@/design-system/tokens";
-import { formatIntakeTime } from "@/domain/intake";
 
 import {
   formatEarlierIntakeAccessibilityLabel,
@@ -12,18 +12,20 @@ import {
 import type { TodayIntake } from "@/features/today/utils/todayTypes";
 import { styles } from "./EarlierIntakeCard.styles";
 import { IntakeStatusLabel } from "./IntakeStatusLabel";
+import { formatIntakeTime } from "@/shared/i18n/formatters";
 
 type EarlierIntakeCardProps = {
   todayIntake: TodayIntake;
 };
 
 export function EarlierIntakeCard({ todayIntake }: EarlierIntakeCardProps) {
+  const { t } = useTranslation("today");
   const { intake, status } = todayIntake;
 
   return (
     <View
       accessible
-      accessibilityLabel={formatEarlierIntakeAccessibilityLabel(todayIntake)}
+      accessibilityLabel={formatEarlierIntakeAccessibilityLabel(t, todayIntake)}
       style={[styles.card, status === "skipped" ? styles.skippedCard : styles.takenCard]}
     >
       <View style={styles.head}>

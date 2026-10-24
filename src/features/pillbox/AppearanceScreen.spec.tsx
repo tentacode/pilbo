@@ -6,11 +6,14 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 import type { PillDesign } from "@/domain/med";
 import { createTestDatabase } from "@/shared/database/testDatabase";
 import type { Database } from "@/shared/database/types";
+import { i18n } from "@/shared/i18n/i18n";
 
 import { AsNeededAppearanceScreen, IntakeAppearanceScreen } from "./AppearanceScreen";
 import { IntakeDraftProvider } from "./hooks/useIntakeDraft";
 import { MedDraftProvider, useMedDraftContext } from "./hooks/useMedDraft";
 import { createMedDraft } from "./utils/medDraft";
+
+const t = i18n.getFixedT(null, "pillbox");
 
 let mockDatabase: Database;
 
@@ -39,7 +42,7 @@ function MedDraftSpy() {
 }
 
 function renderAsNeededAppearance() {
-  const initialDraft = { ...createMedDraft("asNeeded"), name: "Doliprane", strength: "1 g" };
+  const initialDraft = { ...createMedDraft(t, "asNeeded"), name: "Doliprane", strength: "1 g" };
   function wrapper({ children }: { children: ReactNode }) {
     return (
       <SafeAreaProvider initialMetrics={safeAreaMetrics}>
@@ -159,7 +162,7 @@ describe("AppearanceScreen", () => {
 
   it("shows the sliders for a color outside the swatches", async () => {
     const initialDraft = {
-      ...createMedDraft("asNeeded"),
+      ...createMedDraft(t, "asNeeded"),
       design: {
         shape: "capsule" as const,
         size: "medium" as const,
@@ -189,7 +192,7 @@ describe("AppearanceScreen", () => {
 
   it("keeps the sliders closed when switching to a custom colored half", async () => {
     const initialDraft = {
-      ...createMedDraft("asNeeded"),
+      ...createMedDraft(t, "asNeeded"),
       design: {
         shape: "capsule" as const,
         size: "medium" as const,
@@ -250,7 +253,9 @@ describe("AppearanceScreen", () => {
       return (
         <SafeAreaProvider initialMetrics={safeAreaMetrics}>
           <IntakeDraftProvider>
-            <MedDraftProvider initialDraft={createMedDraft("intake")}>{children}</MedDraftProvider>
+            <MedDraftProvider initialDraft={createMedDraft(t, "intake")}>
+              {children}
+            </MedDraftProvider>
           </IntakeDraftProvider>
         </SafeAreaProvider>
       );
@@ -259,5 +264,14 @@ describe("AppearanceScreen", () => {
 
     expect(screen.getByText("08:00", { includeHiddenElements: true })).toBeOnTheScreen();
     expect(screen.getByText("Votre médicament", { includeHiddenElements: true })).toBeOnTheScreen();
+  });
+
+  it("is translated in English", async () => {
+    await i18n.changeLanguage("en");
+    await renderAsNeededAppearance();
+
+    expect(screen.getByRole("header", { name: "Appearance" })).toBeOnTheScreen();
+    expect(screen.getByRole("radio", { name: "Round" })).toBeOnTheScreen();
+    expect(screen.getByRole("button", { name: "Other color" })).toBeOnTheScreen();
   });
 });

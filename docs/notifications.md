@@ -6,18 +6,18 @@ Validé sur iPhone (spec 02) : notifications app fermée, son custom, badge, ann
 
 ## Fichiers
 
-| Fichier                                                         | Rôle                                                          |
-| --------------------------------------------------------------- | ------------------------------------------------------------- |
-| `src/config/notifications.ts`                                   | Nombre de rappels, délai minimum, plafond de 64.              |
-| `src/features/notifications/notifications.ts`                   | Appels iOS : permission, nettoyage, planification.            |
-| `src/features/notifications/rescheduleReminders.ts`             | Lit la base, calcule les rappels, les replanifie.             |
-| `src/features/notifications/utils/planReminders.ts`             | Calcul pur des rappels et des badges (`now` en paramètre).    |
-| `src/features/notifications/utils/planLowStockAlerts.ts`        | Calcul pur des alertes de stock bas (`now` en paramètre).     |
-| `src/features/notifications/hooks/useReminderScheduling.ts`     | Replanification au lancement et au premier plan.              |
-| `src/features/notifications/hooks/useNotificationPermission.ts` | Statut de la permission (`isGranted`) et demande (`request`). |
-| `assets/sounds/beep.wav`                                        | Son custom.                                                   |
-| `plugins/withoutPushEntitlement.js`                             | Retire la permission push (compte gratuit).                   |
-| `app.config.ts`                                                 | Déclare le son, les plugins et la Team de signature.          |
+| Fichier                                                         | Rôle                                                                      |
+| --------------------------------------------------------------- | ------------------------------------------------------------------------- |
+| `src/config/notifications.ts`                                   | Nombre de rappels, plafond de 64.                                         |
+| `src/features/notifications/notifications.ts`                   | Appels iOS : permission, nettoyage, planification.                        |
+| `src/features/notifications/rescheduleReminders.ts`             | Lit la base, calcule les rappels, les replanifie.                         |
+| `src/features/notifications/utils/planReminders.ts`             | Calcul pur des rappels et des badges (`now` en paramètre).                |
+| `src/features/notifications/utils/planLowStockAlerts.ts`        | Calcul pur des alertes de stock bas (`now` en paramètre).                 |
+| `src/features/notifications/hooks/useReminderScheduling.ts`     | Replanification au lancement, au premier plan et au changement de langue. |
+| `src/features/notifications/hooks/useNotificationPermission.ts` | Statut de la permission (`isGranted`) et demande (`request`).             |
+| `assets/sounds/beep.wav`                                        | Son custom.                                                               |
+| `plugins/withoutPushEntitlement.js`                             | Retire la permission push (compte gratuit).                               |
+| `app.config.ts`                                                 | Déclare le son, les plugins et la Team de signature.                      |
 
 ## Configuration (`app.config.ts`)
 
@@ -37,7 +37,8 @@ Déclencheurs :
 - appui sur « Je l'ai pris » / « Ignorer » ;
 - prise d'un médicament hors planning, et son annulation ;
 - enregistrement ou suppression d'un stock ;
-- enregistrement d'une prise ou d'un médicament depuis le pilulier.
+- enregistrement d'une prise ou d'un médicament depuis le pilulier ;
+- changement de langue de l'app (événement `languageChanged` d'i18next, écouté par `useReminderScheduling`).
 
 À chaque déclencheur, `rescheduleReminders(database, now)` :
 
@@ -50,24 +51,24 @@ Un échec est seulement affiché en console : tout sera replanifié au prochain 
 
 ## Calcul des rappels (`planReminders`)
 
-| Config (`src/config/notifications.ts`)  | Valeur | Rôle                                                      |
-| --------------------------------------- | ------ | --------------------------------------------------------- |
-| `REMINDER_COUNT`                        | 6      | Rappels par prise.                                        |
-| `MINIMUM_DELAY_BEFORE_REMINDER_SECONDS` | 60     | Un rappel prévu dans moins d'une minute n'est pas recréé. |
-| `MAXIMUM_SCHEDULED_REMINDERS`           | 64     | Limite iOS.                                               |
-| `LOW_STOCK_ALERT_HOUR`                  | 9      | Heure des alertes de stock bas.                           |
+| Config (`src/config/notifications.ts`) | Valeur | Rôle                            |
+| -------------------------------------- | ------ | ------------------------------- |
+| `REMINDER_COUNT`                       | 6      | Rappels par prise.              |
+| `MAXIMUM_SCHEDULED_REMINDERS`          | 64     | Limite iOS.                     |
+| `LOW_STOCK_ALERT_HOUR`                 | 9      | Heure des alertes de stock bas. |
 
-- **Aujourd'hui** : prises sans log uniquement. Rappels à `heure + n × intake.reminderIntervalMinutes` (n de 0 à 5), seulement ceux encore à venir. Ex. : prise de 08:20, app ouverte à 08:35 → 08:40, 08:50, 09:00, 09:10.
+- **Aujourd'hui** : prises sans log uniquement. Rappels à `heure + n × intake.reminderIntervalMinutes` (n de 0 à 5), seulement ceux encore à venir, même à quelques secondes près (une prise créée pour la minute suivante sonne). Ex. : prise de 08:20, app ouverte à 08:35 → 08:40, 08:50, 09:00, 09:10.
 - **Alertes de stock bas** : ajoutées après les rappels du jour, dans la limite de 64.
 - **Demain** : ajouté prise par prise (6 rappels entiers) tant que le total reste ≤ 64. Si une journée entière est sautée, les rappels du lendemain existent quand même.
 - **Identifiant** : `reminder-<intakeId>-<date locale>` (ex. `reminder-…-2026-10-14T08:40`).
 - **Contenu** : titre « C'est l'heure de votre prise de 08:20 », corps « 1 × Lithium 250 mg, 1 × Lamictal 50 mg ». Son `beep.wav`, `interruptionLevel: "active"`.
+- **Langue** : textes générés dans la langue courante de l'app (`i18n.t`, namespace `notifications`), heure au format 12 h / 24 h du réglage iOS.
 
 ### Alertes de stock bas (`planLowStockAlerts`)
 
 - Une alerte à 9h le jour où un stock franchit son seuil (date de fin − seuil, voir `features/stocks/utils/stockForecast.ts`).
 - Plusieurs médicaments le même jour : une seule alerte qui les liste.
-- Seulement si 9h est encore à venir (avec le délai minimum). Sinon rien : le bandeau et le badge de l'app suffisent.
+- Seulement si 9h est encore à venir. Sinon rien : le bandeau et le badge de l'app suffisent.
 - Pas d'alerte pour un stock ≤ 0, ni pour un médicament sans prise (pas de date prévisible).
 - Rien n'est mémorisé : tout est recalculé à chaque replanification.
 - **Identifiant** : `low-stock-<date locale>` (ex. `low-stock-2026-10-22`).

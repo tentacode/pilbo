@@ -1,4 +1,5 @@
 import { View } from "react-native";
+import { useTranslation } from "react-i18next";
 
 import { Text } from "@/design-system/components/Text/Text";
 import type { Med } from "@/domain/med";
@@ -14,13 +15,14 @@ type UnscheduledSectionProps = {
 };
 
 export function UnscheduledSection({ meds, onMedPress, onAddMed }: UnscheduledSectionProps) {
+  const { t } = useTranslation("pillbox");
   return (
     <View style={styles.section}>
       <Text variant="heading" accessibilityRole="header" style={styles.heading}>
-        Hors planning
+        {t("Hors planning")}
       </Text>
       <Text variant="help" tone="secondary" style={styles.help}>
-        À prendre si besoin, depuis l’accueil.
+        {t("À prendre si besoin, depuis l’accueil.")}
       </Text>
       <View style={styles.group}>
         {meds.map((med, index) => (

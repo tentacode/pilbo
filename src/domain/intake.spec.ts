@@ -1,4 +1,4 @@
-import { formatIntakeTime, type Intake, intakeDateOn, sortIntakeMeds } from "./intake";
+import { type Intake, intakeDateOn, sortIntakeMeds } from "./intake";
 import type { Med } from "./med";
 
 function createMed(name: string, strength: string): Med {
@@ -28,16 +28,6 @@ describe("sortIntakeMeds", () => {
     expect(
       sortIntakeMeds(intake).medQuantities.map(({ med }) => `${med.name} ${med.strength}`),
     ).toEqual(["Lamictal 100 mg", "Quviviq 50 mg"]);
-  });
-});
-
-describe("formatIntakeTime", () => {
-  it("pads the hour and the minute with zeros", () => {
-    expect(formatIntakeTime({ hour: 8, minute: 5 })).toBe("08:05");
-  });
-
-  it("keeps two digit values", () => {
-    expect(formatIntakeTime({ hour: 22, minute: 30 })).toBe("22:30");
   });
 });
 

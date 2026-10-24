@@ -1,4 +1,5 @@
 import { Pressable, View } from "react-native";
+import { useTranslation } from "react-i18next";
 
 import { ColorWheel } from "@/design-system/components/ColorWheel/ColorWheel";
 import { Icon } from "@/design-system/components/Icon/Icon";
@@ -15,18 +16,18 @@ type CustomColorButtonProps = {
   onPress: () => void;
 };
 
-const CUSTOM_COLOR_LABEL = "Autre couleur";
-
 export function CustomColorButton({
   color,
   isSelected,
   isExpanded,
   onPress,
 }: CustomColorButtonProps) {
+  const { t } = useTranslation("pillbox");
+  const label = t("Autre couleur");
   return (
     <Pressable
       accessibilityRole="button"
-      accessibilityLabel={CUSTOM_COLOR_LABEL}
+      accessibilityLabel={label}
       accessibilityState={{ selected: isSelected, expanded: isExpanded }}
       onPressIn={playPressHaptic}
       onPress={onPress}
@@ -41,7 +42,7 @@ export function CustomColorButton({
         {isSelected ? <View style={[styles.center, { backgroundColor: color }]} /> : null}
       </View>
       <Text variant="buttonSmall" style={styles.label}>
-        {CUSTOM_COLOR_LABEL}
+        {label}
       </Text>
       {isExpanded ? null : <Icon name="plus" size={sizes.iconSmall} color={colors.inkSecondary} />}
     </Pressable>

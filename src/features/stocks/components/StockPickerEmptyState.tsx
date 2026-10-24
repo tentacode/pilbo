@@ -1,4 +1,5 @@
 import { View } from "react-native";
+import { useTranslation } from "react-i18next";
 
 import { Button } from "@/design-system/components/Button/Button";
 import { Text } from "@/design-system/components/Text/Text";
@@ -10,12 +11,18 @@ type StockPickerEmptyStateProps = {
 };
 
 export function StockPickerEmptyState({ onOpenPillbox }: StockPickerEmptyStateProps) {
+  const { t } = useTranslation("stocks");
   return (
     <View style={styles.container}>
       <Text variant="callout" tone="secondary" style={styles.text}>
-        Ajoutez d’abord un médicament dans le pilulier.
+        {t("Ajoutez d’abord un médicament dans le pilulier.")}
       </Text>
-      <Button label="Ouvrir le pilulier" variant="secondary" size="large" onPress={onOpenPillbox} />
+      <Button
+        label={t("Ouvrir le pilulier")}
+        variant="secondary"
+        size="large"
+        onPress={onOpenPillbox}
+      />
     </View>
   );
 }

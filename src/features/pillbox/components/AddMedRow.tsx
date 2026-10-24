@@ -1,4 +1,5 @@
 import { Pressable, View } from "react-native";
+import { useTranslation } from "react-i18next";
 
 import { Icon } from "@/design-system/components/Icon/Icon";
 import { Text } from "@/design-system/components/Text/Text";
@@ -11,11 +12,8 @@ type AddMedRowProps = {
   hasTopBorder?: boolean;
 };
 
-export function AddMedRow({
-  onPress,
-  label = "Ajouter un médicament",
-  hasTopBorder = true,
-}: AddMedRowProps) {
+export function AddMedRow({ onPress, label, hasTopBorder = true }: AddMedRowProps) {
+  const { t } = useTranslation("pillbox");
   return (
     <Pressable
       accessibilityRole="button"
@@ -30,7 +28,7 @@ export function AddMedRow({
         <Icon name="plus" />
       </View>
       <Text variant="bodyBold" style={styles.label}>
-        {label}
+        {label ?? t("Ajouter un médicament")}
       </Text>
     </Pressable>
   );

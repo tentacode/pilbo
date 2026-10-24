@@ -1,0 +1,49 @@
+appId: com.tentacode.pilbo
+name: The app language can be changed
+---
+- launchApp:
+    clearState: true
+- extendedWaitUntil:
+    visible: "Réglages"
+    timeout: 10000
+- tapOn: "Réglages"
+
+# English
+- scrollUntilVisible:
+    element:
+      text: "English"
+    centerElement: true
+- tapOn: "English"
+- assertVisible: "App language"
+- scrollUntilVisible:
+    element:
+      text: "Reminders"
+    direction: UP
+- assertVisible: "Notifications: .*"
+
+# Tabs and Today
+- tapOn: "Today.*"
+- assertVisible: "Today"
+- assertVisible: "Pillbox"
+- assertVisible: "Stock.*"
+- scrollUntilVisible:
+    element:
+      text: "As needed"
+- assertVisible: "As needed"
+- tapOn: "Pillbox"
+- assertVisible: "New intake"
+
+# Back to French
+- tapOn: "Settings"
+- scrollUntilVisible:
+    element:
+      text: "Français"
+    centerElement: true
+- tapOn: "Français"
+- assertVisible: "Langue de l'app"
+- scrollUntilVisible:
+    element:
+      text: "Rappels"
+    direction: UP
+- assertVisible: "Notifications : .*"
+- assertVisible: "Aujourd'hui.*"

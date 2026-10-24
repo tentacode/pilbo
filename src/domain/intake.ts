@@ -34,10 +34,6 @@ export function sortIntakeMeds(intake: Intake): Intake {
   };
 }
 
-export function formatIntakeTime({ hour, minute }: Intake["time"]): string {
-  return `${String(hour).padStart(2, "0")}:${String(minute).padStart(2, "0")}`;
-}
-
 export function intakeDateOn(day: Date, { hour, minute }: Intake["time"]): Date {
   return new Date(day.getFullYear(), day.getMonth(), day.getDate(), hour, minute);
 }

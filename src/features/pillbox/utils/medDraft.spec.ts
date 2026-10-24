@@ -1,7 +1,10 @@
 import type { Med } from "@/domain/med";
+import { i18n } from "@/shared/i18n/i18n";
 
 import { createMedDraft, DEFAULT_PILL_DESIGN, toMedValues } from "./medDraft";
 import { validateMedDraft } from "./validators";
+
+const t = i18n.getFixedT(null, "pillbox");
 
 const LITHIUM: Med = {
   id: "lithium",
@@ -14,7 +17,7 @@ const LITHIUM: Med = {
 
 describe("createMedDraft", () => {
   it("starts a new med with the default design and no detail from an intake", () => {
-    expect(createMedDraft("intake")).toEqual({
+    expect(createMedDraft(t, "intake")).toEqual({
       name: "",
       strength: "",
       detail: "",
@@ -23,11 +26,11 @@ describe("createMedDraft", () => {
   });
 
   it("suggests the as needed detail for a new as needed med", () => {
-    expect(createMedDraft("asNeeded").detail).toBe("Si besoin");
+    expect(createMedDraft(t, "asNeeded").detail).toBe("Si besoin");
   });
 
   it("starts from an existing med", () => {
-    expect(createMedDraft("asNeeded", LITHIUM)).toEqual({
+    expect(createMedDraft(t, "asNeeded", LITHIUM)).toEqual({
       medId: "lithium",
       name: "Lithium",
       strength: "250 mg",
@@ -40,13 +43,13 @@ describe("createMedDraft", () => {
 describe("toMedValues", () => {
   it("trims the texts", () => {
     const draft = {
-      ...createMedDraft("intake"),
+      ...createMedDraft(t, "intake"),
       name: " Lithium ",
       strength: "250 mg ",
       detail: " ",
     };
 
-    expect(toMedValues(draft)).toEqual({
+    expect(toMedValues(draft, "fr")).toEqual({
       name: "Lithium",
       strength: "250 mg",
       detail: "",
@@ -55,7 +58,8 @@ describe("toMedValues", () => {
   });
 
   it("capitalizes only the first letter of the name", () => {
-    const toName = (name: string) => toMedValues({ ...createMedDraft("intake"), name }).name;
+    const toName = (name: string) =>
+      toMedValues({ ...createMedDraft(t, "intake"), name }, "fr").name;
 
     expect(toName(" élavil ")).toBe("Élavil");
     expect(toName("acide folique")).toBe("Acide folique");
@@ -65,7 +69,7 @@ describe("toMedValues", () => {
 
 describe("validateMedDraft", () => {
   it("requires a name", () => {
-    expect(validateMedDraft({ ...createMedDraft("intake"), name: "  " })).toBe("missingName");
-    expect(validateMedDraft({ ...createMedDraft("intake"), name: "Lithium" })).toBeNull();
+    expect(validateMedDraft({ ...createMedDraft(t, "intake"), name: "  " })).toBe("missingName");
+    expect(validateMedDraft({ ...createMedDraft(t, "intake"), name: "Lithium" })).toBeNull();
   });
 });

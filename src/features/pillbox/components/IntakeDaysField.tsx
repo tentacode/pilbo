@@ -1,4 +1,5 @@
 import { useWindowDimensions, View } from "react-native";
+import { useTranslation } from "react-i18next";
 
 import { SegmentedControl } from "@/design-system/components/SegmentedControl/SegmentedControl";
 import { useFitsInWidth } from "@/design-system/hooks/useFitsInWidth";
@@ -9,11 +10,6 @@ import type { DayMode } from "@/features/pillbox/utils/intakeDraft";
 import { DayButton } from "./DayButton";
 import { FormSection } from "./FormSection";
 import { styles } from "./IntakeDaysField.styles";
-
-const DAY_MODE_OPTIONS: { value: DayMode; label: string }[] = [
-  { value: "everyDay", label: "Tous les jours" },
-  { value: "someDays", label: "Certains jours" },
-];
 
 const WEEK_DAYS_COUNT = 5;
 
@@ -30,7 +26,12 @@ export function IntakeDaysField({
   onDayModeChange,
   onDayPress,
 }: IntakeDaysFieldProps) {
+  const { t } = useTranslation("pillbox");
   const { fontScale } = useWindowDimensions();
+  const dayModeOptions: { value: DayMode; label: string }[] = [
+    { value: "everyDay", label: t("Tous les jours") },
+    { value: "someDays", label: t("Certains jours") },
+  ];
   const diameter = Math.max(sizes.touchTarget, sizes.dayButton * fontScale);
   const requiredWidth = WEEKDAYS.length * diameter + (WEEKDAYS.length - 1) * spacing.dayButtonGap;
   const { onLayout, fits } = useFitsInWidth(requiredWidth);
@@ -39,12 +40,12 @@ export function IntakeDaysField({
     : [WEEKDAYS.slice(0, WEEK_DAYS_COUNT), WEEKDAYS.slice(WEEK_DAYS_COUNT)];
 
   return (
-    <FormSection label="Jours">
+    <FormSection label={t("Jours")}>
       <SegmentedControl
-        options={DAY_MODE_OPTIONS}
+        options={dayModeOptions}
         selectedValue={dayMode}
         onChange={onDayModeChange}
-        accessibilityLabel="Jours"
+        accessibilityLabel={t("Jours")}
       />
       <View onLayout={onLayout} style={styles.days}>
         {rows.map((row) => (

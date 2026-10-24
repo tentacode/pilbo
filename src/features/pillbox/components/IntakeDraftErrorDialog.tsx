@@ -1,21 +1,27 @@
 import { Dialog } from "@/design-system/components/Dialog/Dialog";
+import { useTranslation } from "react-i18next";
 
 import type { IntakeDraftError } from "@/features/pillbox/utils/validators";
+import type { TFunction } from "i18next";
 
-const ERROR_TEXTS: Record<IntakeDraftError, { title: string; message: string }> = {
-  missingMed: {
-    title: "Il manque un médicament",
-    message: "Ajoutez au moins un médicament à la prise.",
-  },
-  missingDay: {
-    title: "Il manque un jour",
-    message: "Choisissez au moins un jour, ou « Tous les jours ».",
-  },
-  invalidQuantity: {
-    title: "Quantité à vérifier",
-    message: "Chaque quantité doit aller de 1 à 10.",
-  },
-};
+function errorTextsOf(
+  t: TFunction<"pillbox">,
+): Record<IntakeDraftError, { title: string; message: string }> {
+  return {
+    missingMed: {
+      title: t("Il manque un médicament"),
+      message: t("Ajoutez au moins un médicament à la prise."),
+    },
+    missingDay: {
+      title: t("Il manque un jour"),
+      message: t("Choisissez au moins un jour, ou « Tous les jours »."),
+    },
+    invalidQuantity: {
+      title: t("Quantité à vérifier"),
+      message: t("Chaque quantité doit aller de 1 à 10."),
+    },
+  };
+}
 
 type IntakeDraftErrorDialogProps = {
   error: IntakeDraftError | null;
@@ -23,14 +29,16 @@ type IntakeDraftErrorDialogProps = {
 };
 
 export function IntakeDraftErrorDialog({ error, onClose }: IntakeDraftErrorDialogProps) {
+  const { t } = useTranslation("pillbox");
+  const errorTexts = errorTextsOf(t);
   return (
     <Dialog
       isVisible={error !== null}
       icon="pillAlert"
       tone="warning"
-      title={error === null ? "" : ERROR_TEXTS[error].title}
-      message={error === null ? undefined : ERROR_TEXTS[error].message}
-      confirmAction={{ label: "OK", onPress: onClose }}
+      title={error === null ? "" : errorTexts[error].title}
+      message={error === null ? undefined : errorTexts[error].message}
+      confirmAction={{ label: t("OK"), onPress: onClose }}
       onRequestClose={onClose}
     />
   );

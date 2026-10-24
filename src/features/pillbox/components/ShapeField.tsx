@@ -1,4 +1,5 @@
 import { View } from "react-native";
+import { useTranslation } from "react-i18next";
 
 import type { PillDesign, PillShape } from "@/domain/med";
 
@@ -13,9 +14,10 @@ type ShapeFieldProps = {
 };
 
 export function ShapeField({ design, onChange }: ShapeFieldProps) {
+  const { t } = useTranslation("pillbox");
   return (
-    <FormSection label="Forme">
-      <View accessibilityRole="radiogroup" accessibilityLabel="Forme" style={styles.shapes}>
+    <FormSection label={t("Forme")}>
+      <View accessibilityRole="radiogroup" accessibilityLabel={t("Forme")} style={styles.shapes}>
         {pillShapes().map((shape) => (
           <ShapeOption
             key={shape}

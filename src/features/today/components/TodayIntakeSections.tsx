@@ -1,5 +1,6 @@
 import { View } from "react-native";
 import { LayoutAnimationConfig } from "react-native-reanimated";
+import { useTranslation } from "react-i18next";
 
 import { formatLateSectionTitle } from "@/features/today/utils/formatters";
 import type { TodaySections } from "@/features/today/utils/todayTypes";
@@ -25,9 +26,10 @@ export function TodayIntakeSections({
   onTake,
   onSkip,
 }: TodayIntakeSectionsProps) {
+  const { t } = useTranslation("today");
   const { late, next, later, earlier } = sections;
   const hasLate = late.length > 0;
-  const lateTitle = formatLateSectionTitle(late.length);
+  const lateTitle = formatLateSectionTitle(t, late.length);
 
   const nextCard = next ? (
     <AnimatedIntakeItem key={next.intake.id}>
@@ -71,7 +73,7 @@ export function TodayIntakeSections({
         ) : null}
         {hasLate && next ? (
           <AnimatedIntakeSection>
-            <TodaySectionTitle title="Ensuite" />
+            <TodaySectionTitle title={t("Ensuite")} />
             <View style={styles.list}>
               {nextCard}
               {laterCards}
@@ -80,19 +82,19 @@ export function TodayIntakeSections({
         ) : null}
         {!hasLate && next ? (
           <AnimatedIntakeSection>
-            <TodaySectionTitle title="Prochaine prise" />
+            <TodaySectionTitle title={t("Prochaine prise")} />
             {nextCard}
           </AnimatedIntakeSection>
         ) : null}
         {!hasLate && later.length > 0 ? (
           <AnimatedIntakeSection>
-            <TodaySectionTitle title="Plus tard" />
+            <TodaySectionTitle title={t("Plus tard")} />
             <View style={styles.list}>{laterCards}</View>
           </AnimatedIntakeSection>
         ) : null}
         {earlier.length > 0 ? (
           <AnimatedIntakeSection>
-            <TodaySectionTitle title="Déjà prise" />
+            <TodaySectionTitle title={t("Déjà prise")} />
             <View style={styles.list}>
               {earlier.map((todayIntake) => (
                 <AnimatedIntakeItem key={todayIntake.intake.id}>

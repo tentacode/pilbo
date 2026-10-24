@@ -1,4 +1,5 @@
 import "react-native-gesture-handler/jestSetup";
+import "@/shared/i18n/i18n";
 
 jest.mock("expo-crypto", () => ({ randomUUID: () => crypto.randomUUID() }));
 jest.mock("expo-haptics", () => ({
@@ -34,7 +35,6 @@ jest.mock("@expo/ui/swift-ui", () => {
 jest.mock("@expo/ui/swift-ui/modifiers", () => ({
   accessibilityLabel: (label: string) => ({ accessibilityLabel: label }),
   datePickerStyle: (style: string) => ({ datePickerStyle: style }),
-  environment: (key: string, value: string) => ({ environment: { key, value } }),
   labelsHidden: () => ({ labelsHidden: true }),
   tint: (color: string) => ({ tint: color }),
 }));

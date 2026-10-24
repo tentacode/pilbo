@@ -1,4 +1,5 @@
 import { View } from "react-native";
+import { useTranslation } from "react-i18next";
 
 import { Button } from "@/design-system/components/Button/Button";
 import type { Intake } from "@/domain/intake";
@@ -24,23 +25,24 @@ export function IntakeCardActions({
   onTake,
   onSkip,
 }: IntakeCardActionsProps) {
+  const { t } = useTranslation("today");
   return (
     <View style={[styles.actions, isLate && styles.lateActions]}>
       <View style={styles.takeAction}>
         <Button
-          label="Je l'ai pris"
+          label={t("Je l'ai pris")}
           variant={isLate ? "primary" : "secondary"}
           size="large"
           icon={isLate ? "check" : undefined}
-          accessibilityLabel={formatTakeAccessibilityLabel(intake)}
+          accessibilityLabel={formatTakeAccessibilityLabel(t, intake)}
           isDisabled={isDisabled}
           onPress={() => onTake(intake.id)}
         />
       </View>
       <Button
-        label="Ignorer"
+        label={t("Ignorer")}
         variant="text"
-        accessibilityLabel={formatSkipAccessibilityLabel(intake)}
+        accessibilityLabel={formatSkipAccessibilityLabel(t, intake)}
         isDisabled={isDisabled}
         onPress={() => onSkip(intake.id)}
       />

@@ -4,6 +4,7 @@ import type { ReactNode } from "react";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 
 import { DEBUG_MODE_PRESS_COUNT } from "./hooks/useDebugModeToggle";
+import { useI18nLanguageSync } from "./hooks/useI18nLanguageSync";
 import { SettingsScreen } from "./SettingsScreen";
 import { useSettingsStore } from "./store/settingsStore";
 
@@ -25,7 +26,8 @@ const safeAreaMetrics = {
   insets: { top: 0, left: 0, right: 0, bottom: 0 },
 };
 
-function wrapper({ children }: { children: ReactNode }) {
+function Wrapper({ children }: { children: ReactNode }) {
+  useI18nLanguageSync();
   return <SafeAreaProvider initialMetrics={safeAreaMetrics}>{children}</SafeAreaProvider>;
 }
 
@@ -44,7 +46,7 @@ describe("SettingsScreen", () => {
   });
 
   it("shows every section", async () => {
-    await render(<SettingsScreen />, { wrapper });
+    await render(<SettingsScreen />, { wrapper: Wrapper });
 
     for (const title of SECTION_TITLES) {
       expect(screen.getByRole("header", { name: title })).toBeOnTheScreen();
@@ -52,13 +54,13 @@ describe("SettingsScreen", () => {
   });
 
   it("shows the title in the app language", async () => {
-    await render(<SettingsScreen />, { wrapper });
+    await render(<SettingsScreen />, { wrapper: Wrapper });
 
     expect(screen.getByRole("header", { name: "Réglages" })).toBeOnTheScreen();
   });
 
   it("translates the title as soon as the language changes", async () => {
-    await render(<SettingsScreen />, { wrapper });
+    await render(<SettingsScreen />, { wrapper: Wrapper });
 
     await fireEvent.press(screen.getByRole("radio", { name: "English" }));
 
@@ -66,13 +68,13 @@ describe("SettingsScreen", () => {
   });
 
   it("hides the debug section by default", async () => {
-    await render(<SettingsScreen />, { wrapper });
+    await render(<SettingsScreen />, { wrapper: Wrapper });
 
     expect(screen.queryByRole("header", { name: "Debug" })).not.toBeOnTheScreen();
   });
 
   it("toggles the debug section with 10 presses on the version", async () => {
-    await render(<SettingsScreen />, { wrapper });
+    await render(<SettingsScreen />, { wrapper: Wrapper });
 
     await pressVersion(DEBUG_MODE_PRESS_COUNT);
 
@@ -86,5 +88,17 @@ describe("SettingsScreen", () => {
     await pressVersion(DEBUG_MODE_PRESS_COUNT);
 
     expect(screen.queryByRole("header", { name: "Debug" })).not.toBeOnTheScreen();
+  });
+
+  it("translates every section as soon as the language changes", async () => {
+    await render(<SettingsScreen />, { wrapper: Wrapper });
+
+    await fireEvent.press(screen.getByRole("radio", { name: "English" }));
+
+    for (const title of ["Reminders", "Stock", "Language", "Your data", "About"]) {
+      expect(screen.getByRole("header", { name: title })).toBeOnTheScreen();
+    }
+    expect(screen.getByRole("button", { name: "Pilbo is not a medical app" })).toBeOnTheScreen();
+    expect(screen.getByLabelText("Version 1.0.0 (12)")).toBeOnTheScreen();
   });
 });

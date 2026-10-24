@@ -1,4 +1,5 @@
 import { Pressable } from "react-native";
+import { useTranslation } from "react-i18next";
 
 import { Pill } from "@/design-system/components/Pill/Pill";
 import { Text } from "@/design-system/components/Text/Text";
@@ -16,7 +17,8 @@ type ShapeOptionProps = {
 };
 
 export function ShapeOption({ design, isSelected, onPress }: ShapeOptionProps) {
-  const label = formatShapeName(design.shape);
+  const { t } = useTranslation("pillbox");
+  const label = formatShapeName(t, design.shape);
   return (
     <Pressable
       accessibilityRole="radio"

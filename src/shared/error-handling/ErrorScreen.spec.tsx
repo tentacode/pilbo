@@ -3,6 +3,9 @@ import type { ReactNode } from "react";
 import { Linking } from "react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 
+import { i18n } from "@/shared/i18n/i18n";
+import { renderInEnglish } from "@/shared/i18n/testHelpers";
+
 import { ErrorScreen } from "./ErrorScreen";
 import { buildSupportMailUrl } from "./utils/contactSupport";
 
@@ -41,6 +44,15 @@ describe("ErrorScreen", () => {
 
     await fireEvent.press(screen.getByRole("button", { name: "Contactez-nous" }));
 
-    expect(openURL).toHaveBeenCalledWith(buildSupportMailUrl("Disk full"));
+    expect(openURL).toHaveBeenCalledWith(
+      buildSupportMailUrl(i18n.getFixedT(null, "common"), "Disk full"),
+    );
+  });
+
+  it("is translated in English", async () => {
+    await renderInEnglish(<ErrorScreen />, { wrapper });
+
+    expect(screen.getByRole("header", { name: "Oops, a small hiccup" })).toBeOnTheScreen();
+    expect(screen.getByRole("button", { name: "Contact us" })).toBeOnTheScreen();
   });
 });

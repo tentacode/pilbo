@@ -1,4 +1,5 @@
 import { ActionSheetIOS } from "react-native";
+import { useTranslation } from "react-i18next";
 
 import { colors } from "@/design-system/tokens";
 
@@ -13,11 +14,12 @@ type MedRowActions = {
 };
 
 export function useMedRowActionSheet() {
+  const { t } = useTranslation("pillbox");
   return ({ medLabel, onEditMed, onRemove }: MedRowActions) =>
     ActionSheetIOS.showActionSheetWithOptions(
       {
         title: medLabel,
-        options: ["Modifier le médicament", "Retirer de la prise", "Annuler"],
+        options: [t("Modifier le médicament"), t("Retirer de la prise"), t("Annuler")],
         cancelButtonIndex: CANCEL_INDEX,
         tintColor: colors.ink,
         userInterfaceStyle: "light",

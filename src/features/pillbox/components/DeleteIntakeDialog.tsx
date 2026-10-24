@@ -1,4 +1,5 @@
 import { Dialog } from "@/design-system/components/Dialog/Dialog";
+import { useTranslation } from "react-i18next";
 
 type DeleteIntakeDialogProps = {
   isVisible: boolean;
@@ -7,14 +8,15 @@ type DeleteIntakeDialogProps = {
 };
 
 export function DeleteIntakeDialog({ isVisible, onDelete, onCancel }: DeleteIntakeDialogProps) {
+  const { t } = useTranslation("pillbox");
   return (
     <Dialog
       isVisible={isVisible}
       icon="trash"
-      title="Supprimer cette prise ?"
-      message="Ses rappels s’arrêtent. L’historique de vos prises est conservé."
-      confirmAction={{ label: "Supprimer", onPress: onDelete }}
-      cancelAction={{ label: "Annuler", onPress: onCancel }}
+      title={t("Supprimer cette prise ?")}
+      message={t("Ses rappels s’arrêtent. L’historique de vos prises est conservé.")}
+      confirmAction={{ label: t("Supprimer"), onPress: onDelete }}
+      cancelAction={{ label: t("Annuler"), onPress: onCancel }}
       onRequestClose={onCancel}
     />
   );

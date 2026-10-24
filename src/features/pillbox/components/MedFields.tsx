@@ -1,4 +1,5 @@
 import { TextField } from "@/design-system/components/TextField/TextField";
+import { useTranslation } from "react-i18next";
 
 import type { MedDraft } from "@/features/pillbox/utils/medDraft";
 import { FormGroup } from "./FormGroup";
@@ -10,23 +11,24 @@ type MedFieldsProps = {
 };
 
 export function MedFields({ draft, nameError, onChange }: MedFieldsProps) {
+  const { t } = useTranslation("pillbox");
   return (
     <FormGroup>
       <TextField
-        label="Nom"
+        label={t("Nom")}
         value={draft.name}
         error={nameError}
         autoCapitalize="sentences"
         onChangeText={(name) => onChange({ name })}
       />
       <TextField
-        label="Dosage (facultatif)"
+        label={t("Dosage (facultatif)")}
         value={draft.strength}
         hasTopBorder
         onChangeText={(strength) => onChange({ strength })}
       />
       <TextField
-        label="Détail (facultatif)"
+        label={t("Détail (facultatif)")}
         value={draft.detail}
         hasTopBorder
         autoCapitalize="sentences"

@@ -1,10 +1,12 @@
 import { View } from "react-native";
+import { useTranslation } from "react-i18next";
 
 import { sizes } from "@/design-system/tokens";
 import { formatMedLabel, type MedQuantity } from "@/domain/med";
 
 import { IntakeMedRow } from "@/features/pillbox/components/IntakeMedRow";
 import { pillStackLayoutOf } from "@/features/pillbox/utils/pillStack";
+import { formatQuantityAccessibilityLabel } from "@/features/today/utils/formatters";
 import { styles } from "./TodayMedList.styles";
 
 type TodayMedListProps = {
@@ -13,6 +15,7 @@ type TodayMedListProps = {
 };
 
 export function TodayMedList({ medQuantities, isLate = false }: TodayMedListProps) {
+  const { t } = useTranslation("today");
   const pillStackLayout = pillStackLayoutOf(medQuantities);
   return (
     <View>
@@ -20,7 +23,11 @@ export function TodayMedList({ medQuantities, isLate = false }: TodayMedListProp
         <View
           key={med.id}
           accessible
-          accessibilityLabel={[formatMedLabel(med), med.detail, `quantité ${quantity}`]
+          accessibilityLabel={[
+            formatMedLabel(med),
+            med.detail,
+            formatQuantityAccessibilityLabel(t, quantity),
+          ]
             .filter(Boolean)
             .join(", ")}
           style={[styles.row, isLate && styles.lateRow]}

@@ -1,19 +1,24 @@
+import type { TFunction } from "i18next";
+
 import type { IconName } from "@/design-system/components/Icon/iconShapes";
 
-export const tabs: Record<
-  string,
-  { label: string; icon: IconName; formatBadgeLabel?: (count: number) => string }
-> = {
+type Tab = {
+  formatLabel: (t: TFunction<"common">) => string;
+  icon: IconName;
+  formatBadgeLabel?: (t: TFunction<"common">, count: number) => string;
+};
+
+export const tabs: Record<string, Tab> = {
   today: {
-    label: "Aujourd'hui",
+    formatLabel: (t) => t("Aujourd'hui"),
     icon: "today",
-    formatBadgeLabel: (count) => (count > 1 ? `${count} prises à valider` : "1 prise à valider"),
+    formatBadgeLabel: (t, count) => t("{{count}} prises à valider", { count }),
   },
-  pillbox: { label: "Pilulier", icon: "pillbox" },
+  pillbox: { formatLabel: (t) => t("Pilulier"), icon: "pillbox" },
   stocks: {
-    label: "Stock",
+    formatLabel: (t) => t("Stock"),
     icon: "stocks",
-    formatBadgeLabel: (count) => (count > 1 ? `${count} stocks bas` : "1 stock bas"),
+    formatBadgeLabel: (t, count) => t("{{count}} stocks bas", { count }),
   },
-  settings: { label: "Réglages", icon: "settings" },
+  settings: { formatLabel: (t) => t("Réglages"), icon: "settings" },
 };

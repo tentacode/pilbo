@@ -1,4 +1,5 @@
 import { TextInput, View } from "react-native";
+import { useTranslation } from "react-i18next";
 
 import { Text } from "@/design-system/components/Text/Text";
 import { BOX_SIZE } from "@/domain/stock";
@@ -12,13 +13,14 @@ type BoxSizeInputProps = {
 };
 
 export function BoxSizeInput({ value, error, onChange }: BoxSizeInputProps) {
+  const { t } = useTranslation("stocks");
   return (
     <View style={styles.container}>
       <TextInput
         value={value}
         keyboardType="number-pad"
         selectTextOnFocus
-        accessibilityLabel="Taille d’une boîte, en comprimés"
+        accessibilityLabel={t("Taille d’une boîte, en comprimés")}
         accessibilityHint={error}
         onChangeText={(text) =>
           onChange(text.replace(/\D/g, "").slice(0, String(BOX_SIZE.maximum).length))
@@ -26,7 +28,7 @@ export function BoxSizeInput({ value, error, onChange }: BoxSizeInputProps) {
         style={[styles.input, error !== undefined && styles.invalidInput]}
       />
       <Text tone="secondary" accessibilityElementsHidden>
-        comprimés
+        {t("comprimés", { count: Number(value) || 0 })}
       </Text>
     </View>
   );
