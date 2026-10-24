@@ -1,3 +1,4 @@
+import type { ColorValue } from "react-native";
 import type { TFunction } from "i18next";
 import type { ComponentType } from "react";
 
@@ -17,7 +18,7 @@ export type OnboardingStepContent = {
   body: string;
   Illustration: ComponentType<IllustrationProps>;
   illustrationLabel: string;
-  illustrationBackground: string;
+  illustrationBackground: ColorValue;
 };
 
 export function notMedicalStepOf(t: TFunction<"onboarding">): OnboardingStepContent {

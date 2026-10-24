@@ -5,6 +5,7 @@ import { Screen } from "@/design-system/components/Screen/Screen";
 import { ScreenHeader } from "@/design-system/components/ScreenHeader/ScreenHeader";
 
 import { AboutSection } from "./components/AboutSection";
+import { AppearanceRow } from "./components/AppearanceRow";
 import { DebugSection } from "./components/DebugSection";
 import { DefaultIntervalRow } from "./components/DefaultIntervalRow";
 import { LanguageRow } from "./components/LanguageRow";
@@ -35,8 +36,9 @@ export function SettingsScreen() {
         <SettingsSection title={t("Stock")}>
           <LowStockRow />
         </SettingsSection>
-        <SettingsSection title={t("Langue")}>
+        <SettingsSection title={t("Affichage")}>
           <LanguageRow />
+          <AppearanceRow />
         </SettingsSection>
         <SettingsSection title={t("Vos données")}>
           <PrivacyCard />

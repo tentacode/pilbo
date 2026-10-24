@@ -29,9 +29,9 @@ export function pillStrokes(scale: number, outlineRatio = 1) {
       strokeWidth: (1.8 * outlineRatio) / scale,
       strokeLinejoin: "round",
     },
-    junction: { stroke: colors.ink, strokeWidth: (1.5 * outlineRatio) / scale, fill: "none" },
+    junction: { stroke: colors.onAccent, strokeWidth: (1.5 * outlineRatio) / scale, fill: "none" },
     scoreLine: {
-      stroke: colors.ink,
+      stroke: colors.onAccent,
       strokeOpacity: 0.35,
       strokeWidth: 1.6 / scale,
       strokeLinecap: "round",

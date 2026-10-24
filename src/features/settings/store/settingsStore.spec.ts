@@ -11,12 +11,14 @@ describe("settingsStore", () => {
   });
 
   it("has default values", () => {
-    const { defaultReminderIntervalMinutes, lowStockDays, language } = useSettingsStore.getState();
+    const { defaultReminderIntervalMinutes, lowStockDays, language, colorScheme } =
+      useSettingsStore.getState();
 
-    expect({ defaultReminderIntervalMinutes, lowStockDays, language }).toEqual({
+    expect({ defaultReminderIntervalMinutes, lowStockDays, language, colorScheme }).toEqual({
       defaultReminderIntervalMinutes: 10,
       lowStockDays: 7,
       language: null,
+      colorScheme: null,
     });
   });
 
@@ -32,6 +34,12 @@ describe("settingsStore", () => {
     expect(useSettingsStore.getState().language).toBe("en");
   });
 
+  it("updates the color scheme", () => {
+    useSettingsStore.getState().setColorScheme("dark");
+
+    expect(useSettingsStore.getState().colorScheme).toBe("dark");
+  });
+
   it.each([
     [12, 12],
     [0, 1],
@@ -44,11 +52,13 @@ describe("settingsStore", () => {
 
   it("writes only the values to the storage", () => {
     useSettingsStore.getState().setLanguage("fr");
+    useSettingsStore.getState().setColorScheme("dark");
 
     expect(JSON.parse(Storage.getItemSync("settings") ?? "{}").state).toEqual({
       defaultReminderIntervalMinutes: 10,
       lowStockDays: 7,
       language: "fr",
+      colorScheme: "dark",
     });
   });
 
@@ -56,7 +66,12 @@ describe("settingsStore", () => {
     Storage.setItemSync(
       "settings",
       JSON.stringify({
-        state: { defaultReminderIntervalMinutes: 30, lowStockDays: 3, language: "en" },
+        state: {
+          defaultReminderIntervalMinutes: 30,
+          lowStockDays: 3,
+          language: "en",
+          colorScheme: "light",
+        },
         version: 0,
       }),
     );
@@ -67,6 +82,7 @@ describe("settingsStore", () => {
       defaultReminderIntervalMinutes: 30,
       lowStockDays: 3,
       language: "en",
+      colorScheme: "light",
     });
   });
 });

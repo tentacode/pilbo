@@ -14,6 +14,13 @@ export const illustrationStrokes = {
     strokeLinecap: "round",
     strokeLinejoin: "round",
   },
+  outlineOnAccent: {
+    fill: "none",
+    stroke: colors.onAccent,
+    strokeWidth: 2.5,
+    strokeLinecap: "round",
+    strokeLinejoin: "round",
+  },
   dashed: {
     fill: "none",
     stroke: colors.ink,
@@ -22,10 +29,10 @@ export const illustrationStrokes = {
     strokeDasharray: "7 8",
   },
   pillOutline: { stroke: colors.ink, strokeWidth: 2, strokeLinejoin: "round" },
-  pillJunction: { fill: "none", stroke: colors.ink, strokeWidth: 1.5 },
+  pillJunction: { fill: "none", stroke: colors.onAccent, strokeWidth: 1.5 },
   pillScoreLine: {
     fill: "none",
-    stroke: colors.ink,
+    stroke: colors.onAccent,
     strokeOpacity: 0.35,
     strokeWidth: 1.6,
     strokeLinecap: "round",

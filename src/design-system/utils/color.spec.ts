@@ -1,4 +1,5 @@
 import {
+  contrastRatio,
   colorFromHueAndIntensity,
   hueAndIntensityFromColor,
   hueTrackColors,
@@ -73,5 +74,20 @@ describe("track colors", () => {
 
     expect(colors[0]).toBe("#FFFFFF");
     expect(colors[colors.length - 1]).toBe(colorFromHueAndIntensity(27, 100));
+  });
+});
+
+describe("contrastRatio", () => {
+  it("returns 21 between black and white", () => {
+    expect(contrastRatio("#000000", "#FFFFFF")).toBeCloseTo(21);
+  });
+
+  it("returns 1 for the same color", () => {
+    expect(contrastRatio("#2E2A5C", "#2E2A5C")).toBe(1);
+  });
+
+  it("does not depend on the order", () => {
+    expect(contrastRatio("#FFFFFF", "#767676")).toBeCloseTo(contrastRatio("#767676", "#FFFFFF"));
+    expect(contrastRatio("#FFFFFF", "#767676")).toBeCloseTo(4.54, 2);
   });
 });

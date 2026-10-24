@@ -29,9 +29,6 @@ export const styles = StyleSheet.create({
     ...shadow.raised,
     backgroundColor: colors.surface,
   },
-  label: {
-    textAlign: "center",
-  },
   measureContainer: {
     position: "absolute",
     top: 0,

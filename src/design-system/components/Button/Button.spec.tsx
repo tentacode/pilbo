@@ -3,7 +3,7 @@ import * as Haptics from "expo-haptics";
 
 import { Button, type ButtonVariant } from "./Button";
 
-const VARIANTS: ButtonVariant[] = ["primary", "secondary", "text"];
+const VARIANTS: ButtonVariant[] = ["primary", "prominent", "secondary", "text"];
 
 describe("Button", () => {
   it("is exposed as a labelled button", async () => {

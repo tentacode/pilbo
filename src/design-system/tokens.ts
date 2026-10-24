@@ -1,4 +1,6 @@
-export const colors = {
+import { type ColorValue, DynamicColorIOS } from "react-native";
+
+export const lightColors = {
   ink: "#2E2A5C",
   inkPressed: "#211E46",
   inkSecondary: "#5C5780",
@@ -21,10 +23,19 @@ export const colors = {
   roseStrong: "#F58FB8",
   stepIndicatorInactive: "#D4CEE5",
   onInk: "#FFFFFF",
+  onAccent: "#2E2A5C",
+  prominentBackground: "#2E2A5C",
+  prominentBackgroundPressed: "#211E46",
+  prominentBorder: "#2E2A5C",
+  onProminent: "#FFFFFF",
   alertBackground: "#FFE0DA",
   alertLine: "#FFCBC2",
   alertChip: "#FFCBC2",
   alertInk: "#8A2A1A",
+  onAlert: "#8A2A1A",
+  alertNotice: "#FFE0DA",
+  alertNoticePressed: "#FFCBC2",
+  alertSeparator: "#FFCBC2",
   doneBackground: "#F2F1F5",
   doneLine: "#E4E1EA",
   skipLine: "#B9B2D0",
@@ -42,7 +53,77 @@ export const colors = {
   swatchOutline: "rgba(46, 42, 92, 0.2)",
   colorDotOutline: "rgba(46, 42, 92, 0.28)",
   sliderOutline: "rgba(46, 42, 92, 0.14)",
+  shadow: "#2E2A5C",
 } as const;
+
+export const darkColors: Palette = {
+  ink: "#EAE5FF",
+  inkPressed: "#CFC6F2",
+  inkSecondary: "#B5AED6",
+  background: "#15122B",
+  surface: "#211D3B",
+  surfaceTranslucent: "rgba(33, 29, 59, 0.88)",
+  line: "#332E54",
+  lineStrong: "#4D4675",
+  fill: "#2B2649",
+  separator: "#2E2950",
+  accentSoft: "#352D62",
+  roseSoft: "#3D2440",
+  butterSoft: "#3A3222",
+  turquoiseSoft: "#173A3A",
+  turquoise: "#B3E8E0",
+  turquoiseInk: "#8FDDD2",
+  lavender: "#D6C9F5",
+  butter: "#FBE29A",
+  rose: "#F8C6DA",
+  roseStrong: "#F58FB8",
+  stepIndicatorInactive: "#4D4675",
+  onInk: "#1B1733",
+  onAccent: "#2E2A5C",
+  prominentBackground: "#211D3B",
+  prominentBackgroundPressed: "#2B2649",
+  prominentBorder: "#EAE5FF",
+  onProminent: "#EAE5FF",
+  alertBackground: "#2E1B2C",
+  alertLine: "#F2907F",
+  alertChip: "#FFB4A6",
+  alertInk: "#FFB4A6",
+  onAlert: "#5A1408",
+  alertNotice: "#FFB4A6",
+  alertNoticePressed: "#F59A8A",
+  alertSeparator: "#4A2A3A",
+  doneBackground: "#1C1933",
+  doneLine: "#2C2846",
+  skipLine: "#6A6290",
+  skipChip: "#2E2A4A",
+  successChip: "#1C3F2D",
+  successInk: "#9EE0B4",
+  warningChip: "#45381A",
+  warningInk: "#F5D27A",
+  calendarSkipLine: "#8A82B0",
+  pillHighlight: "#FFFFFF",
+  grabber: "#4D4675",
+  stepperBorder: "#4D4675",
+  progressTrack: "#38325C",
+  backdrop: "rgba(5, 3, 15, 0.6)",
+  swatchOutline: "rgba(234, 229, 255, 0.35)",
+  colorDotOutline: "rgba(234, 229, 255, 0.45)",
+  sliderOutline: "rgba(234, 229, 255, 0.3)",
+  shadow: "#000000",
+};
+
+type ColorName = keyof typeof lightColors;
+
+type Palette = Record<ColorName, string>;
+
+export type ThemeColors = Palette;
+
+export const colors = Object.fromEntries(
+  Object.entries(lightColors).map(([name, light]) => [
+    name,
+    DynamicColorIOS({ light, dark: darkColors[name as ColorName] }),
+  ]),
+) as Record<ColorName, ColorValue>;
 
 export const pillSwatches = {
   white: "#FFFFFF",
@@ -256,13 +337,13 @@ export const maximumFontScale = {
 
 export const shadow = {
   raised: {
-    shadowColor: colors.ink,
+    shadowColor: colors.shadow,
     shadowOpacity: 0.14,
     shadowRadius: 2,
     shadowOffset: { width: 0, height: 1 },
   },
   floating: {
-    shadowColor: colors.ink,
+    shadowColor: colors.shadow,
     shadowOpacity: 0.07,
     shadowRadius: 16,
     shadowOffset: { width: 0, height: 4 },

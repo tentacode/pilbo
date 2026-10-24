@@ -10,7 +10,9 @@ import { useDesignSystemFonts } from "@/design-system/fonts";
 import { useReminderScheduling } from "@/features/notifications/hooks/useReminderScheduling";
 import { isFirstLaunch, useOnboardingStore } from "@/features/onboarding/store/onboardingStore";
 import { setupFirstLaunch } from "@/features/onboarding/utils/setupFirstLaunch";
+import { useColorSchemeSync } from "@/features/settings/hooks/useColorSchemeSync";
 import { useI18nLanguageSync } from "@/features/settings/hooks/useI18nLanguageSync";
+import { applyStoredColorScheme } from "@/features/settings/utils/appColorScheme";
 import { getAppLanguage } from "@/features/settings/utils/appLanguage";
 import { DatabaseErrorScreen } from "@/shared/database/DatabaseErrorScreen";
 import { useDatabaseReady } from "@/shared/database/hooks/useDatabaseReady";
@@ -21,6 +23,7 @@ export { ErrorBoundary } from "@/shared/error-handling/ErrorBoundary";
 
 SplashScreen.preventAutoHideAsync();
 setI18nLanguage(getAppLanguage());
+applyStoredColorScheme();
 
 function onDatabaseMigrated(database: Database): void {
   setupFirstLaunch(database, { isDebugMode: IS_DEBUG_MODE, isFirstLaunch: isFirstLaunch() });
@@ -33,6 +36,7 @@ export default function RootLayout() {
   const canHideSplash = fontsReady && (databaseReady || databaseError !== undefined);
   useReminderScheduling(databaseReady);
   useI18nLanguageSync();
+  useColorSchemeSync();
 
   useEffect(() => {
     if (canHideSplash) {
@@ -46,7 +50,7 @@ export default function RootLayout() {
 
   return (
     <GestureHandlerRootView style={styles.root}>
-      <StatusBar style="dark" />
+      <StatusBar style="auto" />
       {databaseError ? (
         <DatabaseErrorScreen error={databaseError} />
       ) : (

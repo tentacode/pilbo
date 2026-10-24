@@ -1,4 +1,4 @@
-import { View } from "react-native";
+import { View, type ColorValue } from "react-native";
 import { useTranslation } from "react-i18next";
 
 import { Icon } from "@/design-system/components/Icon/Icon";
@@ -12,9 +12,9 @@ import { appearanceStyles, styles } from "./IntakeStatusLabel.styles";
 
 type Appearance = keyof typeof appearanceStyles;
 
-const APPEARANCES: Record<Appearance, { icon: IconName; tone: TextTone; iconColor: string }> = {
+const APPEARANCES: Record<Appearance, { icon: IconName; tone: TextTone; iconColor: ColorValue }> = {
   upcoming: { icon: "clock", tone: "primary", iconColor: colors.ink },
-  late: { icon: "alert", tone: "alert", iconColor: colors.alertInk },
+  late: { icon: "alert", tone: "onAlert", iconColor: colors.onAlert },
   taken: { icon: "checkCircle", tone: "success", iconColor: colors.successInk },
   skipped: { icon: "dashCircle", tone: "secondary", iconColor: colors.inkSecondary },
 };

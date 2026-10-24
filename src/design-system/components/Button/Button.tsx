@@ -1,14 +1,14 @@
-import { Pressable } from "react-native";
+import { type ColorValue, Pressable } from "react-native";
 
 import { useReduceMotion } from "../../hooks/useReduceMotion";
 import { colors } from "../../tokens";
 import { playPressHaptic } from "../../utils/playPressHaptic";
 import { Icon } from "../Icon/Icon";
 import type { IconName } from "../Icon/iconShapes";
-import { Text, type TextVariant } from "../Text/Text";
+import { Text, type TextTone, type TextVariant } from "../Text/Text";
 import { pressedVariantStyles, sizeStyles, styles, variantStyles } from "./Button.styles";
 
-export type ButtonVariant = "primary" | "secondary" | "text";
+export type ButtonVariant = "primary" | "prominent" | "secondary" | "text";
 export type ButtonSize = "regular" | "large";
 
 type ButtonProps = {
@@ -20,6 +20,20 @@ type ButtonProps = {
   accessibilityLabel?: string;
   accessibilityHint?: string;
   isDisabled?: boolean;
+};
+
+const ICON_COLORS: Record<ButtonVariant, ColorValue> = {
+  primary: colors.onInk,
+  prominent: colors.onProminent,
+  secondary: colors.ink,
+  text: colors.ink,
+};
+
+const LABEL_TONES: Record<ButtonVariant, TextTone> = {
+  primary: "onInk",
+  prominent: "onProminent",
+  secondary: "primary",
+  text: "primary",
 };
 
 function labelVariant(variant: ButtonVariant, size: ButtonSize): TextVariant {
@@ -37,7 +51,6 @@ export function Button({
   isDisabled = false,
 }: ButtonProps) {
   const reduceMotion = useReduceMotion();
-  const isPrimary = variant === "primary";
 
   return (
     <Pressable
@@ -57,12 +70,8 @@ export function Button({
         isDisabled && styles.disabled,
       ]}
     >
-      {icon ? <Icon name={icon} color={isPrimary ? colors.onInk : colors.ink} /> : null}
-      <Text
-        variant={labelVariant(variant, size)}
-        tone={isPrimary ? "onInk" : "primary"}
-        style={styles.label}
-      >
+      {icon ? <Icon name={icon} color={ICON_COLORS[variant]} /> : null}
+      <Text variant={labelVariant(variant, size)} tone={LABEL_TONES[variant]} style={styles.label}>
         {label}
       </Text>
     </Pressable>

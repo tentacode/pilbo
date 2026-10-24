@@ -7,7 +7,7 @@ export const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "flex-start",
     borderRadius: radius.card,
-    backgroundColor: colors.alertBackground,
+    backgroundColor: colors.alertNotice,
     overflow: "hidden",
   },
   content: {
@@ -19,7 +19,7 @@ export const styles = StyleSheet.create({
     paddingLeft: spacing.large,
   },
   pressed: {
-    backgroundColor: colors.alertLine,
+    backgroundColor: colors.alertNoticePressed,
   },
   texts: {
     flex: 1,

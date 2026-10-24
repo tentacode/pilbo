@@ -2,5 +2,3 @@
 - [ ] préparer le deploy sur le store.
 - [ ] android.
 - [ ] widget apple.
-- [ ] gestion du dark mode.
-- [x] modifier une prise d'un jour, passé ou aujourd'hui : changer le statut (prise, ignorée, aucune action) et l'heure de la prise, avec le stock.

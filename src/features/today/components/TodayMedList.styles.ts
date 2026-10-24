@@ -9,7 +9,7 @@ export const styles = StyleSheet.create({
     borderTopColor: colors.line,
   },
   lateRow: {
-    borderTopColor: colors.alertLine,
+    borderTopColor: colors.alertSeparator,
   },
   borderlessRow: {
     borderTopWidth: 0,

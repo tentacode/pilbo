@@ -27,12 +27,12 @@ export function LowStockNotice({ lowStockCount, onPress, onDismiss }: LowStockNo
         onPress={onPress}
         style={({ pressed }) => [styles.content, pressed && styles.pressed]}
       >
-        <Icon name="alert" color={colors.alertInk} />
+        <Icon name="alert" color={colors.onAlert} />
         <View style={styles.texts}>
-          <Text variant="bodyBold" tone="alert">
+          <Text variant="bodyBold" tone="onAlert">
             {t("Stock bas")}
           </Text>
-          <Text variant="small" tone="alert">
+          <Text variant="small" tone="onAlert">
             {message}
           </Text>
         </View>
@@ -44,7 +44,7 @@ export function LowStockNotice({ lowStockCount, onPress, onDismiss }: LowStockNo
         onPress={onDismiss}
         style={({ pressed }) => [styles.dismissButton, pressed && styles.pressed]}
       >
-        <Icon name="close" color={colors.alertInk} />
+        <Icon name="close" color={colors.onAlert} />
       </Pressable>
     </View>
   );

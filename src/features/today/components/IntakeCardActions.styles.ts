@@ -13,7 +13,7 @@ export const styles = StyleSheet.create({
     borderTopColor: colors.line,
   },
   lateActions: {
-    borderTopColor: colors.alertLine,
+    borderTopColor: colors.alertSeparator,
   },
   takeAction: {
     flexGrow: 1,

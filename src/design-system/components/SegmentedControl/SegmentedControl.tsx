@@ -3,12 +3,14 @@ import { type LayoutChangeEvent, Pressable, View } from "react-native";
 
 import { useFitsInWidth } from "../../hooks/useFitsInWidth";
 import { playPressHaptic } from "../../utils/playPressHaptic";
-import { Text } from "../Text/Text";
+import type { IconName } from "../Icon/iconShapes";
+import { SegmentedControlLabel } from "./SegmentedControlLabel";
 import { styles } from "./SegmentedControl.styles";
 
 export type SegmentedControlOption<Value extends string | number> = {
   value: Value;
   label: string;
+  icon?: IconName;
   accessibilityLabel?: string;
 };
 
@@ -57,32 +59,30 @@ export function SegmentedControl<Value extends string | number>({
                 isSelected && styles.selectedOption,
               ]}
             >
-              <Text
-                variant={isSelected ? "buttonSmall" : "callout"}
-                tone={isSelected ? "primary" : "secondary"}
-                style={styles.label}
-              >
-                {option.label}
-              </Text>
+              <SegmentedControlLabel
+                label={option.label}
+                icon={option.icon}
+                isSelected={isSelected}
+              />
             </Pressable>
           );
         })}
       </View>
-      <SegmentedControlMeasure
-        labels={options.map(({ label }) => label)}
-        onLayout={onMeasureLayout}
-      />
+      <SegmentedControlMeasure options={options} onLayout={onMeasureLayout} />
     </View>
   );
 }
 
-type SegmentedControlMeasureProps = {
-  labels: string[];
+type SegmentedControlMeasureProps<Value extends string | number> = {
+  options: SegmentedControlOption<Value>[];
   onLayout: (event: LayoutChangeEvent) => void;
 };
 
 // Invisible copy of the options without width constraint: its width is the one needed side by side.
-function SegmentedControlMeasure({ labels, onLayout }: SegmentedControlMeasureProps) {
+function SegmentedControlMeasure<Value extends string | number>({
+  options,
+  onLayout,
+}: SegmentedControlMeasureProps<Value>) {
   return (
     <View
       pointerEvents="none"
@@ -91,9 +91,9 @@ function SegmentedControlMeasure({ labels, onLayout }: SegmentedControlMeasurePr
       style={styles.measureContainer}
     >
       <View testID="segmented-control-measure" onLayout={onLayout} style={styles.measureRow}>
-        {labels.map((label) => (
-          <View key={label} style={styles.measureOption}>
-            <Text variant="buttonSmall">{label}</Text>
+        {options.map((option) => (
+          <View key={option.value} style={styles.measureOption}>
+            <SegmentedControlLabel label={option.label} icon={option.icon} isSelected />
           </View>
         ))}
       </View>

@@ -22,7 +22,7 @@ export const styles = StyleSheet.create({
     gap: spacing.medium,
     padding: spacing.dialogPadding,
     borderRadius: radius.largeCard,
-    backgroundColor: colors.background,
+    backgroundColor: colors.surface,
   },
   iconBadge: {
     width: sizes.dialogIconBadge,

@@ -18,7 +18,7 @@ export const styles = StyleSheet.create({
     backgroundColor: colors.separator,
   },
   lowPressed: {
-    backgroundColor: colors.alertLine,
+    backgroundColor: colors.alertSeparator,
   },
   row: {
     flexDirection: "row",

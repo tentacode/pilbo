@@ -17,9 +17,9 @@ export function StockStatusLabel({ text, isLow }: StockStatusLabelProps) {
       <Icon
         name={isLow ? "alert" : "checkCircle"}
         size={sizes.iconSmall}
-        color={isLow ? colors.alertInk : colors.ink}
+        color={isLow ? colors.onAlert : colors.ink}
       />
-      <Text variant="helpBold" tone={isLow ? "alert" : "primary"} style={styles.text}>
+      <Text variant="helpBold" tone={isLow ? "onAlert" : "primary"} style={styles.text}>
         {text}
       </Text>
     </View>

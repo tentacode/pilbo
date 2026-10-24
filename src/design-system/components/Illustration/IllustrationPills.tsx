@@ -1,3 +1,4 @@
+import type { ColorValue } from "react-native";
 import type { ReactNode } from "react";
 import { Circle, Ellipse, G, Path, Rect } from "react-native-svg";
 
@@ -13,11 +14,11 @@ type Placement = {
   size?: number;
 };
 
-type SingleColorPillProps = Placement & { color: string };
+type SingleColorPillProps = Placement & { color: ColorValue };
 
 type CapsulePillProps = Placement & {
-  firstHalfColor: string;
-  secondHalfColor: string;
+  firstHalfColor: ColorValue;
+  secondHalfColor: ColorValue;
   tilt?: number;
 };
 

@@ -40,7 +40,9 @@ export const toneStyles = StyleSheet.create({
   primary: { color: colors.ink },
   secondary: { color: colors.inkSecondary },
   onInk: { color: colors.onInk },
+  onProminent: { color: colors.onProminent },
   alert: { color: colors.alertInk },
+  onAlert: { color: colors.onAlert },
   success: { color: colors.successInk },
   warning: { color: colors.warningInk },
 });

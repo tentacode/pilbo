@@ -37,6 +37,14 @@ export const variantStyles = StyleSheet.create({
     gap: spacing.small,
     backgroundColor: colors.ink,
   },
+  prominent: {
+    minHeight: sizes.buttonMinimumHeight,
+    paddingHorizontal: spacing.buttonHorizontal,
+    gap: spacing.small,
+    borderWidth: borderWidth.regular,
+    borderColor: colors.prominentBorder,
+    backgroundColor: colors.prominentBackground,
+  },
   secondary: {
     minHeight: sizes.touchTarget,
     paddingHorizontal: spacing.buttonHorizontalCompact,
@@ -54,6 +62,7 @@ export const variantStyles = StyleSheet.create({
 
 export const pressedVariantStyles = StyleSheet.create({
   primary: { backgroundColor: colors.inkPressed },
+  prominent: { backgroundColor: colors.prominentBackgroundPressed },
   secondary: { backgroundColor: colors.fill },
   text: { backgroundColor: colors.fill },
 });

@@ -31,7 +31,7 @@ export function IntakeCardActions({
       <View style={styles.takeAction}>
         <Button
           label={t("Je l'ai pris")}
-          variant={isLate ? "primary" : "secondary"}
+          variant={isLate ? "prominent" : "secondary"}
           size="large"
           icon={isLate ? "check" : undefined}
           accessibilityLabel={formatTakeAccessibilityLabel(t, intake)}

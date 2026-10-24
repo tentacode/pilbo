@@ -1,3 +1,4 @@
+import type { ColorValue } from "react-native";
 import Svg, { G } from "react-native-svg";
 
 import { colors, sizes } from "../../tokens";
@@ -8,7 +9,7 @@ const STROKE_WIDTH = 1.8;
 type IconProps = {
   name: IconName;
   size?: number;
-  color?: string;
+  color?: ColorValue;
 };
 
 export function Icon({ name, size = sizes.icon, color = colors.ink }: IconProps) {

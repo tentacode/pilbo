@@ -7,7 +7,7 @@ const config: ExpoConfig = {
   orientation: "portrait",
   icon: "./assets/images/icon.png",
   scheme: "pilbo",
-  userInterfaceStyle: "light",
+  userInterfaceStyle: "automatic",
   ios: {
     icon: "./assets/images/icon.png",
     bundleIdentifier: "com.tentacode.pilbo",
@@ -22,6 +22,10 @@ const config: ExpoConfig = {
         backgroundColor: "#208AEF",
         image: "./assets/images/splash-icon.png",
         imageWidth: 76,
+        dark: {
+          backgroundColor: "#15122B",
+          image: "./assets/images/splash-icon.png",
+        },
       },
     ],
     "./plugins/withoutPushEntitlement",

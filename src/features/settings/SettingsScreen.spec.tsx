@@ -19,7 +19,7 @@ jest.mock("expo-application", () => ({
   nativeBuildVersion: "12",
 }));
 
-const SECTION_TITLES = ["Rappels", "Stock", "Langue", "Vos données", "À propos"];
+const SECTION_TITLES = ["Rappels", "Stock", "Affichage", "Vos données", "À propos"];
 
 const safeAreaMetrics = {
   frame: { x: 0, y: 0, width: 0, height: 0 },
@@ -95,7 +95,7 @@ describe("SettingsScreen", () => {
 
     await fireEvent.press(screen.getByRole("radio", { name: "English" }));
 
-    for (const title of ["Reminders", "Stock", "Language", "Your data", "About"]) {
+    for (const title of ["Reminders", "Stock", "Display", "Your data", "About"]) {
       expect(screen.getByRole("header", { name: title })).toBeOnTheScreen();
     }
     expect(screen.getByRole("button", { name: "Pilbo is not a medical app" })).toBeOnTheScreen();
