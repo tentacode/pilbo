@@ -1,4 +1,5 @@
 import { Pressable, View } from "react-native";
+import { useTranslation } from "react-i18next";
 
 import { Text } from "@/design-system/components/Text/Text";
 import { playPressHaptic } from "@/design-system/utils/playPressHaptic";
@@ -14,10 +15,14 @@ type ColorHalfOptionProps = {
 };
 
 export function ColorHalfOption({ label, color, isSelected, onPress }: ColorHalfOptionProps) {
+  const { t } = useTranslation("pillbox");
   return (
     <Pressable
       accessibilityRole="radio"
-      accessibilityLabel={`${label} : ${formatColorName(color)}`}
+      accessibilityLabel={t("{{half}} : {{color}}", {
+        half: label,
+        color: formatColorName(t, color),
+      })}
       accessibilityState={{ selected: isSelected }}
       onPressIn={playPressHaptic}
       onPress={onPress}

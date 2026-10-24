@@ -1,4 +1,5 @@
 import type { MedQuantity } from "@/domain/med";
+import { useTranslation } from "react-i18next";
 
 import { AddMedRow } from "./AddMedRow";
 import { FormGroup } from "./FormGroup";
@@ -20,8 +21,9 @@ export function IntakeMedsField({
   onRemove,
   onAddMed,
 }: IntakeMedsFieldProps) {
+  const { t } = useTranslation("pillbox");
   return (
-    <FormSection label="Médicaments">
+    <FormSection label={t("Médicaments")}>
       <FormGroup>
         {medQuantities.map((medQuantity, index) => {
           const medId = medQuantity.med.id;

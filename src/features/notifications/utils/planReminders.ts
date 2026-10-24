@@ -1,8 +1,4 @@
-import {
-  MAXIMUM_SCHEDULED_REMINDERS,
-  MINIMUM_DELAY_BEFORE_REMINDER_SECONDS,
-  REMINDER_COUNT,
-} from "@/config/notifications";
+import { MAXIMUM_SCHEDULED_REMINDERS, REMINDER_COUNT } from "@/config/notifications";
 import { type Intake, intakeDateOn } from "@/domain/intake";
 import { type IntakeLog, toLocalDateTime } from "@/domain/intakeLog";
 
@@ -25,7 +21,6 @@ type PlanRemindersOptions = {
 };
 
 const MILLISECONDS_PER_MINUTE = 60_000;
-const MILLISECONDS_PER_SECOND = 1_000;
 
 function planDayReminders(day: Date, pendingIntakes: Intake[]): PlannedReminder[][] {
   const intakeDates = pendingIntakes.map((intake) => intakeDateOn(day, intake.time));
@@ -58,14 +53,11 @@ export function planReminders({
 }: PlanRemindersOptions): PlannedReminder[] {
   const loggedIntakeIds = new Set(todayLogs.map(({ intakeId }) => intakeId));
   const pendingTodayIntakes = todayIntakes.filter(({ id }) => !loggedIntakeIds.has(id));
-  const earliestDate = new Date(
-    now.getTime() + MINIMUM_DELAY_BEFORE_REMINDER_SECONDS * MILLISECONDS_PER_SECOND,
-  );
   const tomorrow = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
 
   const reminders = planDayReminders(now, pendingTodayIntakes)
     .flat()
-    .filter(({ date }) => date > earliestDate)
+    .filter(({ date }) => date > now)
     .slice(0, MAXIMUM_SCHEDULED_REMINDERS);
   reminders.push(...lowStockAlerts.slice(0, MAXIMUM_SCHEDULED_REMINDERS - reminders.length));
 

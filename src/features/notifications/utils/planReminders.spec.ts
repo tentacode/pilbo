@@ -50,26 +50,26 @@ describe("planReminders", () => {
     expect(times(reminders)).toEqual(["4 08:40", "4 08:50", "4 09:00", "4 09:10"]);
   });
 
-  it("skips a reminder planned within one minute", () => {
+  it("keeps a reminder planned a few seconds later", () => {
     const reminders = planReminders({
       todayIntakes: [MORNING],
       tomorrowIntakes: [],
       todayLogs: [],
-      now: at(4, 8, 39, 30),
-    });
-
-    expect(times(reminders)[0]).toBe("4 08:50");
-  });
-
-  it("keeps a reminder planned in more than one minute", () => {
-    const reminders = planReminders({
-      todayIntakes: [MORNING],
-      tomorrowIntakes: [],
-      todayLogs: [],
-      now: at(4, 8, 38, 30),
+      now: at(4, 8, 39, 50),
     });
 
     expect(times(reminders)[0]).toBe("4 08:40");
+  });
+
+  it("skips a reminder planned right now", () => {
+    const reminders = planReminders({
+      todayIntakes: [MORNING],
+      tomorrowIntakes: [],
+      todayLogs: [],
+      now: at(4, 8, 40),
+    });
+
+    expect(times(reminders)[0]).toBe("4 08:50");
   });
 
   it("plans nothing for a handled intake", () => {

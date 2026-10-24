@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { AccessibilityInfo } from "react-native";
+import { useTranslation } from "react-i18next";
 
 import { playPressHaptic } from "@/design-system/utils/playPressHaptic";
 
@@ -7,6 +8,7 @@ export const DEBUG_MODE_PRESS_COUNT = 10;
 const PRESS_COUNT_RESET_DELAY_MILLISECONDS = 2000;
 
 export function useDebugModeToggle() {
+  const { t } = useTranslation("settings");
   const [isDebugMode, setIsDebugMode] = useState(false);
   const pressCount = useRef(0);
   const resetTimeout = useRef<ReturnType<typeof setTimeout>>(undefined);
@@ -29,9 +31,9 @@ export function useDebugModeToggle() {
     setIsDebugMode(nextIsDebugMode);
     playPressHaptic();
     AccessibilityInfo.announceForAccessibility(
-      nextIsDebugMode ? "Mode debug activé" : "Mode debug désactivé",
+      nextIsDebugMode ? t("Mode debug activé") : t("Mode debug désactivé"),
     );
-  }, [isDebugMode]);
+  }, [isDebugMode, t]);
 
   return { isDebugMode, registerPress };
 }

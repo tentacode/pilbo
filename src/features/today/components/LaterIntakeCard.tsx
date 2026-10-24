@@ -1,4 +1,5 @@
 import { View } from "react-native";
+import { useTranslation } from "react-i18next";
 
 import { Button } from "@/design-system/components/Button/Button";
 
@@ -15,6 +16,7 @@ type LaterIntakeCardProps = {
 };
 
 export function LaterIntakeCard({ todayIntake, isDisabled = false, onTake }: LaterIntakeCardProps) {
+  const { t } = useTranslation("today");
   const { intake } = todayIntake;
 
   return (
@@ -22,9 +24,9 @@ export function LaterIntakeCard({ todayIntake, isDisabled = false, onTake }: Lat
       <View style={styles.head}>
         <IntakeCardHeading todayIntake={todayIntake} />
         <Button
-          label="Prendre en avance"
+          label={t("Prendre en avance")}
           variant="secondary"
-          accessibilityLabel={formatTakeAccessibilityLabel(intake)}
+          accessibilityLabel={formatTakeAccessibilityLabel(t, intake)}
           isDisabled={isDisabled}
           onPress={() => onTake(intake.id)}
         />

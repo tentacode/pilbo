@@ -1,128 +1,131 @@
+import type { TFunction } from "i18next";
+
 import { type Intake, type Weekday, WEEKDAYS } from "@/domain/intake";
 import { pillSwatches, type PillSwatch } from "@/design-system/tokens";
 import { formatMedLabel, type PillDesign, type PillShape, type PillSize } from "@/domain/med";
+import { capitalize, formatIntakeTime, formatWeekday } from "@/shared/i18n/formatters";
+import type { Language } from "@/shared/i18n/resources";
 
-const SHORT_DAY_NAMES: Record<Weekday, string> = {
-  monday: "lun",
-  tuesday: "mar",
-  wednesday: "mer",
-  thursday: "jeu",
-  friday: "ven",
-  saturday: "sam",
-  sunday: "dim",
-};
-
-const FULL_DAY_NAMES: Record<Weekday, string> = {
-  monday: "lundi",
-  tuesday: "mardi",
-  wednesday: "mercredi",
-  thursday: "jeudi",
-  friday: "vendredi",
-  saturday: "samedi",
-  sunday: "dimanche",
-};
-
-const DAY_INITIALS: Record<Weekday, string> = {
-  monday: "Lu",
-  tuesday: "Ma",
-  wednesday: "Me",
-  thursday: "Je",
-  friday: "Ve",
-  saturday: "Sa",
-  sunday: "Di",
-};
-
-function capitalize(text: string): string {
-  return text.charAt(0).toUpperCase() + text.slice(1);
-}
-
-function formatDays(days: Weekday[], dayNames: Record<Weekday, string>): string {
+function formatDays(
+  t: TFunction<"pillbox">,
+  language: Language,
+  days: Weekday[],
+  width: "long" | "short",
+): string {
   if (WEEKDAYS.every((day) => days.includes(day))) {
-    return "Tous les jours";
+    return t("Tous les jours");
   }
   return capitalize(
     WEEKDAYS.filter((day) => days.includes(day))
-      .map((day) => dayNames[day])
+      .map((day) => formatWeekday(day, language, width))
       .join(", "),
   );
 }
 
-export function formatIntakeSchedule(intake: Intake): string {
-  return `${formatDays(intake.days, SHORT_DAY_NAMES)} · rappel toutes les ${intake.reminderIntervalMinutes} min`;
+export function formatIntakeSchedule(
+  t: TFunction<"pillbox">,
+  language: Language,
+  intake: Intake,
+): string {
+  return t("{{days}} · rappel toutes les {{minutes}} min", {
+    days: formatDays(t, language, intake.days, "short"),
+    minutes: intake.reminderIntervalMinutes,
+  });
 }
 
-export function formatIntakeAccessibilityLabel(intake: Intake): string {
-  const { hour, minute } = intake.time;
-  const time = `${hour} h ${minute === 0 ? "" : String(minute).padStart(2, "0")}`.trim();
-  const schedule = `${formatDays(intake.days, FULL_DAY_NAMES)}, rappel toutes les ${intake.reminderIntervalMinutes} minutes`;
+export function formatQuantityAccessibilityLabel(
+  t: TFunction<"pillbox">,
+  medLabel: string,
+  quantity: number,
+): string {
+  return t("{{med}}, quantité {{quantity}}", { med: medLabel, quantity });
+}
+
+export function formatIntakeAccessibilityLabel(
+  t: TFunction<"pillbox">,
+  language: Language,
+  intake: Intake,
+): string {
+  const schedule = t("{{days}}, rappel toutes les {{minutes}} minutes", {
+    days: formatDays(t, language, intake.days, "long"),
+    minutes: intake.reminderIntervalMinutes,
+  });
   const meds = intake.medQuantities
-    .map(({ med, quantity }) => `${formatMedLabel(med)}, quantité ${quantity}`)
+    .map(({ med, quantity }) => formatQuantityAccessibilityLabel(t, formatMedLabel(med), quantity))
     .join(". ");
-  return `${time}. ${schedule}. ${meds}`;
+  return `${formatIntakeTime(intake.time)}. ${schedule}. ${meds}`;
 }
 
-export function formatDayInitials(day: Weekday): string {
-  return DAY_INITIALS[day];
+export function formatDayInitials(day: Weekday, language: Language): string {
+  return capitalize(formatWeekday(day, language, "long").slice(0, 2));
 }
 
-export function formatDayName(day: Weekday): string {
-  return capitalize(FULL_DAY_NAMES[day]);
+export function formatDayName(day: Weekday, language: Language): string {
+  return capitalize(formatWeekday(day, language, "long"));
 }
 
-const SHAPE_NAMES: Record<PillShape, string> = {
-  round: "rond",
-  oval: "ovale",
-  capsule: "gélule",
-  softgel: "capsule molle",
-  triangle: "triangle",
-  square: "carré",
-};
+function shapeNamesOf(t: TFunction<"pillbox">): Record<PillShape, string> {
+  return {
+    round: t("rond"),
+    oval: t("ovale"),
+    capsule: t("gélule"),
+    softgel: t("capsule molle"),
+    triangle: t("triangle"),
+    square: t("carré"),
+  };
+}
 
-const SIZE_NAMES: Record<PillSize, string> = {
-  small: "petite",
-  medium: "moyenne",
-  large: "grande",
-};
+function sizeNamesOf(t: TFunction<"pillbox">): Record<PillSize, string> {
+  return {
+    small: t("petite"),
+    medium: t("moyenne"),
+    large: t("grande"),
+  };
+}
 
-const SWATCH_NAMES: Record<PillSwatch, string> = {
-  white: "blanc",
-  yellow: "jaune",
-  pink: "rose",
-  lilac: "lilas",
-  skyBlue: "bleu ciel",
-  mint: "menthe",
-};
+function swatchNamesOf(t: TFunction<"pillbox">): Record<PillSwatch, string> {
+  return {
+    white: t("blanc"),
+    yellow: t("jaune"),
+    pink: t("rose"),
+    lilac: t("lilas"),
+    skyBlue: t("bleu ciel"),
+    mint: t("menthe"),
+  };
+}
 
-const CUSTOM_COLOR_NAME = "couleur personnalisée";
-
-export function formatColorName(color: string): string {
+export function formatColorName(t: TFunction<"pillbox">, color: string): string {
   const swatch = findSwatch(color);
-  return swatch === undefined ? CUSTOM_COLOR_NAME : SWATCH_NAMES[swatch];
+  return swatch === undefined ? t("couleur personnalisée") : swatchNamesOf(t)[swatch];
 }
 
-function formatColors(colors: PillDesign["colors"]): string {
-  const names = colors.map(formatColorName);
-  return names[0] === names[1] ? names[0] : names.join(" et ");
+function formatColors(t: TFunction<"pillbox">, colors: PillDesign["colors"]): string {
+  const [first, second] = colors.map((color) => formatColorName(t, color));
+  return first === second ? first : t("{{first}} et {{second}}", { first, second });
 }
 
-export function formatPillDescriptionParts(design: PillDesign): string[] {
-  return [SHAPE_NAMES[design.shape], SIZE_NAMES[design.size], formatColors(design.colors)];
+export function formatPillDescriptionParts(t: TFunction<"pillbox">, design: PillDesign): string[] {
+  return [
+    shapeNamesOf(t)[design.shape],
+    sizeNamesOf(t)[design.size],
+    formatColors(t, design.colors),
+  ];
 }
 
-export function formatPillDescription(design: PillDesign): string {
-  return capitalize(formatPillDescriptionParts(design).join(" · "));
+export function formatPillDescription(t: TFunction<"pillbox">, design: PillDesign): string {
+  return capitalize(formatPillDescriptionParts(t, design).join(" · "));
 }
 
-export function formatShapeName(shape: PillShape): string {
-  return capitalize(SHAPE_NAMES[shape]);
+export function formatShapeName(t: TFunction<"pillbox">, shape: PillShape): string {
+  return capitalize(shapeNamesOf(t)[shape]);
 }
 
-export function formatSizeName(size: PillSize): string {
-  return capitalize(SIZE_NAMES[size]);
+export function formatSizeName(t: TFunction<"pillbox">, size: PillSize): string {
+  return capitalize(sizeNamesOf(t)[size]);
 }
 
-export function formatColorTitle(color: string): string {
-  return capitalize(formatColorName(color));
+export function formatColorTitle(t: TFunction<"pillbox">, color: string): string {
+  return capitalize(formatColorName(t, color));
 }
 
 export function findSwatch(color: string): PillSwatch | undefined {

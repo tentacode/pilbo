@@ -1,10 +1,11 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 
 import { SettingsRow } from "./SettingsRow";
 
-const LABEL = "Simuler une erreur";
-
 export function SimulateErrorRow() {
+  const { t } = useTranslation("settings");
+  const label = t("Simuler une erreur");
   const [shouldCrash, setShouldCrash] = useState(false);
 
   if (shouldCrash) {
@@ -13,11 +14,11 @@ export function SimulateErrorRow() {
 
   return (
     <SettingsRow
-      label={LABEL}
+      label={label}
       onPress={() => setShouldCrash(true)}
-      accessibilityLabel={LABEL}
+      accessibilityLabel={label}
       accessibilityRole="button"
-      accessibilityHint="Affiche l’écran d’erreur"
+      accessibilityHint={t("Affiche l’écran d’erreur")}
     />
   );
 }

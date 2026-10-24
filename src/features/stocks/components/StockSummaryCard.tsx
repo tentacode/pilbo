@@ -1,4 +1,5 @@
 import { View } from "react-native";
+import { useTranslation } from "react-i18next";
 
 import { Text } from "@/design-system/components/Text/Text";
 import type { Med } from "@/domain/med";
@@ -12,6 +13,7 @@ import type { StockForecast } from "@/features/stocks/utils/stockForecast";
 import { StockProgressBar } from "./StockProgressBar";
 import { StockStatusLabel } from "./StockStatusLabel";
 import { styles } from "./StockSummaryCard.styles";
+import { useLanguage } from "@/shared/i18n/hooks/useLanguage";
 
 type StockSummaryCardProps = {
   med: Med;
@@ -20,13 +22,14 @@ type StockSummaryCardProps = {
   ratio: number;
 };
 
-const STATUS_TEXTS = { low: "Stock bas", sufficient: "Suffisant" } as const;
-
 export function StockSummaryCard({ med, quantity, forecast, ratio }: StockSummaryCardProps) {
+  const { t } = useTranslation("stocks");
+  const language = useLanguage();
   const isLow = forecast.status === "low";
-  const statusText = forecast.status === "noSchedule" ? undefined : STATUS_TEXTS[forecast.status];
-  const coverage = formatCoverage(med, forecast);
-  const pillCount = formatPillCount(quantity);
+  const statusTexts = { low: t("Stock bas"), sufficient: t("Suffisant") };
+  const statusText = forecast.status === "noSchedule" ? undefined : statusTexts[forecast.status];
+  const coverage = formatCoverage(t, language, med, forecast);
+  const pillCount = formatPillCount(t, quantity);
 
   return (
     <View
@@ -41,7 +44,7 @@ export function StockSummaryCard({ med, quantity, forecast, ratio }: StockSummar
           <Text variant="bigNumber" tone={isLow ? "alert" : "primary"}>
             {quantity}
           </Text>
-          <Text tone="secondary">{formatPillUnit(quantity)}</Text>
+          <Text tone="secondary">{formatPillUnit(t, quantity)}</Text>
         </View>
         {statusText === undefined ? null : <StockStatusLabel text={statusText} isLow={isLow} />}
       </View>

@@ -1,64 +1,42 @@
-import { formatIntakeTime, type Intake } from "@/domain/intake";
+import type { TFunction } from "i18next";
+
+import type { Intake } from "@/domain/intake";
 import type { IntakeLogStatus } from "@/domain/intakeLog";
 import { formatMedLabel, type MedQuantity } from "@/domain/med";
+import { formatFullDate, formatIntakeTime, formatWeekday } from "@/shared/i18n/formatters";
+import type { Language } from "@/shared/i18n/resources";
 
-import { weekdayOf } from "./computeTodayIntakes";
 import type { FormattedText, TodayIntake, UpcomingIntake } from "./todayTypes";
-
-const DAY_NAMES = {
-  monday: "Lundi",
-  tuesday: "Mardi",
-  wednesday: "Mercredi",
-  thursday: "Jeudi",
-  friday: "Vendredi",
-  saturday: "Samedi",
-  sunday: "Dimanche",
-} as const;
-
-export const MONTH_NAMES = [
-  "janvier",
-  "février",
-  "mars",
-  "avril",
-  "mai",
-  "juin",
-  "juillet",
-  "août",
-  "septembre",
-  "octobre",
-  "novembre",
-  "décembre",
-] as const;
 
 const TIME_START_INDEX = "2026-10-14T".length;
 
-function pluralize(count: number, singular: string, plural: string): string {
-  return `${count} ${count >= 2 ? plural : singular}`;
+export function formatTodayDate(date: Date, language: Language): string {
+  return formatFullDate(date, language);
 }
 
-export function formatTodayDate(date: Date): string {
-  return `${DAY_NAMES[weekdayOf(date)]} ${date.getDate()} ${MONTH_NAMES[date.getMonth()]}`;
-}
-
-export function formatDuration(totalMinutes: number): string {
+function splitDuration(totalMinutes: number): { hours: number; minutes: number } {
   const absoluteMinutes = Math.abs(totalMinutes);
-  const hours = Math.floor(absoluteMinutes / 60);
-  const minutes = absoluteMinutes % 60;
+  return { hours: Math.floor(absoluteMinutes / 60), minutes: absoluteMinutes % 60 };
+}
+
+export function formatDuration(t: TFunction<"today">, totalMinutes: number): string {
+  const { hours, minutes } = splitDuration(totalMinutes);
   if (hours === 0) {
-    return `${minutes} min`;
+    return t("{{minutes}} min", { minutes });
   }
   if (minutes === 0) {
-    return `${hours} h`;
+    return t("{{hours}} h", { hours });
   }
-  return `${hours} h ${String(minutes).padStart(2, "0")}`;
+  return t("{{hours}} h {{minutes}}", { hours, minutes: String(minutes).padStart(2, "0") });
 }
 
-export function formatDurationAccessibilityLabel(totalMinutes: number): string {
-  const absoluteMinutes = Math.abs(totalMinutes);
-  const hours = Math.floor(absoluteMinutes / 60);
-  const minutes = absoluteMinutes % 60;
-  const hoursText = pluralize(hours, "heure", "heures");
-  const minutesText = pluralize(minutes, "minute", "minutes");
+export function formatDurationAccessibilityLabel(
+  t: TFunction<"today">,
+  totalMinutes: number,
+): string {
+  const { hours, minutes } = splitDuration(totalMinutes);
+  const hoursText = t("{{count}} heures", { count: hours });
+  const minutesText = t("{{count}} minutes", { count: minutes });
   if (hours === 0) {
     return minutesText;
   }
@@ -72,34 +50,41 @@ function same(text: string): FormattedText {
   return { text, accessibilityLabel: text };
 }
 
-export function formatIntakeStatus({
-  status,
-  minutesFromNow,
-  validation,
-}: TodayIntake): FormattedText {
+export function formatIntakeStatus(
+  t: TFunction<"today">,
+  { status, minutesFromNow, validation }: TodayIntake,
+): FormattedText {
   if (status === "skipped") {
-    return same("Ignorée");
+    return same(t("Ignorée"));
   }
   if (status === "taken" && validation) {
     const time = formatIntakeTime(validation.time);
-    return same(validation.isTakenLate ? `Pris en retard à ${time}` : `Pris à ${time}`);
+    return same(
+      validation.isTakenLate
+        ? t("Pris en retard à {{time}}", { time })
+        : t("Pris à {{time}}", { time }),
+    );
   }
   if (status === "late") {
     return {
-      text: `En retard · ${formatDuration(minutesFromNow)}`,
-      accessibilityLabel: `En retard de ${formatDurationAccessibilityLabel(minutesFromNow)}`,
+      text: t("En retard · {{duration}}", { duration: formatDuration(t, minutesFromNow) }),
+      accessibilityLabel: t("En retard de {{duration}}", {
+        duration: formatDurationAccessibilityLabel(t, minutesFromNow),
+      }),
     };
   }
   if (status === "next" && minutesFromNow > 0) {
     return {
-      text: `Dans ${formatDuration(minutesFromNow)}`,
-      accessibilityLabel: `Dans ${formatDurationAccessibilityLabel(minutesFromNow)}`,
+      text: t("Dans {{duration}}", { duration: formatDuration(t, minutesFromNow) }),
+      accessibilityLabel: t("Dans {{duration}}", {
+        duration: formatDurationAccessibilityLabel(t, minutesFromNow),
+      }),
     };
   }
   if (status === "next") {
-    return same("C'est l'heure");
+    return same(t("C'est l'heure"));
   }
-  return same("À venir");
+  return same(t("À venir"));
 }
 
 export function formatMedNames(medQuantities: MedQuantity[]): string {
@@ -111,51 +96,68 @@ export function formatMedNames(medQuantities: MedQuantity[]): string {
     .join(" · ");
 }
 
-export function formatEarlierIntakeAccessibilityLabel(todayIntake: TodayIntake): string {
+export function formatQuantityAccessibilityLabel(t: TFunction<"today">, quantity: number): string {
+  return t("quantité {{quantity}}", { quantity });
+}
+
+export function formatEarlierIntakeAccessibilityLabel(
+  t: TFunction<"today">,
+  todayIntake: TodayIntake,
+): string {
   const meds = todayIntake.intake.medQuantities.map(
-    ({ med, quantity }) => `${formatMedLabel(med)}, quantité ${quantity}`,
+    ({ med, quantity }) =>
+      `${formatMedLabel(med)}, ${formatQuantityAccessibilityLabel(t, quantity)}`,
   );
   return [
     formatIntakeTime(todayIntake.intake.time),
-    formatIntakeStatus(todayIntake).accessibilityLabel,
+    formatIntakeStatus(t, todayIntake).accessibilityLabel,
     ...meds,
   ].join(", ");
 }
 
-export function formatLateSectionTitle(lateCount: number): string | null {
-  return lateCount >= 2 ? `${lateCount} prises en retard` : null;
+export function formatLateSectionTitle(t: TFunction<"today">, lateCount: number): string | null {
+  return lateCount >= 2 ? t("{{count}} prises en retard", { count: lateCount }) : null;
 }
 
-export function formatTakeAccessibilityLabel(intake: Intake): string {
-  return `Prendre la prise de ${formatIntakeTime(intake.time)}`;
+export function formatTakeAccessibilityLabel(t: TFunction<"today">, intake: Intake): string {
+  return t("Prendre la prise de {{time}}", { time: formatIntakeTime(intake.time) });
 }
 
-export function formatSkipAccessibilityLabel(intake: Intake): string {
-  return `Ignorer la prise de ${formatIntakeTime(intake.time)}`;
+export function formatSkipAccessibilityLabel(t: TFunction<"today">, intake: Intake): string {
+  return t("Ignorer la prise de {{time}}", { time: formatIntakeTime(intake.time) });
 }
 
-export function formatValidationAnnouncement(intake: Intake, status: IntakeLogStatus): string {
+export function formatValidationAnnouncement(
+  t: TFunction<"today">,
+  intake: Intake,
+  status: IntakeLogStatus,
+): string {
   const time = formatIntakeTime(intake.time);
-  return status === "taken" ? `Prise de ${time} validée` : `Prise de ${time} ignorée`;
+  return status === "taken"
+    ? t("Prise de {{time}} validée", { time })
+    : t("Prise de {{time}} ignorée", { time });
 }
 
 export function formatTakenTime(takenAt: string): string {
-  return takenAt.slice(TIME_START_INDEX);
+  const [hour, minute] = takenAt.slice(TIME_START_INDEX).split(":").map(Number);
+  return formatIntakeTime({ hour, minute });
 }
 
-export function formatAsNeededTakenAt(takenAt: string): string {
-  return `Pris à ${formatTakenTime(takenAt)}`;
+export function formatAsNeededTakenAt(t: TFunction<"today">, takenAt: string): string {
+  return t("Pris à {{time}}", { time: formatTakenTime(takenAt) });
 }
 
-function formatUpcomingDay({ daysAhead, weekday }: UpcomingIntake): string {
-  const dayName = DAY_NAMES[weekday].toLowerCase();
+export function formatUpcomingIntakeSentence(
+  t: TFunction<"today">,
+  language: Language,
+  { daysAhead, weekday, intake }: UpcomingIntake,
+): string {
+  const time = formatIntakeTime(intake.time);
+  const day = formatWeekday(weekday, language, "long");
   if (daysAhead === 1) {
-    return "demain";
+    return t("Prochaine prise demain à {{time}}.", { time });
   }
-  return daysAhead === 7 ? `${dayName} prochain` : dayName;
-}
-
-export function formatUpcomingIntakeSentence(upcomingIntake: UpcomingIntake): string {
-  const time = formatIntakeTime(upcomingIntake.intake.time);
-  return `Prochaine prise ${formatUpcomingDay(upcomingIntake)} à ${time}.`;
+  return daysAhead === 7
+    ? t("Prochaine prise {{day}} prochain à {{time}}.", { day, time })
+    : t("Prochaine prise {{day}} à {{time}}.", { day, time });
 }

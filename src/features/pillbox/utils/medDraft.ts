@@ -1,7 +1,10 @@
+import type { TFunction } from "i18next";
+
 import { pillSwatches } from "@/design-system/tokens";
 import type { Med, PillDesign } from "@/domain/med";
 
 import type { MedToUpdate } from "@/features/pillbox/queries/updateMed";
+import type { Language } from "@/shared/i18n/resources";
 
 export type MedFlowOrigin = "intake" | "asNeeded";
 
@@ -19,9 +22,11 @@ export const DEFAULT_PILL_DESIGN: PillDesign = {
   colors: [pillSwatches.lilac, pillSwatches.lilac],
 };
 
-const AS_NEEDED_DEFAULT_DETAIL = "Si besoin";
-
-export function createMedDraft(origin: MedFlowOrigin, med?: Med): MedDraft {
+export function createMedDraft(
+  t: TFunction<"pillbox">,
+  origin: MedFlowOrigin,
+  med?: Med,
+): MedDraft {
   if (med !== undefined) {
     return {
       medId: med.id,
@@ -34,20 +39,18 @@ export function createMedDraft(origin: MedFlowOrigin, med?: Med): MedDraft {
   return {
     name: "",
     strength: "",
-    detail: origin === "asNeeded" ? AS_NEEDED_DEFAULT_DETAIL : "",
+    detail: origin === "asNeeded" ? t("Si besoin") : "",
     design: DEFAULT_PILL_DESIGN,
   };
 }
 
-const LOCALE = "fr";
-
-function capitalizeFirstLetter(text: string): string {
-  return text.charAt(0).toLocaleUpperCase(LOCALE) + text.slice(1);
+function capitalizeFirstLetter(text: string, language: Language): string {
+  return text.charAt(0).toLocaleUpperCase(language) + text.slice(1);
 }
 
-export function toMedValues(draft: MedDraft): Omit<MedToUpdate, "id"> {
+export function toMedValues(draft: MedDraft, language: Language): Omit<MedToUpdate, "id"> {
   return {
-    name: capitalizeFirstLetter(draft.name.trim()),
+    name: capitalizeFirstLetter(draft.name.trim(), language),
     strength: draft.strength.trim(),
     detail: draft.detail.trim(),
     design: draft.design,

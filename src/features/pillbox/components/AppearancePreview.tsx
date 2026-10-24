@@ -1,4 +1,5 @@
 import { View } from "react-native";
+import { useTranslation } from "react-i18next";
 
 import { Pill } from "@/design-system/components/Pill/Pill";
 import { sizes } from "@/design-system/tokens";
@@ -15,12 +16,15 @@ type AppearancePreviewProps = {
 };
 
 export function AppearancePreview({ design, med, context }: AppearancePreviewProps) {
+  const { t } = useTranslation("pillbox");
   return (
     <View style={styles.preview}>
       <View
         accessible
         accessibilityRole="image"
-        accessibilityLabel={`Aperçu : ${formatPillDescriptionParts(design).join(", ")}`}
+        accessibilityLabel={t("Aperçu : {{description}}", {
+          description: formatPillDescriptionParts(t, design).join(", "),
+        })}
         style={styles.largePill}
       >
         <Pill design={design} displaySize={sizes.pillPreviewLarge} />

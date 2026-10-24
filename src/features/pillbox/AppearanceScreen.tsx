@@ -1,11 +1,11 @@
 import { router } from "expo-router";
 import { useRef, useState } from "react";
 import { type ScrollView, View } from "react-native";
+import { useTranslation } from "react-i18next";
 
 import { Button } from "@/design-system/components/Button/Button";
 import { Sheet } from "@/design-system/components/Sheet/Sheet";
 import { useReduceMotion } from "@/design-system/hooks/useReduceMotion";
-import { formatIntakeTime } from "@/domain/intake";
 
 import { AppearancePreview } from "./components/AppearancePreview";
 import { ColorField } from "./components/ColorField";
@@ -18,14 +18,14 @@ import { useMedDraftContext } from "./hooks/useMedDraft";
 import { DEFAULT_PILL_DESIGN } from "./utils/medDraft";
 import { withShape } from "./utils/pillDesign";
 import { styles } from "./AppearanceScreen.styles";
-
-const UNNAMED_MED = "Votre médicament";
+import { formatIntakeTime } from "@/shared/i18n/formatters";
 
 type AppearanceScreenProps = {
   previewContext: string;
 };
 
 export function AppearanceScreen({ previewContext }: AppearanceScreenProps) {
+  const { t } = useTranslation("pillbox");
   const { draft, setDraft } = useMedDraftContext();
   const [design, setDesign] = useState(draft?.design ?? DEFAULT_PILL_DESIGN);
   const colorEditing = useColorEditing(design, setDesign);
@@ -47,7 +47,7 @@ export function AppearanceScreen({ previewContext }: AppearanceScreenProps) {
     }
   }
   const previewMed = {
-    name: draft?.name.trim() || UNNAMED_MED,
+    name: draft?.name.trim() || t("Votre médicament"),
     strength: draft?.strength.trim() ?? "",
   };
 
@@ -58,9 +58,9 @@ export function AppearanceScreen({ previewContext }: AppearanceScreenProps) {
 
   return (
     <Sheet
-      title="Apparence"
-      leftAction={{ label: "Annuler", onPress: () => router.back() }}
-      footer={<Button label="Valider" icon="check" onPress={handleValidate} />}
+      title={t("Apparence")}
+      leftAction={{ label: t("Annuler"), onPress: () => router.back() }}
+      footer={<Button label={t("Valider")} icon="check" onPress={handleValidate} />}
       scrollReference={scrollReference}
     >
       <View style={styles.content}>
@@ -94,5 +94,6 @@ export function IntakeAppearanceScreen() {
 }
 
 export function AsNeededAppearanceScreen() {
-  return <AppearanceScreen previewContext="Hors planning" />;
+  const { t } = useTranslation("pillbox");
+  return <AppearanceScreen previewContext={t("Hors planning")} />;
 }

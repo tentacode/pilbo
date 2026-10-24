@@ -44,8 +44,7 @@ Basically we are looking for a proof of concept, in doubt ask if it's in the sco
 - UI state: local state or React context first. **Zustand** only if a UI state must be shared between distant components. Never for persisted data (SQLite only).
   - Exception: small persisted UI settings (e.g. `onboardingDone`, user preferences in `features/settings/store/settingsStore.ts`) use Zustand `persist` with `expo-sqlite/kv-store`, through the shared sync storage `shared/storage/synchronousStorage.ts` to avoid a flash at startup.
 - Data is **100% local**: no backend, no user account.
-- i18n: **i18next + react-i18next + expo-localization** (French and English), but only implement in the future when I say so.
-  - The language preference already exists: `useAppLanguage()` (`features/settings/hooks/`) returns the effective language. i18n must plug into it, and a language change must apply instantly.
+- i18n: **i18next + react-i18next + expo-localization** (French and English), keys = French text, one namespace per feature, `make i18n-extract`. See the i18n section of `docs/architecture.md`.
 - Notifications: **expo-notifications** (scheduled local notifications).
 - Tests: **Jest + React Native Testing Library**.
 - Code quality: **ESLint + Prettier**.
@@ -84,7 +83,7 @@ Conventions :
 - Architecture and folder rules: see `./docs/architecture.md`, it must be respected.
 - Never run any git operation (commit, add, branch, stash, push, etc.), only reading is allowed (log, diff, show, status).
 - Code (symbol names, file names) is written in English.
-- UI text is hardcoded for now, i18n will be added later (only when I say so).
+- UI text always goes through i18n (`t`), see the i18n section of `docs/architecture.md`.
 - Keep it concise and modular.
 - Always favor small components.
 - Prefer keeping the design and the logic separated.

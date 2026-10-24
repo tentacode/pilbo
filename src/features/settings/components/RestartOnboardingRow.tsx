@@ -1,20 +1,23 @@
 import { useOnboardingStore } from "@/features/onboarding/store/onboardingStore";
+import { useTranslation } from "react-i18next";
 
 import { SettingsRow } from "./SettingsRow";
 
-const LABEL = "Revoir la présentation";
-
 export function RestartOnboardingRow() {
+  const { t } = useTranslation("settings");
+  const label = t("Revoir la présentation");
   const setOnboardingDone = useOnboardingStore((state) => state.setOnboardingDone);
 
   return (
     <SettingsRow
-      label={LABEL}
+      label={label}
       hasChevron
       onPress={() => setOnboardingDone(false)}
-      accessibilityLabel={LABEL}
+      accessibilityLabel={label}
       accessibilityRole="button"
-      accessibilityHint="Affiche à nouveau la présentation de l'app, vos données sont conservées"
+      accessibilityHint={t(
+        "Affiche à nouveau la présentation de l'app, vos données sont conservées",
+      )}
     />
   );
 }

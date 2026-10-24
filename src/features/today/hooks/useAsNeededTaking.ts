@@ -1,4 +1,5 @@
 import { AccessibilityInfo } from "react-native";
+import { useTranslation } from "react-i18next";
 
 import { playSuccessHaptic } from "@/design-system/utils/playSuccessHaptic";
 import { toLocalDate, toLocalDateTime } from "@/domain/intakeLog";
@@ -16,6 +17,7 @@ import type { AsNeededMedOfDay } from "@/features/today/utils/todayTypes";
 const AS_NEEDED_QUANTITY = 1;
 
 export function useAsNeededTaking(onChanged: () => void, onStocksBelowZero: (meds: Med[]) => void) {
+  const { t } = useTranslation("today");
   return {
     take: (med: Med) => {
       const now = new Date();
@@ -25,7 +27,7 @@ export function useAsNeededTaking(onChanged: () => void, onStocksBelowZero: (med
       });
       playSuccessHaptic();
       AccessibilityInfo.announceForAccessibility(
-        `${formatMedLabel(med)}. ${formatAsNeededTakenAt(toLocalDateTime(now))}`,
+        `${formatMedLabel(med)}. ${formatAsNeededTakenAt(t, toLocalDateTime(now))}`,
       );
       onChanged();
       rescheduleAfterChange();
@@ -41,7 +43,10 @@ export function useAsNeededTaking(onChanged: () => void, onStocksBelowZero: (med
       });
       if (lastTakenAt !== undefined) {
         AccessibilityInfo.announceForAccessibility(
-          `Prise de ${formatMedLabel(med)} de ${formatTakenTime(lastTakenAt)} annulée`,
+          t("Prise de {{med}} de {{time}} annulée", {
+            med: formatMedLabel(med),
+            time: formatTakenTime(lastTakenAt),
+          }),
         );
       }
       onChanged();

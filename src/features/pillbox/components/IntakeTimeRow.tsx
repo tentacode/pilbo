@@ -2,20 +2,19 @@ import { DatePicker, Host } from "@expo/ui/swift-ui";
 import {
   accessibilityLabel,
   datePickerStyle,
-  environment,
   labelsHidden,
   tint,
 } from "@expo/ui/swift-ui/modifiers";
 import { View } from "react-native";
+import { useTranslation } from "react-i18next";
 
 import { Text } from "@/design-system/components/Text/Text";
 import { colors } from "@/design-system/tokens";
-import { formatIntakeTime, type Intake } from "@/domain/intake";
+import { type Intake } from "@/domain/intake";
 
 import { FormGroup } from "./FormGroup";
 import { styles } from "./IntakeTimeRow.styles";
-
-const PICKER_LOCALE = "fr-FR";
+import { formatIntakeTime } from "@/shared/i18n/formatters";
 
 type IntakeTimeRowProps = {
   time: Intake["time"];
@@ -29,11 +28,12 @@ function dateOf({ hour, minute }: Intake["time"]): Date {
 }
 
 export function IntakeTimeRow({ time, onChange }: IntakeTimeRowProps) {
+  const { t } = useTranslation("pillbox");
   return (
     <FormGroup>
       <View style={styles.row}>
         <Text variant="bodyBold" accessibilityElementsHidden>
-          Heure
+          {t("Heure")}
         </Text>
         <Host matchContents colorScheme="light">
           <DatePicker
@@ -43,9 +43,8 @@ export function IntakeTimeRow({ time, onChange }: IntakeTimeRowProps) {
             modifiers={[
               datePickerStyle("compact"),
               labelsHidden(),
-              environment("locale", PICKER_LOCALE),
               tint(colors.ink),
-              accessibilityLabel(`Heure : ${formatIntakeTime(time)}`),
+              accessibilityLabel(t("Heure : {{time}}", { time: formatIntakeTime(time) })),
             ]}
           />
         </Host>

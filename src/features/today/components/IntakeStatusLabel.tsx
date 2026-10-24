@@ -1,4 +1,5 @@
 import { View } from "react-native";
+import { useTranslation } from "react-i18next";
 
 import { Icon } from "@/design-system/components/Icon/Icon";
 import type { IconName } from "@/design-system/components/Icon/iconShapes";
@@ -33,7 +34,8 @@ type IntakeStatusLabelProps = {
 };
 
 export function IntakeStatusLabel({ todayIntake }: IntakeStatusLabelProps) {
-  const { text, accessibilityLabel } = formatIntakeStatus(todayIntake);
+  const { t } = useTranslation("today");
+  const { text, accessibilityLabel } = formatIntakeStatus(t, todayIntake);
   const appearance = appearanceOf(todayIntake);
   const { icon, tone, iconColor } = APPEARANCES[appearance];
 

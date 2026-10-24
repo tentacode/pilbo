@@ -1,4 +1,5 @@
 import { Button } from "@/design-system/components/Button/Button";
+import { useTranslation } from "react-i18next";
 
 type OnboardingActionsProps = {
   stepIndex: number;
@@ -13,19 +14,20 @@ export function OnboardingActions({
   onAllowNotifications,
   onFinish,
 }: OnboardingActionsProps) {
+  const { t } = useTranslation("onboarding");
   switch (stepIndex) {
     case 0:
-      return <Button label="Continuer" onPress={onNext} />;
+      return <Button label={t("Continuer")} onPress={onNext} />;
     case 1:
       return (
         <>
-          <Button label="Autoriser les notifications" onPress={onAllowNotifications} />
-          <Button label="Plus tard" variant="text" onPress={onNext} />
+          <Button label={t("Autoriser les notifications")} onPress={onAllowNotifications} />
+          <Button label={t("Plus tard")} variant="text" onPress={onNext} />
         </>
       );
     case 2:
-      return <Button label="J'ai compris" onPress={onNext} />;
+      return <Button label={t("J'ai compris")} onPress={onNext} />;
     default:
-      return <Button label="Créer ma première prise" onPress={onFinish} />;
+      return <Button label={t("Créer ma première prise")} onPress={onFinish} />;
   }
 }

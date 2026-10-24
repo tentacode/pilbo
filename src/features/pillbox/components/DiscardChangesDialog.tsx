@@ -1,4 +1,5 @@
 import { Dialog } from "@/design-system/components/Dialog/Dialog";
+import { useTranslation } from "react-i18next";
 
 type DiscardChangesDialogProps = {
   isVisible: boolean;
@@ -11,15 +12,16 @@ export function DiscardChangesDialog({
   onDiscard,
   onContinue,
 }: DiscardChangesDialogProps) {
+  const { t } = useTranslation("pillbox");
   return (
     <Dialog
       isVisible={isVisible}
       icon="pillAlert"
       tone="warning"
-      title="Abandonner les modifications ?"
-      message="Vos changements ne seront pas enregistrés."
-      confirmAction={{ label: "Abandonner", onPress: onDiscard }}
-      cancelAction={{ label: "Continuer", onPress: onContinue }}
+      title={t("Abandonner les modifications ?")}
+      message={t("Vos changements ne seront pas enregistrés.")}
+      confirmAction={{ label: t("Abandonner"), onPress: onDiscard }}
+      cancelAction={{ label: t("Continuer"), onPress: onContinue }}
       onRequestClose={onContinue}
     />
   );

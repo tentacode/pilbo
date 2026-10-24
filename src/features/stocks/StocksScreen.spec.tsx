@@ -5,6 +5,7 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 
 import { createTestDatabase } from "@/shared/database/testDatabase";
 import type { Database } from "@/shared/database/types";
+import { i18n } from "@/shared/i18n/i18n";
 
 import { findMedId } from "./queries/testStocks";
 import { saveStock } from "./queries/saveStock";
@@ -119,5 +120,21 @@ describe("StocksScreen", () => {
       pathname: "/stock",
       params: { medId: findMedId(mockDatabase, "Lithium", "250 mg") },
     });
+  });
+
+  it("is translated in English", async () => {
+    mockDatabase = createTestDatabase();
+    await i18n.changeLanguage("en");
+
+    await renderMondayMorning();
+
+    expect(screen.getByRole("header", { name: "Low stock" })).toBeOnTheScreen();
+    expect(screen.getByRole("header", { name: "Enough" })).toBeOnTheScreen();
+    expect(screen.getByText("Low stock · until October 22")).toBeOnTheScreen();
+    expect(
+      screen.getByRole("button", {
+        name: "Lithium 250 mg, 18 pills, 4 days, Low stock until October 22",
+      }),
+    ).toBeOnTheScreen();
   });
 });

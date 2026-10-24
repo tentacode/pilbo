@@ -10,13 +10,17 @@ import { useDesignSystemFonts } from "@/design-system/fonts";
 import { useReminderScheduling } from "@/features/notifications/hooks/useReminderScheduling";
 import { isFirstLaunch, useOnboardingStore } from "@/features/onboarding/store/onboardingStore";
 import { setupFirstLaunch } from "@/features/onboarding/utils/setupFirstLaunch";
+import { useI18nLanguageSync } from "@/features/settings/hooks/useI18nLanguageSync";
+import { getAppLanguage } from "@/features/settings/utils/appLanguage";
 import { DatabaseErrorScreen } from "@/shared/database/DatabaseErrorScreen";
 import { useDatabaseReady } from "@/shared/database/hooks/useDatabaseReady";
 import type { Database } from "@/shared/database/types";
+import { setI18nLanguage } from "@/shared/i18n/i18n";
 
 export { ErrorBoundary } from "@/shared/error-handling/ErrorBoundary";
 
 SplashScreen.preventAutoHideAsync();
+setI18nLanguage(getAppLanguage());
 
 function onDatabaseMigrated(database: Database): void {
   setupFirstLaunch(database, { isDebugMode: IS_DEBUG_MODE, isFirstLaunch: isFirstLaunch() });
@@ -28,6 +32,7 @@ export default function RootLayout() {
   const { isReady: databaseReady, error: databaseError } = useDatabaseReady(onDatabaseMigrated);
   const canHideSplash = fontsReady && (databaseReady || databaseError !== undefined);
   useReminderScheduling(databaseReady);
+  useI18nLanguageSync();
 
   useEffect(() => {
     if (canHideSplash) {

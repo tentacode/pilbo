@@ -1,4 +1,5 @@
 import { View } from "react-native";
+import { useTranslation } from "react-i18next";
 
 import { Button } from "@/design-system/components/Button/Button";
 import { Icon } from "@/design-system/components/Icon/Icon";
@@ -25,6 +26,7 @@ export function AsNeededMedRow({
   onTake,
   onCancel,
 }: AsNeededMedRowProps) {
+  const { t } = useTranslation("today");
   const label = formatMedLabel(med);
   return (
     <View style={[styles.row, hasTopBorder && styles.topBorder]}>
@@ -40,9 +42,9 @@ export function AsNeededMedRow({
           </View>
         </View>
         <Button
-          label="Prendre"
+          label={t("Prendre")}
           variant="secondary"
-          accessibilityLabel={`Prendre ${label}`}
+          accessibilityLabel={t("Prendre {{med}}", { med: label })}
           onPress={onTake}
         />
       </View>
@@ -51,13 +53,16 @@ export function AsNeededMedRow({
           <View style={styles.takenStatus}>
             <Icon name="checkCircle" size={sizes.iconSmall} color={colors.successInk} />
             <Text variant="smallBold" tone="success">
-              {formatAsNeededTakenAt(lastTakenAt)}
+              {formatAsNeededTakenAt(t, lastTakenAt)}
             </Text>
           </View>
           <Button
-            label="Annuler"
+            label={t("Annuler")}
             variant="text"
-            accessibilityLabel={`Annuler la prise de ${label} de ${formatTakenTime(lastTakenAt)}`}
+            accessibilityLabel={t("Annuler la prise de {{med}} de {{time}}", {
+              med: label,
+              time: formatTakenTime(lastTakenAt),
+            })}
             onPress={onCancel}
           />
         </View>

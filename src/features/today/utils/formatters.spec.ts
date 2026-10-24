@@ -12,8 +12,12 @@ import {
   formatUpcomingIntakeSentence,
   formatValidationAnnouncement,
 } from "./formatters";
+import { i18n } from "@/shared/i18n/i18n";
+
 import { createIntake } from "./testIntakes";
 import type { TodayIntake } from "./todayTypes";
+
+const t = i18n.getFixedT(null, "today");
 
 function createTodayIntake(status: TodayIntake["status"], minutesFromNow: number): TodayIntake {
   return { intake: createIntake(12, 20), status, minutesFromNow };
@@ -27,7 +31,7 @@ describe("formatTodayDate", () => {
     [new Date(2026, 7, 15), "Samedi 15 août"],
     [new Date(2026, 11, 25), "Vendredi 25 décembre"],
   ])("formats %s as %s", (date, expected) => {
-    expect(formatTodayDate(date)).toBe(expected);
+    expect(formatTodayDate(date, "fr")).toBe(expected);
   });
 });
 
@@ -42,7 +46,7 @@ describe("formatDuration", () => {
     [145, "2 h 25"],
     [-280, "4 h 40"],
   ])("formats %i minutes as %s", (minutes, expected) => {
-    expect(formatDuration(minutes)).toBe(expected);
+    expect(formatDuration(t, minutes)).toBe(expected);
   });
 });
 
@@ -56,13 +60,13 @@ describe("formatDurationAccessibilityLabel", () => {
     [125, "2 heures 5 minutes"],
     [-40, "40 minutes"],
   ])("formats %i minutes as %s", (minutes, expected) => {
-    expect(formatDurationAccessibilityLabel(minutes)).toBe(expected);
+    expect(formatDurationAccessibilityLabel(t, minutes)).toBe(expected);
   });
 });
 
 describe("formatIntakeStatus", () => {
   it("formats an upcoming next intake", () => {
-    expect(formatIntakeStatus(createTodayIntake("next", 145))).toEqual({
+    expect(formatIntakeStatus(t, createTodayIntake("next", 145))).toEqual({
       text: "Dans 2 h 25",
       accessibilityLabel: "Dans 2 heures 25 minutes",
     });
@@ -71,12 +75,12 @@ describe("formatIntakeStatus", () => {
   it("formats a next intake at its time or in its margin", () => {
     const expected = { text: "C'est l'heure", accessibilityLabel: "C'est l'heure" };
 
-    expect(formatIntakeStatus(createTodayIntake("next", 0))).toEqual(expected);
-    expect(formatIntakeStatus(createTodayIntake("next", -29))).toEqual(expected);
+    expect(formatIntakeStatus(t, createTodayIntake("next", 0))).toEqual(expected);
+    expect(formatIntakeStatus(t, createTodayIntake("next", -29))).toEqual(expected);
   });
 
   it("formats a late intake", () => {
-    expect(formatIntakeStatus(createTodayIntake("late", -40))).toEqual({
+    expect(formatIntakeStatus(t, createTodayIntake("late", -40))).toEqual({
       text: "En retard · 40 min",
       accessibilityLabel: "En retard de 40 minutes",
     });
@@ -88,7 +92,7 @@ describe("formatIntakeStatus", () => {
       validation: { time: { hour: 9, minute: 5 }, isTakenLate: false },
     };
 
-    expect(formatIntakeStatus(todayIntake)).toEqual({
+    expect(formatIntakeStatus(t, todayIntake)).toEqual({
       text: "Pris à 09:05",
       accessibilityLabel: "Pris à 09:05",
     });
@@ -100,18 +104,18 @@ describe("formatIntakeStatus", () => {
       validation: { time: { hour: 9, minute: 5 }, isTakenLate: true },
     };
 
-    expect(formatIntakeStatus(todayIntake).text).toBe("Pris en retard à 09:05");
+    expect(formatIntakeStatus(t, todayIntake).text).toBe("Pris en retard à 09:05");
   });
 
   it("formats a skipped intake", () => {
-    expect(formatIntakeStatus(createTodayIntake("skipped", -40))).toEqual({
+    expect(formatIntakeStatus(t, createTodayIntake("skipped", -40))).toEqual({
       text: "Ignorée",
       accessibilityLabel: "Ignorée",
     });
   });
 
   it("formats a later intake", () => {
-    expect(formatIntakeStatus(createTodayIntake("later", 300))).toEqual({
+    expect(formatIntakeStatus(t, createTodayIntake("later", 300))).toEqual({
       text: "À venir",
       accessibilityLabel: "À venir",
     });
@@ -120,12 +124,12 @@ describe("formatIntakeStatus", () => {
 
 describe("formatLateSectionTitle", () => {
   it("has no title for a single late intake", () => {
-    expect(formatLateSectionTitle(1)).toBeNull();
+    expect(formatLateSectionTitle(t, 1)).toBeNull();
   });
 
   it("counts the late intakes from two", () => {
-    expect(formatLateSectionTitle(2)).toBe("2 prises en retard");
-    expect(formatLateSectionTitle(3)).toBe("3 prises en retard");
+    expect(formatLateSectionTitle(t, 2)).toBe("2 prises en retard");
+    expect(formatLateSectionTitle(t, 3)).toBe("3 prises en retard");
   });
 });
 
@@ -150,7 +154,7 @@ describe("formatEarlierIntakeAccessibilityLabel", () => {
       validation: { time: { hour: 13, minute: 0 }, isTakenLate: true },
     };
 
-    expect(formatEarlierIntakeAccessibilityLabel(todayIntake)).toBe(
+    expect(formatEarlierIntakeAccessibilityLabel(t, todayIntake)).toBe(
       "12:20, Pris en retard à 13:00, Lithium 250 mg, quantité 1",
     );
   });
@@ -160,8 +164,8 @@ describe("button accessibility labels", () => {
   it("names the intake time", () => {
     const intake = createIntake(12, 20);
 
-    expect(formatTakeAccessibilityLabel(intake)).toBe("Prendre la prise de 12:20");
-    expect(formatSkipAccessibilityLabel(intake)).toBe("Ignorer la prise de 12:20");
+    expect(formatTakeAccessibilityLabel(t, intake)).toBe("Prendre la prise de 12:20");
+    expect(formatSkipAccessibilityLabel(t, intake)).toBe("Ignorer la prise de 12:20");
   });
 });
 
@@ -170,13 +174,13 @@ describe("formatValidationAnnouncement", () => {
     ["taken", "Prise de 12:20 validée"],
     ["skipped", "Prise de 12:20 ignorée"],
   ] as const)("announces a %s intake", (status, expected) => {
-    expect(formatValidationAnnouncement(createIntake(12, 20), status)).toBe(expected);
+    expect(formatValidationAnnouncement(t, createIntake(12, 20), status)).toBe(expected);
   });
 });
 
 describe("formatAsNeededTakenAt", () => {
   it("shows the time of the last intake", () => {
-    expect(formatAsNeededTakenAt("2026-10-14T09:05")).toBe("Pris à 09:05");
+    expect(formatAsNeededTakenAt(t, "2026-10-14T09:05")).toBe("Pris à 09:05");
   });
 });
 
@@ -186,8 +190,47 @@ describe("formatUpcomingIntakeSentence", () => {
     [2, "monday", "Prochaine prise lundi à 08:05."],
     [7, "saturday", "Prochaine prise samedi prochain à 08:05."],
   ] as const)("formats %s day(s) ahead on %s", (daysAhead, weekday, expected) => {
-    expect(formatUpcomingIntakeSentence({ daysAhead, weekday, intake: createIntake(8, 5) })).toBe(
-      expected,
-    );
+    expect(
+      formatUpcomingIntakeSentence(t, "fr", { daysAhead, weekday, intake: createIntake(8, 5) }),
+    ).toBe(expected);
+  });
+});
+
+describe("in English", () => {
+  beforeEach(async () => {
+    await i18n.changeLanguage("en");
+  });
+
+  it("formats the date", () => {
+    expect(formatTodayDate(new Date(2026, 9, 5), "en")).toBe("Monday, October 5");
+  });
+
+  it("formats durations", () => {
+    expect(formatDuration(t, 45)).toBe("45 min");
+    expect(formatDuration(t, 125)).toBe("2h 05m");
+    expect(formatDurationAccessibilityLabel(t, 61)).toBe("1 hour 1 minute");
+    expect(formatDurationAccessibilityLabel(t, 125)).toBe("2 hours 5 minutes");
+  });
+
+  it("formats the statuses", () => {
+    expect(formatIntakeStatus(t, createTodayIntake("late", -40))).toEqual({
+      text: "Late · 40 min",
+      accessibilityLabel: "Late by 40 minutes",
+    });
+    expect(formatIntakeStatus(t, createTodayIntake("later", 300)).text).toBe("Upcoming");
+  });
+
+  it("formats the late section title", () => {
+    expect(formatLateSectionTitle(t, 2)).toBe("2 late intakes");
+  });
+
+  it.each([
+    [1, "sunday", "Next intake tomorrow at 08:05."],
+    [2, "monday", "Next intake on Monday at 08:05."],
+    [7, "saturday", "Next intake next Saturday at 08:05."],
+  ] as const)("formats %s day(s) ahead on %s", (daysAhead, weekday, expected) => {
+    expect(
+      formatUpcomingIntakeSentence(t, "en", { daysAhead, weekday, intake: createIntake(8, 5) }),
+    ).toBe(expected);
   });
 });

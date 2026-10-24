@@ -1,21 +1,12 @@
-import {
-  LOW_STOCK_ALERT_HOUR,
-  MINIMUM_DELAY_BEFORE_REMINDER_SECONDS,
-} from "@/config/notifications";
+import { LOW_STOCK_ALERT_HOUR } from "@/config/notifications";
 import { toLocalDate } from "@/domain/intakeLog";
 import { compareMeds, type Med } from "@/domain/med";
 
 import type { StockItem } from "@/features/stocks/utils/stockTypes";
-import { formatLowStockAlertBody } from "./formatters";
+import { formatLowStockAlertBody, formatLowStockAlertTitle } from "./formatters";
 import type { PlannedReminder } from "./planReminders";
 
-const MILLISECONDS_PER_SECOND = 1_000;
-const LOW_STOCK_ALERT_TITLE = "Stock bas";
-
 export function planLowStockAlerts(stockItems: StockItem[], now: Date): PlannedReminder[] {
-  const earliestDate = new Date(
-    now.getTime() + MINIMUM_DELAY_BEFORE_REMINDER_SECONDS * MILLISECONDS_PER_SECOND,
-  );
   const medsByDay = new Map<string, { date: Date; meds: Med[] }>();
 
   for (const { med, forecast } of stockItems) {
@@ -29,7 +20,7 @@ export function planLowStockAlerts(stockItems: StockItem[], now: Date): PlannedR
       lowStockDate.getDate(),
       LOW_STOCK_ALERT_HOUR,
     );
-    if (date <= earliestDate) {
+    if (date <= now) {
       continue;
     }
     const day = toLocalDate(date);
@@ -43,7 +34,7 @@ export function planLowStockAlerts(stockItems: StockItem[], now: Date): PlannedR
     .map(([day, { date, meds }]) => ({
       identifier: `low-stock-${day}`,
       date,
-      title: LOW_STOCK_ALERT_TITLE,
+      title: formatLowStockAlertTitle(),
       body: formatLowStockAlertBody([...meds].sort(compareMeds)),
     }));
 }

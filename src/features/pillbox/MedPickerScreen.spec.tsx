@@ -5,6 +5,7 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 
 import { createTestDatabase } from "@/shared/database/testDatabase";
 import type { Database } from "@/shared/database/types";
+import { i18n } from "@/shared/i18n/i18n";
 
 import { IntakeDraftProvider, useIntakeDraft } from "./hooks/useIntakeDraft";
 import { AsNeededMedPickerScreen, IntakeMedPickerScreen } from "./MedPickerScreen";
@@ -139,6 +140,15 @@ describe("MedPickerScreen", () => {
 
       expect(router.push).toHaveBeenCalledWith("/as-needed/med");
     });
+  });
+
+  it("is translated in English", async () => {
+    await i18n.changeLanguage("en");
+    await renderIntakePicker();
+
+    expect(screen.getByRole("header", { name: "Add a medication" })).toBeOnTheScreen();
+    expect(screen.getByRole("button", { name: "New medication" })).toBeOnTheScreen();
+    expect(screen.getByRole("header", { name: "Your medications" })).toBeOnTheScreen();
   });
 });
 

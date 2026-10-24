@@ -1,10 +1,10 @@
 import { router } from "expo-router";
 import { useState } from "react";
 import { View } from "react-native";
+import { useTranslation } from "react-i18next";
 
 import { Button } from "@/design-system/components/Button/Button";
 import { Sheet } from "@/design-system/components/Sheet/Sheet";
-import { formatIntakeTime } from "@/domain/intake";
 
 import { DeleteIntakeDialog } from "./components/DeleteIntakeDialog";
 import { DiscardChangesDialog } from "./components/DiscardChangesDialog";
@@ -19,8 +19,10 @@ import { useModalClosing } from "./hooks/useModalClosing";
 import { selectedDaysOf } from "./utils/intakeDraft";
 import { type IntakeDraftError, validateIntakeDraft } from "./utils/validators";
 import { styles } from "./IntakeEditScreen.styles";
+import { formatIntakeTime } from "@/shared/i18n/formatters";
 
 export function IntakeEditScreen() {
+  const { t } = useTranslation("pillbox");
   const intakeDraft = useIntakeDraft();
   const { draft, initialDraft } = intakeDraft;
   const modalClosing = useModalClosing(intakeDraft.isDirty);
@@ -51,11 +53,11 @@ export function IntakeEditScreen() {
     <Sheet
       title={
         savedIntakeId === undefined
-          ? "Nouvelle prise"
-          : `Prise de ${formatIntakeTime(initialDraft.time)}`
+          ? t("Nouvelle prise")
+          : t("Prise de {{time}}", { time: formatIntakeTime(initialDraft.time) })
       }
-      leftAction={{ label: "Annuler", onPress: modalClosing.requestClose }}
-      footer={<Button label="Enregistrer" icon="check" onPress={handleSave} />}
+      leftAction={{ label: t("Annuler"), onPress: modalClosing.requestClose }}
+      footer={<Button label={t("Enregistrer")} icon="check" onPress={handleSave} />}
     >
       <View style={styles.content}>
         <IntakeTimeRow time={draft.time} onChange={intakeDraft.setTime} />
@@ -79,7 +81,7 @@ export function IntakeEditScreen() {
         {savedIntakeId === undefined ? null : (
           <View style={styles.deleteButton}>
             <Button
-              label="Supprimer cette prise"
+              label={t("Supprimer cette prise")}
               variant="text"
               onPress={() => setIsDeleteDialogVisible(true)}
             />

@@ -18,9 +18,9 @@ name: An intake can be created, edited and deleted
 - tapOn: "Enregistrer"
 - scrollUntilVisible:
     element:
-      text: "8 h\\. Tous les jours.*Zolpidem, quantité 2"
+      text: "08:00\\. Tous les jours.*Zolpidem, quantité 2"
     centerElement: true
-- tapOn: "8 h\\. Tous les jours.*Zolpidem, quantité 2"
+- tapOn: "08:00\\. Tous les jours.*Zolpidem, quantité 2"
 - assertVisible: "Prise de 08:00"
 - tapOn: "Heure : 08:00"
 - swipe:

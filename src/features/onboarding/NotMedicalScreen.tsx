@@ -1,16 +1,18 @@
 import { router } from "expo-router";
 import { ScrollView, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useTranslation } from "react-i18next";
 
 import { Button } from "@/design-system/components/Button/Button";
 import { spacing } from "@/design-system/tokens";
 
 import { OnboardingFooter } from "./components/OnboardingFooter";
 import { OnboardingStep } from "./components/OnboardingStep";
-import { notMedicalStep } from "./components/onboardingSteps";
+import { notMedicalStepOf } from "./components/onboardingSteps";
 import { styles } from "./NotMedicalScreen.styles";
 
 export function NotMedicalScreen() {
+  const { t } = useTranslation("onboarding");
   const insets = useSafeAreaInsets();
 
   return (
@@ -19,10 +21,10 @@ export function NotMedicalScreen() {
         style={styles.step}
         contentContainerStyle={{ paddingTop: insets.top + spacing.small }}
       >
-        <OnboardingStep step={notMedicalStep} />
+        <OnboardingStep step={notMedicalStepOf(t)} />
       </ScrollView>
       <OnboardingFooter>
-        <Button label="Retour" onPress={() => router.back()} />
+        <Button label={t("Retour")} onPress={() => router.back()} />
       </OnboardingFooter>
     </View>
   );

@@ -3,6 +3,8 @@ import { router } from "expo-router";
 import type { ReactNode } from "react";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 
+import { renderInEnglish } from "@/shared/i18n/testHelpers";
+
 import { NotMedicalScreen } from "./NotMedicalScreen";
 
 jest.mock("expo-router", () => ({ router: { back: jest.fn() } }));
@@ -33,5 +35,12 @@ describe("NotMedicalScreen", () => {
     await fireEvent.press(screen.getByRole("button", { name: "Retour" }));
 
     expect(router.back).toHaveBeenCalledTimes(1);
+  });
+
+  it("is translated in English", async () => {
+    await renderInEnglish(<NotMedicalScreen />, { wrapper });
+
+    expect(screen.getByRole("header", { name: "Pilbo is not a medical app" })).toBeOnTheScreen();
+    expect(screen.getByRole("button", { name: "Back" })).toBeOnTheScreen();
   });
 });

@@ -15,6 +15,7 @@ import { findMedId } from "@/features/stocks/queries/testStocks";
 import { useLowStockNoticeStore } from "@/features/stocks/store/lowStockNoticeStore";
 import { intakeLogTable, intakeTable, medLogTable } from "@/shared/database/schema";
 import { createTestDatabase } from "@/shared/database/testDatabase";
+import { renderInEnglish } from "@/shared/i18n/testHelpers";
 import { countRows } from "@/shared/database/testHelpers";
 import type { Database } from "@/shared/database/types";
 
@@ -100,6 +101,18 @@ describe("TodayScreen", () => {
     expect(screen.getByLabelText("20:20, À venir")).toBeOnTheScreen();
     expect(screen.getByLabelText("22:00, À venir")).toBeOnTheScreen();
     expect(screen.queryByRole("header", { name: "Ensuite" })).not.toBeOnTheScreen();
+  });
+
+  it("shows the screen in English", async () => {
+    jest.setSystemTime(new Date(2026, 9, 4, 13, 30));
+    await renderInEnglish(<TodayScreen />, { wrapper });
+
+    expect(screen.getByRole("header", { name: "Today" })).toBeOnTheScreen();
+    expect(screen.getByText("Sunday, October 4")).toBeOnTheScreen();
+    expect(screen.getByRole("header", { name: "2 late intakes" })).toBeOnTheScreen();
+    expect(screen.getByLabelText("08:20, Late by 5 hours 10 minutes")).toBeOnTheScreen();
+    expect(screen.getByRole("header", { name: "After that" })).toBeOnTheScreen();
+    expect(screen.getAllByRole("button", { name: "Take the 08:20 intake" })).not.toHaveLength(0);
   });
 
   it("shows a single late intake without a section title", async () => {

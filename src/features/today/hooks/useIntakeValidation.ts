@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { AccessibilityInfo } from "react-native";
+import { useTranslation } from "react-i18next";
 
 import { type Intake, intakeDateOn } from "@/domain/intake";
 import { type IntakeLogStatus, toLocalDateTime } from "@/domain/intakeLog";
@@ -43,6 +44,7 @@ export function useIntakeValidation(
   onValidated: () => void,
   onStocksBelowZero: (meds: Med[]) => void,
 ): IntakeValidation {
+  const { t } = useTranslation("today");
   const [validatingIntakeId, setValidatingIntakeId] = useState<string | null>(null);
 
   async function validate(intakeId: string, status: IntakeLogStatus): Promise<void> {
@@ -63,7 +65,7 @@ export function useIntakeValidation(
     if (status === "taken") {
       playSuccessHaptic();
     }
-    AccessibilityInfo.announceForAccessibility(formatValidationAnnouncement(intake, status));
+    AccessibilityInfo.announceForAccessibility(formatValidationAnnouncement(t, intake, status));
     onValidated();
     if (medsBelowZero.length > 0) {
       onStocksBelowZero(medsBelowZero);

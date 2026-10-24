@@ -8,11 +8,13 @@ import { setMedAsNeeded } from "@/features/pillbox/queries/setMedAsNeeded";
 import { updateMed } from "@/features/pillbox/queries/updateMed";
 import { type MedDraft, toMedValues } from "@/features/pillbox/utils/medDraft";
 import { rescheduleAfterChange } from "./useIntakeActions";
+import { useLanguage } from "@/shared/i18n/hooks/useLanguage";
+import type { Language } from "@/shared/i18n/resources";
 
 export type MedSaveResult = { status: "saved"; med: Med } | { status: "duplicate"; duplicate: Med };
 
-function saveMed(draft: MedDraft, isAsNeeded: boolean): MedSaveResult {
-  const values = toMedValues(draft);
+function saveMed(draft: MedDraft, isAsNeeded: boolean, language: Language): MedSaveResult {
+  const values = toMedValues(draft, language);
   const duplicate = findDuplicateMed(database, { ...values, excludedMedId: draft.medId });
   if (duplicate !== undefined) {
     return { status: "duplicate", duplicate };
@@ -26,9 +28,10 @@ function saveMed(draft: MedDraft, isAsNeeded: boolean): MedSaveResult {
 }
 
 export function useMedActions() {
+  const language = useLanguage();
   return {
     getById: (medId: string) => getMedById(database, medId),
-    save: saveMed,
+    save: (draft: MedDraft, isAsNeeded: boolean) => saveMed(draft, isAsNeeded, language),
     setAsNeeded: (medId: string, isAsNeeded: boolean) =>
       setMedAsNeeded(database, medId, isAsNeeded),
   };

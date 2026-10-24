@@ -4,6 +4,7 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 
 import { createTestDatabase } from "@/shared/database/testDatabase";
 import type { Database } from "@/shared/database/types";
+import { i18n } from "@/shared/i18n/i18n";
 
 import { leaveWithoutConfirmation } from "@/features/pillbox/hooks/useModalClosing";
 import { rescheduleReminders } from "@/features/notifications/rescheduleReminders";
@@ -233,5 +234,16 @@ describe("StockEditScreen", () => {
     expect(getStockByMedId(mockDatabase, medId)).toBeUndefined();
     expect(mockParentNavigation.goBack).toHaveBeenCalledTimes(1);
     expect(rescheduleReminders).toHaveBeenCalledTimes(1);
+  });
+
+  it("is translated in English", async () => {
+    await i18n.changeLanguage("en");
+
+    await renderFor("Quviviq", "50 mg");
+
+    expect(screen.getByRole("header", { name: "Add a stock" })).toBeOnTheScreen();
+    expect(screen.getByText("1 pill a day · 22:00")).toBeOnTheScreen();
+    expect(screen.getByLabelText("0 pills, Low stock, 0 days, time to renew")).toBeOnTheScreen();
+    expect(screen.getByText("10 days")).toBeOnTheScreen();
   });
 });

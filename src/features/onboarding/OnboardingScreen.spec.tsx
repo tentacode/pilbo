@@ -9,6 +9,7 @@ import {
   type PermissionStatus,
   requestPermission,
 } from "@/features/notifications/notifications";
+import { renderInEnglish } from "@/shared/i18n/testHelpers";
 
 import { OnboardingScreen } from "./OnboardingScreen";
 import { useOnboardingStore } from "./store/onboardingStore";
@@ -135,5 +136,21 @@ describe("OnboardingScreen", () => {
 
     await expectStep("Pilbo n'est pas une application médicale", 3);
     expect(requestPermission).not.toHaveBeenCalled();
+  });
+
+  it("is translated in English", async () => {
+    await renderInEnglish(<OnboardingScreen />, { wrapper });
+
+    expect(
+      await screen.findByRole("header", { name: "Your medications, grouped into intakes" }),
+    ).toBeOnTheScreen();
+    expect(screen.getByLabelText("Step 1 of 4")).toBeOnTheScreen();
+
+    await press("Continue");
+
+    expect(
+      await screen.findByRole("header", { name: "One reminder, then another" }),
+    ).toBeOnTheScreen();
+    expect(screen.getByRole("button", { name: "Allow notifications" })).toBeOnTheScreen();
   });
 });

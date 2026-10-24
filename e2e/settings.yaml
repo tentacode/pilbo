@@ -18,24 +18,9 @@ name: Settings can be changed
 - tapOn: "Annuler"
 - tapOn: "Réglages"
 
-# Low stock and language
+# Low stock
 - tapOn: "Un jour de plus"
 - assertVisible: "8 jours"
-- scrollUntilVisible:
-    element:
-      text: "English"
-    centerElement: true
-- tapOn: "English"
-- scrollUntilVisible:
-    element:
-      text: "Settings"
-    direction: UP
-- assertVisible: "Settings"
-- scrollUntilVisible:
-    element:
-      text: "Français"
-    centerElement: true
-- tapOn: "Français"
 
 # Not a medical app
 - scrollUntilVisible:

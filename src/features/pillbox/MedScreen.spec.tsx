@@ -8,6 +8,7 @@ import { medTable } from "@/shared/database/schema";
 import { createTestDatabase } from "@/shared/database/testDatabase";
 import { countRows } from "@/shared/database/testHelpers";
 import type { Database } from "@/shared/database/types";
+import { i18n } from "@/shared/i18n/i18n";
 
 import { IntakeDraftProvider, useIntakeDraft } from "./hooks/useIntakeDraft";
 import { MedDraftProvider } from "./hooks/useMedDraft";
@@ -259,5 +260,13 @@ describe("MedScreen", () => {
       expect(getMedById(mockDatabase, medId)?.isAsNeeded).toBe(false);
       expect(mockParentNavigation.goBack).toHaveBeenCalledTimes(1);
     });
+  });
+
+  it("is translated in English", async () => {
+    await i18n.changeLanguage("en");
+    await renderIntakeMedScreen();
+
+    expect(screen.getByRole("header", { name: "New medication" })).toBeOnTheScreen();
+    expect(screen.getByRole("button", { name: "Add to the intake" })).toBeOnTheScreen();
   });
 });

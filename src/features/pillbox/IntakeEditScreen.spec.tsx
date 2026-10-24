@@ -7,6 +7,7 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 import { rescheduleReminders } from "@/features/notifications/rescheduleReminders";
 import { createTestDatabase } from "@/shared/database/testDatabase";
 import type { Database } from "@/shared/database/types";
+import { i18n } from "@/shared/i18n/i18n";
 
 import { useSettingsStore } from "@/features/settings/store/settingsStore";
 
@@ -305,6 +306,16 @@ describe("IntakeEditScreen", () => {
       expect(screen.queryByRole("button", { name: LITHIUM_ROW })).not.toBeOnTheScreen();
       expect(screen.getByRole("button", { name: "Lamictal 50 mg" })).toBeOnTheScreen();
     });
+  });
+
+  it("is translated in English", async () => {
+    await i18n.changeLanguage("en");
+    await renderScreen();
+
+    expect(screen.getByRole("header", { name: "New intake" })).toBeOnTheScreen();
+    expect(screen.getByRole("header", { name: "Days" })).toBeOnTheScreen();
+    expect(screen.getByRole("header", { name: "Repeat the reminder every" })).toBeOnTheScreen();
+    expect(screen.getByRole("button", { name: "Save" })).toBeOnTheScreen();
   });
 });
 

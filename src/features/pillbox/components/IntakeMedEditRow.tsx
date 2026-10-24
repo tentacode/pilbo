@@ -1,4 +1,5 @@
 import { Pressable, View } from "react-native";
+import { useTranslation } from "react-i18next";
 
 import { Icon } from "@/design-system/components/Icon/Icon";
 import { Pill } from "@/design-system/components/Pill/Pill";
@@ -27,6 +28,7 @@ export function IntakeMedEditRow({
   onQuantityChange,
   onRemove,
 }: IntakeMedEditRowProps) {
+  const { t } = useTranslation("pillbox");
   const showActionSheet = useMedRowActionSheet();
   const { onRowLayout, onStepperLayout, isStacked } = useMedRowLayout();
   const label = formatMedLabel(med);
@@ -38,7 +40,7 @@ export function IntakeMedEditRow({
       <Pressable
         accessibilityRole="button"
         accessibilityLabel={[label, med.detail].filter(Boolean).join(", ")}
-        accessibilityHint="Affiche les actions du médicament."
+        accessibilityHint={t("Affiche les actions du médicament.")}
         onPress={() => showActionSheet({ medLabel: label, onEditMed, onRemove })}
         style={({ pressed }) => [
           styles.medButton,
@@ -61,10 +63,10 @@ export function IntakeMedEditRow({
           onRemove={onRemove}
           formatValue={(value) => `${value} ×`}
           labels={{
-            value: `Quantité de ${label}`,
-            decrement: `Retirer un comprimé de ${label}`,
-            increment: `Ajouter un comprimé de ${label}`,
-            remove: `Retirer ${label} de la prise`,
+            value: t("Quantité de {{med}}", { med: label }),
+            decrement: t("Retirer un comprimé de {{med}}", { med: label }),
+            increment: t("Ajouter un comprimé de {{med}}", { med: label }),
+            remove: t("Retirer {{med}} de la prise", { med: label }),
           }}
         />
       </View>

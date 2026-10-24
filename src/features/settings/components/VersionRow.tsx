@@ -1,4 +1,5 @@
 import { nativeApplicationVersion, nativeBuildVersion } from "expo-application";
+import { useTranslation } from "react-i18next";
 
 import { Text } from "@/design-system/components/Text/Text";
 
@@ -10,10 +11,15 @@ type VersionRowProps = {
 };
 
 export function VersionRow({ onPress }: VersionRowProps) {
-  const version = formatAppVersion(nativeApplicationVersion, nativeBuildVersion);
+  const { t } = useTranslation("settings");
+  const version = formatAppVersion(t, nativeApplicationVersion, nativeBuildVersion);
 
   return (
-    <SettingsRow label="Version" onPress={onPress} accessibilityLabel={`Version ${version}`}>
+    <SettingsRow
+      label={t("Version")}
+      onPress={onPress}
+      accessibilityLabel={t("Version {{version}}", { version })}
+    >
       <Text variant="body" tone="secondary">
         {version}
       </Text>

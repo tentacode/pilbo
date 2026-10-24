@@ -1,4 +1,5 @@
 import { router } from "expo-router";
+import { useTranslation } from "react-i18next";
 
 import { IconButton } from "@/design-system/components/IconButton/IconButton";
 import { Screen } from "@/design-system/components/Screen/Screen";
@@ -26,15 +27,20 @@ function openAsNeededMed(medId: string) {
 }
 
 export function PillboxScreen() {
+  const { t } = useTranslation("pillbox");
   const { intakes, asNeededMeds } = usePillboxData();
   const isEmpty = intakes.length === 0 && asNeededMeds.length === 0;
 
   return (
     <Screen>
       <ScreenHeader
-        title="Pilulier"
+        title={t("Pilulier")}
         action={
-          <IconButton icon="plus" accessibilityLabel="Nouvelle prise" onPress={openNewIntake} />
+          <IconButton
+            icon="plus"
+            accessibilityLabel={t("Nouvelle prise")}
+            onPress={openNewIntake}
+          />
         }
       />
       {isEmpty ? (

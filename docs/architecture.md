@@ -29,6 +29,7 @@ src/
   shared/               // transverse : navigation, intégrations tierces…
     database/           // SQLite : schéma, migrations, seed (voir docs/database.md)
     error-handling/     // écran d'erreur générique, ErrorBoundary global
+    i18n/               // i18next : instance, traductions (locales/<langue>/<namespace>.json), formatage dates/heures
     storage/            // stockage sync (kv-store) partagé par les stores Zustand persistés
 ```
 
@@ -77,6 +78,32 @@ Détails : [`docs/database.md`](database.md).
 - Aucune valeur en dur dans les styles : toujours un token (`tokens.ts`).
 - Polices : une famille par graisse (`fontFamily.regular`, `semiBold`, `bold`, `display`), pas de `fontWeight`.
 - Textes : toujours via le composant `Text` du design system (`variant` + `tone`).
+
+## Traductions (i18n)
+
+Stack : i18next + react-i18next, extraction avec `i18next-cli` (`i18next.config.ts`). Français et anglais.
+
+- **Clé = texte français** : `t("Valider la prise")`. Pas de séparateurs (`.` et `:` autorisés dans le texte).
+- **Un namespace par feature** : `today`, `pillbox`, `stocks`, `settings`, `onboarding`, `notifications`, et `common` (navigation, écrans d'erreur, textes partagés).
+- **Fichiers** : `src/shared/i18n/locales/<fr|en>/<namespace>.json`. En FR la valeur est la clé (générée), sauf les pluriels.
+- **Clés typées** : une clé inconnue est une erreur TypeScript (`src/shared/i18n/i18next.d.ts`).
+
+### Ajouter un texte
+
+1. Dans un composant : `const { t } = useTranslation("<namespace>")`, puis `t("Mon texte")`.
+2. `make i18n-extract` : ajoute la clé dans les fichiers FR et EN.
+3. Écrire la traduction dans `locales/en/<namespace>.json`.
+4. `make tests` échoue si une traduction EN manque ou si une clé n'est plus utilisée.
+
+### Règles
+
+- **Texte hors composant** (constante de module, `formatters.ts`) : une fonction qui reçoit `t` en paramètre, typé `TFunction<"<namespace>">` **écrit tel quel** (pas d'alias de type, pas de record de fonctions) pour que l'extraction trouve le namespace. Ex. `formatDuration(t: TFunction<"today">, minutes)`.
+- **Code hors React** (notifications) : `i18n.t("…", { ns: "notifications" })`.
+- **Pluriels** : `t("{{count}} jours", { count })`, puis écrire le singulier dans `<clé>_one` (FR et EN). Ne pas nommer `count` une variable qui n'est pas un pluriel.
+- **Dates** : `shared/i18n/formatters.ts` (`Intl.DateTimeFormat`), langue en paramètre via `useLanguage()`.
+- **Heure** : `formatIntakeTime` (`shared/i18n/formatters.ts`) suit le réglage iOS 12 h / 24 h, quelle que soit la langue.
+- **Langue** : `useAppLanguage()` (réglages) → `useI18nLanguageSync()` dans `app/_layout.tsx`. Langue initiale fixée avant le premier rendu (pas de flash).
+- **Tests** : Jest tourne en FR. `renderInEnglish()` (`shared/i18n/testHelpers.ts`) ou `i18n.changeLanguage("en")` pour un test EN, la langue revient en FR après chaque test.
 
 ## Accessibilité
 

@@ -1,4 +1,5 @@
 import { router } from "expo-router";
+import { useTranslation } from "react-i18next";
 
 import { MedPickerScreen } from "@/features/pillbox/MedPickerScreen";
 import { StockPickerEmptyState } from "./components/StockPickerEmptyState";
@@ -9,11 +10,12 @@ function openPillbox() {
 }
 
 export function StockMedPickerScreen() {
+  const { t } = useTranslation("stocks");
   const stockedMedIds = useStockedMedIds();
   return (
     <MedPickerScreen
-      title="Stock d’un médicament"
-      statusLabelOf={(med) => (stockedMedIds.has(med.id) ? "En stock" : undefined)}
+      title={t("Stock d’un médicament")}
+      statusLabelOf={(med) => (stockedMedIds.has(med.id) ? t("En stock") : undefined)}
       emptyContent={<StockPickerEmptyState onOpenPillbox={openPillbox} />}
       onSelect={(med) => router.push({ pathname: "/stock", params: { medId: med.id } })}
     />

@@ -1,4 +1,5 @@
 import { View } from "react-native";
+import { useTranslation } from "react-i18next";
 
 import { Icon } from "@/design-system/components/Icon/Icon";
 import { Text } from "@/design-system/components/Text/Text";
@@ -9,22 +10,22 @@ import { useNotificationPermission } from "@/features/notifications/hooks/useNot
 import { styles } from "./NotificationsRow.styles";
 import { SettingsRow } from "./SettingsRow";
 
-const LABEL = "Notifications";
-
 export function NotificationsRow() {
+  const { t } = useTranslation("settings");
   const { isGranted, request } = useNotificationPermission();
+  const label = t("Notifications");
 
   if (isGranted === null) {
-    return <SettingsRow label={LABEL} accessibilityLabel={LABEL} />;
+    return <SettingsRow label={label} accessibilityLabel={label} />;
   }
 
   if (isGranted) {
     return (
-      <SettingsRow label={LABEL} accessibilityLabel={`${LABEL} : autorisées`}>
+      <SettingsRow label={label} accessibilityLabel={t("Notifications : autorisées")}>
         <View style={styles.granted}>
           <Icon name="check" size={sizes.iconSmall} color={colors.successInk} />
           <Text variant="body" tone="success">
-            Autorisées
+            {t("Autorisées")}
           </Text>
         </View>
       </SettingsRow>
@@ -33,15 +34,15 @@ export function NotificationsRow() {
 
   return (
     <SettingsRow
-      label={LABEL}
+      label={label}
       hasChevron
       onPress={request}
-      accessibilityLabel={`${LABEL} : activer`}
+      accessibilityLabel={t("Notifications : activer")}
       accessibilityRole="button"
-      accessibilityHint="Permet de recevoir les rappels de vos prises"
+      accessibilityHint={t("Permet de recevoir les rappels de vos prises")}
     >
       <Text variant="body" tone="secondary">
-        Activer
+        {t("Activer")}
       </Text>
     </SettingsRow>
   );
