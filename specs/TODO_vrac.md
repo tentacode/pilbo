@@ -4,5 +4,5 @@
 - [ ] préparer le deploy sur le store.
 - [ ] android.
 - [ ] widget apple.
-- [x] pouvoir fermer l'avertissement stock bas dans Today.
-- [ ] depuis une prise ignorée/prise du pillulier pouvoir modifer la prise : changer le statut et l'heure de la prise
+- [ ] depuis une prise ignorée/prise du pillulier pouvoir modifer la prise : changer le statut et l'heure de la prise.
+- [ ] gestion du dark mode.
