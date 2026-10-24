@@ -130,6 +130,52 @@ describe("planReminders", () => {
     expect(reminders).toHaveLength(64);
   });
 
+  it("plans the low stock alerts after today and before tomorrow", () => {
+    const alert = {
+      identifier: "low-stock-2026-10-08",
+      date: at(8, 9, 0),
+      title: "Stock bas",
+      body: "Lithium 250 mg : pensez à le renouveler.",
+    };
+
+    const reminders = planReminders({
+      todayIntakes: [NOON],
+      tomorrowIntakes: [MORNING],
+      todayLogs: [],
+      lowStockAlerts: [alert],
+      now: at(4, 6, 0),
+    });
+
+    expect(reminders.map(({ identifier }) => identifier.slice(0, 9))).toEqual([
+      ...Array<string>(6).fill("reminder-"),
+      "low-stock",
+      ...Array<string>(6).fill("reminder-"),
+    ]);
+    expect(reminders[6]).toBe(alert);
+  });
+
+  it("keeps the low stock alerts before tomorrow within 64", () => {
+    const todayIntakes = Array.from({ length: 10 }, (_, index) => createIntake(10 + index, 0));
+    const lowStockAlerts = Array.from({ length: 6 }, (_, index) => ({
+      identifier: `low-stock-${index}`,
+      date: at(10 + index, 9, 0),
+      title: "Stock bas",
+      body: "",
+    }));
+
+    const reminders = planReminders({
+      todayIntakes,
+      tomorrowIntakes: [MORNING],
+      todayLogs: [],
+      lowStockAlerts,
+      now: at(4, 6, 0),
+    });
+
+    expect(reminders).toHaveLength(64);
+    expect(reminders.filter(({ title }) => title === "Stock bas")).toHaveLength(4);
+    expect(reminders.filter(({ date }) => date.getDate() === 5)).toHaveLength(0);
+  });
+
   it("counts the pending intakes of the day in the badge", () => {
     const evening = createIntake(8, 40);
 

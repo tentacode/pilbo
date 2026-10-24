@@ -13,7 +13,7 @@ types.ts                // type Database (base Drizzle synchrone, app et tests)
 migrations/             // généré par drizzle-kit, ne pas modifier à la main
 fixtures.ts             // données de debug insérées au premier lancement (debug)
 seed.ts                 // seedDatabase(database)
-clearDatabase.ts        // clearDatabase(database) : vide intake_log, med_log, med, intake, intake_med
+clearDatabase.ts        // clearDatabase(database) : vide intake_log, med_log, stock, med, intake, intake_med
 resetDatabase.ts        // resetDatabase(database) : clearDatabase puis seedDatabase
 hooks/useDatabaseReady.ts // migration au démarrage, puis callback onMigrated
 DatabaseErrorScreen.tsx // écran affiché si la migration ou le seed échoue
@@ -186,3 +186,14 @@ Prises des médicaments hors planning. Un médicament peut être pris plusieurs 
 | `id`       | text (UUID) | clé primaire                                         |
 | `med_id`   | text        | → `med.id`, suppression du médicament bloquée        |
 | `taken_at` | text        | obligatoire, moment de la prise (`2026-10-14T15:40`) |
+
+### `stock`
+
+Stock facultatif d'un médicament. Pas de stock = pas de ligne.
+
+| Colonne          | Type    | Contraintes                                                       |
+| ---------------- | ------- | ----------------------------------------------------------------- |
+| `med_id`         | text    | clé primaire, → `med.id`, supprimé avec le médicament (`cascade`) |
+| `quantity`       | integer | obligatoire, comprimés restants, peut être négatif                |
+| `box_size`       | integer | obligatoire (1–999)                                               |
+| `low_stock_days` | integer | obligatoire, seuil de stock bas en jours (1–30)                   |

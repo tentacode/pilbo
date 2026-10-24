@@ -1,6 +1,15 @@
 import { StyleSheet } from "react-native";
 
-import { borderWidth, colors, disabledOpacity, radius, sizes, spacing } from "../../tokens";
+import {
+  borderWidth,
+  colors,
+  disabledOpacity,
+  fontFamily,
+  fontSize,
+  radius,
+  sizes,
+  spacing,
+} from "../../tokens";
 
 export const styles = StyleSheet.create({
   stepper: {
@@ -29,5 +38,17 @@ export const styles = StyleSheet.create({
     minWidth: sizes.stepperValueMinimumWidth,
     textAlign: "center",
     fontVariant: ["tabular-nums"],
+  },
+  input: {
+    minWidth: sizes.stepperInputMinimumWidth,
+    minHeight: sizes.touchTarget,
+    paddingHorizontal: spacing.small,
+    borderRadius: radius.segmentItem,
+    backgroundColor: colors.surface,
+    textAlign: "center",
+    fontFamily: fontFamily.bold,
+    fontSize: fontSize.body,
+    fontVariant: ["tabular-nums"],
+    color: colors.ink,
   },
 });

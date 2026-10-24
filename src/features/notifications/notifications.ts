@@ -42,7 +42,13 @@ export async function resetReminders(plannedReminders: PlannedReminder[]): Promi
   for (const { identifier, date, title, body, badge } of plannedReminders) {
     await Notifications.scheduleNotificationAsync({
       identifier,
-      content: { title, body, badge, sound: "beep.wav", interruptionLevel: "active" },
+      content: {
+        title,
+        body,
+        ...(badge === undefined ? {} : { badge }),
+        sound: "beep.wav",
+        interruptionLevel: "active",
+      },
       trigger: { type: Notifications.SchedulableTriggerInputTypes.DATE, date },
     });
   }

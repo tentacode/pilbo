@@ -4,6 +4,12 @@ import { colors, fontFamily, fontSize, lineHeight } from "../../tokens";
 
 export const variantStyles = StyleSheet.create({
   title: { fontFamily: fontFamily.display, fontSize: fontSize.title },
+  bigNumber: {
+    fontFamily: fontFamily.display,
+    fontSize: fontSize.bigNumber,
+    lineHeight: lineHeight.bigNumber,
+    fontVariant: ["tabular-nums"],
+  },
   largeHeading: { fontFamily: fontFamily.display, fontSize: fontSize.largeHeading },
   mediumHeading: { fontFamily: fontFamily.display, fontSize: fontSize.mediumHeading },
   heading: { fontFamily: fontFamily.display, fontSize: fontSize.heading },

@@ -1,17 +1,18 @@
 import { sql } from "drizzle-orm";
 
-import { intakeLogTable, intakeMedTable, intakeTable, medTable } from "./schema";
+import { intakeLogTable, intakeMedTable, intakeTable, medTable, stockTable } from "./schema";
 import { seedDatabase } from "./seed";
 import { createTestDatabase } from "./testDatabase";
 import { countRows } from "./testHelpers";
 
 describe("seedDatabase", () => {
-  it("inserts the meds, the intakes and their links", () => {
+  it("inserts the meds, the intakes, their links and the stocks", () => {
     const database = createTestDatabase();
 
     expect(countRows(database, medTable)).toBe(6);
     expect(countRows(database, intakeTable)).toBe(4);
     expect(countRows(database, intakeMedTable)).toBe(7);
+    expect(countRows(database, stockTable)).toBe(3);
   });
 
   it("does not seed again when the database already has meds", () => {

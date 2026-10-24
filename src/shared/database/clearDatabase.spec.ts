@@ -1,12 +1,19 @@
 import { sql } from "drizzle-orm";
 
 import { clearDatabase } from "./clearDatabase";
-import { intakeLogTable, intakeMedTable, intakeTable, medLogTable, medTable } from "./schema";
+import {
+  intakeLogTable,
+  intakeMedTable,
+  intakeTable,
+  medLogTable,
+  medTable,
+  stockTable,
+} from "./schema";
 import { createTestDatabase } from "./testDatabase";
 import { countRows } from "./testHelpers";
 
 describe("clearDatabase", () => {
-  it("deletes the meds, the intakes, their links and their logs", () => {
+  it("deletes the meds, the intakes, their links, their logs and the stocks", () => {
     const database = createTestDatabase();
     const { id: medId } = database.get<{ id: string }>(
       sql`SELECT ${medTable.id} AS id FROM ${medTable} LIMIT 1`,
@@ -32,6 +39,7 @@ describe("clearDatabase", () => {
     expect(countRows(database, intakeMedTable)).toBe(0);
     expect(countRows(database, intakeLogTable)).toBe(0);
     expect(countRows(database, medLogTable)).toBe(0);
+    expect(countRows(database, stockTable)).toBe(0);
   });
 
   it("does nothing on an empty database", () => {

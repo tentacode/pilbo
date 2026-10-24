@@ -1,5 +1,5 @@
 appId: com.tentacode.pilbo
-name: An as needed med can be taken and cancelled from today
+name: An as needed med can be taken and its last intake cancelled from today
 ---
 - launchApp:
     clearState: true
@@ -22,10 +22,13 @@ name: An as needed med can be taken and cancelled from today
       text: "Prendre Lithium 250 mg"
     centerElement: true
 - tapOn: "Prendre Lithium 250 mg"
+- tapOn: "Prendre Lithium 250 mg"
 - scrollUntilVisible:
     element:
       text: "Pris à \\d\\d:\\d\\d"
     centerElement: true
-- tapOn: "Annuler les prises de Lithium 250 mg aujourd’hui"
+- tapOn: "Annuler la prise de Lithium 250 mg de \\d\\d:\\d\\d"
+- assertVisible: "Pris à \\d\\d:\\d\\d"
+- tapOn: "Annuler la prise de Lithium 250 mg de \\d\\d:\\d\\d"
 - assertNotVisible: "Pris à \\d\\d:\\d\\d"
 - assertVisible: "Prendre Lithium 250 mg"

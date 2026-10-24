@@ -1,5 +1,7 @@
 import { fireEvent, render, screen } from "@testing-library/react-native";
 
+import { useState } from "react";
+
 import { Stepper } from "./Stepper";
 
 const LABELS = {
@@ -81,5 +83,50 @@ describe("Stepper", () => {
 
     expect(onChange).toHaveBeenCalledTimes(1);
     expect(onChange).toHaveBeenCalledWith(9);
+  });
+});
+
+describe("editable Stepper", () => {
+  function EditableStepper() {
+    const [value, setValue] = useState(5);
+    return (
+      <Stepper value={value} min={0} max={99} onChange={setValue} labels={LABELS} isEditable />
+    );
+  }
+
+  function input() {
+    return screen.getByLabelText("Quantité de Lithium");
+  }
+
+  it("keeps only digits, within the bounds", async () => {
+    await render(<EditableStepper />);
+
+    await fireEvent(input(), "focus");
+    await fireEvent.changeText(input(), "4a2");
+    expect(input()).toHaveDisplayValue("42");
+
+    await fireEvent.changeText(input(), "123");
+    expect(input()).toHaveDisplayValue("12");
+  });
+
+  it("shows the minimum once an empty field loses the focus", async () => {
+    await render(<EditableStepper />);
+
+    await fireEvent(input(), "focus");
+    await fireEvent.changeText(input(), "");
+    expect(input()).toHaveDisplayValue("");
+
+    await fireEvent(input(), "blur");
+    expect(input()).toHaveDisplayValue("0");
+  });
+
+  it("follows the buttons while the field has the focus", async () => {
+    await render(<EditableStepper />);
+
+    await fireEvent(input(), "focus");
+    await fireEvent.changeText(input(), "7");
+    await fireEvent.press(screen.getByRole("button", { name: "Ajouter un comprimé de Lithium" }));
+
+    expect(input()).toHaveDisplayValue("8");
   });
 });

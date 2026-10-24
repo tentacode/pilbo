@@ -13,13 +13,14 @@ export type PlannedReminder = {
   date: Date;
   title: string;
   body: string;
-  badge: number;
+  badge?: number;
 };
 
 type PlanRemindersOptions = {
   todayIntakes: Intake[];
   tomorrowIntakes: Intake[];
   todayLogs: IntakeLog[];
+  lowStockAlerts?: PlannedReminder[];
   now: Date;
 };
 
@@ -52,6 +53,7 @@ export function planReminders({
   todayIntakes,
   tomorrowIntakes,
   todayLogs,
+  lowStockAlerts = [],
   now,
 }: PlanRemindersOptions): PlannedReminder[] {
   const loggedIntakeIds = new Set(todayLogs.map(({ intakeId }) => intakeId));
@@ -65,6 +67,7 @@ export function planReminders({
     .flat()
     .filter(({ date }) => date > earliestDate)
     .slice(0, MAXIMUM_SCHEDULED_REMINDERS);
+  reminders.push(...lowStockAlerts.slice(0, MAXIMUM_SCHEDULED_REMINDERS - reminders.length));
 
   for (const intakeReminders of planDayReminders(tomorrow, tomorrowIntakes)) {
     if (reminders.length + intakeReminders.length > MAXIMUM_SCHEDULED_REMINDERS) {

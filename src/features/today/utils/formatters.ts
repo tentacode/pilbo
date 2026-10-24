@@ -15,7 +15,7 @@ const DAY_NAMES = {
   sunday: "Dimanche",
 } as const;
 
-const MONTH_NAMES = [
+export const MONTH_NAMES = [
   "janvier",
   "février",
   "mars",
@@ -139,8 +139,12 @@ export function formatValidationAnnouncement(intake: Intake, status: IntakeLogSt
   return status === "taken" ? `Prise de ${time} validée` : `Prise de ${time} ignorée`;
 }
 
+export function formatTakenTime(takenAt: string): string {
+  return takenAt.slice(TIME_START_INDEX);
+}
+
 export function formatAsNeededTakenAt(takenAt: string): string {
-  return `Pris à ${takenAt.slice(TIME_START_INDEX)}`;
+  return `Pris à ${formatTakenTime(takenAt)}`;
 }
 
 function formatUpcomingDay({ daysAhead, weekday }: UpcomingIntake): string {

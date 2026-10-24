@@ -3,8 +3,14 @@ import { sql } from "drizzle-orm";
 import { intakeDateOn } from "@/domain/intake";
 import { toLocalDateTime } from "@/domain/intakeLog";
 
-import { intakeFixtures, intakeLogFixture, type MedFixtureKey, medFixtures } from "./fixtures";
-import { intakeLogTable, intakeMedTable, intakeTable, medTable } from "./schema";
+import {
+  intakeFixtures,
+  intakeLogFixture,
+  type MedFixtureKey,
+  medFixtures,
+  stockFixtures,
+} from "./fixtures";
+import { intakeLogTable, intakeMedTable, intakeTable, medTable, stockTable } from "./schema";
 import type { Database } from "./types";
 
 export type SeedOptions = {
@@ -45,6 +51,13 @@ export function seedDatabase(
       const { id } = transaction.insert(medTable).values(med).returning({ id: medTable.id }).get();
       medIds.set(key as MedFixtureKey, id);
     }
+
+    transaction
+      .insert(stockTable)
+      .values(
+        stockFixtures.map(({ med, ...stock }) => ({ medId: medIds.get(med) as string, ...stock })),
+      )
+      .run();
 
     for (const intakeFixture of intakeFixtures) {
       const { medQuantities, ...intake } = intakeFixture;

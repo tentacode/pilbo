@@ -2,7 +2,7 @@ import { WEEKDAYS } from "@/domain/intake";
 
 import type { IntakeLogStatus } from "@/domain/intakeLog";
 
-import type { NewIntakeRow, NewMedRow } from "./schema";
+import type { NewIntakeRow, NewMedRow, NewStockRow } from "./schema";
 
 const LAVENDER = "#D6C9F5";
 const TURQUOISE = "#B3E8E0";
@@ -92,6 +92,16 @@ export const intakeFixtures: IntakeFixture[] = [
       { med: "pregabalin50", quantity: 1 },
     ],
   },
+];
+
+export interface StockFixture extends Omit<NewStockRow, "medId"> {
+  med: MedFixtureKey;
+}
+
+export const stockFixtures: StockFixture[] = [
+  { med: "lithium250", quantity: 18, boxSize: 100, lowStockDays: 7 },
+  { med: "lamictal50", quantity: 45, boxSize: 50, lowStockDays: 7 },
+  { med: "lamictal100", quantity: 56, boxSize: 60, lowStockDays: 7 },
 ];
 
 export const intakeLogFixture: {

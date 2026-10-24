@@ -1,6 +1,6 @@
 import { createIntake } from "@/features/today/utils/testIntakes";
 
-import { formatReminderBody, formatReminderTitle } from "./formatters";
+import { formatLowStockAlertBody, formatReminderBody, formatReminderTitle } from "./formatters";
 
 describe("formatReminderTitle", () => {
   it("names the intake time", () => {
@@ -20,5 +20,19 @@ describe("formatReminderBody", () => {
     expect(formatReminderBody({ ...intake, medQuantities: [lithium, lamictal] })).toBe(
       "1 × Lithium 250 mg, 2 × Lamictal 50 mg",
     );
+  });
+});
+
+describe("formatLowStockAlertBody", () => {
+  it("lists the meds to renew", () => {
+    expect(formatLowStockAlertBody([{ name: "Lithium", strength: "250 mg" }])).toBe(
+      "Lithium 250 mg : pensez à le renouveler.",
+    );
+    expect(
+      formatLowStockAlertBody([
+        { name: "Lithium", strength: "250 mg" },
+        { name: "Lamictal", strength: "50 mg" },
+      ]),
+    ).toBe("Lithium 250 mg, Lamictal 50 mg : pensez à les renouveler.");
   });
 });

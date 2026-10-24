@@ -5,27 +5,47 @@ import { toLocalDate, toLocalDateTime } from "@/domain/intakeLog";
 import { formatMedLabel, type Med } from "@/domain/med";
 import { database } from "@/shared/database/database";
 
-import { deleteMedLogsOfDay } from "@/features/today/queries/deleteMedLogsOfDay";
+import { rescheduleAfterChange } from "@/features/pillbox/hooks/useIntakeActions";
+import { decreaseStocks } from "@/features/stocks/queries/decreaseStocks";
+import { increaseStock } from "@/features/stocks/queries/increaseStock";
+import { deleteLastMedLogOfDay } from "@/features/today/queries/deleteLastMedLogOfDay";
 import { insertMedLog } from "@/features/today/queries/insertMedLog";
-import { formatAsNeededTakenAt } from "@/features/today/utils/formatters";
+import { formatAsNeededTakenAt, formatTakenTime } from "@/features/today/utils/formatters";
+import type { AsNeededMedOfDay } from "@/features/today/utils/todayTypes";
 
-export function useAsNeededTaking(onChanged: () => void) {
+const AS_NEEDED_QUANTITY = 1;
+
+export function useAsNeededTaking(onChanged: () => void, onStocksBelowZero: (meds: Med[]) => void) {
   return {
     take: (med: Med) => {
       const now = new Date();
-      insertMedLog(database, med.id, now);
+      const medIdsBelowZero = database.transaction((transaction) => {
+        insertMedLog(transaction, med.id, now);
+        return decreaseStocks(transaction, [{ medId: med.id, quantity: AS_NEEDED_QUANTITY }]);
+      });
       playSuccessHaptic();
       AccessibilityInfo.announceForAccessibility(
         `${formatMedLabel(med)}. ${formatAsNeededTakenAt(toLocalDateTime(now))}`,
       );
       onChanged();
+      rescheduleAfterChange();
+      if (medIdsBelowZero.length > 0) {
+        onStocksBelowZero([med]);
+      }
     },
-    cancel: (med: Med) => {
-      deleteMedLogsOfDay(database, med.id, toLocalDate(new Date()));
-      AccessibilityInfo.announceForAccessibility(
-        `Prises de ${formatMedLabel(med)} annulées pour aujourd’hui`,
-      );
+    cancel: ({ med, lastTakenAt }: AsNeededMedOfDay) => {
+      database.transaction((transaction) => {
+        if (deleteLastMedLogOfDay(transaction, med.id, toLocalDate(new Date()))) {
+          increaseStock(transaction, med.id, AS_NEEDED_QUANTITY);
+        }
+      });
+      if (lastTakenAt !== undefined) {
+        AccessibilityInfo.announceForAccessibility(
+          `Prise de ${formatMedLabel(med)} de ${formatTakenTime(lastTakenAt)} annulée`,
+        );
+      }
       onChanged();
+      rescheduleAfterChange();
     },
   };
 }
