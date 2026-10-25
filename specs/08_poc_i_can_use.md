@@ -12,13 +12,11 @@ Dans cette spec, on veut une proof of concept brute mais fonctionnelle, que je p
 
 Tout le reste est optionnel (ex. les médicaments à la demande comme le prazépam sont hors scope). Le but est de tester les notifications en conditions réelles.
 
-Mes médicaments sont déjà dans les fixtures, avec les bonnes heures de prise, réglées 10 min avant mon alarme actuelle au cas où ça ne marche pas pendant le test.
+Les fixtures contiennent déjà des prises réalistes.
 
 Le code doit être concis, simple plutôt que complexe, lisible, et respecter toute la documentation du projet.
 
 Les questions se posent une par une, pas toutes en même temps.
-
-N'oublie pas : j'ai un TDAH.
 
 ## Tâches
 

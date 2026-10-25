@@ -3,6 +3,6 @@
 - [ ] android.
 - [ ] widget apple.
 - [ ] affichage des nouveautés après une mise à jour.
-- [ ] verif repo public / open source.
-- [ ] passage de CLAUDE.md en français.
+- [x] verif repo public / open source.
+- [x] passage de CLAUDE.md en français.
 - [ ] thèmes en IAP.

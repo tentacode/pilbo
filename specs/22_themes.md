@@ -12,16 +12,16 @@ Pas de design existant : l'écran « Thèmes » et les nouveaux thèmes sont des
 
 ### Contenu d'un thème
 
-| Élément                      | Thémable | Remarque                                                         |
-| ---------------------------- | -------- | ---------------------------------------------------------------- |
-| Couleurs                     | ✅       | Une palette par variante (claire, sombre)                        |
-| Polices                      | ✅       | Les 4 rôles actuels : `regular`, `semiBold`, `bold`, `display`   |
-| Rayons, bordures, ombres     | ✅       | `radius`, `borderWidth`, `shadow`                                |
-| Icônes                       | ✅       | Toutes les icônes de `Icon`                                      |
-| Formes de pilules            | ✅       | Les 6 formes, la couleur choisie par l'utilisateur est respectée |
-| Illustrations                | ✅       | Onboarding, états vides, « tout est fait », en-tête              |
+| Élément                      | Thémable | Remarque                                                          |
+| ---------------------------- | -------- | ----------------------------------------------------------------- |
+| Couleurs                     | ✅       | Une palette par variante (claire, sombre)                         |
+| Polices                      | ✅       | Les 4 rôles actuels : `regular`, `semiBold`, `bold`, `display`    |
+| Rayons, bordures, ombres     | ✅       | `radius`, `borderWidth`, `shadow`                                 |
+| Icônes                       | ✅       | Toutes les icônes de `Icon`                                       |
+| Formes de pilules            | ✅       | Les 6 formes, la couleur choisie par l'utilisateur est respectée  |
+| Illustrations                | ✅       | Onboarding, états vides, « tout est fait », en-tête               |
 | Durées d'animation           | ✅       | Effets propres au thème (ex. lueur néon) : Reduce Motion respecté |
-| Espacements, tailles, cibles | ❌       | Communs à tous les thèmes (mise en page, cibles de 44 pt)        |
+| Espacements, tailles, cibles | ❌       | Communs à tous les thèmes (mise en page, cibles de 44 pt)         |
 
 ### Variantes claire / sombre
 

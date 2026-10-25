@@ -1,26 +1,42 @@
-# Pilbo, application mobile de gestion de médicaments
+# Pilbo
 
-## Pitch
+Pilbo (pour « Pill Box ») est une application iOS de pilulier : elle aide à suivre ses prises de médicaments, sans compte et sans serveur.
 
-Pilbo (pour "Pill Box", et aussi une boutage par rapport à Bilbo Baggins), est une application de gestion de pillulier, pour l'instant sur iOS uniquement, totalement gratuite (à l'avenir on pourra acheter des cosmétiques).
+## Fonctionnalités
 
-Les principales fonctionnalités sont :
+- **Prises** : plusieurs moments dans la journée, chacun avec ses médicaments et ses quantités, sur certains jours de la semaine.
+- **Rappels** : une notification à l'heure de la prise, répétée jusqu'à ce que la prise soit validée.
+- **Médicaments à la demande** : à prendre en dehors des prises, si besoin.
+- **Stocks** : le stock diminue à chaque prise, avec une alerte avant d'en manquer.
+- **Calendrier** : l'historique des prises, jour par jour.
+- **Données 100 % locales** : tout reste sur le téléphone.
+- Français et anglais, mode sombre, accessibilité (VoiceOver, Dynamic Type).
 
-- Gestion des prises : à titre personnel, j'ai quatre moment où je dois prendre des médicaments, à chaque fois avec des médicaments différents. Pour m'aider je peux saisir des "prises" (wording à voir), par exemple une prise peut être "1 lithium 250mg et 1 lamictal 25mg" à 8h30, une autre prise "2 lithium 250mg et 1 lamictal 100mg" à 20h30. On peut définir une prise sur seulement certains jours (tous les jours sauf le weekend par exemple). Plus tard : les prises peuvent aussi avoir une récurrence plus souple, comme "une fois toutes les deux semaines".
-- Notifications intelligentes : au lieu d'une alarrmes qu'on "snooze", on a des bips réguliers à l'heure d'une prise, par exemple toutes les 10 minutes (réglable par prise, défaut 10 minutes), les bips s'arrêtent quand on valide dans l'application, ou via un widget sur la home, qu'on a réellement pris le médicament. On peut aussi dans l'app dire "je ne prends pas le médicament sur cette prise" (il n'est pas décompté du stock).
-- Possibilité de prendre certains médicaments "hors des prises", ex : anxiolytiques si besoin.
-- Gestion des stocks : on peut aussi saisir des boites de médicaments (ou un nombre de médicaments) pour maintenir un état des stocks de ce qu'il nous reste. À chaque prise le stock diminue, et on a une alerte si le stock prévisionnel (en fonction des prises) d'un médicament sera épuisé, une semaine avant qu'il s'épuise (délai réglable par médicament, défaut une semaine).
-- Personnalisation des pillules : l'utilisateur peut changer la fome, la taille et la couleur de chaque variante de médicament (ex : lithium 250mg, lamictal 25mg, lamictal 100mg) de façon poussée via un petit éditeur, ça permet de rendre l'expérience plus sympa, et aussi de voir en un coup d'oeil quels sont les médicaments concernés par une prise. Dans le futur on pourra debloquer des thèmes pour plus de customisation et soutenir l'application, par exemple : pixel art, pastel, neon, fantasy, etc.
-- Bonus : pouvoir saisir des événements récurrents ne concernant pas les médicaments, exemple : prise de sang de lithiémie tout les mois, envoie une notification.
+## Stack
 
-## Technologie
+React Native avec Expo (development builds), TypeScript, Expo Router, expo-sqlite + Drizzle ORM, expo-notifications, i18next, Jest et Maestro.
 
-L'application est développée en React Native, pour l'instant seul une release iPhone est prévue.
+## Lancer le projet
 
-L'application sera dès le départ disponible en Anglais et en Français, il faut prévoir l'internationalisation.
+Prérequis : macOS, Xcode, pnpm et ccache (`brew install ccache`).
 
-## Look & Feel
+```sh
+make install                # dépendances
+cp .env.dist .env           # puis renseigner APPLE_TEAM_ID (et DEVICE_ID pour un iPhone)
+make build-simulator        # build et lancement sur le simulateur
+make tests                  # lint, prettier, TypeScript, Jest et audit
+```
 
-On ne veut PAS de look IA slop, généré par IA, ou autre.
+`make help` liste toutes les commandes. La documentation technique est dans [`docs/`](docs/).
 
-Comme le thème sera dans le futur étendu à des variantes plus fun, il doit être suffisament générique, mais pas sans personalité.
+## Avertissement
+
+Pilbo n'est pas un dispositif médical. Elle est fournie sans aucune garantie et ne remplace pas l'avis d'un médecin ou d'un pharmacien.
+
+## Licence
+
+Le code source est disponible sous licence [PolyForm Noncommercial 1.0.0](LICENSE) : vous pouvez le lire, le modifier et le partager pour un usage non commercial. Tout usage commercial est interdit, y compris une app gratuite avec publicité ou achats intégrés.
+
+Le nom « Pilbo » et l'icône de l'application ne sont pas couverts par la licence et restent réservés.
+
+Pour contribuer, voir [`CONTRIBUTING.md`](CONTRIBUTING.md).

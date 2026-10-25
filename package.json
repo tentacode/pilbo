@@ -69,6 +69,7 @@
     "i18n:extract": "i18next-cli extract",
     "i18n:check": "i18next-cli extract --ci --dry-run --quiet && i18next-cli status en --hide-translated"
   },
+  "license": "PolyForm-Noncommercial-1.0.0",
   "private": true,
   "packageManager": "pnpm@11.17.0",
   "jest": {
