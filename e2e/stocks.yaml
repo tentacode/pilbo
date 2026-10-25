@@ -1,4 +1,4 @@
-appId: com.tentacode.pilbo
+appId: com.tentacode.pilbo.dev
 name: A stock can be added, decreases with an intake, goes below zero and can be removed
 ---
 - launchApp:

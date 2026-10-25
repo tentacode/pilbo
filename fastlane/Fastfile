@@ -1,0 +1,57 @@
+default_platform(:ios)
+
+LOCALES = ["en-US", "fr-FR"].freeze
+EXTERNAL_GROUP = "Pilbo Externe".freeze
+
+def read_text(path)
+  File.read(File.join(__dir__, path)).strip
+end
+
+platform :ios do
+  desc "Build Pilbo and send it to TestFlight"
+  lane :beta do
+    api_key = app_store_connect_api_key(
+      key_id: ENV.fetch("APP_STORE_CONNECT_KEY_ID"),
+      issuer_id: ENV.fetch("APP_STORE_CONNECT_ISSUER_ID"),
+      key_filepath: ENV.fetch("APP_STORE_CONNECT_KEY_PATH")
+    )
+
+    build_number = latest_testflight_build_number(api_key: api_key, initial_build_number: 0) + 1
+
+    # Bundler's environment breaks the `pod install` run by Expo
+    Bundler.with_unbundled_env do
+      sh("cd .. && APP_VARIANT=prod BUILD_NUMBER=#{build_number} pnpm expo prebuild --clean --platform ios")
+    end
+    UI.user_error!("pod install failed: ios/Pilbo.xcworkspace is missing") unless File.exist?(File.join(__dir__, "../ios/Pilbo.xcworkspace"))
+
+    build_app(
+      workspace: "ios/Pilbo.xcworkspace",
+      scheme: "Pilbo",
+      configuration: "Release",
+      export_method: "app-store",
+      output_directory: "fastlane/build",
+      xcargs: [
+        "-allowProvisioningUpdates",
+        "-authenticationKeyPath #{ENV.fetch('APP_STORE_CONNECT_KEY_PATH')}",
+        "-authenticationKeyID #{ENV.fetch('APP_STORE_CONNECT_KEY_ID')}",
+        "-authenticationKeyIssuerID #{ENV.fetch('APP_STORE_CONNECT_ISSUER_ID')}"
+      ].join(" ")
+    )
+
+    feedback_email = read_text("beta_app_info/feedback_email.txt")
+    app = Spaceship::ConnectAPI::App.find(CredentialsManager::AppfileConfig.try_fetch_value(:app_identifier))
+    has_external_group = app.get_beta_groups(filter: { name: EXTERNAL_GROUP }).any? { |group| !group.is_internal_group }
+    UI.important("No external group \"#{EXTERNAL_GROUP}\" yet: the build is not sent to external testers.") unless has_external_group
+
+    upload_to_testflight(
+      api_key: api_key,
+      localized_build_info: LOCALES.to_h { |locale| [locale, { whats_new: read_text("what_to_test/#{locale}.txt") }] },
+      localized_app_info: LOCALES.to_h do |locale|
+        [locale, { description: read_text("beta_app_info/description/#{locale}.txt"), feedback_email: feedback_email }]
+      end,
+      distribute_external: has_external_group,
+      groups: has_external_group ? [EXTERNAL_GROUP] : nil,
+      notify_external_testers: has_external_group
+    )
+  end
+end

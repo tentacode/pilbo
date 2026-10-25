@@ -27,14 +27,14 @@ sql.d.ts                // import des fichiers .sql (migrations)
 1. `src/app/_layout.tsx` appelle `useDatabaseReady()`.
 2. `migrate()` applique les migrations pas encore jouées (table `__drizzle_migrations`).
 3. Callback `onMigrated` : `setupFirstLaunch()` (`features/onboarding/utils/`).
-   - Debug (`EXPO_PUBLIC_DEBUG_MODE=true`) et premier lancement après installation : `seedDatabase()` insère les fixtures (si la table `med` est vide, dans une transaction), et l'onboarding est marqué comme fait.
+   - Variante dev (`APP_VARIANT=dev`, « Pilbo Dev ») et premier lancement après installation : `seedDatabase()` insère les fixtures (si la table `med` est vide, dans une transaction), et l'onboarding est marqué comme fait.
    - Sinon : rien. Plus de re-seed quand la base est vide.
    - Premier lancement = clé `onboarding` absente du kv-store (`expo-sqlite/kv-store`, voir le store `features/onboarding/store/onboardingStore.ts`).
 4. Le splash est masqué quand polices et base sont prêtes. En cas d'erreur : `DatabaseErrorScreen`.
 
 - La base vit dans le dossier par défaut d'`expo-sqlite`.
 - Une réinstallation depuis Xcode conserve les données. Pour repartir de zéro : supprimer l'app.
-- Réglages, section « Debug » (10 appuis sur « Version », state local non persisté, indépendant de `EXPO_PUBLIC_DEBUG_MODE`) :
+- Réglages, section « Debug » (10 appuis sur « Version », state local non persisté, disponible dans les deux variantes) :
   - « Supprimer les données » : après confirmation, supprime toutes les données et réaffiche l'onboarding. Pas de seed au lancement suivant.
   - « Réinitialiser avec des données de test » : après confirmation, vide puis réinsère les fixtures, onboarding marqué comme fait.
   - Les écrans relisent la base au focus de l'onglet.
@@ -47,6 +47,15 @@ sql.d.ts                // import des fichiers .sql (migrations)
 3. Relire le SQL généré (SQLite ne sait pas tout faire avec `ALTER TABLE` : drizzle-kit peut recréer la table).
 4. Rebuild l'app (`make build-simulator`) : la migration est jouée au lancement suivant.
 5. Mettre à jour la section [Schéma](#schéma) ci-dessous.
+
+### Règle des migrations
+
+Les testeurs TestFlight ont de vraies données : aucune perte n'est acceptable.
+
+- Une migration déjà envoyée (TestFlight ou App Store) est **figée** : ne jamais la modifier ni la supprimer.
+- Entre deux envois, tous les changements de schéma locaux vont dans **une seule migration « en cours »**. On peut la supprimer et la régénérer librement (`make db-generate`), en réinstallant l'app localement, sans compatibilité.
+- Avant `make testflight`, cette migration doit préserver les données des testeurs (conversion des données existantes si besoin).
+- Même logique pour les réglages persistés (kv-store) : un changement de format envoyé doit relire l'ancien.
 
 ## Écrire une requête
 
@@ -118,10 +127,6 @@ Test à côté de la requête : `queries/getAllIntakes.spec.ts`.
 - **Résultats bruts = casts** : `database.all<Type>(...)` ne vérifie rien. Toute requête doit avoir son test.
 
 ## Schéma
-
-> Migration `0002` (spec 12) : nouveau format de `design`, sans conversion des données existantes. Base à vider après cette migration : supprimer puis réinstaller l'app.
->
-> Migration `0004` (spec 19) : colonnes `created_on` (obligatoire) et `archived_on` sur `intake`, sans conversion. Base à vider : supprimer puis réinstaller l'app.
 
 ### `med`
 

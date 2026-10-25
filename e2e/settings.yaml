@@ -1,4 +1,4 @@
-appId: com.tentacode.pilbo
+appId: com.tentacode.pilbo.dev
 name: Settings can be changed
 ---
 - launchApp:

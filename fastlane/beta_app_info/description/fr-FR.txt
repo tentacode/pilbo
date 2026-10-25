@@ -1,0 +1,1 @@
+Pilbo est un pilulier simple : il vous rappelle vos prises de médicaments, suit vos stocks et garde l'historique de vos prises. Sans compte, vos données restent sur votre téléphone.

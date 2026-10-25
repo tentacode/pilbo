@@ -5,36 +5,8 @@
     {
       "idx": 0,
       "version": "6",
-      "when": 1791736417025,
-      "tag": "0000_smooth_greymalkin",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "6",
-      "when": 1791975249192,
-      "tag": "0001_living_hellfire_club",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "6",
-      "when": 1792499990721,
-      "tag": "0002_overrated_eternals",
-      "breakpoints": true
-    },
-    {
-      "idx": 3,
-      "version": "6",
-      "when": 1792780208542,
-      "tag": "0003_flat_liz_osborn",
-      "breakpoints": true
-    },
-    {
-      "idx": 4,
-      "version": "6",
-      "when": 1792855624044,
-      "tag": "0004_lively_strong_guy",
+      "when": 1792938056951,
+      "tag": "0000_common_norrin_radd",
       "breakpoints": true
     }
   ]

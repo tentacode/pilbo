@@ -1,4 +1,4 @@
-appId: com.tentacode.pilbo
+appId: com.tentacode.pilbo.dev
 name: Editing an intake of a previous day and of today
 ---
 - launchApp:

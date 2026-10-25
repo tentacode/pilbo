@@ -1,4 +1,4 @@
-appId: com.tentacode.pilbo
+appId: com.tentacode.pilbo.dev
 name: An as needed med can be taken and its last intake cancelled from today
 ---
 - launchApp:

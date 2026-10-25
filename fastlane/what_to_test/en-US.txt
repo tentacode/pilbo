@@ -1,0 +1,3 @@
+Thank you for testing Pilbo!
+
+Try adding your intakes, taking one from a reminder notification and tracking a stock. If something feels off, send us a screenshot from TestFlight.

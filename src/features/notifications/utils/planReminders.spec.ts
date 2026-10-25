@@ -136,6 +136,7 @@ describe("planReminders", () => {
       date: at(8, 9, 0),
       title: "Stock bas",
       body: "Lithium 250 mg : pensez à le renouveler.",
+      interruptionLevel: "active" as const,
     };
 
     const reminders = planReminders({
@@ -161,6 +162,7 @@ describe("planReminders", () => {
       date: at(10 + index, 9, 0),
       title: "Stock bas",
       body: "",
+      interruptionLevel: "active" as const,
     }));
 
     const reminders = planReminders({
@@ -233,6 +235,7 @@ describe("planReminders", () => {
       title: "C'est l'heure de votre prise de 08:20",
       body: "1 × Lithium 250 mg",
       badge: 1,
+      interruptionLevel: "timeSensitive",
     });
   });
 });

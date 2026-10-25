@@ -18,7 +18,7 @@ React Native avec Expo (development builds), TypeScript, Expo Router, expo-sqlit
 
 ## Lancer le projet
 
-Prérequis : macOS, Xcode, pnpm et ccache (`brew install ccache`).
+Prérequis : macOS, Xcode, pnpm, ccache et Ruby (`brew install ccache ruby`, Ruby pour fastlane).
 
 ```sh
 make install                # dépendances

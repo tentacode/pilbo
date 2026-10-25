@@ -1,4 +1,4 @@
-appId: com.tentacode.pilbo
+appId: com.tentacode.pilbo.dev
 name: Calendar shows the history and the previous days
 ---
 - launchApp:

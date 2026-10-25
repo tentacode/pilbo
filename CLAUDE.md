@@ -37,6 +37,7 @@ En gros, on cherche une proof of concept : dans le doute, demander si c'est dans
   - Pour quitter des modales ouvertes en ignorant leurs modifications non enregistrées (sans dialogue d'abandon) : `leaveWithoutConfirmation` (`features/pillbox/hooks/useModalClosing.ts`).
 - Stockage : **expo-sqlite + Drizzle ORM**, migrations générées par drizzle-kit. Comment travailler avec la base : voir `./docs/database.md`.
   - Mettre à jour la section **Schéma** de `docs/database.md` à chaque migration.
+  - Une migration livrée sur TestFlight est figée. Entre deux livraisons, une seule migration « en cours », qui doit conserver les données des testeurs avant `make testflight`.
   - Le schéma Drizzle est la source de vérité des types (`$inferSelect` / `$inferInsert`).
   - Lectures : SQL brut avec le tag `sql` (``database.all<Type>(sql`...`)``), pas de query builder pour les selects. Référencer les colonnes du schéma (`${table.column}`) au lieu de noms en dur, et aliaser les colonnes en camelCase (`AS takenAt`).
   - Écritures : Drizzle ORM (`insert`, `update`, `delete`), conditions écrites avec `sql`.
@@ -49,15 +50,15 @@ En gros, on cherche une proof of concept : dans le doute, demander si c'est dans
 - Notifications : **expo-notifications** (notifications locales programmées).
 - Tests : **Jest + React Native Testing Library**.
 - Qualité du code : **ESLint + Prettier**.
-- L'app est testée sur un iPhone personnel via Xcode, avec un compte Apple gratuit pour l'instant.
+- L'app est testée sur un iPhone personnel via Xcode, avec un compte Apple Developer payant (équipe `APPLE_TEAM_ID`).
 
 ### Contraintes iOS à garder en tête
 
 - J'ai un très petit téléphone (iPhone 12 mini) : le design doit être responsive et bien fonctionner sur ce téléphone.
 - Maximum 64 notifications locales en attente en même temps : utiliser des rappels quotidiens répétés (1 emplacement chacun), reprogrammés quand une prise est validée.
 - Mode silencieux : pas de son, mais vibration si « Retour haptique en mode silencieux » est activé.
-- Compte Apple gratuit : l'app installée expire tous les 7 jours (réinstaller depuis Xcode).
-- Compte Apple gratuit : pas de capacités Push Notifications ni Time Sensitive (la signature échoue). Les notifications locales fonctionnent.
+- Profils de signature valables 1 an. Les rappels de prise sont en `timeSensitive` (ils traversent les modes de concentration), les alertes de stock bas en `active`.
+- Nouveau bundle ID, nouvelle capacité ou nouvel appareil : `expo run:ios` ne crée pas le profil (« No profiles for… »). Lancer une fois `xcodebuild -workspace ios/Pilbo.xcworkspace -scheme Pilbo -configuration <Debug|Release> -destination id=<appareil> -allowProvisioningUpdates build` (après le prebuild de la variante voulue).
 - `plugins/withoutPushEntitlement.js` retire l'entitlement push ajouté par `expo-notifications` ; il doit être déclaré **avant** `expo-notifications` dans `app.config.ts` (les mods iOS s'exécutent dans l'ordre inverse).
 - `ios.appleTeamId` dans `app.config.ts` (lu depuis `APPLE_TEAM_ID` dans `.env`) conserve la team de signature après `npx expo prebuild --clean`.
 
@@ -65,16 +66,21 @@ En gros, on cherche une proof of concept : dans le doute, demander si c'est dans
 
 Le gestionnaire de paquets est **pnpm**. Utiliser le `Makefile` (`make help` liste tout) :
 
+- Deux variantes, choisies par `APP_VARIANT` (fixé par le Makefile, pas dans `.env`) : « Pilbo Dev » (`com.tentacode.pilbo.dev`, données de test) et « Pilbo » (`com.tentacode.pilbo`). Le dossier `ios/` (projet `Pilbo` pour les deux) est partagé : chaque cible de build le met à jour pour sa variante (`prebuild --no-clean`, Expo vide `ios/` par défaut sinon).
 - `make start` : Metro seul (Fast Refresh, sans rebuild natif).
-- `make build-simulator` / `make build-device` / `make build-release` : Debug sur simulateur, Debug sur iPhone, Release autonome sur iPhone (`DEVICE_ID` depuis `.env`).
-- `make clean` : `expo prebuild --clean`.
+- `make build-simulator` / `make build-device` : « Pilbo Dev » en Debug. `make build-release` : « Pilbo » en Release (`DEVICE_ID` depuis `.env`).
+- `make clean` : `expo prebuild --clean` (`APP_VARIANT=dev` par défaut).
+- `make testflight` : « Pilbo » en Release envoyé sur TestFlight par fastlane (lane `beta`, `fastlane/Fastfile`) : numéro de build +1 automatique, envoi au groupe externe « Pilbo Externe ».
+  - Clé API App Store Connect avec le rôle **Admin** (nécessaire pour la signature cloud), `.p8` hors du repo, identifiants dans `.env`.
+  - fastlane tourne avec le Ruby Homebrew via Bundler ; le prebuild de la lane s'exécute hors de l'environnement Bundler (`Bundler.with_unbundled_env`), sinon `pod install` échoue.
+- `make version-bump TYPE=major|minor|patch` : change `version` dans `app.config.ts`. Le premier build d'une nouvelle version repasse par la revue bêta d'Apple.
 - `make tests` : lint, prettier, TypeScript, Jest et audit. Doit passer avant de considérer une étape terminée.
-- `make test-e2e` : flows Maestro dans `e2e/` (l'app doit être installée sur un simulateur démarré). Si l'iPhone est branché, Maestro le cible et échoue : lancer `maestro --device <id du simulateur> test e2e/`.
+- `make test-e2e` : flows Maestro dans `e2e/` (« Pilbo Dev » doit être installée sur un simulateur démarré). Après une nouvelle installation, fermer l'alerte « Ouvrir dans « Pilbo Dev » ? » avant de lancer les flows. Si l'iPhone est branché, Maestro le cible et échoue : lancer `maestro --device <id du simulateur> test e2e/`.
   - Le CLI Maestro et le serveur MCP Maestro ne peuvent pas piloter le même simulateur en même temps (« Unable to set permissions… Failed to connect ») : utiliser l'un ou l'autre.
   - Un bouton caché sous le footer d'une modale (`Sheet`) est vu comme visible par Maestro, et le tap tombe sur le footer : `scroll` avant `tapOn`.
   - Si le CLI et le MCP Maestro échouent tous les deux (`Failed to connect`), redémarrer le simulateur : `xcrun simctl shutdown <id>` puis `xcrun simctl boot <id>`.
 - `make db-generate` : générer une migration SQLite à partir de `src/shared/database/schema.ts`.
-- Debug : `EXPO_PUBLIC_DEBUG_MODE=true` insère seulement les données de test et passe l'onboarding au premier lancement (e2e). La section debug dans l'app (supprimer les données, réinitialiser avec les données de test, simuler une erreur) apparaît après 10 taps sur « Version » dans les réglages.
+- Variante dev : au premier lancement, insère les données de test et passe l'onboarding (e2e). « Pilbo » ne charge jamais de données de test. La section debug dans l'app (supprimer les données, réinitialiser avec les données de test, simuler une erreur) apparaît après 10 taps sur « Version » dans les réglages.
 
 ## Conventions de code
 

@@ -1,4 +1,4 @@
-appId: com.tentacode.pilbo
+appId: com.tentacode.pilbo.dev
 name: Taking an intake moves it to the earlier section
 ---
 - launchApp:
