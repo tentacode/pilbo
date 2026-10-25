@@ -10,19 +10,19 @@ describe("setupFirstLaunch", () => {
     useOnboardingStore.setState({ onboardingDone: false });
   });
 
-  it("seeds the database and skips the onboarding on the first launch in debug mode", () => {
+  it("seeds the database and skips the onboarding on the first launch of the dev variant", () => {
     const database = createTestDatabase({ seed: false });
 
-    setupFirstLaunch(database, { isDebugMode: true, isFirstLaunch: true });
+    setupFirstLaunch(database, { isDevVariant: true, isFirstLaunch: true });
 
     expect(countRows(database, medTable)).toBe(6);
     expect(useOnboardingStore.getState().onboardingDone).toBe(true);
   });
 
   it.each([
-    { isDebugMode: true, isFirstLaunch: false },
-    { isDebugMode: false, isFirstLaunch: true },
-    { isDebugMode: false, isFirstLaunch: false },
+    { isDevVariant: true, isFirstLaunch: false },
+    { isDevVariant: false, isFirstLaunch: true },
+    { isDevVariant: false, isFirstLaunch: false },
   ])("does nothing when %o", (options) => {
     const database = createTestDatabase({ seed: false });
 

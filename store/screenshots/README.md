@@ -33,7 +33,7 @@ Gabarits des images App Store de Pilbo : fond, titre, sous-titre, pilules décor
 
 ## Procédure (pour Claude Code)
 
-1. Démarrer le simulateur iPhone 17 Pro Max et installer l'app avec `EXPO_PUBLIC_DEBUG_MODE=true` (données de test, pas d'onboarding).
+1. Démarrer le simulateur iPhone 17 Pro Max et installer « Pilbo Dev » avec `make build-simulator` (données de test, pas d'onboarding).
 2. Barre d'état propre :
    ```sh
    xcrun simctl status_bar booted override --time 9:41 --batteryState charged --batteryLevel 100 --cellularBars 4 --wifiBars 3

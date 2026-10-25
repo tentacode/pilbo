@@ -36,5 +36,6 @@ export function planLowStockAlerts(stockItems: StockItem[], now: Date): PlannedR
       date,
       title: formatLowStockAlertTitle(),
       body: formatLowStockAlertBody([...meds].sort(compareMeds)),
+      interruptionLevel: "active",
     }));
 }

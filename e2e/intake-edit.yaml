@@ -1,4 +1,4 @@
-appId: com.tentacode.pilbo
+appId: com.tentacode.pilbo.dev
 name: An intake can be created, edited and deleted
 ---
 - launchApp:

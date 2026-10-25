@@ -45,3 +45,12 @@ yarn-error.*
 
 # logs
 *.log
+
+# fastlane
+fastlane/report.xml
+fastlane/Preview.html
+fastlane/screenshots/**/*.png
+fastlane/test_output
+fastlane/build
+*.ipa
+*.dSYM.zip

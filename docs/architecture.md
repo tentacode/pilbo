@@ -3,9 +3,9 @@
 ## Dossiers
 
 ```
-.env / .env.dist        // variables locales (ex. APPLE_TEAM_ID, EXPO_PUBLIC_DEBUG_MODE : seed + onboarding sauté au 1er lancement, pour l'e2e), .env non versionné
-app.config.ts           // config Expo, lit .env
-assets/icon/icon.svg    // source de l'icône de l'app
+.env / .env.dist        // variables locales (ex. APPLE_TEAM_ID, DEVICE_ID), .env non versionné
+app.config.ts           // config Expo, lit .env et APP_VARIANT (dev : « Pilbo Dev », seed + onboarding sauté au 1er lancement ; prod : « Pilbo »)
+assets/icon/            // sources SVG des icônes (icon.svg, icon-dev.svg pour « Pilbo Dev »)
 e2e/                    // tests end to end Maestro (YAML)
 src/
   app/                  // routes Expo Router uniquement
@@ -122,5 +122,7 @@ Source : `assets/icon/icon.svg`. Pour régénérer le PNG (1024×1024, sans tran
 qlmanage -t -s 1024 -o /tmp assets/icon/icon.svg
 magick /tmp/icon.svg.png -background "#EFEAFC" -alpha remove -alpha off assets/images/icon.png
 ```
+
+Variante « Pilbo Dev » : `assets/icon/icon-dev.svg` → `assets/images/icon-dev.png`, mêmes commandes.
 
 Puis `npx expo prebuild --clean`.

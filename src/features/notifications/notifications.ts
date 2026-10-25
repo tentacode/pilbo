@@ -39,7 +39,7 @@ export async function resetReminders(plannedReminders: PlannedReminder[]): Promi
   await Notifications.dismissAllNotificationsAsync();
   await Notifications.setBadgeCountAsync(0);
 
-  for (const { identifier, date, title, body, badge } of plannedReminders) {
+  for (const { identifier, date, title, body, badge, interruptionLevel } of plannedReminders) {
     await Notifications.scheduleNotificationAsync({
       identifier,
       content: {
@@ -47,7 +47,7 @@ export async function resetReminders(plannedReminders: PlannedReminder[]): Promi
         body,
         ...(badge === undefined ? {} : { badge }),
         sound: "beep.wav",
-        interruptionLevel: "active",
+        interruptionLevel,
       },
       trigger: { type: Notifications.SchedulableTriggerInputTypes.DATE, date },
     });

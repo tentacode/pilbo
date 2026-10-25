@@ -6,3 +6,4 @@
 - [x] verif repo public / open source.
 - [x] passage de CLAUDE.md en français.
 - [ ] thèmes en IAP.
+- [ ] modifs à l'icone.

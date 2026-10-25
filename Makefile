@@ -1,6 +1,8 @@
 -include .env
 
-.PHONY: help install start doctor clean build-simulator build-device build-release check-device-id db-generate i18n-extract prettier lint typescript test-unit audit test-e2e tests
+.PHONY: help install start testflight version-bump doctor clean build-simulator build-device build-release check-device-id db-generate i18n-extract prettier lint typescript test-unit audit test-e2e tests
+
+RUBY_BIN = /opt/homebrew/opt/ruby/bin
 
 # Colors
 CYAN = \033[0;36m
@@ -14,7 +16,9 @@ help: ## Display this help message
 
 install: ## First time setup
 	@command -v ccache > /dev/null || (echo "$(RED)ccache is missing, install it with: brew install ccache$(NC)" && exit 1)
+	@test -x $(RUBY_BIN)/ruby || (echo "$(RED)Homebrew Ruby is missing, install it with: brew install ruby$(NC)" && exit 1)
 	pnpm install
+	$(RUBY_BIN)/bundle install
 
 start: ## Start Metro (Fast Refresh, no native rebuild)
 	pnpm expo start --dev-client
@@ -22,17 +26,26 @@ start: ## Start Metro (Fast Refresh, no native rebuild)
 doctor: ## Run expo-doctor
 	npx expo-doctor
 
-clean: ## Regenerate the native iOS project from scratch
-	pnpm expo prebuild --clean --platform ios
+clean: ## Regenerate the native iOS project from scratch (APP_VARIANT=dev|prod, dev by default)
+	APP_VARIANT=$(or $(APP_VARIANT),dev) pnpm expo prebuild --clean --platform ios
 
-build-simulator: ## Build and run the Debug app on the simulator
-	pnpm expo run:ios
+build-simulator: ## Build and run "Pilbo Dev" in Debug on the simulator
+	APP_VARIANT=dev pnpm expo prebuild --no-clean --platform ios
+	APP_VARIANT=dev pnpm expo run:ios
 
-build-device: check-device-id ## Build and run the Debug app on the iPhone (DEVICE_ID)
-	pnpm expo run:ios --device $(DEVICE_ID)
+build-device: check-device-id ## Build and run "Pilbo Dev" in Debug on the iPhone (DEVICE_ID)
+	APP_VARIANT=dev pnpm expo prebuild --no-clean --platform ios
+	APP_VARIANT=dev pnpm expo run:ios --device $(DEVICE_ID)
 
-build-release: check-device-id ## Build and install the standalone Release app on the iPhone (DEVICE_ID)
-	pnpm expo run:ios --device $(DEVICE_ID) --configuration Release --no-bundler
+build-release: check-device-id ## Build and install "Pilbo" in Release on the iPhone (DEVICE_ID)
+	APP_VARIANT=prod pnpm expo prebuild --no-clean --platform ios
+	APP_VARIANT=prod pnpm expo run:ios --device $(DEVICE_ID) --configuration Release --no-bundler
+
+testflight: ## Build "Pilbo" and send it to TestFlight (fastlane)
+	PATH="$(RUBY_BIN):$$PATH" bundle exec fastlane ios beta
+
+version-bump: ## Bump the app version in app.config.ts (TYPE=major|minor|patch)
+	@node scripts/bumpVersion.mjs $(TYPE)
 
 check-device-id:
 	@test -n "$(DEVICE_ID)" || (echo "$(RED)DEVICE_ID is missing in .env$(NC)" && exit 1)

@@ -4,15 +4,15 @@ import type { Database } from "@/shared/database/types";
 import { useOnboardingStore } from "../store/onboardingStore";
 
 type FirstLaunchOptions = {
-  isDebugMode: boolean;
+  isDevVariant: boolean;
   isFirstLaunch: boolean;
 };
 
 export function setupFirstLaunch(
   database: Database,
-  { isDebugMode, isFirstLaunch }: FirstLaunchOptions,
+  { isDevVariant, isFirstLaunch }: FirstLaunchOptions,
 ): void {
-  if (!isDebugMode || !isFirstLaunch) {
+  if (!isDevVariant || !isFirstLaunch) {
     return;
   }
 

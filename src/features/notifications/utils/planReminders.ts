@@ -10,6 +10,7 @@ export type PlannedReminder = {
   title: string;
   body: string;
   badge?: number;
+  interruptionLevel: "active" | "timeSensitive";
 };
 
 type PlanRemindersOptions = {
@@ -39,6 +40,7 @@ function planDayReminders(day: Date, pendingIntakes: Intake[]): PlannedReminder[
         title: formatReminderTitle(intake),
         body: formatReminderBody(intake),
         badge: countPendingAt(date),
+        interruptionLevel: "timeSensitive",
       };
     }),
   );

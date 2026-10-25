@@ -1,4 +1,4 @@
-appId: com.tentacode.pilbo
+appId: com.tentacode.pilbo.dev
 name: The low stock notice can be dismissed and stays hidden after a relaunch
 ---
 - launchApp:

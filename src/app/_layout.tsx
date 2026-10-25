@@ -5,7 +5,7 @@ import { useEffect } from "react";
 import { StyleSheet } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 
-import { IS_DEBUG_MODE } from "@/config/debug";
+import { IS_DEV_VARIANT } from "@/config/appVariant";
 import { useDesignSystemFonts } from "@/design-system/fonts";
 import { useReminderScheduling } from "@/features/notifications/hooks/useReminderScheduling";
 import { isFirstLaunch, useOnboardingStore } from "@/features/onboarding/store/onboardingStore";
@@ -26,7 +26,7 @@ setI18nLanguage(getAppLanguage());
 applyStoredColorScheme();
 
 function onDatabaseMigrated(database: Database): void {
-  setupFirstLaunch(database, { isDebugMode: IS_DEBUG_MODE, isFirstLaunch: isFirstLaunch() });
+  setupFirstLaunch(database, { isDevVariant: IS_DEV_VARIANT, isFirstLaunch: isFirstLaunch() });
 }
 
 export default function RootLayout() {
