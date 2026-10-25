@@ -59,7 +59,7 @@ Mêmes exigences que sur iOS (WCAG AA) :
 
 ## Hors scope
 
-- Widget Android : à prévoir dans une spec séparée, comme le widget iOS (spec 16).
+- Widget Android : à prévoir dans une spec séparée, comme le widget iOS (spec 24).
 - Publication sur le Play Store.
 - Design propre à Android (Material Design complet) : on garde le design de Pilbo.
 

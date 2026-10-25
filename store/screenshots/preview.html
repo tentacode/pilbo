@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <title>Pilbo App Store preview</title>
+    <style>
+      :root {
+        --scale: 0.22;
+      }
+      body {
+        margin: 0;
+        padding: 24px;
+        background: #f3f0fa;
+        font-family: -apple-system, system-ui, sans-serif;
+        color: #2e2a5c;
+      }
+      .toolbar {
+        display: flex;
+        gap: 8px;
+        margin-bottom: 24px;
+        flex-wrap: wrap;
+      }
+      button {
+        border: 1.5px solid #c9c1e0;
+        background: #fff;
+        color: inherit;
+        border-radius: 999px;
+        padding: 8px 16px;
+        font: inherit;
+        cursor: pointer;
+      }
+      button[aria-pressed="true"] {
+        background: #2e2a5c;
+        border-color: #2e2a5c;
+        color: #fff;
+      }
+      .slides {
+        display: flex;
+        gap: 20px;
+        flex-wrap: wrap;
+      }
+      figure {
+        margin: 0;
+      }
+      .frame {
+        width: calc(1320px * var(--scale));
+        height: calc(2868px * var(--scale));
+        overflow: hidden;
+        border-radius: 12px;
+        box-shadow: 0 4px 16px rgba(46, 42, 92, 0.12);
+      }
+      iframe {
+        width: 1320px;
+        height: 2868px;
+        border: 0;
+        transform: scale(var(--scale));
+        transform-origin: 0 0;
+      }
+      figcaption {
+        margin-top: 8px;
+        font-size: 13px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="toolbar" id="toolbar"></div>
+    <div class="slides" id="slides"></div>
+
+    <script src="slides.js"></script>
+    <script>
+      const config = globalThis.storeScreenshots;
+      const state = { lang: config.languages[0], mode: "preview" };
+      const toolbar = document.getElementById("toolbar");
+      const slidesContainer = document.getElementById("slides");
+
+      const options = [
+        ...config.languages.map((language) => ({ key: "lang", value: language, label: language })),
+        { key: "mode", value: "preview", label: "Avec captures" },
+        { key: "mode", value: "empty", label: "Écrans vides" },
+      ];
+
+      function render() {
+        toolbar.innerHTML = "";
+        for (const option of options) {
+          const button = document.createElement("button");
+          button.textContent = option.label;
+          button.setAttribute("aria-pressed", String(state[option.key] === option.value));
+          button.addEventListener("click", () => {
+            state[option.key] = option.value;
+            render();
+          });
+          toolbar.appendChild(button);
+        }
+
+        slidesContainer.innerHTML = "";
+        config.slides.forEach((slide, index) => {
+          const figure = document.createElement("figure");
+          const frame = document.createElement("div");
+          frame.className = "frame";
+          const iframe = document.createElement("iframe");
+          iframe.src = `template.html?slide=${slide.id}&lang=${state.lang}&mode=${state.mode}`;
+          iframe.title = slide.id;
+          frame.appendChild(iframe);
+          const caption = document.createElement("figcaption");
+          caption.textContent = `${String(index + 1).padStart(2, "0")} · ${slide.id} · ${slide.screenshot}`;
+          figure.append(frame, caption);
+          slidesContainer.appendChild(figure);
+        });
+      }
+
+      render();
+    </script>
+  </body>
+</html>

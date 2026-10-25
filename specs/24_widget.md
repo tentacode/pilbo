@@ -6,43 +6,9 @@ On veut un widget sur l'écran d'accueil d'iOS pour valider une prise en un tap,
 
 ## Prérequis
 
-- **Compte Apple Developer payant** (99 €/an). Avec le compte gratuit, la capability App Groups est refusée, et le widget ne peut alors pas lire la base de l'app. Le simulateur fonctionne sans compte payant.
+- **Spec 23 faite** : compte Apple Developer payant, équipe de signature, variantes Pilbo / Pilbo Dev, TestFlight.
 - iOS 17 minimum (widgets interactifs avec App Intents).
-
-## Passage au compte payant
-
-À faire avant le widget, une seule fois.
-
-### 1. Inscription
-
-- S'inscrire à l'Apple Developer Program (developer.apple.com/programs/enroll, ou l'app Apple Developer sur l'iPhone), en tant que particulier, avec l'Apple ID actuel.
-- La validation par Apple peut prendre de quelques heures à 48 h.
-- Abonnement annuel : sans renouvellement, l'app installée ne se lance plus et on revient aux limites du compte gratuit.
-
-### 2. Équipe de signature
-
-- Le compte payant crée une **nouvelle équipe**, avec un Team ID différent de la « Personal Team ».
-- Récupérer le Team ID (developer.apple.com/account, « Membership details ») et remplacer `APPLE_TEAM_ID` dans `.env`.
-- Xcode > Settings > Accounts : vérifier que la nouvelle équipe apparaît (sans « Personal Team »).
-
-### 3. Identifiant de l'app et données existantes
-
-- À vérifier : `com.tentacode.pilbo` a été enregistré par la Personal Team. La nouvelle équipe ne pourra peut-être pas le réutiliser (« not available »). Dans ce cas, il faut changer de bundle ID.
-- iOS refuse en général d'installer par-dessus une app signée par une autre équipe : il faudrait alors **supprimer l'app, et donc ses données**.
-- Pas de problème pour l'instant : l'iPhone n'a que des données de test, on peut supprimer l'app sans risque.
-
-### 4. Capabilities
-
-- Signature automatique : Xcode enregistre l'iPhone et crée les profils (valables 1 an).
-- App Group `group.com.tentacode.pilbo` (ou selon le bundle ID final), déclaré dans la config Expo pour l'app et pour le widget, afin de survivre à `make clean`.
-- `plugins/withoutPushEntitlement.js` n'est plus nécessaire, mais peut rester (on n'utilise pas les notifications push). On le garde pour ne pas élargir le scope.
-- Les notifications Time Sensitive deviennent possibles : hors scope, à prévoir dans une spec séparée.
-
-### 5. Vérification
-
-- `make clean`, puis `make build-device` et `make build-release`.
-- Vérifier que l'app se lance, que les notifications arrivent, et que la date d'expiration de l'app n'est plus à 7 jours.
-- Mettre à jour `CLAUDE.md` (les contraintes liées au compte gratuit ne s'appliquent plus).
+- App Group `group.<bundle ID>` (une par variante), déclaré dans la config Expo pour l'app et pour le widget, afin de survivre à `make clean`.
 
 ## Fonctionnement
 
@@ -92,7 +58,7 @@ Ouvre l'app sur l'écran « Aujourd'hui ».
 ### Données
 
 - La base SQLite passe dans le conteneur de l'App Group (paramètre `directory` de `openDatabaseSync`).
-- Migration du fichier existant au premier lancement, sans perte de données.
+- Migration du fichier existant au premier lancement, sans perte de données (obligatoire : les testeurs TestFlight ont de vraies données).
 - Le widget suit les migrations Drizzle : il vérifie la version du schéma et n'écrit rien si la base n'est pas à jour (il propose alors d'ouvrir l'app).
 - Accès concurrents app / widget : mode WAL et délai d'attente si la base est verrouillée.
 - Si la planification dépend d'un réglage stocké dans le kv-store (`settingsStore`), il doit aussi être lisible depuis le widget : à vérifier pendant le plan.
@@ -114,15 +80,6 @@ Ouvre l'app sur l'écran « Aujourd'hui ».
 - Le design (en attente) doit prévoir une version sombre.
 - Couleurs du widget définies pour les deux modes, contraste AA dans chacun.
 - Les modes « teinté » et « transparent » de l'écran d'accueil (rendu `accented`) doivent rester lisibles : illustrations et bouton marqués comme accentuables ou désaturables.
-
-### Variantes de l'app
-
-- Deux apps installables côte à côte sur l'iPhone :
-  - « Pilbo » (`com.tentacode.pilbo`) : vraies données.
-  - « Pilbo Dev » (`com.tentacode.pilbo.dev`) : données de test, section debug.
-- Choix de la variante par une variable d'environnement (ex. `APP_VARIANT=dev`) lue dans `app.config.ts` : bundle ID, nom affiché, icône distincte, App Group.
-- Chaque variante a son propre widget, sa propre base et ses propres notifications.
-- Cibles du `Makefile` adaptées pour construire l'une ou l'autre variante.
 
 ### Accessibilité
 
