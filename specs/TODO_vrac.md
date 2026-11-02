@@ -1,9 +1,15 @@
 - [ ] NE PAS FAIRE AUJOURD'HUI Idée : anonymiser la notification de prise. -> mode discret
-- [ ] préparer le deploy sur le store.
 - [ ] android.
 - [ ] widget apple.
-- [ ] affichage des nouveautés après une mise à jour.
-- [x] verif repo public / open source.
-- [x] passage de CLAUDE.md en français.
 - [ ] thèmes en IAP.
-- [ ] modifs à l'icone.
+- [ ] trier les médicaments par ordre alpha.
+- [ ] ajouter un médicament depuis le stock (ex: doliprane -> une catégorie pharmacie ?)
+- [ ] refaire le logo
+- [ ] splash screen
+- [ ] mauvaise bordure sur les prises à prendre (a priori pas tout le temps, spécificité ?)
+- [ ] les notifications time sensitive ne passe pas par dessus le mode concentration
+- [ ] ⁠⁠Il faut un tri sur les médicaments sur tous les écrans (tri alpha + numérique pour les dosages : 100mg après 50mg)
+- [ ] Pourquoi j'ai une ligne pleine sur Quiviq à 53 dans le stock, mais pas pleine pour Pregabaline 65 alors que les deux sont sur sur un jour ?
+- [ ] Voir si on ferait pas une "pharmacie" plutôt que les médicaments hors planning, ex : doliprane
+- [ ] ⁠⁠Dans l'onboarding, si les notifications sont déjà activée et qu'on revoit l'onboarding, ne pas afficher le bouton « Activer les notifcations », idem pour « Créer ma première prise »
+- [ ] Pouvoir ajouter / modifier un médicament depuis autre part que la prise (ex : pharmacie)

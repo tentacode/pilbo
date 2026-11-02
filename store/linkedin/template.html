@@ -1,0 +1,383 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <title>Pilbo LinkedIn image</title>
+    <style>
+      @font-face {
+        font-family: "Young Serif";
+        src: url("../screenshots/fonts/YoungSerif_400Regular.ttf") format("truetype");
+        font-weight: 400;
+      }
+      @font-face {
+        font-family: "Atkinson";
+        src: url("../screenshots/fonts/AtkinsonHyperlegibleNext_400Regular.ttf") format("truetype");
+        font-weight: 400;
+      }
+      @font-face {
+        font-family: "Atkinson";
+        src: url("../screenshots/fonts/AtkinsonHyperlegibleNext_600SemiBold.ttf") format("truetype");
+        font-weight: 600;
+      }
+      @font-face {
+        font-family: "Atkinson";
+        src: url("../screenshots/fonts/AtkinsonHyperlegibleNext_700Bold.ttf") format("truetype");
+        font-weight: 700;
+      }
+
+      :root {
+        --canvas-width: 1200px;
+        --canvas-height: 627px;
+
+        --screen-width: 920px;
+        --screen-height: 1999px;
+        --screen-radius: 128px;
+        --bezel: 22px;
+        --rim: 9px;
+        --frame: calc(var(--bezel) + var(--rim));
+        --phone-width: calc(var(--screen-width) + 2 * var(--frame));
+        --phone-height: calc(var(--screen-height) + 2 * var(--frame));
+
+        --ink: #2e2a5c;
+        --ink-secondary: #5c5780;
+        --chip-background: rgba(255, 255, 255, 0.7);
+        --pill-stroke: #2e2a5c;
+        --frame-light: #4f4a88;
+        --frame-mid: #2e2a5c;
+        --frame-dark: #211e46;
+        --phone-shadow: rgba(46, 42, 92, 0.32);
+      }
+
+      [data-background="lavender"] {
+        --background: #efeafc;
+        --glow: #e2d9fa;
+      }
+      [data-background="rose"] {
+        --background: #fdeaf2;
+        --glow: #fbd9e7;
+      }
+      [data-background="butter"] {
+        --background: #fff5d8;
+        --glow: #fdeab4;
+      }
+      [data-background="turquoise"] {
+        --background: #e1f6f2;
+        --glow: #c8eee6;
+      }
+      [data-background="night"] {
+        --background: #15122b;
+        --glow: #2b2456;
+        --ink: #eae5ff;
+        --ink-secondary: #b5aed6;
+        --chip-background: rgba(255, 255, 255, 0.08);
+        --frame-light: #6a6299;
+        --frame-mid: #3e3870;
+        --frame-dark: #2b2649;
+        --phone-shadow: rgba(0, 0, 0, 0.55);
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      html,
+      body {
+        width: var(--canvas-width);
+        height: var(--canvas-height);
+        overflow: hidden;
+        background: var(--background, #efeafc);
+      }
+
+      .canvas {
+        position: relative;
+        width: var(--canvas-width);
+        height: var(--canvas-height);
+        overflow: hidden;
+        background:
+          radial-gradient(circle at 76% 55%, var(--glow) 0, transparent 45%), var(--background);
+        font-family: "Atkinson", sans-serif;
+        color: var(--ink);
+      }
+
+      .caption {
+        position: absolute;
+        z-index: 3;
+        left: 72px;
+        top: 0;
+        bottom: 0;
+        width: 560px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+      }
+
+      .eyebrow {
+        align-self: flex-start;
+        margin-bottom: 24px;
+        padding: 8px 18px;
+        border: 2px solid var(--ink);
+        border-radius: 999px;
+        background: var(--chip-background);
+        font-size: 20px;
+        font-weight: 700;
+        letter-spacing: 0.2px;
+      }
+
+      .headline {
+        font-family: "Young Serif", serif;
+        font-weight: 400;
+        font-size: 64px;
+        line-height: 1.08;
+        letter-spacing: -0.8px;
+        white-space: pre;
+      }
+      .headline span {
+        display: inline-block;
+      }
+
+      .subtitle {
+        margin-top: 22px;
+        max-width: 500px;
+        font-size: 26px;
+        line-height: 1.35;
+        font-weight: 600;
+        color: var(--ink-secondary);
+        text-wrap: pretty;
+      }
+
+      .brand {
+        position: absolute;
+        left: 0;
+        bottom: 44px;
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        font-family: "Young Serif", serif;
+        font-size: 30px;
+      }
+      .brand img {
+        width: 48px;
+        height: 48px;
+        border-radius: 11px;
+        box-shadow: 0 0 0 1.5px rgba(46, 42, 92, 0.25);
+      }
+
+      .pill {
+        position: absolute;
+        z-index: 1;
+        transform: translate(-50%, -50%);
+        overflow: visible;
+      }
+
+      .phone {
+        position: absolute;
+        z-index: 2;
+        width: var(--phone-width);
+        height: var(--phone-height);
+        border-radius: calc(var(--screen-radius) + var(--frame));
+        background: linear-gradient(
+          150deg,
+          var(--frame-light) 0%,
+          var(--frame-mid) 28%,
+          var(--frame-dark) 70%,
+          var(--frame-mid) 100%
+        );
+        box-shadow:
+          inset 0 0 0 2px rgba(255, 255, 255, 0.14),
+          inset 0 0 0 5px rgba(0, 0, 0, 0.18),
+          0 80px 140px -40px var(--phone-shadow),
+          0 24px 40px -20px var(--phone-shadow);
+      }
+
+      .side-button {
+        position: absolute;
+        width: 10px;
+        border-radius: 5px;
+        background: linear-gradient(90deg, var(--frame-dark), var(--frame-light));
+      }
+      .side-button.left {
+        left: -8px;
+      }
+      .side-button.right {
+        right: -8px;
+        background: linear-gradient(270deg, var(--frame-dark), var(--frame-light));
+      }
+      .side-button.action {
+        top: 380px;
+        height: 110px;
+      }
+      .side-button.volume-up {
+        top: 560px;
+        height: 190px;
+      }
+      .side-button.volume-down {
+        top: 790px;
+        height: 190px;
+      }
+      .side-button.power {
+        top: 640px;
+        height: 300px;
+      }
+
+      .bezel {
+        position: absolute;
+        inset: var(--rim);
+        border-radius: calc(var(--screen-radius) + var(--bezel));
+        background: #0b0a16;
+      }
+
+      .screen {
+        position: absolute;
+        inset: var(--bezel);
+        border-radius: var(--screen-radius);
+        overflow: hidden;
+        background: #fdfcff;
+      }
+
+      .screenshot {
+        display: block;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: top center;
+      }
+
+      .island {
+        position: absolute;
+        z-index: 4;
+        top: calc(var(--bezel) + 24px);
+        left: 50%;
+        width: 262px;
+        height: 76px;
+        transform: translateX(-50%);
+        border-radius: 38px;
+        background: #000;
+      }
+    </style>
+  </head>
+  <body>
+    <main class="canvas" id="canvas">
+      <div id="pills"></div>
+      <div id="phones"></div>
+      <header class="caption">
+        <p class="eyebrow" id="eyebrow"></p>
+        <h1 class="headline" id="headline"></h1>
+        <p class="subtitle" id="subtitle"></p>
+        <p class="brand"><img src="../../assets/images/icon.png" alt="" />Pilbo</p>
+      </header>
+    </main>
+
+    <template id="phone-template">
+      <div class="phone">
+        <span class="side-button left action"></span>
+        <span class="side-button left volume-up"></span>
+        <span class="side-button left volume-down"></span>
+        <span class="side-button right power"></span>
+        <div class="bezel">
+          <div class="screen"><img class="screenshot" alt="" /></div>
+          <div class="island"></div>
+        </div>
+      </div>
+    </template>
+
+    <script src="variants.js"></script>
+    <script>
+      const pillColors = {
+        white: "#FFFFFF",
+        butter: "#FBE29A",
+        rose: "#F8C6DA",
+        roseStrong: "#F58FB8",
+        lavender: "#D6C9F5",
+        skyBlue: "#C4DDF7",
+        turquoise: "#B3E8E0",
+      };
+
+      const stroke = `stroke="var(--pill-stroke)" stroke-width="1.6" stroke-linejoin="round"`;
+      const score = `stroke="var(--pill-stroke)" stroke-opacity="0.3" stroke-width="1.5" stroke-linecap="round" fill="none"`;
+      const highlight = `stroke="#FFFFFF" stroke-width="2.2" stroke-linecap="round" fill="none" opacity="0.9"`;
+      const pillShapes = {
+        round: (fill) => `
+          <circle cx="20" cy="20" r="13" fill="${fill}" ${stroke} />
+          <path d="M11 20h18" ${score} />
+          <path d="M12.8 14.6a9 9 0 0 1 4.6-3.9" ${highlight} />`,
+        capsule: (fill) => `
+          <rect x="5" y="13" width="30" height="14" rx="7" fill="${fill}" ${stroke} />
+          <path d="M20 16v8" ${score} />
+          <path d="M10.5 17.3h5" ${highlight} />`,
+        bicolor: (fill) => `
+          <path d="M20 13h-8a7 7 0 0 0 0 14h8z" fill="${fill}" />
+          <path d="M20 13h8a7 7 0 0 1 0 14h-8z" fill="#FFFFFF" />
+          <path d="M20 13v14" stroke="var(--pill-stroke)" stroke-width="1.4" />
+          <rect x="5" y="13" width="30" height="14" rx="7" fill="none" ${stroke} />
+          <path d="M10.5 17.3h5" ${highlight} />`,
+      };
+
+      const parameters = new URLSearchParams(location.search);
+      const config = globalThis.linkedinVariants;
+      const variantId = parameters.get("variant") ?? config.variants[0].id;
+      const mode = parameters.get("mode") ?? "preview";
+      const variant = config.variants.find((candidate) => candidate.id === variantId);
+
+      if (!variant) {
+        document.title = `error: unknown variant ${variantId}`;
+        throw new Error(document.title);
+      }
+
+      const canvas = document.getElementById("canvas");
+      canvas.dataset.background = variant.background;
+      document.body.dataset.background = variant.background;
+
+      document.getElementById("eyebrow").textContent = variant.eyebrow ?? "";
+      document.getElementById("eyebrow").hidden = !variant.eyebrow;
+      const headline = document.getElementById("headline");
+      const headlineText = document.createElement("span");
+      headlineText.textContent = variant.headline;
+      headline.appendChild(headlineText);
+      document.getElementById("subtitle").textContent = variant.subtitle ?? "";
+
+      async function fitHeadline() {
+        await document.fonts.load('64px "Young Serif"');
+        let size = 64;
+        while (headlineText.getBoundingClientRect().width > headline.clientWidth && size > 40) {
+          size -= 2;
+          headline.style.fontSize = `${size}px`;
+        }
+      }
+      fitHeadline();
+
+      const pillsContainer = document.getElementById("pills");
+      for (const pill of variant.pills ?? []) {
+        const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+        svg.setAttribute("class", "pill");
+        svg.setAttribute("viewBox", "0 0 40 40");
+        svg.setAttribute("width", pill.size);
+        svg.setAttribute("height", pill.size);
+        svg.style.left = `${pill.x}px`;
+        svg.style.top = `${pill.y}px`;
+        svg.innerHTML = `<g transform="rotate(${pill.rotate ?? 0} 20 20)">${pillShapes[pill.shape](
+          pillColors[pill.color] ?? pill.color,
+        )}</g>`;
+        pillsContainer.appendChild(svg);
+      }
+
+      const phonesContainer = document.getElementById("phones");
+      const phoneTemplate = document.getElementById("phone-template");
+      for (const phoneConfig of variant.phones) {
+        const phone = phoneTemplate.content.firstElementChild.cloneNode(true);
+        phonesContainer.appendChild(phone);
+        const scale = phoneConfig.height / phone.offsetHeight;
+        phone.style.left = `${phoneConfig.x - phone.offsetWidth / 2}px`;
+        phone.style.top = `${phoneConfig.y - phone.offsetHeight / 2}px`;
+        phone.style.transform = `scale(${scale}) rotate(${phoneConfig.rotate ?? 0}deg)`;
+        const screenshotPath = `../screenshots/screenshots/${config.language}/${phoneConfig.screenshot}`;
+        const screenshot = phone.querySelector(".screenshot");
+        screenshot.addEventListener("error", () => {
+          if (mode === "render") document.title = `error: missing ${screenshotPath}`;
+        });
+        screenshot.src = screenshotPath;
+      }
+    </script>
+  </body>
+</html>

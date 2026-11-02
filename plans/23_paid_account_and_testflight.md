@@ -72,7 +72,7 @@ Je m'arrête et j'attends ta validation.
   - [x] Si iOS refuse l'installation par-dessus l'ancienne app : supprimer l'app (données de test, sans risque).
 - [x] `make build-release` : « Pilbo » se lance sans données de test, avec l'onboarding.
 - [x] Les deux apps installées côte à côte, données et notifications séparées.
-- [ ] Les notifications arrivent ; un rappel traverse « Ne pas déranger » ; une alerte de stock bas ne le traverse pas.
+- [x] Les notifications arrivent ; un rappel traverse « Ne pas déranger » ; une alerte de stock bas ne le traverse pas.
 - [x] Date d'expiration du profil à 1 an (25/10/2027 pour les deux variantes) (Réglages > Général > VPN et gestion de l'appareil, ou Xcode).
 - [x] `make test-e2e` passe sur le simulateur (variante dev).
 
@@ -126,9 +126,9 @@ Je m'arrête et j'attends ta validation.
 ## Étape 13 — Premier envoi et vérification (toi)
 
 - [x] `make testflight` : build visible dans App Store Connect.
-- [ ] Toi ajouté en testeur interne ; build installé sur l'iPhone par l'app TestFlight (remplace « Pilbo » installé par Xcode si besoin).
-- [ ] Ajouter quelques données, puis second `make testflight` (numéro de build +1) : la mise à jour conserve les données.
-- [ ] Revue bêta externe soumise ; lien public fonctionnel une fois acceptée.
+- [x] Toi ajouté en testeur interne ; build installé sur l'iPhone par l'app TestFlight (remplace « Pilbo » installé par Xcode si besoin).
+- [x] Ajouter quelques données, puis second `make testflight` (numéro de build +1) : la mise à jour conserve les données.
+- [x] Revue bêta externe soumise ; lien public fonctionnel une fois acceptée.
 
 ## Étape 14 — Fin
 

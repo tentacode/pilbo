@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <title>Pilbo LinkedIn preview</title>
+    <style>
+      :root {
+        --scale: 0.5;
+      }
+      body {
+        margin: 0;
+        padding: 24px;
+        background: #f3f0fa;
+        font-family: -apple-system, system-ui, sans-serif;
+        color: #2e2a5c;
+      }
+      .variants {
+        display: flex;
+        gap: 24px;
+        flex-wrap: wrap;
+      }
+      figure {
+        margin: 0;
+      }
+      .frame {
+        width: calc(1200px * var(--scale));
+        height: calc(627px * var(--scale));
+        overflow: hidden;
+        border-radius: 12px;
+        box-shadow: 0 4px 16px rgba(46, 42, 92, 0.12);
+      }
+      iframe {
+        width: 1200px;
+        height: 627px;
+        border: 0;
+        transform: scale(var(--scale));
+        transform-origin: 0 0;
+      }
+      figcaption {
+        margin-top: 8px;
+        font-size: 13px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="variants" id="variants"></div>
+
+    <script src="variants.js"></script>
+    <script>
+      const variantsContainer = document.getElementById("variants");
+      globalThis.linkedinVariants.variants.forEach((variant, index) => {
+        const figure = document.createElement("figure");
+        const frame = document.createElement("div");
+        frame.className = "frame";
+        const iframe = document.createElement("iframe");
+        iframe.src = `template.html?variant=${variant.id}`;
+        iframe.title = variant.id;
+        frame.appendChild(iframe);
+        const caption = document.createElement("figcaption");
+        caption.textContent = `${String(index + 1).padStart(2, "0")} · ${variant.id}`;
+        figure.append(frame, caption);
+        variantsContainer.appendChild(figure);
+      });
+    </script>
+  </body>
+</html>
