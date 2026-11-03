@@ -31,6 +31,7 @@ export function StockCard({ stockItem, onPress }: StockCardProps) {
   const { med, stock, forecast } = stockItem;
   const isLow = forecast.status === "low";
   const { onRowLayout, onTrailingLayout, isStacked } = useStockCardLayout();
+  const ratio = stockRatio(forecast);
 
   return (
     <Pressable
@@ -58,7 +59,7 @@ export function StockCard({ stockItem, onPress }: StockCardProps) {
           </View>
         )}
       </View>
-      <StockProgressBar ratio={stockRatio(stock)} isLow={isLow} />
+      {ratio === undefined ? null : <StockProgressBar ratio={ratio} isLow={isLow} />}
       {isLow ? (
         <StockStatusLabel text={formatLowStockMention(t, language, stockItem)} isLow />
       ) : null}

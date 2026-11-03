@@ -181,3 +181,16 @@ Je m'arrête et j'attends ta validation.
 - [x] Docs à jour : `docs/database.md`, `docs/notifications.md`, `docs/architecture.md` (feature `stocks`) si besoin.
 - [x] `make tests` passe.
 - [x] Proposer une mise à jour de `CLAUDE.md` / docs si besoin (après ta validation seulement).
+
+# Ajustement — Barre de stock en jours restants
+
+La barre suivait `stock ÷ taille de boîte` : presque toujours pleine avec plusieurs boîtes, et dépendante d'une taille de boîte souvent mal saisie. Elle suit maintenant `jours restants ÷ 30`, plafonnée à 100 %. Le texte (« 46 jours ») ne change pas. Sans prise programmée, la barre est masquée.
+
+## Étape 16 — Barre en jours restants
+
+- [x] `stockForecast.ts` : `STOCK_BAR_HORIZON_DAYS = 30`, `stockRatio({ daysLeft })` renvoie `undefined` sans `daysLeft`.
+- [x] `stockForecast.spec.ts` : 15 jours (0,5), 46 jours (1), 0 jour (0), sans `daysLeft` (`undefined`).
+- [x] `StockCard` et `StockSummaryCard` : ratio calculé depuis le `forecast`, barre masquée sans ratio. Prop `ratio` retirée de `StockSummaryCard`.
+- [x] `specs/15_stocks.md` à jour.
+- [ ] `make tests` passe.
+- [ ] Vérification sur le simulateur : barre partielle sous 30 jours, pleine au-delà, absente sans prise programmée, et en direct dans l'écran de modification.

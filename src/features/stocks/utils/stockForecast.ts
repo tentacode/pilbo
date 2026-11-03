@@ -15,6 +15,7 @@ export type StockForecast = {
 
 const DAYS_PER_WEEK = 7;
 const MAXIMUM_SIMULATED_DAYS = 9999;
+const STOCK_BAR_HORIZON_DAYS = 30;
 const NO_HANDLED_INTAKE: ReadonlySet<string> = new Set();
 
 function addDays(date: Date, days: number): Date {
@@ -128,6 +129,9 @@ export function countConsumedPills(
   );
 }
 
-export function stockRatio({ quantity, boxSize }: Pick<Stock, "quantity" | "boxSize">): number {
-  return Math.min(1, Math.max(0, quantity / boxSize));
+export function stockRatio({ daysLeft }: Pick<StockForecast, "daysLeft">): number | undefined {
+  if (daysLeft === undefined) {
+    return undefined;
+  }
+  return Math.min(1, Math.max(0, daysLeft / STOCK_BAR_HORIZON_DAYS));
 }

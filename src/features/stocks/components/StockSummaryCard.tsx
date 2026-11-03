@@ -9,7 +9,7 @@ import {
   formatPillCount,
   formatPillUnit,
 } from "@/features/stocks/utils/formatters";
-import type { StockForecast } from "@/features/stocks/utils/stockForecast";
+import { stockRatio, type StockForecast } from "@/features/stocks/utils/stockForecast";
 import { StockProgressBar } from "./StockProgressBar";
 import { StockStatusLabel } from "./StockStatusLabel";
 import { styles } from "./StockSummaryCard.styles";
@@ -19,10 +19,9 @@ type StockSummaryCardProps = {
   med: Med;
   quantity: number;
   forecast: StockForecast;
-  ratio: number;
 };
 
-export function StockSummaryCard({ med, quantity, forecast, ratio }: StockSummaryCardProps) {
+export function StockSummaryCard({ med, quantity, forecast }: StockSummaryCardProps) {
   const { t } = useTranslation("stocks");
   const language = useLanguage();
   const isLow = forecast.status === "low";
@@ -30,6 +29,7 @@ export function StockSummaryCard({ med, quantity, forecast, ratio }: StockSummar
   const statusText = forecast.status === "noSchedule" ? undefined : statusTexts[forecast.status];
   const coverage = formatCoverage(t, language, med, forecast);
   const pillCount = formatPillCount(t, quantity);
+  const ratio = stockRatio(forecast);
 
   return (
     <View
@@ -52,7 +52,7 @@ export function StockSummaryCard({ med, quantity, forecast, ratio }: StockSummar
         <Text variant="bodyBold">{coverage.emphasis}</Text>
         {coverage.rest}
       </Text>
-      <StockProgressBar ratio={ratio} isLow={isLow} />
+      {ratio === undefined ? null : <StockProgressBar ratio={ratio} isLow={isLow} />}
     </View>
   );
 }

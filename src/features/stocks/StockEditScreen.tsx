@@ -31,12 +31,7 @@ import {
   type StockDraft,
   toStock,
 } from "./utils/stockDraft";
-import {
-  computeStockForecast,
-  countConsumedPills,
-  isScheduled,
-  stockRatio,
-} from "./utils/stockForecast";
+import { computeStockForecast, countConsumedPills, isScheduled } from "./utils/stockForecast";
 import { styles } from "./StockEditScreen.styles";
 
 export function StockEditScreen() {
@@ -114,12 +109,7 @@ function StockEditForm({ med, stock, intakes, intakeLogs }: StockEditFormProps) 
     >
       <View style={styles.content}>
         <StockEditHeader med={med} schedule={formatMedSchedule(t, med, intakes)} />
-        <StockSummaryCard
-          med={med}
-          quantity={draft.quantity}
-          forecast={forecast}
-          ratio={boxSize === undefined ? 0 : stockRatio(draftStock)}
-        />
+        <StockSummaryCard med={med} quantity={draft.quantity} forecast={forecast} />
         <Button
           label={
             boxSize === undefined

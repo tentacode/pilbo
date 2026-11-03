@@ -85,7 +85,7 @@ Je te laisse décider des détails des fixtures, ce n'est pas très important.
 - « Comprimés restants » : stepper + champ comme le design. Saisie de 0 à 9999. Nouveau stock à 0. Une valeur négative venue des prises s'affiche telle quelle jusqu'à correction.
 - « Taille d'une boîte » : champ numérique directement dans la ligne (pas de chevron, pas de sous-écran), obligatoire, de 1 à 999, 30 par défaut pour un nouveau stock.
   - Bouton « Ajouter une boîte de N » : ajoute N au nombre affiché (enregistré avec le reste).
-  - Barre de progression : stock ÷ taille de boîte, plafonnée à 100 %.
+  - Barre de progression : jours restants ÷ 30, plafonnée à 100 %, masquée sans prise programmée.
 - Sous-titre sous le nom : heures des prises (« Prises de 08:30 et 20:30 »). Le nombre de comprimés par jour n'est ajouté que s'il est identique tous les jours de prise.
 - Textes adaptés au calcul exact :
   - « 28 jours, jusqu'au 1er novembre » (sans « Environ »).

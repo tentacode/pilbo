@@ -167,9 +167,13 @@ describe("countConsumedPills", () => {
 });
 
 describe("stockRatio", () => {
-  it("divides the stock by the box size, between 0 and 1", () => {
-    expect(stockRatio({ quantity: 15, boxSize: 30 })).toBe(0.5);
-    expect(stockRatio({ quantity: 45, boxSize: 30 })).toBe(1);
-    expect(stockRatio({ quantity: -2, boxSize: 30 })).toBe(0);
+  it("divides the days left by a month, between 0 and 1", () => {
+    expect(stockRatio({ daysLeft: 15 })).toBe(0.5);
+    expect(stockRatio({ daysLeft: 46 })).toBe(1);
+    expect(stockRatio({ daysLeft: 0 })).toBe(0);
+  });
+
+  it("has no ratio without days left", () => {
+    expect(stockRatio({})).toBeUndefined();
   });
 });
