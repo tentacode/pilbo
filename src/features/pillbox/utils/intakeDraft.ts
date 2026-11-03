@@ -1,5 +1,5 @@
 import { type Intake, type Weekday, WEEKDAYS } from "@/domain/intake";
-import type { Med, MedQuantity } from "@/domain/med";
+import { type Med, type MedQuantity, sortMedQuantities } from "@/domain/med";
 
 import type { IntakeToSave } from "@/features/pillbox/queries/saveIntake";
 
@@ -39,7 +39,7 @@ export function createIntakeDraft(
     dayMode: isEveryDay(intake.days) ? "everyDay" : "someDays",
     days: intake.days,
     reminderIntervalMinutes: intake.reminderIntervalMinutes,
-    medQuantities: intake.medQuantities,
+    medQuantities: sortMedQuantities(intake.medQuantities),
   };
 }
 
@@ -53,9 +53,19 @@ export function toggleDay(days: Weekday[], day: Weekday): Weekday[] {
     : WEEKDAYS.filter((weekday) => weekday === day || days.includes(weekday));
 }
 
+export function addDraftMed(
+  medQuantities: MedQuantity[],
+  med: Med,
+  quantity: number,
+): MedQuantity[] {
+  return sortMedQuantities([...medQuantities, { med, quantity }]);
+}
+
 export function replaceDraftMed(medQuantities: MedQuantity[], med: Med): MedQuantity[] {
-  return medQuantities.map((medQuantity) =>
-    medQuantity.med.id === med.id ? { ...medQuantity, med } : medQuantity,
+  return sortMedQuantities(
+    medQuantities.map((medQuantity) =>
+      medQuantity.med.id === med.id ? { ...medQuantity, med } : medQuantity,
+    ),
   );
 }
 

@@ -1,8 +1,31 @@
 import { WEEKDAYS } from "@/domain/intake";
+import type { Med, MedQuantity } from "@/domain/med";
 
 import { createIntake } from "@/features/today/utils/testIntakes";
 
-import { createIntakeDraft, draftSignature, toIntakeToSave, toggleDay } from "./intakeDraft";
+import {
+  addDraftMed,
+  createIntakeDraft,
+  draftSignature,
+  replaceDraftMed,
+  toIntakeToSave,
+  toggleDay,
+} from "./intakeDraft";
+
+function createMed(name: string, strength: string): Med {
+  return {
+    id: `${name}-${strength}`,
+    name,
+    strength,
+    detail: "",
+    design: { shape: "oval", colors: ["#FFFFFF", "#FFFFFF"], size: "medium" },
+    isAsNeeded: false,
+  };
+}
+
+function labels(medQuantities: MedQuantity[]): string[] {
+  return medQuantities.map(({ med }) => `${med.name} ${med.strength}`);
+}
 
 describe("createIntakeDraft", () => {
   it("creates a new intake at 08:00, every day, with the default reminder interval", () => {
@@ -26,6 +49,53 @@ describe("createIntakeDraft", () => {
       reminderIntervalMinutes: 10,
       medQuantities: intake.medQuantities,
     });
+  });
+
+  it("sorts the meds of an existing intake", () => {
+    const intake = {
+      ...createIntake(8, 0),
+      medQuantities: [
+        { med: createMed("Lithium", "250 mg"), quantity: 1 },
+        { med: createMed("Lamictal", "50 mg"), quantity: 1 },
+        { med: createMed("Lamictal", "100 mg"), quantity: 1 },
+      ],
+    };
+
+    expect(labels(createIntakeDraft(10, intake).medQuantities)).toEqual([
+      "Lamictal 100 mg",
+      "Lamictal 50 mg",
+      "Lithium 250 mg",
+    ]);
+  });
+});
+
+describe("addDraftMed", () => {
+  it("inserts the med at its sorted place", () => {
+    const medQuantities = [
+      { med: createMed("Lamictal", "100 mg"), quantity: 1 },
+      { med: createMed("Lithium", "250 mg"), quantity: 1 },
+    ];
+
+    expect(labels(addDraftMed(medQuantities, createMed("Lamictal", "50 mg"), 2))).toEqual([
+      "Lamictal 100 mg",
+      "Lamictal 50 mg",
+      "Lithium 250 mg",
+    ]);
+  });
+});
+
+describe("replaceDraftMed", () => {
+  it("sorts the meds again after a rename", () => {
+    const lamictal = createMed("Lamictal", "50 mg");
+    const medQuantities = [
+      { med: lamictal, quantity: 1 },
+      { med: createMed("Lithium", "250 mg"), quantity: 1 },
+    ];
+
+    expect(labels(replaceDraftMed(medQuantities, { ...lamictal, name: "Quviviq" }))).toEqual([
+      "Lithium 250 mg",
+      "Quviviq 50 mg",
+    ]);
   });
 });
 

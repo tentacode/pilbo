@@ -1,4 +1,4 @@
-import { compareMeds, type MedQuantity } from "./med";
+import { type MedQuantity, sortMedQuantities } from "./med";
 
 export type Weekday =
   "monday" | "tuesday" | "wednesday" | "thursday" | "friday" | "saturday" | "sunday";
@@ -28,9 +28,7 @@ export interface Intake {
 export function sortIntakeMeds(intake: Intake): Intake {
   return {
     ...intake,
-    medQuantities: [...intake.medQuantities].sort((first, second) =>
-      compareMeds(first.med, second.med),
-    ),
+    medQuantities: sortMedQuantities(intake.medQuantities),
   };
 }
 

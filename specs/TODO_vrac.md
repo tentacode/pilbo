@@ -2,9 +2,8 @@
 - [ ] android.
 - [ ] widget apple.
 - [ ] thèmes en IAP.
-- [ ] trier les médicaments par ordre alpha.
+- [x] trier les médicaments par ordre alpha.
 - [ ] ajouter un médicament depuis le stock (ex: doliprane -> une catégorie pharmacie ?)
-- [ ] ⁠⁠Il faut un tri sur les médicaments sur tous les écrans (tri alpha + numérique pour les dosages : 100mg après 50mg)
-- [ ] Pourquoi j'ai une ligne pleine sur Quiviq à 53 dans le stock, mais pas pleine pour Pregabaline 65 alors que les deux sont sur sur un jour ?
+- [x] ⁠⁠Il faut un tri sur les médicaments sur tous les écrans (tri alpha + numérique pour les dosages : 100mg après 50mg)
 - [ ] Voir si on ferait pas une "pharmacie" plutôt que les médicaments hors planning, ex : doliprane
 - [ ] Pouvoir ajouter / modifier un médicament depuis autre part que la prise (ex : pharmacie)

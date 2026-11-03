@@ -6,6 +6,7 @@ import { database } from "@/shared/database/database";
 
 import { getIntakeById } from "@/features/pillbox/queries/getIntakeById";
 import {
+  addDraftMed,
   createIntakeDraft,
   type DayMode,
   draftSignature,
@@ -68,7 +69,9 @@ export function IntakeDraftProvider({ intakeId, children }: IntakeDraftProviderP
     setReminderInterval: (reminderIntervalMinutes) =>
       updateDraft(() => ({ reminderIntervalMinutes })),
     addMed: (med, quantity = MINIMUM_MED_QUANTITY) =>
-      updateDraft((current) => ({ medQuantities: [...current.medQuantities, { med, quantity }] })),
+      updateDraft((current) => ({
+        medQuantities: addDraftMed(current.medQuantities, med, quantity),
+      })),
     updateMed: (med) =>
       updateDraft((current) => ({ medQuantities: replaceDraftMed(current.medQuantities, med) })),
     setQuantity: (medId, quantity) =>
