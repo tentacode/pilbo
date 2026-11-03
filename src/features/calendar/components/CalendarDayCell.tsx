@@ -7,8 +7,8 @@ import { maximumFontScale, sizes } from "@/design-system/tokens";
 
 import type { CalendarDay } from "@/features/calendar/utils/calendarTypes";
 import { formatCalendarDayAccessibilityLabel } from "@/features/calendar/utils/formatters";
-import { styles } from "./CalendarDayCell.styles";
-import { DAY_STATUS_APPEARANCES, dayStatusStyles } from "./dayStatusAppearances";
+import { useStyles } from "./CalendarDayCell.styles";
+import { DAY_STATUS_APPEARANCES, useDayStatusStyles } from "./dayStatusAppearances";
 import { useLanguage } from "@/shared/i18n/hooks/useLanguage";
 
 type CalendarDayCellProps = {
@@ -17,6 +17,8 @@ type CalendarDayCellProps = {
 };
 
 export function CalendarDayCell({ day, onPress }: CalendarDayCellProps) {
+  const styles = useStyles();
+  const dayStatusStyles = useDayStatusStyles();
   const { t } = useTranslation("calendar");
   const language = useLanguage();
   const appearance = day.status === "none" ? null : DAY_STATUS_APPEARANCES[day.status];

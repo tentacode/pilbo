@@ -3,7 +3,7 @@ import { AccessibilityInfo, Pressable, TextInput, type TextInputProps } from "re
 
 import { colors } from "../../tokens";
 import { Text } from "../Text/Text";
-import { styles } from "./TextField.styles";
+import { useStyles } from "./TextField.styles";
 
 type TextFieldProps = Pick<
   TextInputProps,
@@ -15,6 +15,7 @@ type TextFieldProps = Pick<
 };
 
 export function TextField({ label, error, hasTopBorder = false, ...inputProps }: TextFieldProps) {
+  const styles = useStyles();
   const inputReference = useRef<TextInput>(null);
 
   useEffect(() => {

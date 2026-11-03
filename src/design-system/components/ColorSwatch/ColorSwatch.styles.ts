@@ -1,8 +1,7 @@
-import { StyleSheet } from "react-native";
+import { borderWidth, radius, sizes, spacing } from "../../tokens";
+import { createThemedStyles } from "../../utils/createThemedStyles";
 
-import { borderWidth, colors, radius, sizes, spacing } from "../../tokens";
-
-export const styles = StyleSheet.create({
+export const useStyles = createThemedStyles((themeColors) => ({
   swatch: {
     flex: 1,
     aspectRatio: 1,
@@ -14,12 +13,12 @@ export const styles = StyleSheet.create({
     borderColor: "transparent",
   },
   selected: {
-    borderColor: colors.ink,
+    borderColor: themeColors.ink,
   },
   color: {
     flex: 1,
     borderRadius: radius.round,
     borderWidth: borderWidth.thin,
-    borderColor: colors.swatchOutline,
+    borderColor: themeColors.swatchOutline,
   },
-});
+}));

@@ -1,13 +1,12 @@
-import { StyleSheet } from "react-native";
+import { borderWidth, pressedOpacity, radius, spacing } from "@/design-system/tokens";
+import { createThemedStyles } from "@/design-system/utils/createThemedStyles";
 
-import { borderWidth, colors, pressedOpacity, radius, spacing } from "@/design-system/tokens";
-
-export const styles = StyleSheet.create({
+export const useStyles = createThemedStyles((themeColors) => ({
   card: {
     borderRadius: radius.largeCard,
     borderWidth: borderWidth.regular,
-    borderColor: colors.alertLine,
-    backgroundColor: colors.alertBackground,
+    borderColor: themeColors.alertLine,
+    backgroundColor: themeColors.alertBackground,
     paddingTop: spacing.large,
     paddingHorizontal: spacing.large,
     paddingBottom: spacing.cardBottom,
@@ -22,4 +21,4 @@ export const styles = StyleSheet.create({
     gap: spacing.medium,
     paddingBottom: spacing.medium,
   },
-});
+}));

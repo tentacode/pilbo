@@ -3,9 +3,10 @@ import { useTranslation } from "react-i18next";
 
 import { Text } from "@/design-system/components/Text/Text";
 
-import { styles } from "./TodayEmptyState.styles";
+import { useStyles } from "./TodayEmptyState.styles";
 
 export function PastDayEmptyState() {
+  const styles = useStyles();
   const { t } = useTranslation("today");
   return (
     <View style={styles.card}>

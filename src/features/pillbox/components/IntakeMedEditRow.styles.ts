@@ -1,8 +1,7 @@
-import { StyleSheet } from "react-native";
+import { borderWidth, pressedOpacity, sizes, spacing } from "@/design-system/tokens";
+import { createThemedStyles } from "@/design-system/utils/createThemedStyles";
 
-import { borderWidth, colors, pressedOpacity, sizes, spacing } from "@/design-system/tokens";
-
-export const styles = StyleSheet.create({
+export const useStyles = createThemedStyles((themeColors) => ({
   row: {
     flexDirection: "row",
     alignItems: "center",
@@ -25,7 +24,7 @@ export const styles = StyleSheet.create({
   },
   topBorder: {
     borderTopWidth: borderWidth.regular,
-    borderTopColor: colors.separator,
+    borderTopColor: themeColors.separator,
   },
   medButton: {
     flex: 1,
@@ -42,4 +41,4 @@ export const styles = StyleSheet.create({
     flex: 1,
     gap: spacing.tiny,
   },
-});
+}));

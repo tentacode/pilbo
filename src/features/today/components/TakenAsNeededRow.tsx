@@ -10,7 +10,7 @@ import { formatMedLabel } from "@/domain/med";
 import { MedName } from "@/features/pillbox/components/MedName";
 import { formatAsNeededTakenAt } from "@/features/today/utils/formatters";
 import type { MedLogOfDay } from "@/features/today/utils/todayTypes";
-import { styles } from "./TakenAsNeededRow.styles";
+import { useStyles } from "./TakenAsNeededRow.styles";
 
 type TakenAsNeededRowProps = {
   medLog: MedLogOfDay;
@@ -21,6 +21,7 @@ export function TakenAsNeededRow({
   medLog: { med, takenAt },
   hasTopBorder,
 }: TakenAsNeededRowProps) {
+  const styles = useStyles();
   const { t } = useTranslation("today");
   const takenText = formatAsNeededTakenAt(t, takenAt);
   return (

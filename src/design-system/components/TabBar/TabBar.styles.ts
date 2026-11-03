@@ -1,10 +1,9 @@
-import { StyleSheet } from "react-native";
+import { borderWidth, createShadows, radius, sizes, spacing } from "../../tokens";
+import { createThemedStyles } from "../../utils/createThemedStyles";
 
-import { borderWidth, colors, radius, shadow, sizes, spacing } from "../../tokens";
-
-export const styles = StyleSheet.create({
+export const useStyles = createThemedStyles((themeColors) => ({
   container: {
-    backgroundColor: colors.background,
+    backgroundColor: themeColors.background,
     paddingHorizontal: spacing.large,
     paddingTop: spacing.small,
   },
@@ -15,8 +14,8 @@ export const styles = StyleSheet.create({
     padding: spacing.extraSmall,
     borderRadius: radius.round,
     borderWidth: borderWidth.thin,
-    borderColor: colors.line,
-    backgroundColor: colors.surface,
-    ...shadow.floating,
+    borderColor: themeColors.line,
+    backgroundColor: themeColors.surface,
+    ...createShadows(themeColors).floating,
   },
-});
+}));

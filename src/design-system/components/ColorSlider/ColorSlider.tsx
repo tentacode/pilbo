@@ -4,7 +4,7 @@ import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import Svg, { Defs, LinearGradient, Rect, Stop } from "react-native-svg";
 
 import { sizes } from "../../tokens";
-import { styles } from "./ColorSlider.styles";
+import { useStyles } from "./ColorSlider.styles";
 
 const THUMB_RADIUS = sizes.sliderThumb / 2;
 const ACCESSIBILITY_STEP_RATIO = 0.05;
@@ -35,6 +35,7 @@ export function ColorSlider({
   formatAccessibilityValue,
   onChange,
 }: ColorSliderProps) {
+  const styles = useStyles();
   const [trackWidth, setTrackWidth] = useState(0);
   const gradientIdentifier = useId();
   const usableWidth = Math.max(trackWidth - sizes.sliderThumb, 1);

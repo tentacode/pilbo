@@ -8,7 +8,7 @@ import {
   formatSkipAccessibilityLabel,
   formatTakeAccessibilityLabel,
 } from "@/features/today/utils/formatters";
-import { styles } from "./IntakeCardActions.styles";
+import { useStyles } from "./IntakeCardActions.styles";
 
 type IntakeCardActionsProps = {
   intake: Intake;
@@ -25,6 +25,7 @@ export function IntakeCardActions({
   onTake,
   onSkip,
 }: IntakeCardActionsProps) {
+  const styles = useStyles();
   const { t } = useTranslation("today");
   return (
     <View style={[styles.actions, isLate && styles.lateActions]}>

@@ -13,7 +13,7 @@ import {
   formatPillDescription,
   formatPillDescriptionParts,
 } from "@/features/pillbox/utils/formatters";
-import { styles } from "./MedAppearanceBlock.styles";
+import { useStyles } from "./MedAppearanceBlock.styles";
 
 type MedAppearanceBlockProps = {
   design: PillDesign;
@@ -21,6 +21,7 @@ type MedAppearanceBlockProps = {
 };
 
 export function MedAppearanceBlock({ design, onEdit }: MedAppearanceBlockProps) {
+  const styles = useStyles();
   const { t } = useTranslation("pillbox");
   return (
     <View style={styles.block}>

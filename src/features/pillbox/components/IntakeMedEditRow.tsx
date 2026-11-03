@@ -11,7 +11,7 @@ import { useMedRowActionSheet } from "@/features/pillbox/hooks/useMedRowActionSh
 import { useMedRowLayout } from "@/features/pillbox/hooks/useMedRowLayout";
 import { MAXIMUM_MED_QUANTITY, MINIMUM_MED_QUANTITY } from "@/features/pillbox/utils/validators";
 import { MedName } from "./MedName";
-import { styles } from "./IntakeMedEditRow.styles";
+import { useStyles } from "./IntakeMedEditRow.styles";
 
 type IntakeMedEditRowProps = MedQuantity & {
   hasTopBorder: boolean;
@@ -28,6 +28,7 @@ export function IntakeMedEditRow({
   onQuantityChange,
   onRemove,
 }: IntakeMedEditRowProps) {
+  const styles = useStyles();
   const { t } = useTranslation("pillbox");
   const showActionSheet = useMedRowActionSheet();
   const { onRowLayout, onStepperLayout, isStacked } = useMedRowLayout();

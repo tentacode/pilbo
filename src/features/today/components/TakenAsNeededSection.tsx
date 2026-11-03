@@ -2,7 +2,7 @@ import { View } from "react-native";
 import { useTranslation } from "react-i18next";
 
 import type { MedLogOfDay } from "@/features/today/utils/todayTypes";
-import { styles } from "./AsNeededSection.styles";
+import { useStyles } from "./AsNeededSection.styles";
 import { TakenAsNeededRow } from "./TakenAsNeededRow";
 import { TodaySectionTitle } from "./TodaySectionTitle";
 
@@ -11,6 +11,7 @@ type TakenAsNeededSectionProps = {
 };
 
 export function TakenAsNeededSection({ medLogs }: TakenAsNeededSectionProps) {
+  const styles = useStyles();
   const { t } = useTranslation("today");
   return (
     <View>

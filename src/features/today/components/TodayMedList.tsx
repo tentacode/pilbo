@@ -7,7 +7,7 @@ import { formatMedLabel, type MedQuantity } from "@/domain/med";
 import { IntakeMedRow } from "@/features/pillbox/components/IntakeMedRow";
 import { pillStackLayoutOf } from "@/features/pillbox/utils/pillStack";
 import { formatQuantityAccessibilityLabel } from "@/features/today/utils/formatters";
-import { styles } from "./TodayMedList.styles";
+import { useStyles } from "./TodayMedList.styles";
 
 type TodayMedListProps = {
   medQuantities: MedQuantity[];
@@ -20,6 +20,7 @@ export function TodayMedList({
   isLate = false,
   hasFirstBorder = true,
 }: TodayMedListProps) {
+  const styles = useStyles();
   const { t } = useTranslation("today");
   const pillStackLayout = pillStackLayoutOf(medQuantities);
   return (

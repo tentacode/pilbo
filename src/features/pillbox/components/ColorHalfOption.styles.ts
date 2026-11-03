@@ -1,8 +1,7 @@
-import { StyleSheet } from "react-native";
+import { borderWidth, createShadows, radius, sizes, spacing } from "@/design-system/tokens";
+import { createThemedStyles } from "@/design-system/utils/createThemedStyles";
 
-import { borderWidth, colors, radius, shadow, sizes, spacing } from "@/design-system/tokens";
-
-export const styles = StyleSheet.create({
+export const useStyles = createThemedStyles((themeColors) => ({
   option: {
     flex: 1,
     flexDirection: "row",
@@ -14,17 +13,17 @@ export const styles = StyleSheet.create({
     borderRadius: radius.segmentItem,
   },
   selected: {
-    ...shadow.raised,
-    backgroundColor: colors.surface,
+    ...createShadows(themeColors).raised,
+    backgroundColor: themeColors.surface,
   },
   dot: {
     width: sizes.colorDot,
     height: sizes.colorDot,
     borderRadius: radius.round,
     borderWidth: borderWidth.thin,
-    borderColor: colors.colorDotOutline,
+    borderColor: themeColors.colorDotOutline,
   },
   label: {
     flexShrink: 1,
   },
-});
+}));

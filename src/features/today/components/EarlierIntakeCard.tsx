@@ -11,7 +11,7 @@ import {
   formatMedNames,
 } from "@/features/today/utils/formatters";
 import type { TodayIntake } from "@/features/today/utils/todayTypes";
-import { styles } from "./EarlierIntakeCard.styles";
+import { useStyles } from "./EarlierIntakeCard.styles";
 import { IntakeStatusLabel } from "./IntakeStatusLabel";
 import { formatIntakeTime } from "@/shared/i18n/formatters";
 
@@ -21,6 +21,7 @@ type EarlierIntakeCardProps = {
 };
 
 export function EarlierIntakeCard({ todayIntake, onPress }: EarlierIntakeCardProps) {
+  const styles = useStyles();
   const { t } = useTranslation("today");
   const { intake, status } = todayIntake;
 

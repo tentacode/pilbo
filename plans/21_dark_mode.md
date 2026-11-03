@@ -138,3 +138,15 @@ Je m'arrête après chaque arrêt et j'attends ta validation.
 - [ ] Tu vérifies sur l'iPhone : thème iOS et réglage de l'app, VoiceOver sur « Apparence », texte agrandi, mode auto du soir.
 
 Je m'arrête et j'attends ta validation.
+
+# Correctif — Bordures et ombres sombres en mode clair
+
+Bug natif de React Native : les bordures, contours et ombres en `DynamicColorIOS` sont résolus avec le thème du système, pas celui forcé dans l'app. Correctif : couleurs statiques résolues en JS selon le thème courant.
+
+- [x] `src/design-system/utils/createThemedStyles.ts` + test (clair / sombre).
+- [x] Ombres : `shadow` de `tokens.ts` devient une fonction de la palette.
+- [x] Migration des fichiers de styles qui ont `border*Color`, `outlineColor`, `shadowColor` ou une ombre (`useStyles()`), dont `dayStatusAppearances.ts`.
+- [x] Garde-fou ESLint (`no-restricted-syntax`) sur `colors.*` pour ces propriétés.
+- [x] Doc : `docs/architecture.md`.
+- [ ] `make tests` passe (lint, prettier, TypeScript, Jest OK ; `pnpm audit` échoue sur des dépendances transitives d'Expo, sans lien).
+- [x] Vérification simulateur : système sombre + app « Clair », et inverse.

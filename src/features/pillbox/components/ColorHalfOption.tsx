@@ -5,7 +5,7 @@ import { Text } from "@/design-system/components/Text/Text";
 import { playPressHaptic } from "@/design-system/utils/playPressHaptic";
 
 import { formatColorName } from "@/features/pillbox/utils/formatters";
-import { styles } from "./ColorHalfOption.styles";
+import { useStyles } from "./ColorHalfOption.styles";
 
 type ColorHalfOptionProps = {
   label: string;
@@ -15,6 +15,7 @@ type ColorHalfOptionProps = {
 };
 
 export function ColorHalfOption({ label, color, isSelected, onPress }: ColorHalfOptionProps) {
+  const styles = useStyles();
   const { t } = useTranslation("pillbox");
   return (
     <Pressable

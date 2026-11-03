@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 import { Icon } from "@/design-system/components/Icon/Icon";
 import { Text } from "@/design-system/components/Text/Text";
 
-import { styles } from "./AddMedRow.styles";
+import { useStyles } from "./AddMedRow.styles";
 
 type AddMedRowProps = {
   onPress: () => void;
@@ -13,6 +13,7 @@ type AddMedRowProps = {
 };
 
 export function AddMedRow({ onPress, label, hasTopBorder = true }: AddMedRowProps) {
+  const styles = useStyles();
   const { t } = useTranslation("pillbox");
   return (
     <Pressable

@@ -1,20 +1,19 @@
-import { StyleSheet } from "react-native";
+import { borderWidth, radius } from "@/design-system/tokens";
+import { createThemedStyles } from "@/design-system/utils/createThemedStyles";
 
-import { borderWidth, colors, radius } from "@/design-system/tokens";
-
-export const styles = StyleSheet.create({
+export const useStyles = createThemedStyles((themeColors) => ({
   button: {
     alignItems: "center",
     justifyContent: "center",
     borderRadius: radius.round,
     borderWidth: borderWidth.regular,
-    borderColor: colors.lineStrong,
+    borderColor: themeColors.lineStrong,
   },
   selected: {
-    borderColor: colors.ink,
-    backgroundColor: colors.ink,
+    borderColor: themeColors.ink,
+    backgroundColor: themeColors.ink,
   },
   label: {
     textAlign: "center",
   },
-});
+}));

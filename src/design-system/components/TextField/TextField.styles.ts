@@ -1,8 +1,7 @@
-import { StyleSheet } from "react-native";
+import { borderWidth, fontFamily, fontSize, sizes, spacing } from "../../tokens";
+import { createThemedStyles } from "../../utils/createThemedStyles";
 
-import { borderWidth, colors, fontFamily, fontSize, sizes, spacing } from "../../tokens";
-
-export const styles = StyleSheet.create({
+export const useStyles = createThemedStyles((themeColors) => ({
   field: {
     gap: spacing.tiny,
     paddingTop: spacing.fieldTop,
@@ -11,13 +10,13 @@ export const styles = StyleSheet.create({
   },
   topBorder: {
     borderTopWidth: borderWidth.regular,
-    borderTopColor: colors.separator,
+    borderTopColor: themeColors.separator,
   },
   input: {
     minHeight: sizes.inputMinimumHeight,
     paddingVertical: spacing.inputVertical,
     fontFamily: fontFamily.regular,
     fontSize: fontSize.body,
-    color: colors.ink,
+    color: themeColors.ink,
   },
-});
+}));

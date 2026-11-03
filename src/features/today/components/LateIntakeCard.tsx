@@ -3,7 +3,7 @@ import { View } from "react-native";
 import type { TodayIntake } from "@/features/today/utils/todayTypes";
 import { IntakeCardActions } from "./IntakeCardActions";
 import { IntakeCardHeading } from "./IntakeCardHeading";
-import { styles } from "./LateIntakeCard.styles";
+import { useStyles } from "./LateIntakeCard.styles";
 import { TodayMedList } from "./TodayMedList";
 
 type LateIntakeCardProps = {
@@ -14,6 +14,7 @@ type LateIntakeCardProps = {
 };
 
 export function LateIntakeCard({ todayIntake, isDisabled, onTake, onSkip }: LateIntakeCardProps) {
+  const styles = useStyles();
   return (
     <View style={styles.card}>
       <View style={styles.head}>

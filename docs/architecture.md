@@ -76,6 +76,7 @@ Détails : [`docs/database.md`](database.md).
 - Tests unitaires au même niveau que le fichier testé, suffixe `.spec.ts(x)` (ex. `src/features/pillbox/PillboxScreen.spec.tsx`).
 - Imports absolus via `@/` (ex. `@/design-system/tokens`), relatifs dans un même dossier.
 - Aucune valeur en dur dans les styles : toujours un token (`tokens.ts`).
+- Bordures, contours et ombres : jamais `colors.*` (React Native les résout avec le thème du système, pas celui choisi dans l'app). Utiliser `createThemedStyles((themeColors) => ({...}))` (`design-system/utils/createThemedStyles.ts`), qui exporte un hook `useStyles()`, et `createShadows(themeColors)` pour les ombres. Vérifié par ESLint.
 - Polices : une famille par graisse (`fontFamily.regular`, `semiBold`, `bold`, `display`), pas de `fontWeight`.
 - Textes : toujours via le composant `Text` du design system (`variant` + `tone`).
 

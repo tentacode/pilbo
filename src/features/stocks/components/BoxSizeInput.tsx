@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 import { Text } from "@/design-system/components/Text/Text";
 import { BOX_SIZE } from "@/domain/stock";
 
-import { styles } from "./BoxSizeInput.styles";
+import { useStyles } from "./BoxSizeInput.styles";
 
 type BoxSizeInputProps = {
   value: string;
@@ -13,6 +13,7 @@ type BoxSizeInputProps = {
 };
 
 export function BoxSizeInput({ value, error, onChange }: BoxSizeInputProps) {
+  const styles = useStyles();
   const { t } = useTranslation("stocks");
   return (
     <View style={styles.container}>

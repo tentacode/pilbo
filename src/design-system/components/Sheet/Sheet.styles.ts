@@ -1,11 +1,10 @@
-import { StyleSheet } from "react-native";
+import { borderWidth, spacing } from "../../tokens";
+import { createThemedStyles } from "../../utils/createThemedStyles";
 
-import { borderWidth, colors, spacing } from "../../tokens";
-
-export const styles = StyleSheet.create({
+export const useStyles = createThemedStyles((themeColors) => ({
   sheet: {
     flex: 1,
-    backgroundColor: colors.background,
+    backgroundColor: themeColors.background,
   },
   content: {
     paddingHorizontal: spacing.large,
@@ -16,7 +15,7 @@ export const styles = StyleSheet.create({
     paddingTop: spacing.sheetFooterTop,
     paddingHorizontal: spacing.large,
     borderTopWidth: borderWidth.regular,
-    borderTopColor: colors.line,
-    backgroundColor: colors.background,
+    borderTopColor: themeColors.line,
+    backgroundColor: themeColors.background,
   },
-});
+}));

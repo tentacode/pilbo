@@ -1,8 +1,7 @@
-import { StyleSheet } from "react-native";
+import { borderWidth, radius, sizes, spacing } from "../../tokens";
+import { createThemedStyles } from "../../utils/createThemedStyles";
 
-import { borderWidth, colors, radius, sizes, spacing } from "../../tokens";
-
-export const styles = StyleSheet.create({
+export const useStyles = createThemedStyles((themeColors) => ({
   item: {
     flex: 1,
     minHeight: sizes.touchTarget,
@@ -13,7 +12,7 @@ export const styles = StyleSheet.create({
     borderRadius: radius.round,
   },
   selected: {
-    backgroundColor: colors.accentSoft,
+    backgroundColor: themeColors.accentSoft,
   },
   badge: {
     position: "absolute",
@@ -26,12 +25,12 @@ export const styles = StyleSheet.create({
     paddingHorizontal: spacing.extraSmall,
     borderRadius: radius.round,
     borderWidth: borderWidth.regular,
-    borderColor: colors.surface,
-    backgroundColor: colors.ink,
+    borderColor: themeColors.surface,
+    backgroundColor: themeColors.ink,
   },
   label: {
     alignSelf: "stretch",
     textAlign: "center",
     paddingHorizontal: spacing.small,
   },
-});
+}));

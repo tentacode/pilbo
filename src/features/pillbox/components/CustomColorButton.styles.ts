@@ -1,15 +1,7 @@
-import { StyleSheet } from "react-native";
+import { borderWidth, pressedOpacity, radius, sizes, spacing } from "@/design-system/tokens";
+import { createThemedStyles } from "@/design-system/utils/createThemedStyles";
 
-import {
-  borderWidth,
-  colors,
-  pressedOpacity,
-  radius,
-  sizes,
-  spacing,
-} from "@/design-system/tokens";
-
-export const styles = StyleSheet.create({
+export const useStyles = createThemedStyles((themeColors) => ({
   button: {
     alignSelf: "center",
     flexDirection: "row",
@@ -19,11 +11,11 @@ export const styles = StyleSheet.create({
     paddingHorizontal: spacing.buttonHorizontal,
     borderRadius: radius.round,
     borderWidth: borderWidth.selected,
-    borderColor: colors.lineStrong,
-    backgroundColor: colors.surface,
+    borderColor: themeColors.lineStrong,
+    backgroundColor: themeColors.surface,
   },
   selected: {
-    borderColor: colors.ink,
+    borderColor: themeColors.ink,
   },
   pressed: {
     opacity: pressedOpacity,
@@ -36,7 +28,7 @@ export const styles = StyleSheet.create({
     overflow: "hidden",
     borderRadius: radius.round,
     borderWidth: borderWidth.thin,
-    borderColor: colors.colorDotOutline,
+    borderColor: themeColors.colorDotOutline,
   },
   center: {
     position: "absolute",
@@ -44,9 +36,9 @@ export const styles = StyleSheet.create({
     height: sizes.colorWheelCenter,
     borderRadius: radius.round,
     borderWidth: borderWidth.thin,
-    borderColor: colors.colorDotOutline,
+    borderColor: themeColors.colorDotOutline,
   },
   label: {
     flexShrink: 1,
   },
-});
+}));

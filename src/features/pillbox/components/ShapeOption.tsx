@@ -8,7 +8,7 @@ import { playPressHaptic } from "@/design-system/utils/playPressHaptic";
 import type { PillDesign } from "@/domain/med";
 
 import { formatShapeName } from "@/features/pillbox/utils/formatters";
-import { styles } from "./ShapeOption.styles";
+import { useStyles } from "./ShapeOption.styles";
 
 type ShapeOptionProps = {
   design: PillDesign;
@@ -17,6 +17,7 @@ type ShapeOptionProps = {
 };
 
 export function ShapeOption({ design, isSelected, onPress }: ShapeOptionProps) {
+  const styles = useStyles();
   const { t } = useTranslation("pillbox");
   const label = formatShapeName(t, design.shape);
   return (

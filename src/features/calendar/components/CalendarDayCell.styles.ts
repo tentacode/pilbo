@@ -1,8 +1,7 @@
-import { StyleSheet } from "react-native";
-
 import { borderWidth, pressedOpacity, radius, sizes, spacing } from "@/design-system/tokens";
+import { createThemedStyles } from "@/design-system/utils/createThemedStyles";
 
-export const styles = StyleSheet.create({
+export const useStyles = createThemedStyles((themeColors) => ({
   cell: {
     flexGrow: 1,
     minHeight: sizes.calendarDayMinimumHeight,
@@ -20,4 +19,4 @@ export const styles = StyleSheet.create({
     fontVariant: ["tabular-nums"],
     textAlign: "center",
   },
-});
+}));

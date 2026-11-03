@@ -1,10 +1,9 @@
-import { StyleSheet } from "react-native";
+import { borderWidth } from "@/design-system/tokens";
+import { createThemedStyles } from "@/design-system/utils/createThemedStyles";
 
-import { borderWidth, colors } from "@/design-system/tokens";
-
-export const styles = StyleSheet.create({
+export const useStyles = createThemedStyles((themeColors) => ({
   separated: {
     borderTopWidth: borderWidth.regular,
-    borderTopColor: colors.separator,
+    borderTopColor: themeColors.separator,
   },
-});
+}));

@@ -6,7 +6,7 @@ import { colors, sizes } from "@/design-system/tokens";
 import { formatMedLabel, type Med } from "@/domain/med";
 
 import { MedName } from "./MedName";
-import { styles } from "./UnscheduledMedRow.styles";
+import { useStyles } from "./UnscheduledMedRow.styles";
 
 type UnscheduledMedRowProps = {
   med: Med;
@@ -15,6 +15,7 @@ type UnscheduledMedRowProps = {
 };
 
 export function UnscheduledMedRow({ med, hasTopBorder, onPress }: UnscheduledMedRowProps) {
+  const styles = useStyles();
   return (
     <Pressable
       accessibilityRole="button"

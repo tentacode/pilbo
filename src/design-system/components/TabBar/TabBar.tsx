@@ -2,7 +2,7 @@ import { View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { spacing } from "../../tokens";
-import { styles } from "./TabBar.styles";
+import { useStyles } from "./TabBar.styles";
 import { TabBarItem, type TabBarItemProps } from "./TabBarItem";
 
 type TabBarProps = {
@@ -10,6 +10,7 @@ type TabBarProps = {
 };
 
 export function TabBar({ items }: TabBarProps) {
+  const styles = useStyles();
   const insets = useSafeAreaInsets();
   return (
     <View style={[styles.container, { paddingBottom: Math.max(insets.bottom, spacing.large) }]}>

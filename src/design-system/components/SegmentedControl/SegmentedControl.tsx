@@ -5,7 +5,7 @@ import { useFitsInWidth } from "../../hooks/useFitsInWidth";
 import { playPressHaptic } from "../../utils/playPressHaptic";
 import type { IconName } from "../Icon/iconShapes";
 import { SegmentedControlLabel } from "./SegmentedControlLabel";
-import { styles } from "./SegmentedControl.styles";
+import { useStyles } from "./SegmentedControl.styles";
 
 export type SegmentedControlOption<Value extends string | number> = {
   value: Value;
@@ -27,6 +27,7 @@ export function SegmentedControl<Value extends string | number>({
   onChange,
   accessibilityLabel,
 }: SegmentedControlProps<Value>) {
+  const styles = useStyles();
   const [requiredWidth, setRequiredWidth] = useState(0);
   const { onLayout, fits } = useFitsInWidth(requiredWidth);
   const isStacked = !fits;
@@ -83,6 +84,7 @@ function SegmentedControlMeasure<Value extends string | number>({
   options,
   onLayout,
 }: SegmentedControlMeasureProps<Value>) {
+  const styles = useStyles();
   return (
     <View
       pointerEvents="none"

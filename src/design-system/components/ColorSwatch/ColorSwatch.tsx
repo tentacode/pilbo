@@ -1,7 +1,7 @@
 import { Pressable, View } from "react-native";
 
 import { playPressHaptic } from "../../utils/playPressHaptic";
-import { styles } from "./ColorSwatch.styles";
+import { useStyles } from "./ColorSwatch.styles";
 
 type ColorSwatchProps = {
   label: string;
@@ -11,6 +11,7 @@ type ColorSwatchProps = {
 };
 
 export function ColorSwatch({ label, color, isSelected, onPress }: ColorSwatchProps) {
+  const styles = useStyles();
   return (
     <Pressable
       accessibilityRole="radio"

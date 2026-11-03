@@ -4,7 +4,7 @@ import { View } from "react-native";
 import { FormGroup } from "@/features/pillbox/components/FormGroup";
 import { FormSection } from "@/features/pillbox/components/FormSection";
 
-import { styles } from "./SettingsSection.styles";
+import { useStyles } from "./SettingsSection.styles";
 
 type SettingsSectionProps = {
   title?: string;
@@ -13,6 +13,7 @@ type SettingsSectionProps = {
 };
 
 export function SettingsSection({ title, help, children }: SettingsSectionProps) {
+  const styles = useStyles();
   return (
     <FormSection label={title} help={help}>
       <FormGroup>

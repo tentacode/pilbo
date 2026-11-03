@@ -5,7 +5,7 @@ import type { Med } from "@/domain/med";
 
 import type { AsNeededMedOfDay } from "@/features/today/utils/todayTypes";
 import { AsNeededMedRow } from "./AsNeededMedRow";
-import { styles } from "./AsNeededSection.styles";
+import { useStyles } from "./AsNeededSection.styles";
 import { TodaySectionTitle } from "./TodaySectionTitle";
 
 type AsNeededSectionProps = {
@@ -15,6 +15,7 @@ type AsNeededSectionProps = {
 };
 
 export function AsNeededSection({ asNeededMeds, onTake, onCancel }: AsNeededSectionProps) {
+  const styles = useStyles();
   const { t } = useTranslation("today");
   return (
     <View>

@@ -7,7 +7,7 @@ import { colors, sizes } from "@/design-system/tokens";
 import { formatMedLabel, type Med } from "@/domain/med";
 
 import { MedName } from "./MedName";
-import { styles } from "./PickerMedRow.styles";
+import { useStyles } from "./PickerMedRow.styles";
 
 type PickerMedRowProps = {
   med: Med;
@@ -26,6 +26,7 @@ export function PickerMedRow({
   statusLabel,
   onPress,
 }: PickerMedRowProps) {
+  const styles = useStyles();
   const isUnavailable = unavailableLabel !== undefined;
   const label = unavailableLabel ?? statusLabel;
   const details = [formatMedLabel(med), med.detail, label].filter(Boolean).join(", ");

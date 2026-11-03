@@ -4,7 +4,7 @@ import Animated, { useAnimatedKeyboard, useAnimatedStyle } from "react-native-re
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { spacing } from "../../tokens";
-import { styles } from "./Sheet.styles";
+import { useStyles } from "./Sheet.styles";
 import { SheetHeader } from "./SheetHeader";
 import type { SheetAction } from "./SheetNavigationButton";
 
@@ -25,6 +25,7 @@ export function Sheet({
   scrollReference,
   children,
 }: SheetProps) {
+  const styles = useStyles();
   const insets = useSafeAreaInsets();
   const keyboard = useAnimatedKeyboard();
   const footerKeyboardStyle = useAnimatedStyle(() => ({

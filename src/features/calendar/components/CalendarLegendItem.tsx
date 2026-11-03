@@ -5,8 +5,8 @@ import { Text } from "@/design-system/components/Text/Text";
 import { sizes } from "@/design-system/tokens";
 
 import type { DayStatus } from "@/features/calendar/utils/calendarTypes";
-import { styles } from "./CalendarLegendItem.styles";
-import { DAY_STATUS_APPEARANCES, dayStatusStyles } from "./dayStatusAppearances";
+import { useStyles } from "./CalendarLegendItem.styles";
+import { DAY_STATUS_APPEARANCES, useDayStatusStyles } from "./dayStatusAppearances";
 
 type CalendarLegendItemProps = {
   label: string;
@@ -14,6 +14,8 @@ type CalendarLegendItemProps = {
 };
 
 export function CalendarLegendItem({ label, status }: CalendarLegendItemProps) {
+  const styles = useStyles();
+  const dayStatusStyles = useDayStatusStyles();
   const appearance = status === "today" ? null : DAY_STATUS_APPEARANCES[status];
   return (
     <View accessible accessibilityLabel={label} style={styles.item}>

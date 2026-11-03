@@ -6,7 +6,7 @@ import { Button } from "@/design-system/components/Button/Button";
 import { formatTakeAccessibilityLabel } from "@/features/today/utils/formatters";
 import type { TodayIntake } from "@/features/today/utils/todayTypes";
 import { IntakeCardHeading } from "./IntakeCardHeading";
-import { styles } from "./LaterIntakeCard.styles";
+import { useStyles } from "./LaterIntakeCard.styles";
 import { TodayMedList } from "./TodayMedList";
 
 type LaterIntakeCardProps = {
@@ -16,6 +16,7 @@ type LaterIntakeCardProps = {
 };
 
 export function LaterIntakeCard({ todayIntake, isDisabled = false, onTake }: LaterIntakeCardProps) {
+  const styles = useStyles();
   const { t } = useTranslation("today");
   const { intake } = todayIntake;
 

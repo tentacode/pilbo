@@ -6,7 +6,7 @@ import { playPressHaptic } from "../../utils/playPressHaptic";
 import { Icon } from "../Icon/Icon";
 import type { IconName } from "../Icon/iconShapes";
 import { Text, type TextTone, type TextVariant } from "../Text/Text";
-import { pressedVariantStyles, sizeStyles, styles, variantStyles } from "./Button.styles";
+import { pressedVariantStyles, sizeStyles, styles, useVariantStyles } from "./Button.styles";
 
 export type ButtonVariant = "primary" | "prominent" | "secondary" | "text";
 export type ButtonSize = "regular" | "large";
@@ -50,6 +50,7 @@ export function Button({
   accessibilityHint,
   isDisabled = false,
 }: ButtonProps) {
+  const variantStyles = useVariantStyles();
   const reduceMotion = useReduceMotion();
 
   return (

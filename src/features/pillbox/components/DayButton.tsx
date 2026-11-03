@@ -5,7 +5,7 @@ import { playPressHaptic } from "@/design-system/utils/playPressHaptic";
 import type { Weekday } from "@/domain/intake";
 
 import { formatDayInitials, formatDayName } from "@/features/pillbox/utils/formatters";
-import { styles } from "./DayButton.styles";
+import { useStyles } from "./DayButton.styles";
 import { useLanguage } from "@/shared/i18n/hooks/useLanguage";
 
 type DayButtonProps = {
@@ -16,6 +16,7 @@ type DayButtonProps = {
 };
 
 export function DayButton({ day, isSelected, diameter, onPress }: DayButtonProps) {
+  const styles = useStyles();
   const language = useLanguage();
   return (
     <Pressable

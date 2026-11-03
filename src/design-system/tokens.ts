@@ -335,17 +335,17 @@ export const maximumFontScale = {
   calendarGrid: 1.6,
 } as const;
 
-export const shadow = {
+export const createShadows = (themeColors: ThemeColors) => ({
   raised: {
-    shadowColor: colors.shadow,
+    shadowColor: themeColors.shadow,
     shadowOpacity: 0.14,
     shadowRadius: 2,
     shadowOffset: { width: 0, height: 1 },
   },
   floating: {
-    shadowColor: colors.shadow,
+    shadowColor: themeColors.shadow,
     shadowOpacity: 0.07,
     shadowRadius: 16,
     shadowOffset: { width: 0, height: 4 },
   },
-} as const;
+});

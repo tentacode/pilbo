@@ -1,8 +1,7 @@
-import { StyleSheet } from "react-native";
+import { borderWidth, spacing } from "@/design-system/tokens";
+import { createThemedStyles } from "@/design-system/utils/createThemedStyles";
 
-import { borderWidth, colors, spacing } from "@/design-system/tokens";
-
-export const styles = StyleSheet.create({
+export const useStyles = createThemedStyles((themeColors) => ({
   actions: {
     flexDirection: "row",
     flexWrap: "wrap",
@@ -10,14 +9,14 @@ export const styles = StyleSheet.create({
     paddingTop: spacing.medium,
     paddingBottom: spacing.small,
     borderTopWidth: borderWidth.regular,
-    borderTopColor: colors.line,
+    borderTopColor: themeColors.line,
   },
   lateActions: {
-    borderTopColor: colors.alertSeparator,
+    borderTopColor: themeColors.alertSeparator,
   },
   takeAction: {
     flexGrow: 1,
     flexShrink: 0,
     maxWidth: "100%",
   },
-});
+}));

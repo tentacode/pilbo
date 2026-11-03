@@ -5,7 +5,7 @@ import { playPressHaptic } from "../../utils/playPressHaptic";
 import { Icon } from "../Icon/Icon";
 import type { IconName } from "../Icon/iconShapes";
 import { Text } from "../Text/Text";
-import { styles } from "./Stepper.styles";
+import { useStyles } from "./Stepper.styles";
 
 export type StepperLabels = {
   value: string;
@@ -37,6 +37,7 @@ export function Stepper({
   labels,
   isEditable = false,
 }: StepperProps) {
+  const styles = useStyles();
   const canDecrement = value > min;
   const canIncrement = value < max;
   const isRemoveMode = !canDecrement && onRemove !== undefined;
@@ -108,6 +109,7 @@ type StepperInputProps = {
 };
 
 function StepperInput({ value, min, max, label, onChange }: StepperInputProps) {
+  const styles = useStyles();
   const [editingText, setEditingText] = useState<string | null>(null);
 
   const valueOf = (digits: string) =>
@@ -142,6 +144,7 @@ type StepperButtonProps = {
 };
 
 function StepperButton({ icon, label, isDisabled = false, onPress }: StepperButtonProps) {
+  const styles = useStyles();
   return (
     <Pressable
       accessibilityRole="button"

@@ -1,8 +1,5 @@
-import { StyleSheet } from "react-native";
-
 import {
   borderWidth,
-  colors,
   disabledOpacity,
   fontFamily,
   fontSize,
@@ -10,8 +7,9 @@ import {
   sizes,
   spacing,
 } from "../../tokens";
+import { createThemedStyles } from "../../utils/createThemedStyles";
 
-export const styles = StyleSheet.create({
+export const useStyles = createThemedStyles((themeColors) => ({
   stepper: {
     flexDirection: "row",
     alignItems: "center",
@@ -25,11 +23,11 @@ export const styles = StyleSheet.create({
     justifyContent: "center",
     borderRadius: radius.round,
     borderWidth: borderWidth.regular,
-    borderColor: colors.stepperBorder,
-    backgroundColor: colors.surface,
+    borderColor: themeColors.stepperBorder,
+    backgroundColor: themeColors.surface,
   },
   pressed: {
-    backgroundColor: colors.fill,
+    backgroundColor: themeColors.fill,
   },
   disabled: {
     opacity: disabledOpacity,
@@ -44,11 +42,11 @@ export const styles = StyleSheet.create({
     minHeight: sizes.touchTarget,
     paddingHorizontal: spacing.small,
     borderRadius: radius.segmentItem,
-    backgroundColor: colors.surface,
+    backgroundColor: themeColors.surface,
     textAlign: "center",
     fontFamily: fontFamily.bold,
     fontSize: fontSize.body,
     fontVariant: ["tabular-nums"],
-    color: colors.ink,
+    color: themeColors.ink,
   },
-});
+}));

@@ -7,7 +7,7 @@ import { colors, sizes } from "@/design-system/tokens";
 import { formatEarlierIntakeAccessibilityLabel } from "@/features/today/utils/formatters";
 import type { TodayIntake } from "@/features/today/utils/todayTypes";
 import { IntakeCardHeading } from "./IntakeCardHeading";
-import { styles } from "./MissedIntakeCard.styles";
+import { useStyles } from "./MissedIntakeCard.styles";
 import { TodayMedList } from "./TodayMedList";
 
 type MissedIntakeCardProps = {
@@ -16,6 +16,7 @@ type MissedIntakeCardProps = {
 };
 
 export function MissedIntakeCard({ todayIntake, onPress }: MissedIntakeCardProps) {
+  const styles = useStyles();
   const { t } = useTranslation("today");
   return (
     <Pressable

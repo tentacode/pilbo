@@ -1,8 +1,7 @@
-import { StyleSheet } from "react-native";
-
 import { borderWidth, radius, sizes, spacing } from "@/design-system/tokens";
+import { createThemedStyles } from "@/design-system/utils/createThemedStyles";
 
-export const styles = StyleSheet.create({
+export const useStyles = createThemedStyles((themeColors) => ({
   item: {
     flexDirection: "row",
     alignItems: "center",
@@ -20,4 +19,4 @@ export const styles = StyleSheet.create({
   label: {
     flexShrink: 1,
   },
-});
+}));

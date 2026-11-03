@@ -7,7 +7,7 @@ import { Text } from "@/design-system/components/Text/Text";
 import { colors, customColorWheel, sizes } from "@/design-system/tokens";
 import { playPressHaptic } from "@/design-system/utils/playPressHaptic";
 
-import { styles } from "./CustomColorButton.styles";
+import { useStyles } from "./CustomColorButton.styles";
 
 type CustomColorButtonProps = {
   color: string;
@@ -22,6 +22,7 @@ export function CustomColorButton({
   isExpanded,
   onPress,
 }: CustomColorButtonProps) {
+  const styles = useStyles();
   const { t } = useTranslation("pillbox");
   const label = t("Autre couleur");
   return (

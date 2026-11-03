@@ -1,8 +1,9 @@
 import { StyleSheet } from "react-native";
 
-import { borderWidth, colors, radius, shadow, sizes } from "../../tokens";
+import { borderWidth, createShadows, radius, sizes } from "../../tokens";
+import { createThemedStyles } from "../../utils/createThemedStyles";
 
-export const styles = StyleSheet.create({
+export const useStyles = createThemedStyles((themeColors) => ({
   track: {
     height: sizes.touchTarget,
     justifyContent: "center",
@@ -11,18 +12,18 @@ export const styles = StyleSheet.create({
     ...StyleSheet.absoluteFill,
     borderRadius: radius.round,
     borderWidth: borderWidth.thin,
-    borderColor: colors.sliderOutline,
+    borderColor: themeColors.sliderOutline,
     overflow: "hidden",
   },
   thumb: {
-    ...shadow.raised,
+    ...createShadows(themeColors).raised,
     position: "absolute",
     width: sizes.sliderThumb,
     height: sizes.sliderThumb,
     borderRadius: radius.round,
     borderWidth: borderWidth.thick,
-    borderColor: colors.surface,
+    borderColor: themeColors.surface,
     outlineWidth: borderWidth.regular,
-    outlineColor: colors.ink,
+    outlineColor: themeColors.ink,
   },
-});
+}));

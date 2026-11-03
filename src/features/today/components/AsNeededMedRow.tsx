@@ -11,7 +11,7 @@ import { formatMedLabel } from "@/domain/med";
 import { MedName } from "@/features/pillbox/components/MedName";
 import { formatAsNeededTakenAt, formatTakenTime } from "@/features/today/utils/formatters";
 import type { AsNeededMedOfDay } from "@/features/today/utils/todayTypes";
-import { styles } from "./AsNeededMedRow.styles";
+import { useStyles } from "./AsNeededMedRow.styles";
 
 type AsNeededMedRowProps = AsNeededMedOfDay & {
   hasTopBorder: boolean;
@@ -26,6 +26,7 @@ export function AsNeededMedRow({
   onTake,
   onCancel,
 }: AsNeededMedRowProps) {
+  const styles = useStyles();
   const { t } = useTranslation("today");
   const label = formatMedLabel(med);
   return (

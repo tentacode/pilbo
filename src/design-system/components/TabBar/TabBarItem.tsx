@@ -4,7 +4,7 @@ import { colors, maximumFontScale, sizes } from "../../tokens";
 import { Icon } from "../Icon/Icon";
 import type { IconName } from "../Icon/iconShapes";
 import { Text } from "../Text/Text";
-import { styles } from "./TabBarItem.styles";
+import { useStyles } from "./TabBarItem.styles";
 
 export type TabBarItemProps = {
   label: string;
@@ -23,6 +23,7 @@ export function TabBarItem({
   badgeAccessibilityLabel,
   onPress,
 }: TabBarItemProps) {
+  const styles = useStyles();
   const hasBadge = badgeCount > 0;
   return (
     <Pressable

@@ -1,8 +1,7 @@
-import { StyleSheet } from "react-native";
+import { borderWidth, pressedOpacity, radius, spacing } from "@/design-system/tokens";
+import { createThemedStyles } from "@/design-system/utils/createThemedStyles";
 
-import { borderWidth, colors, pressedOpacity, radius, spacing } from "@/design-system/tokens";
-
-export const styles = StyleSheet.create({
+export const useStyles = createThemedStyles((themeColors) => ({
   card: {
     borderRadius: radius.largeCard,
     borderWidth: borderWidth.regular,
@@ -10,12 +9,12 @@ export const styles = StyleSheet.create({
     paddingHorizontal: spacing.large,
   },
   takenCard: {
-    borderColor: colors.doneLine,
-    backgroundColor: colors.doneBackground,
+    borderColor: themeColors.doneLine,
+    backgroundColor: themeColors.doneBackground,
   },
   skippedCard: {
     borderStyle: "dashed",
-    borderColor: colors.skipLine,
+    borderColor: themeColors.skipLine,
   },
   head: {
     flexDirection: "row",
@@ -46,4 +45,4 @@ export const styles = StyleSheet.create({
   names: {
     marginTop: spacing.compactNamesTop,
   },
-});
+}));

@@ -1,17 +1,16 @@
-import { StyleSheet } from "react-native";
+import { borderWidth, spacing } from "@/design-system/tokens";
+import { createThemedStyles } from "@/design-system/utils/createThemedStyles";
 
-import { borderWidth, colors, spacing } from "@/design-system/tokens";
-
-export const styles = StyleSheet.create({
+export const useStyles = createThemedStyles((themeColors) => ({
   row: {
     paddingVertical: spacing.listRowVertical,
     borderTopWidth: borderWidth.regular,
-    borderTopColor: colors.line,
+    borderTopColor: themeColors.line,
   },
   lateRow: {
-    borderTopColor: colors.alertSeparator,
+    borderTopColor: themeColors.alertSeparator,
   },
   borderlessRow: {
     borderTopWidth: 0,
   },
-});
+}));

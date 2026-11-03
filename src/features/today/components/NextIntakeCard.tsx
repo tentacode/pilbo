@@ -3,7 +3,7 @@ import { View } from "react-native";
 import type { TodayIntake } from "@/features/today/utils/todayTypes";
 import { IntakeCardActions } from "./IntakeCardActions";
 import { IntakeCardHeading } from "./IntakeCardHeading";
-import { styles } from "./NextIntakeCard.styles";
+import { useStyles } from "./NextIntakeCard.styles";
 import { TodayMedList } from "./TodayMedList";
 
 type NextIntakeCardProps = {
@@ -14,6 +14,7 @@ type NextIntakeCardProps = {
 };
 
 export function NextIntakeCard({ todayIntake, isDisabled, onTake, onSkip }: NextIntakeCardProps) {
+  const styles = useStyles();
   return (
     <View style={styles.card}>
       <View style={styles.head}>

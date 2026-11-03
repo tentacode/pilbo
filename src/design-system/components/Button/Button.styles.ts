@@ -9,6 +9,7 @@ import {
   sizes,
   spacing,
 } from "../../tokens";
+import { createThemedStyles } from "../../utils/createThemedStyles";
 
 export const styles = StyleSheet.create({
   button: {
@@ -30,35 +31,35 @@ export const styles = StyleSheet.create({
   },
 });
 
-export const variantStyles = StyleSheet.create({
+export const useVariantStyles = createThemedStyles((themeColors) => ({
   primary: {
     minHeight: sizes.buttonMinimumHeight,
     paddingHorizontal: spacing.buttonHorizontal,
     gap: spacing.small,
-    backgroundColor: colors.ink,
+    backgroundColor: themeColors.ink,
   },
   prominent: {
     minHeight: sizes.buttonMinimumHeight,
     paddingHorizontal: spacing.buttonHorizontal,
     gap: spacing.small,
     borderWidth: borderWidth.regular,
-    borderColor: colors.prominentBorder,
-    backgroundColor: colors.prominentBackground,
+    borderColor: themeColors.prominentBorder,
+    backgroundColor: themeColors.prominentBackground,
   },
   secondary: {
     minHeight: sizes.touchTarget,
     paddingHorizontal: spacing.buttonHorizontalCompact,
     gap: spacing.buttonIconGap,
     borderWidth: borderWidth.regular,
-    borderColor: colors.lineStrong,
-    backgroundColor: colors.surfaceTranslucent,
+    borderColor: themeColors.lineStrong,
+    backgroundColor: themeColors.surfaceTranslucent,
   },
   text: {
     minHeight: sizes.buttonMinimumHeight,
     paddingHorizontal: spacing.buttonHorizontalCompact,
     gap: spacing.buttonIconGap,
   },
-});
+}));
 
 export const pressedVariantStyles = StyleSheet.create({
   primary: { backgroundColor: colors.inkPressed },

@@ -1,14 +1,13 @@
-import { StyleSheet } from "react-native";
+import { createShadows, radius, sizes, spacing } from "../../tokens";
+import { createThemedStyles } from "../../utils/createThemedStyles";
 
-import { colors, radius, shadow, sizes, spacing } from "../../tokens";
-
-export const styles = StyleSheet.create({
+export const useStyles = createThemedStyles((themeColors) => ({
   control: {
     flexDirection: "row",
     gap: spacing.extraSmall,
     padding: spacing.extraSmall,
     borderRadius: radius.segment,
-    backgroundColor: colors.fill,
+    backgroundColor: themeColors.fill,
   },
   stackedControl: {
     flexDirection: "column",
@@ -26,8 +25,8 @@ export const styles = StyleSheet.create({
     paddingVertical: spacing.small,
   },
   selectedOption: {
-    ...shadow.raised,
-    backgroundColor: colors.surface,
+    ...createShadows(themeColors).raised,
+    backgroundColor: themeColors.surface,
   },
   measureContainer: {
     position: "absolute",
@@ -46,4 +45,4 @@ export const styles = StyleSheet.create({
   measureOption: {
     paddingHorizontal: spacing.extraSmall,
   },
-});
+}));

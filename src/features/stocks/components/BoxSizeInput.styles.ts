@@ -1,16 +1,7 @@
-import { StyleSheet } from "react-native";
+import { borderWidth, fontFamily, fontSize, radius, sizes, spacing } from "@/design-system/tokens";
+import { createThemedStyles } from "@/design-system/utils/createThemedStyles";
 
-import {
-  borderWidth,
-  colors,
-  fontFamily,
-  fontSize,
-  radius,
-  sizes,
-  spacing,
-} from "@/design-system/tokens";
-
-export const styles = StyleSheet.create({
+export const useStyles = createThemedStyles((themeColors) => ({
   container: {
     flexDirection: "row",
     alignItems: "center",
@@ -22,15 +13,15 @@ export const styles = StyleSheet.create({
     paddingHorizontal: spacing.small,
     borderRadius: radius.segmentItem,
     borderWidth: borderWidth.regular,
-    borderColor: colors.surface,
-    backgroundColor: colors.surface,
+    borderColor: themeColors.surface,
+    backgroundColor: themeColors.surface,
     textAlign: "center",
     fontFamily: fontFamily.bold,
     fontSize: fontSize.body,
     fontVariant: ["tabular-nums"],
-    color: colors.ink,
+    color: themeColors.ink,
   },
   invalidInput: {
-    borderColor: colors.alertInk,
+    borderColor: themeColors.alertInk,
   },
-});
+}));
