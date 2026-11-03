@@ -5,7 +5,7 @@
 ```
 .env / .env.dist        // variables locales (ex. APPLE_TEAM_ID, DEVICE_ID), .env non versionné
 app.config.ts           // config Expo, lit .env et APP_VARIANT (dev : « Pilbo Dev », seed + onboarding sauté au 1er lancement ; prod : « Pilbo »)
-assets/icon/            // sources SVG des icônes (icon.svg, icon-dev.svg pour « Pilbo Dev »)
+assets/artwork/         // sources SVG générées de l'icône et du splash screen (make artwork)
 e2e/                    // tests end to end Maestro (YAML)
 src/
   app/                  // routes Expo Router uniquement
@@ -114,15 +114,13 @@ Stack : i18next + react-i18next, extraction avec `i18next-cli` (`i18next.config.
 - Contraste AA vérifié pour toutes les paires de couleurs des tokens.
 - Petits écrans et Dynamic Type : quand une ligne ne tient pas, changer de disposition avec `useFitsInWidth` (mesure `onLayout`) plutôt que tasser ou déformer les éléments.
 
-## Icône de l'app
+## Icône et splash screen
 
-Source : `assets/icon/icon.svg`. Pour régénérer le PNG (1024×1024, sans transparence) :
+`scripts/generateArtwork.mjs` génère les sources SVG dans `assets/artwork/` et les PNG dans `assets/images/` :
 
-```bash
-qlmanage -t -s 1024 -o /tmp assets/icon/icon.svg
-magick /tmp/icon.svg.png -background "#EFEAFC" -alpha remove -alpha off assets/images/icon.png
-```
+- `icon.png` et `icon-dev.png` (« Pilbo Dev », bandeau « DEV ») : 1024×1024, sans transparence.
+- `splash.png` et `splash-dark.png` : 1290×2796, affichés en plein écran (`enableFullScreenImage_legacy` + `resizeMode: "cover"` dans `app.config.ts`).
 
-Variante « Pilbo Dev » : `assets/icon/icon-dev.svg` → `assets/images/icon-dev.png`, mêmes commandes.
+Fond de petites pilules aléatoires (seed fixe) et grosse gélule centrée. Les réglages (nombre et taille des pilules, saturation, opacité…) sont dans `SETTINGS` en tête du script. Régénérer avec `make artwork`.
 
 Puis `npx expo prebuild --clean`.

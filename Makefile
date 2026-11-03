@@ -1,6 +1,6 @@
 -include .env
 
-.PHONY: help install start testflight version-bump doctor clean build-simulator build-device build-release check-device-id db-generate i18n-extract prettier lint typescript test-unit audit test-e2e tests
+.PHONY: help install start testflight version-bump artwork doctor clean build-simulator build-device build-release check-device-id db-generate i18n-extract prettier lint typescript test-unit audit test-e2e tests
 
 RUBY_BIN = /opt/homebrew/opt/ruby/bin
 
@@ -46,6 +46,9 @@ testflight: ## Build "Pilbo" and send it to TestFlight (fastlane)
 
 version-bump: ## Bump the app version in app.config.ts (TYPE=major|minor|patch)
 	@node scripts/bumpVersion.mjs $(TYPE)
+
+artwork: ## Generate the app icons and splash screens (SVG sources and PNG)
+	@node scripts/generateArtwork.mjs
 
 check-device-id:
 	@test -n "$(DEVICE_ID)" || (echo "$(RED)DEVICE_ID is missing in .env$(NC)" && exit 1)
