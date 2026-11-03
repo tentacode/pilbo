@@ -3,6 +3,8 @@ import { useTranslation } from "react-i18next";
 
 type OnboardingActionsProps = {
   stepIndex: number;
+  areNotificationsAllowed: boolean;
+  isRestartedFromSettings: boolean;
   onNext: () => void;
   onAllowNotifications: () => void;
   onFinish: () => void;
@@ -10,6 +12,8 @@ type OnboardingActionsProps = {
 
 export function OnboardingActions({
   stepIndex,
+  areNotificationsAllowed,
+  isRestartedFromSettings,
   onNext,
   onAllowNotifications,
   onFinish,
@@ -19,6 +23,9 @@ export function OnboardingActions({
     case 0:
       return <Button label={t("Continuer")} onPress={onNext} />;
     case 1:
+      if (areNotificationsAllowed) {
+        return <Button label={t("Continuer")} onPress={onNext} />;
+      }
       return (
         <>
           <Button label={t("Autoriser les notifications")} onPress={onAllowNotifications} />
@@ -28,6 +35,11 @@ export function OnboardingActions({
     case 2:
       return <Button label={t("J'ai compris")} onPress={onNext} />;
     default:
-      return <Button label={t("Créer ma première prise")} onPress={onFinish} />;
+      return (
+        <Button
+          label={isRestartedFromSettings ? t("Revenir aux réglages") : t("Créer ma première prise")}
+          onPress={onFinish}
+        />
+      );
   }
 }

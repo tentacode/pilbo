@@ -4,8 +4,6 @@
 - [ ] thèmes en IAP.
 - [ ] trier les médicaments par ordre alpha.
 - [ ] ajouter un médicament depuis le stock (ex: doliprane -> une catégorie pharmacie ?)
-- [ ] refaire le logo
-- [ ] splash screen
 - [ ] mauvaise bordure sur les prises à prendre (a priori pas tout le temps, spécificité ?)
 - [ ] les notifications time sensitive ne passe pas par dessus le mode concentration
 - [ ] ⁠⁠Il faut un tri sur les médicaments sur tous les écrans (tri alpha + numérique pour les dosages : 100mg après 50mg)

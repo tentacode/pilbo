@@ -17,7 +17,14 @@ export function OnboardingScreen() {
   const { t } = useTranslation("onboarding");
   const steps = onboardingStepsOf(t);
   const insets = useSafeAreaInsets();
-  const { stepIndex, goToNextStep, allowNotifications, finish } = useOnboardingProgress();
+  const {
+    stepIndex,
+    areNotificationsAllowed,
+    isRestartedFromSettings,
+    goToNextStep,
+    allowNotifications,
+    finish,
+  } = useOnboardingProgress();
   const { displayedStepIndex, slideStyle } = useStepSlide(stepIndex);
 
   return (
@@ -33,6 +40,8 @@ export function OnboardingScreen() {
       <OnboardingFooter progress={{ currentIndex: stepIndex, count: steps.length }}>
         <OnboardingActions
           stepIndex={stepIndex}
+          areNotificationsAllowed={areNotificationsAllowed}
+          isRestartedFromSettings={isRestartedFromSettings}
           onNext={goToNextStep}
           onAllowNotifications={allowNotifications}
           onFinish={finish}

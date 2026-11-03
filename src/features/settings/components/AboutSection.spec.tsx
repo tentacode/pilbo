@@ -30,7 +30,10 @@ describe("AboutSection", () => {
 
     await fireEvent.press(screen.getByRole("button", { name: "Revoir la présentation" }));
 
-    expect(useOnboardingStore.getState().onboardingDone).toBe(false);
+    expect(useOnboardingStore.getState()).toMatchObject({
+      onboardingDone: false,
+      isRestartedFromSettings: true,
+    });
   });
 
   it("opens the not medical screen", async () => {

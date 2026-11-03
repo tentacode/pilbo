@@ -54,7 +54,7 @@ describe("OnboardingScreen", () => {
 
   beforeEach(() => {
     permissionStatus = "undetermined";
-    useOnboardingStore.setState({ onboardingDone: false });
+    useOnboardingStore.setState({ onboardingDone: false, isRestartedFromSettings: false });
     jest.mocked(getPermissionStatus).mockImplementation(() => Promise.resolve(permissionStatus));
     jest.spyOn(AppState, "addEventListener").mockImplementation((_type, listener) => {
       appStateListener = listener;
@@ -127,15 +127,38 @@ describe("OnboardingScreen", () => {
     await expectStep("Pilbo n'est pas une application médicale", 3);
   });
 
-  it("goes to the next step when the notifications are already allowed", async () => {
+  it("only offers to continue when the notifications are already allowed", async () => {
     permissionStatus = "granted";
     await render(<OnboardingScreen />, { wrapper });
     await press("Continuer");
+    await expectStep("Un rappel, puis un autre", 2);
 
-    await press("Autoriser les notifications");
+    expect(screen.queryByRole("button", { name: "Autoriser les notifications" })).toBeNull();
+    expect(screen.queryByRole("button", { name: "Plus tard" })).toBeNull();
+
+    await press("Continuer");
 
     await expectStep("Pilbo n'est pas une application médicale", 3);
     expect(requestPermission).not.toHaveBeenCalled();
+  });
+
+  it("goes back to the settings at the end when restarted from the settings", async () => {
+    useOnboardingStore.setState({ onboardingDone: false, isRestartedFromSettings: true });
+    await render(<OnboardingScreen />, { wrapper });
+    await press("Continuer");
+    await press("Plus tard");
+    await press("J'ai compris");
+    await expectStep("Vos données restent sur ce téléphone", 4);
+
+    expect(screen.queryByRole("button", { name: "Créer ma première prise" })).toBeNull();
+
+    await press("Revenir aux réglages");
+
+    expect(useOnboardingStore.getState()).toMatchObject({
+      onboardingDone: true,
+      isRestartedFromSettings: false,
+    });
+    expect(router.replace).toHaveBeenCalledWith("/settings");
   });
 
   it("is translated in English", async () => {

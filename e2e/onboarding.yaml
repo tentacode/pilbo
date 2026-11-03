@@ -15,13 +15,23 @@ name: Onboarding can be restarted from the settings
 - assertVisible: "Vos médicaments, regroupés en prises"
 - tapOn: "Continuer"
 - assertVisible: "Un rappel, puis un autre"
-- tapOn: "Plus tard"
+- runFlow:
+    when:
+      visible: "Continuer"
+    commands:
+      - assertNotVisible: "Autoriser les notifications"
+      - tapOn: "Continuer"
+- runFlow:
+    when:
+      visible: "Plus tard"
+    commands:
+      - tapOn: "Plus tard"
 - assertVisible: "Pilbo n'est pas une application médicale"
 - tapOn: "J'ai compris"
 - assertVisible: "Vos données restent sur ce téléphone"
-- tapOn: "Créer ma première prise"
+- assertNotVisible: "Créer ma première prise"
+- tapOn: "Revenir aux réglages"
 - extendedWaitUntil:
     visible:
-      text: "Pilulier"
+      text: "Langue de l'app"
     timeout: 5000
-- assertVisible: "Nouvelle prise"

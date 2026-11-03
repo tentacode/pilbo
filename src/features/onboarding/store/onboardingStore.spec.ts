@@ -5,7 +5,7 @@ import { isFirstLaunch, useOnboardingStore } from "./onboardingStore";
 describe("onboardingStore", () => {
   beforeEach(() => {
     Storage.clearSync();
-    useOnboardingStore.setState({ onboardingDone: false });
+    useOnboardingStore.setState({ onboardingDone: false, isRestartedFromSettings: false });
     Storage.clearSync();
   });
 
@@ -24,7 +24,31 @@ describe("onboardingStore", () => {
 
     expect(JSON.parse(Storage.getItemSync("onboarding") ?? "{}").state).toEqual({
       onboardingDone: true,
+      isRestartedFromSettings: false,
     });
+  });
+
+  it("restarts the onboarding from the settings", () => {
+    useOnboardingStore.getState().setOnboardingDone(true);
+
+    useOnboardingStore.getState().restartOnboarding();
+
+    expect(useOnboardingStore.getState()).toMatchObject({
+      onboardingDone: false,
+      isRestartedFromSettings: true,
+    });
+    expect(JSON.parse(Storage.getItemSync("onboarding") ?? "{}").state).toEqual({
+      onboardingDone: false,
+      isRestartedFromSettings: true,
+    });
+  });
+
+  it("forgets the restart once onboardingDone is updated", () => {
+    useOnboardingStore.getState().restartOnboarding();
+
+    useOnboardingStore.getState().setOnboardingDone(true);
+
+    expect(useOnboardingStore.getState().isRestartedFromSettings).toBe(false);
   });
 
   it("reads onboardingDone from the storage", () => {

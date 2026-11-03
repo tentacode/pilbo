@@ -8,7 +8,9 @@ const ONBOARDING_STORAGE_KEY = "onboarding";
 
 type OnboardingState = {
   onboardingDone: boolean;
+  isRestartedFromSettings: boolean;
   setOnboardingDone: (value: boolean) => void;
+  restartOnboarding: () => void;
 };
 
 export function isFirstLaunch(): boolean {
@@ -19,12 +21,17 @@ export const useOnboardingStore = create<OnboardingState>()(
   persist(
     (set) => ({
       onboardingDone: false,
-      setOnboardingDone: (value) => set({ onboardingDone: value }),
+      isRestartedFromSettings: false,
+      setOnboardingDone: (value) => set({ onboardingDone: value, isRestartedFromSettings: false }),
+      restartOnboarding: () => set({ onboardingDone: false, isRestartedFromSettings: true }),
     }),
     {
       name: ONBOARDING_STORAGE_KEY,
       storage: createJSONStorage(() => synchronousStorage),
-      partialize: ({ onboardingDone }) => ({ onboardingDone }),
+      partialize: ({ onboardingDone, isRestartedFromSettings }) => ({
+        onboardingDone,
+        isRestartedFromSettings,
+      }),
     },
   ),
 );

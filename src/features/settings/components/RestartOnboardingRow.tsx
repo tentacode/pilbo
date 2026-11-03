@@ -6,13 +6,13 @@ import { SettingsRow } from "./SettingsRow";
 export function RestartOnboardingRow() {
   const { t } = useTranslation("settings");
   const label = t("Revoir la présentation");
-  const setOnboardingDone = useOnboardingStore((state) => state.setOnboardingDone);
+  const restartOnboarding = useOnboardingStore((state) => state.restartOnboarding);
 
   return (
     <SettingsRow
       label={label}
       hasChevron
-      onPress={() => setOnboardingDone(false)}
+      onPress={restartOnboarding}
       accessibilityLabel={label}
       accessibilityRole="button"
       accessibilityHint={t(

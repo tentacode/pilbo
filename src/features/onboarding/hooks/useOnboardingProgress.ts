@@ -7,6 +7,8 @@ import { useOnboardingStore } from "../store/onboardingStore";
 
 type OnboardingProgress = {
   stepIndex: number;
+  areNotificationsAllowed: boolean;
+  isRestartedFromSettings: boolean;
   goToNextStep: () => void;
   allowNotifications: () => void;
   finish: () => void;
@@ -17,6 +19,7 @@ export function useOnboardingProgress(): OnboardingProgress {
   const [isWaitingForPermission, setIsWaitingForPermission] = useState(false);
   const { isGranted, request } = useNotificationPermission();
   const setOnboardingDone = useOnboardingStore((state) => state.setOnboardingDone);
+  const isRestartedFromSettings = useOnboardingStore((state) => state.isRestartedFromSettings);
 
   const goToNextStep = () => {
     setIsWaitingForPermission(false);
@@ -34,8 +37,15 @@ export function useOnboardingProgress(): OnboardingProgress {
 
   const finish = () => {
     setOnboardingDone(true);
-    router.replace("/pillbox");
+    router.replace(isRestartedFromSettings ? "/settings" : "/pillbox");
   };
 
-  return { stepIndex, goToNextStep, allowNotifications, finish };
+  return {
+    stepIndex,
+    areNotificationsAllowed: isGranted === true,
+    isRestartedFromSettings,
+    goToNextStep,
+    allowNotifications,
+    finish,
+  };
 }
