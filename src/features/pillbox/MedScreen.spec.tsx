@@ -10,12 +10,13 @@ import { countRows } from "@/shared/database/testHelpers";
 import type { Database } from "@/shared/database/types";
 import { i18n } from "@/shared/i18n/i18n";
 
+import { archiveMed } from "@/features/meds/queries/archiveMed";
+import { findMedId } from "@/features/stocks/queries/testStocks";
 import { IntakeDraftProvider, useIntakeDraft } from "./hooks/useIntakeDraft";
 import { MedDraftProvider } from "./hooks/useMedDraft";
-import { AsNeededMedScreen, IntakeMedScreen } from "./MedScreen";
+import { IntakeMedScreen, MedsMedScreen } from "./MedScreen";
 import { getAllIntakes } from "./queries/getAllIntakes";
 import { getAllMeds } from "./queries/getAllMeds";
-import { getAsNeededMeds } from "./queries/getAsNeededMeds";
 import { getMedById } from "./queries/getMedById";
 
 let mockDatabase: Database;
@@ -68,7 +69,7 @@ function renderIntakeMedScreen() {
   return render(<IntakeMedScreen />, { wrapper });
 }
 
-function renderAsNeededMedScreen() {
+function renderMedsMedScreen() {
   function wrapper({ children }: { children: ReactNode }) {
     return (
       <SafeAreaProvider initialMetrics={safeAreaMetrics}>
@@ -76,7 +77,7 @@ function renderAsNeededMedScreen() {
       </SafeAreaProvider>
     );
   }
-  return render(<AsNeededMedScreen />, { wrapper });
+  return render(<MedsMedScreen />, { wrapper });
 }
 
 function findMed(name: string) {
@@ -107,7 +108,7 @@ describe("MedScreen", () => {
       await fireEvent.press(screen.getByRole("button", { name: "Ajouter à la prise" }));
 
       const melatonin = findMed("Mélatonine");
-      expect(melatonin).toMatchObject({ strength: "1 mg", detail: "", isAsNeeded: false });
+      expect(melatonin).toMatchObject({ strength: "1 mg", detail: "" });
       expect(draftMedQuantities).toContainEqual({ med: melatonin, quantity: 1 });
       expect(router.dismissAll).toHaveBeenCalledTimes(1);
     });
@@ -178,57 +179,64 @@ describe("MedScreen", () => {
     });
   });
 
-  describe("stock button", () => {
-    it("is absent for a new med", async () => {
-      await renderIntakeMedScreen();
+  it("has no stock button", async () => {
+    mockSearchParams = { medId: findMed("Lithium")?.id };
+    await renderIntakeMedScreen();
 
-      expect(screen.queryByRole("button", { name: "Ajouter un stock" })).toBeNull();
-      expect(screen.queryByRole("button", { name: "Modifier le stock" })).toBeNull();
-    });
-
-    it("adds the stock of a med without stock from the stock tab", async () => {
-      const medId = findMed("Quviviq")?.id;
-      mockSearchParams = { medId };
-      await renderIntakeMedScreen();
-
-      await fireEvent.press(screen.getByRole("button", { name: "Ajouter un stock" }));
-
-      expect(router.navigate).toHaveBeenCalledWith("/stocks");
-      expect(router.push).toHaveBeenCalledWith({ pathname: "/stock", params: { medId } });
-    });
-
-    it("edits the stock of a followed med", async () => {
-      mockSearchParams = { medId: findMed("Lithium")?.id };
-      await renderAsNeededMedScreen();
-
-      expect(screen.getByRole("button", { name: "Modifier le stock" })).toBeOnTheScreen();
-    });
+    expect(screen.queryByRole("button", { name: "Ajouter un stock" })).toBeNull();
+    expect(screen.queryByRole("button", { name: "Modifier le stock" })).toBeNull();
   });
 
-  describe("new as needed med", () => {
-    it("suggests the as needed detail and creates an as needed med", async () => {
-      await renderAsNeededMedScreen();
+  describe("new med from the meds tab", () => {
+    it("creates the med, closes the modal and opens its sheet", async () => {
+      await renderMedsMedScreen();
 
-      expect(screen.getByLabelText("Détail (facultatif)")).toHaveProp("value", "Si besoin");
+      expect(screen.getByLabelText("Détail (facultatif)")).toHaveProp("value", "");
       expect(
         screen.queryByRole("adjustable", { name: "Quantité dans la prise" }),
       ).not.toBeOnTheScreen();
       await typeIn("Nom", "Doliprane");
-      await fireEvent.press(screen.getByRole("button", { name: "Ajouter au hors planning" }));
+      await fireEvent.press(screen.getByRole("button", { name: "Ajouter" }));
 
-      expect(getAsNeededMeds(mockDatabase).map(({ name }) => name)).toContain("Doliprane");
-      expect(mockParentNavigation.goBack).toHaveBeenCalledTimes(1);
+      const doliprane = findMed("Doliprane");
+      expect(doliprane).toBeDefined();
+      expect(router.back).toHaveBeenCalledTimes(1);
+      expect(router.navigate).toHaveBeenCalledWith({
+        pathname: "/meds/[medId]",
+        params: { medId: doliprane?.id },
+      });
+    });
+
+    it("closes without saving", async () => {
+      await renderMedsMedScreen();
+
+      await fireEvent.press(screen.getByRole("button", { name: "Annuler" }));
+
+      expect(router.back).toHaveBeenCalledTimes(1);
+      expect(countRows(mockDatabase, medTable)).toBe(6);
+    });
+
+    it("opens the appearance of the draft", async () => {
+      await renderMedsMedScreen();
+
+      await fireEvent.press(
+        screen.getByRole("button", {
+          name: "Modifier l’apparence de la pilule : rond, moyenne, lilas",
+        }),
+      );
+
+      expect(router.push).toHaveBeenCalledWith("/med/appearance");
     });
   });
 
-  describe("existing as needed med", () => {
+  describe("existing med from the meds tab", () => {
     function prazepamId(): string {
-      return getAsNeededMeds(mockDatabase)[0].id;
+      return findMed("Prazépam")?.id ?? "";
     }
 
     it("refuses to rename it as another med", async () => {
       mockSearchParams = { medId: prazepamId() };
-      await renderAsNeededMedScreen();
+      await renderMedsMedScreen();
 
       await typeIn("Nom", "Lithium");
       await typeIn("Dosage (facultatif)", "250 mg");
@@ -240,26 +248,29 @@ describe("MedScreen", () => {
       expect(getMedById(mockDatabase, prazepamId())?.name).toBe("Prazépam");
     });
 
-    it("saves it unchanged without duplicate error", async () => {
+    it("saves it and closes the modal", async () => {
       mockSearchParams = { medId: prazepamId() };
-      await renderAsNeededMedScreen();
+      await renderMedsMedScreen();
 
+      await typeIn("Détail (facultatif)", "Si angoisse");
       await fireEvent.press(screen.getByRole("button", { name: "Enregistrer" }));
 
-      expect(mockParentNavigation.goBack).toHaveBeenCalledTimes(1);
+      expect(getMedById(mockDatabase, prazepamId())?.detail).toBe("Si angoisse");
+      expect(router.back).toHaveBeenCalledTimes(1);
+      expect(router.navigate).not.toHaveBeenCalled();
     });
+  });
 
-    it("removes it from the as needed meds after confirmation", async () => {
-      const medId = prazepamId();
-      mockSearchParams = { medId };
-      await renderAsNeededMedScreen();
+  it("accepts the name of an archived med", async () => {
+    archiveMed(mockDatabase, findMedId(mockDatabase, "Prazépam", "25 mg"), new Date());
+    await renderMedsMedScreen();
 
-      await fireEvent.press(screen.getByRole("button", { name: "Enlever de « Hors planning »" }));
-      await fireEvent.press(screen.getByRole("button", { name: "Enlever" }));
+    await typeIn("Nom", "Prazépam");
+    await typeIn("Dosage (facultatif)", "25 mg");
+    await fireEvent.press(screen.getByRole("button", { name: "Ajouter" }));
 
-      expect(getMedById(mockDatabase, medId)?.isAsNeeded).toBe(false);
-      expect(mockParentNavigation.goBack).toHaveBeenCalledTimes(1);
-    });
+    expect(findMed("Prazépam")).toBeDefined();
+    expect(countRows(mockDatabase, medTable)).toBe(7);
   });
 
   it("is translated in English", async () => {

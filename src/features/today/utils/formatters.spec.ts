@@ -1,5 +1,5 @@
 import {
-  formatAsNeededTakenAt,
+  formatMedLogTakenAt,
   formatDayTitle,
   formatDuration,
   formatDurationAccessibilityLabel,
@@ -213,9 +213,9 @@ describe("formatValidationAnnouncement", () => {
   });
 });
 
-describe("formatAsNeededTakenAt", () => {
+describe("formatMedLogTakenAt", () => {
   it("shows the time of the last intake", () => {
-    expect(formatAsNeededTakenAt(t, "2026-10-14T09:05")).toBe("Pris à 09:05");
+    expect(formatMedLogTakenAt(t, "2026-10-14T09:05")).toBe("Pris à 09:05");
   });
 });
 

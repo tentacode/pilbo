@@ -18,7 +18,7 @@ describe("increaseStock", () => {
 
   it("does nothing when the med has no stock", () => {
     const database = createTestDatabase();
-    const medId = findMedId(database, "Prazépam", "25 mg");
+    const medId = findMedId(database, "Quviviq", "50 mg");
 
     increaseStock(database, medId, 1);
 

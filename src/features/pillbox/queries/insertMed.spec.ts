@@ -14,7 +14,6 @@ describe("insertMed", () => {
       strength: "",
       detail: "Au coucher",
       design: { shape: "softgel", colors: ["#F8C6DA", "#F8C6DA"], size: "small" },
-      isAsNeeded: true,
     });
 
     expect(getMedById(database, med.id)).toEqual(med);

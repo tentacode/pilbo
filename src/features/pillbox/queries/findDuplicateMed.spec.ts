@@ -3,6 +3,8 @@ import { createTestDatabase } from "@/shared/database/testDatabase";
 import { findDuplicateMed } from "./findDuplicateMed";
 import { getAllMeds } from "./getAllMeds";
 import { insertMed } from "./insertMed";
+import { archiveMed } from "@/features/meds/queries/archiveMed";
+import { findMedId } from "@/features/stocks/queries/testStocks";
 
 describe("findDuplicateMed", () => {
   it("finds a med with the same name and strength, ignoring the surrounding spaces", () => {
@@ -34,7 +36,6 @@ describe("findDuplicateMed", () => {
       strength: "",
       detail: "",
       design: { shape: "round", colors: ["#FFFFFF", "#FFFFFF"], size: "medium" },
-      isAsNeeded: true,
     });
 
     expect(findDuplicateMed(database, { name: "Doliprane", strength: "" })?.name).toBe("Doliprane");
@@ -51,5 +52,12 @@ describe("findDuplicateMed", () => {
         excludedMedId: lithium?.id,
       }),
     ).toBeUndefined();
+  });
+
+  it("ignores the archived meds", () => {
+    const database = createTestDatabase();
+    archiveMed(database, findMedId(database, "Prazépam", "25 mg"), new Date(2026, 10, 4));
+
+    expect(findDuplicateMed(database, { name: "Prazépam", strength: "25 mg" })).toBeUndefined();
   });
 });

@@ -13,17 +13,13 @@ import {
   computeTodayIntakes,
   countTodayIntakes,
 } from "@/features/today/utils/computeTodayIntakes";
-import type {
-  AsNeededMedOfDay,
-  TodaySections,
-  UpcomingIntake,
-} from "@/features/today/utils/todayTypes";
+import type { MedLogOfDay, TodaySections, UpcomingIntake } from "@/features/today/utils/todayTypes";
 
 type TodayData = {
   date: Date;
   intakes: Intake[];
   sections: TodaySections;
-  asNeededMeds: AsNeededMedOfDay[];
+  medLogs: MedLogOfDay[];
   isEmpty: boolean;
   upcomingIntake: UpcomingIntake | null;
   isAllHandled: boolean;
@@ -59,7 +55,7 @@ export function useTodayData(): TodayData {
       date: now,
       intakes: storedData.intakes,
       sections,
-      asNeededMeds: storedData.asNeededMeds,
+      medLogs: storedData.medLogs,
       isEmpty: countTodayIntakes(sections) === 0,
       upcomingIntake,
       isAllHandled: areAllIntakesHandled(sections),

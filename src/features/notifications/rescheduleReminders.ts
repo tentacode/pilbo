@@ -3,7 +3,7 @@ import { addDays, toLocalDate } from "@/domain/intakeLog";
 import type { Database } from "@/shared/database/types";
 
 import { getStocksData } from "@/features/stocks/queries/getStocksData";
-import { computeStockItems } from "@/features/stocks/utils/stockSections";
+import { computeStockItems } from "@/features/stocks/utils/stockItems";
 import { getIntakeLogsOfDay } from "@/features/today/queries/getIntakeLogsOfDay";
 import { getIntakesOfDay } from "@/features/today/queries/getIntakesOfDay";
 import { getPermissionGranted, resetReminders } from "./notifications";

@@ -10,7 +10,6 @@ function medQuantity(quantity: number): MedQuantity {
       strength: "250 mg",
       detail: "",
       design: { shape: "round", colors: ["#D6C9F5", "#D6C9F5"], size: "medium" },
-      isAsNeeded: false,
     },
     quantity,
   };

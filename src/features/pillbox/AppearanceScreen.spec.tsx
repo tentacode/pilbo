@@ -8,12 +8,10 @@ import { createTestDatabase } from "@/shared/database/testDatabase";
 import type { Database } from "@/shared/database/types";
 import { i18n } from "@/shared/i18n/i18n";
 
-import { AsNeededAppearanceScreen, IntakeAppearanceScreen } from "./AppearanceScreen";
+import { MedsAppearanceScreen, IntakeAppearanceScreen } from "./AppearanceScreen";
 import { IntakeDraftProvider } from "./hooks/useIntakeDraft";
 import { MedDraftProvider, useMedDraftContext } from "./hooks/useMedDraft";
 import { createMedDraft } from "./utils/medDraft";
-
-const t = i18n.getFixedT(null, "pillbox");
 
 let mockDatabase: Database;
 
@@ -41,8 +39,13 @@ function MedDraftSpy() {
   return null;
 }
 
-function renderAsNeededAppearance() {
-  const initialDraft = { ...createMedDraft(t, "asNeeded"), name: "Doliprane", strength: "1 g" };
+function renderMedsAppearance() {
+  const initialDraft = {
+    ...createMedDraft(),
+    name: "Doliprane",
+    strength: "1 g",
+    detail: "Si douleur",
+  };
   function wrapper({ children }: { children: ReactNode }) {
     return (
       <SafeAreaProvider initialMetrics={safeAreaMetrics}>
@@ -53,7 +56,7 @@ function renderAsNeededAppearance() {
       </SafeAreaProvider>
     );
   }
-  return render(<AsNeededAppearanceScreen />, { wrapper });
+  return render(<MedsAppearanceScreen />, { wrapper });
 }
 
 function previewLabel(): string | undefined {
@@ -66,17 +69,17 @@ beforeEach(() => {
 });
 
 describe("AppearanceScreen", () => {
-  it("previews the current design with the as needed context", async () => {
-    await renderAsNeededAppearance();
+  it("previews the current design with the detail of the med", async () => {
+    await renderMedsAppearance();
 
     expect(screen.getByRole("header", { name: "Apparence" })).toBeOnTheScreen();
     expect(previewLabel()).toBe("Aperçu : rond, moyenne, lilas");
-    expect(screen.getByText("Hors planning", { includeHiddenElements: true })).toBeOnTheScreen();
+    expect(screen.getByText("Si douleur", { includeHiddenElements: true })).toBeOnTheScreen();
     expect(screen.getByText("Doliprane 1 g", { includeHiddenElements: true })).toBeOnTheScreen();
   });
 
   it("offers the six shapes, the current one selected", async () => {
-    await renderAsNeededAppearance();
+    await renderMedsAppearance();
 
     expect(
       screen.getAllByRole("radio", { name: /^(Rond|Ovale|Gélule|Capsule molle|Triangle|Carré)$/ }),
@@ -85,7 +88,7 @@ describe("AppearanceScreen", () => {
   });
 
   it("keeps the colors when choosing another shape", async () => {
-    await renderAsNeededAppearance();
+    await renderMedsAppearance();
 
     await fireEvent.press(screen.getByRole("radio", { name: "Gélule" }));
 
@@ -94,7 +97,7 @@ describe("AppearanceScreen", () => {
   });
 
   it("offers the triangle shape", async () => {
-    await renderAsNeededAppearance();
+    await renderMedsAppearance();
 
     await fireEvent.press(screen.getByRole("radio", { name: "Triangle" }));
 
@@ -102,7 +105,7 @@ describe("AppearanceScreen", () => {
   });
 
   it("changes the size", async () => {
-    await renderAsNeededAppearance();
+    await renderMedsAppearance();
 
     await fireEvent.press(screen.getByRole("radio", { name: "Grande" }));
 
@@ -110,7 +113,7 @@ describe("AppearanceScreen", () => {
   });
 
   it("colors the first half from the swatches", async () => {
-    await renderAsNeededAppearance();
+    await renderMedsAppearance();
 
     expect(screen.getByRole("radio", { name: "Couleur 1 : lilas" })).toBeSelected();
     expect(screen.getByRole("radio", { name: "Lilas" })).toBeSelected();
@@ -121,7 +124,7 @@ describe("AppearanceScreen", () => {
   });
 
   it("colors the second half", async () => {
-    await renderAsNeededAppearance();
+    await renderMedsAppearance();
 
     await fireEvent.press(screen.getByRole("radio", { name: "Couleur 2 : lilas" }));
     await fireEvent.press(screen.getByRole("radio", { name: "Menthe" }));
@@ -131,7 +134,7 @@ describe("AppearanceScreen", () => {
   });
 
   it("selects the other color choice", async () => {
-    await renderAsNeededAppearance();
+    await renderMedsAppearance();
 
     expect(screen.getByRole("button", { name: "Autre couleur" })).toBeCollapsed();
 
@@ -143,13 +146,13 @@ describe("AppearanceScreen", () => {
   });
 
   it("hides the custom color sliders while a swatch is selected", async () => {
-    await renderAsNeededAppearance();
+    await renderMedsAppearance();
 
     expect(screen.queryByRole("adjustable", { name: "Teinte" })).not.toBeOnTheScreen();
   });
 
   it("applies a custom color to the selected half with the sliders", async () => {
-    await renderAsNeededAppearance();
+    await renderMedsAppearance();
     await fireEvent.press(screen.getByRole("radio", { name: "Couleur 2 : lilas" }));
     await fireEvent.press(screen.getByRole("button", { name: "Autre couleur" }));
 
@@ -162,14 +165,14 @@ describe("AppearanceScreen", () => {
 
   it("shows the sliders for a color outside the swatches", async () => {
     const initialDraft = {
-      ...createMedDraft(t, "asNeeded"),
+      ...createMedDraft(),
       design: {
         shape: "capsule" as const,
         size: "medium" as const,
         colors: ["#F58FB8", "#FFFFFF"] as [string, string],
       },
     };
-    await render(<AsNeededAppearanceScreen />, {
+    await render(<MedsAppearanceScreen />, {
       wrapper: ({ children }: { children: ReactNode }) => (
         <SafeAreaProvider initialMetrics={safeAreaMetrics}>
           <MedDraftProvider initialDraft={initialDraft}>{children}</MedDraftProvider>
@@ -181,7 +184,7 @@ describe("AppearanceScreen", () => {
   });
 
   it("keeps the sliders open when switching to the other half", async () => {
-    await renderAsNeededAppearance();
+    await renderMedsAppearance();
     await fireEvent.press(screen.getByRole("button", { name: "Autre couleur" }));
 
     await fireEvent.press(screen.getByRole("radio", { name: "Couleur 2 : lilas" }));
@@ -192,14 +195,14 @@ describe("AppearanceScreen", () => {
 
   it("keeps the sliders closed when switching to a custom colored half", async () => {
     const initialDraft = {
-      ...createMedDraft(t, "asNeeded"),
+      ...createMedDraft(),
       design: {
         shape: "capsule" as const,
         size: "medium" as const,
         colors: ["#FFFFFF", "#F58FB8"] as [string, string],
       },
     };
-    await render(<AsNeededAppearanceScreen />, {
+    await render(<MedsAppearanceScreen />, {
       wrapper: ({ children }: { children: ReactNode }) => (
         <SafeAreaProvider initialMetrics={safeAreaMetrics}>
           <MedDraftProvider initialDraft={initialDraft}>{children}</MedDraftProvider>
@@ -215,7 +218,7 @@ describe("AppearanceScreen", () => {
   });
 
   it("closes the sliders when choosing a swatch", async () => {
-    await renderAsNeededAppearance();
+    await renderMedsAppearance();
     await fireEvent.press(screen.getByRole("button", { name: "Autre couleur" }));
 
     await fireEvent.press(screen.getByRole("radio", { name: "Menthe" }));
@@ -224,7 +227,7 @@ describe("AppearanceScreen", () => {
   });
 
   it("saves the design in the med draft when validating", async () => {
-    await renderAsNeededAppearance();
+    await renderMedsAppearance();
 
     await fireEvent.press(screen.getByRole("radio", { name: "Capsule molle" }));
     await fireEvent.press(screen.getByRole("radio", { name: "Petite" }));
@@ -239,7 +242,7 @@ describe("AppearanceScreen", () => {
   });
 
   it("keeps the med draft when cancelling", async () => {
-    await renderAsNeededAppearance();
+    await renderMedsAppearance();
 
     await fireEvent.press(screen.getByRole("radio", { name: "Ovale" }));
     await fireEvent.press(screen.getByRole("button", { name: "Annuler" }));
@@ -253,9 +256,7 @@ describe("AppearanceScreen", () => {
       return (
         <SafeAreaProvider initialMetrics={safeAreaMetrics}>
           <IntakeDraftProvider>
-            <MedDraftProvider initialDraft={createMedDraft(t, "intake")}>
-              {children}
-            </MedDraftProvider>
+            <MedDraftProvider initialDraft={createMedDraft()}>{children}</MedDraftProvider>
           </IntakeDraftProvider>
         </SafeAreaProvider>
       );
@@ -268,7 +269,7 @@ describe("AppearanceScreen", () => {
 
   it("is translated in English", async () => {
     await i18n.changeLanguage("en");
-    await renderAsNeededAppearance();
+    await renderMedsAppearance();
 
     expect(screen.getByRole("header", { name: "Appearance" })).toBeOnTheScreen();
     expect(screen.getByRole("radio", { name: "Round" })).toBeOnTheScreen();

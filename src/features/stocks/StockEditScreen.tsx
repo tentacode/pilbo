@@ -108,8 +108,8 @@ function StockEditForm({ med, stock, intakes, intakeLogs }: StockEditFormProps) 
       footer={<Button label={t("Enregistrer")} icon="check" onPress={handleSave} />}
     >
       <View style={styles.content}>
-        <StockEditHeader med={med} schedule={formatMedSchedule(t, med, intakes)} />
-        <StockSummaryCard med={med} quantity={draft.quantity} forecast={forecast} />
+        <StockEditHeader med={med} subtitle={formatMedSchedule(t, med, intakes)} />
+        <StockSummaryCard quantity={draft.quantity} forecast={forecast} />
         <Button
           label={
             boxSize === undefined

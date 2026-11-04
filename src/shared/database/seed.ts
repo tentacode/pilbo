@@ -4,7 +4,7 @@ import { type Intake, intakeDateOn } from "@/domain/intake";
 import { addDays, toLocalDate, toLocalDateTime } from "@/domain/intakeLog";
 
 import {
-  asNeededLogFixture,
+  medLogFixture,
   HISTORY_DAYS,
   historyDayFixtures,
   type HistoryDayKind,
@@ -136,9 +136,9 @@ function insertHistoryLogs(
   database
     .insert(medLogTable)
     .values(
-      asNeededLogFixture.daysAgo.map((daysAgo) => ({
-        medId: medIds.get(asNeededLogFixture.med) as string,
-        takenAt: `${toLocalDate(addDays(now, -daysAgo))}T${asNeededLogFixture.time}`,
+      medLogFixture.daysAgo.map((daysAgo) => ({
+        medId: medIds.get(medLogFixture.med) as string,
+        takenAt: `${toLocalDate(addDays(now, -daysAgo))}T${medLogFixture.time}`,
       })),
     )
     .run();

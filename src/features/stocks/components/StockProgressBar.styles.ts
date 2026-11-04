@@ -9,6 +9,10 @@ export const styles = StyleSheet.create({
     backgroundColor: colors.progressTrack,
     overflow: "hidden",
   },
+  compactTrack: {
+    width: sizes.compactProgressBarWidth,
+    height: sizes.compactProgressBarHeight,
+  },
   lowTrack: {
     backgroundColor: colors.surface,
   },

@@ -51,6 +51,9 @@ src/
 - **`domain/`** : types métier et fonctions pures utilisées par plusieurs features (ex. `formatIntakeTime`, `sortIntakeMeds`), testées à côté (`intake.spec.ts`).
 - **`features/`** : logique et écrans d'un domaine. Un composant utilisé par une seule feature reste dans la feature.
 - **Navigation** : barre d'onglets sur mesure. `design-system/components/TabBar` (visuel) + `shared/navigation/NavigationTabBar` (branchement Expo Router).
+  - Un écran secondaire d'un onglet est empilé dans l'onglet (barre d'onglets visible, glissement retour iOS) : `(tabs)/today/calendar`, `(tabs)/meds/[medId]`.
+  - Les formulaires et le détail d’un jour passé sont des modales par-dessus (`presentation: "modal"` dans `app/_layout.tsx`) : `intake`, `intake-log`, `med`, `med-appearance`, `med-log`, `stock`, `day/[date]`.
+- **Features** : `today` (Aujourd'hui, jours passés, prises libres `med_log`), `calendar`, `pillbox` (prises et écrans médicament / apparence partagés), `meds` (onglet Médicaments : liste, fiche, archivage), `stocks` (écran de stock, prévisions, alertes), `settings`, `onboarding`, `notifications`.
 
 ## Données
 
@@ -85,7 +88,7 @@ Détails : [`docs/database.md`](database.md).
 Stack : i18next + react-i18next, extraction avec `i18next-cli` (`i18next.config.ts`). Français et anglais.
 
 - **Clé = texte français** : `t("Valider la prise")`. Pas de séparateurs (`.` et `:` autorisés dans le texte).
-- **Un namespace par feature** : `today`, `calendar`, `pillbox`, `stocks`, `settings`, `onboarding`, `notifications`, et `common` (navigation, écrans d'erreur, textes partagés).
+- **Un namespace par feature** : `today`, `calendar`, `pillbox`, `meds`, `stocks`, `settings`, `onboarding`, `notifications`, et `common` (navigation, écrans d'erreur, textes partagés).
 - **Fichiers** : `src/shared/i18n/locales/<fr|en>/<namespace>.json`. En FR la valeur est la clé (générée), sauf les pluriels.
 - **Clés typées** : une clé inconnue est une erreur TypeScript (`src/shared/i18n/i18next.d.ts`).
 

@@ -10,7 +10,6 @@ export type MedRecord = {
   strength: string;
   detail: string;
   design: string;
-  isAsNeeded: number;
 };
 
 type StoredPillDesign = Omit<PillDesign, "colors"> & { colors: [string] | [string, string] };
@@ -28,7 +27,6 @@ export function toMed(record: MedRecord): Med {
     strength: record.strength,
     detail: record.detail,
     design: toPillDesign(record.design),
-    isAsNeeded: record.isAsNeeded === 1,
   };
 }
 
@@ -39,10 +37,9 @@ export function selectMeds(database: Database, condition: SQL = sql`1 = 1`): Med
       ${medTable.name} AS name,
       ${medTable.strength} AS strength,
       ${medTable.detail} AS detail,
-      ${medTable.design} AS design,
-      ${medTable.isAsNeeded} AS isAsNeeded
+      ${medTable.design} AS design
     FROM ${medTable}
-    WHERE ${condition}
+    WHERE ${medTable.archivedOn} IS NULL AND ${condition}
   `);
   return records.map(toMed);
 }

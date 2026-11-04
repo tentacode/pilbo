@@ -6,7 +6,7 @@ import { formatMedLabel, type PillDesign, type PillShape, type PillSize } from "
 import { capitalize, formatIntakeTime, formatWeekday } from "@/shared/i18n/formatters";
 import type { Language } from "@/shared/i18n/resources";
 
-function formatDays(
+export function formatIntakeDays(
   t: TFunction<"pillbox">,
   language: Language,
   days: Weekday[],
@@ -28,7 +28,7 @@ export function formatIntakeSchedule(
   intake: Intake,
 ): string {
   return t("{{days}} · rappel toutes les {{minutes}} min", {
-    days: formatDays(t, language, intake.days, "short"),
+    days: formatIntakeDays(t, language, intake.days, "short"),
     minutes: intake.reminderIntervalMinutes,
   });
 }
@@ -47,7 +47,7 @@ export function formatIntakeAccessibilityLabel(
   intake: Intake,
 ): string {
   const schedule = t("{{days}}, rappel toutes les {{minutes}} minutes", {
-    days: formatDays(t, language, intake.days, "long"),
+    days: formatIntakeDays(t, language, intake.days, "long"),
     minutes: intake.reminderIntervalMinutes,
   });
   const meds = intake.medQuantities

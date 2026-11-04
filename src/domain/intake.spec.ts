@@ -8,7 +8,6 @@ function createMed(name: string, strength: string): Med {
     strength,
     detail: "",
     design: { shape: "oval", colors: ["#FFFFFF", "#FFFFFF"], size: "medium" },
-    isAsNeeded: false,
   };
 }
 

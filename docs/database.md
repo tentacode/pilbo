@@ -65,21 +65,21 @@ Les testeurs TestFlight ont de vraies données : aucune perte n'est acceptable.
 ### Lecture : SQL brut
 
 ```ts
-export function getAsNeededMeds(database: Database): Med[] {
+export function selectMeds(database: Database, condition: SQL): Med[] {
   const records = database.all<MedRecord>(sql`
     SELECT
       ${medTable.id} AS id,
-      ${medTable.isAsNeeded} AS isAsNeeded
+      ${medTable.name} AS name
       ...
     FROM ${medTable}
-    WHERE ${medTable.isAsNeeded} = 1
+    WHERE ${medTable.archivedOn} IS NULL AND ${condition}
   `);
   return records.map(toMed);
 }
 ```
 
 - Colonnes via `${table.colonne}`, jamais de nom en dur.
-- Alias en camelCase (`AS isAsNeeded`).
+- Alias en camelCase (`AS archivedOn`).
 - Le résultat brut n'est pas converti : JSON en texte, booléens en `0`/`1`. Convertir vers le type du domaine (ex. `toMed` dans `queries/medRecord.ts`).
 - Jointures : assembler les lignes en agrégats (voir `getAllIntakes.ts`).
 
@@ -93,7 +93,7 @@ database
 
 database
   .update(medTable)
-  .set({ isAsNeeded: true })
+  .set({ archivedOn: "2026-11-04" })
   .where(sql`${medTable.id} = ${medId}`)
   .run();
 
@@ -130,16 +130,18 @@ Test à côté de la requête : `queries/getAllIntakes.spec.ts`.
 
 ### `med`
 
-Un médicament existe indépendamment des prises. Il peut être dans une ou plusieurs prises et hors planning en même temps.
+Un médicament existe indépendamment des prises : il peut être dans une ou plusieurs prises, ou dans aucune (pris librement depuis l'onglet Médicaments).
 
-| Colonne        | Type                     | Contraintes                                           |
-| -------------- | ------------------------ | ----------------------------------------------------- |
-| `id`           | text (UUID)              | clé primaire                                          |
-| `name`         | text                     | obligatoire                                           |
-| `strength`     | text                     | obligatoire, texte libre, `""` si absent (« 250 mg ») |
-| `detail`       | text                     | obligatoire, `""` par défaut (« Avec le repas »)      |
-| `design`       | text (JSON `PillDesign`) | obligatoire                                           |
-| `is_as_needed` | integer (booléen)        | obligatoire, `false` par défaut (hors planning)       |
+| Colonne       | Type                     | Contraintes                                           |
+| ------------- | ------------------------ | ----------------------------------------------------- |
+| `id`          | text (UUID)              | clé primaire                                          |
+| `name`        | text                     | obligatoire                                           |
+| `strength`    | text                     | obligatoire, texte libre, `""` si absent (« 250 mg ») |
+| `detail`      | text                     | obligatoire, `""` par défaut (« Avec le repas »)      |
+| `design`      | text (JSON `PillDesign`) | obligatoire                                           |
+| `archived_on` | text                     | facultatif, date locale (`2026-11-04`) d'archivage    |
+
+Archivage (« Supprimer le médicament », `archiveMed`) : `archived_on` = aujourd'hui et le stock est supprimé, l'historique (`med_log`, `intake_log`) est conservé. Refusé si le médicament est dans une prise active. Un médicament archivé n'apparaît plus dans les listes ni dans la détection de doublon (`selectMeds` filtre `archived_on IS NULL`), mais reste lisible par identifiant (`getMedById`) pour l'historique.
 
 Format de `design` (`src/domain/med.ts`) :
 
@@ -195,7 +197,7 @@ Historique des prises validées. Une prise archivée garde ses logs.
 
 ### `med_log`
 
-Prises des médicaments hors planning. Un médicament peut être pris plusieurs fois par jour.
+Prises libres (« Prendre 1 comprimé » depuis la fiche d'un médicament), 1 comprimé par ligne. Un médicament peut être pris plusieurs fois par jour.
 
 | Colonne    | Type        | Contraintes                                          |
 | ---------- | ----------- | ---------------------------------------------------- |

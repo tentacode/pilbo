@@ -43,7 +43,6 @@ export const medFixtures = {
     strength: "25 mg",
     detail: "Si besoin",
     design: { shape: "capsule", colors: [DEEP_ROSE, WHITE], size: "medium" },
-    isAsNeeded: true,
   },
 } satisfies Record<string, NewMedRow>;
 
@@ -102,6 +101,7 @@ export const stockFixtures: StockFixture[] = [
   { med: "lithium250", quantity: 18, boxSize: 100, lowStockDays: 7 },
   { med: "lamictal50", quantity: 45, boxSize: 50, lowStockDays: 7 },
   { med: "lamictal100", quantity: 56, boxSize: 60, lowStockDays: 7 },
+  { med: "prazepam25", quantity: 15, boxSize: 20, lowStockDays: 7 },
 ];
 
 export const HISTORY_DAYS = 45;
@@ -130,7 +130,7 @@ export const historyLogFixture = {
   lateMinutesAfterExpected: 95,
 };
 
-export const asNeededLogFixture: { med: MedFixtureKey; daysAgo: number[]; time: string } = {
+export const medLogFixture: { med: MedFixtureKey; daysAgo: number[]; time: string } = {
   med: "prazepam25",
   daysAgo: [2, 5, 14, 21, 30],
   time: "15:40",

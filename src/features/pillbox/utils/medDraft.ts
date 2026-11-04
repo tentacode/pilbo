@@ -1,12 +1,10 @@
-import type { TFunction } from "i18next";
-
 import { pillSwatches } from "@/design-system/tokens";
 import type { Med, PillDesign } from "@/domain/med";
 
 import type { MedToUpdate } from "@/features/pillbox/queries/updateMed";
 import type { Language } from "@/shared/i18n/resources";
 
-export type MedFlowOrigin = "intake" | "asNeeded";
+export type MedFlowOrigin = "intake" | "meds";
 
 export type MedDraft = {
   medId?: string;
@@ -22,11 +20,7 @@ export const DEFAULT_PILL_DESIGN: PillDesign = {
   colors: [pillSwatches.lilac, pillSwatches.lilac],
 };
 
-export function createMedDraft(
-  t: TFunction<"pillbox">,
-  origin: MedFlowOrigin,
-  med?: Med,
-): MedDraft {
+export function createMedDraft(med?: Med): MedDraft {
   if (med !== undefined) {
     return {
       medId: med.id,
@@ -39,7 +33,7 @@ export function createMedDraft(
   return {
     name: "",
     strength: "",
-    detail: origin === "asNeeded" ? t("Si besoin") : "",
+    detail: "",
     design: DEFAULT_PILL_DESIGN,
   };
 }

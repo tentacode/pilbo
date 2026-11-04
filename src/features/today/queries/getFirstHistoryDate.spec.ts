@@ -1,7 +1,9 @@
+import type { Med } from "@/domain/med";
 import { createTestDatabase } from "@/shared/database/testDatabase";
 
 import { getAllIntakes } from "@/features/pillbox/queries/getAllIntakes";
-import { getAsNeededMeds } from "@/features/pillbox/queries/getAsNeededMeds";
+import { getMedById } from "@/features/pillbox/queries/getMedById";
+import { findMedId } from "@/features/stocks/queries/testStocks";
 import { getFirstHistoryDate } from "./getFirstHistoryDate";
 import { insertIntakeLog } from "./insertIntakeLog";
 import { insertMedLog } from "./insertMedLog";
@@ -28,7 +30,7 @@ describe("getFirstHistoryDate", () => {
 
   it("returns the date of an older as-needed log", () => {
     const database = createTestDatabase({ now: new Date(2026, 9, 24, 9, 0) });
-    const [prazepam] = getAsNeededMeds(database);
+    const prazepam = getMedById(database, findMedId(database, "Prazépam", "25 mg")) as Med;
     insertMedLog(database, prazepam.id, new Date(2026, 7, 30, 15, 40));
 
     expect(getFirstHistoryDate(database)).toBe("2026-08-30");

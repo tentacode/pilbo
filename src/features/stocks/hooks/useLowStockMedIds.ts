@@ -3,7 +3,7 @@ import { useCallback, useMemo, useSyncExternalStore } from "react";
 import { database, subscribeToDatabaseChanges } from "@/shared/database/database";
 
 import { getStocksData } from "@/features/stocks/queries/getStocksData";
-import { computeStockItems } from "@/features/stocks/utils/stockSections";
+import { computeStockItems } from "@/features/stocks/utils/stockItems";
 import { useCurrentMinute } from "@/features/today/hooks/useCurrentMinute";
 
 const MED_ID_SEPARATOR = ",";

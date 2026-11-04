@@ -1,0 +1,34 @@
+appId: com.tentacode.pilbo.dev
+name: A med of the pillbox cannot be deleted, a med without intake can
+---
+- launchApp:
+    clearState: true
+- extendedWaitUntil:
+    visible: "Aujourd'hui"
+    timeout: 10000
+- tapOn: "Médicaments.*"
+- tapOn: "Lamictal 50 mg.*"
+- scrollUntilVisible:
+    element:
+      text: "Supprimer le médicament"
+    centerElement: true
+- tapOn: "Supprimer le médicament"
+- tapOn: "Supprimer"
+- assertVisible: "Ce médicament est dans la prise de 08:20. Retirez-le du pilulier d’abord."
+- tapOn: "OK"
+- scrollUntilVisible:
+    element:
+      text: "Médicaments"
+    direction: UP
+- tapOn: "Médicaments"
+- tapOn: "Prazépam 25 mg.*"
+- scrollUntilVisible:
+    element:
+      text: "Supprimer le médicament"
+    centerElement: true
+- tapOn: "Supprimer le médicament"
+- tapOn: "Supprimer"
+- extendedWaitUntil:
+    visible: "Nouveau médicament"
+    timeout: 5000
+- assertNotVisible: "Prazépam 25 mg.*"

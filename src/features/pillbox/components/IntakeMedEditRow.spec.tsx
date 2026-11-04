@@ -10,7 +10,6 @@ const med: Med = {
   strength: "500 mg",
   detail: "Après le repas",
   design: { shape: "round", size: "medium", colors: ["#FFFFFF", "#FFFFFF"] },
-  isAsNeeded: false,
 };
 
 function getStepperContainer() {

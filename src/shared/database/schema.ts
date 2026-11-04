@@ -17,7 +17,7 @@ export const medTable = sqliteTable("med", {
   strength: text("strength").notNull(),
   detail: text("detail").notNull().default(""),
   design: text("design", { mode: "json" }).$type<PillDesign>().notNull(),
-  isAsNeeded: integer("is_as_needed", { mode: "boolean" }).notNull().default(false),
+  archivedOn: text("archived_on"),
 });
 
 export const intakeTable = sqliteTable("intake", {

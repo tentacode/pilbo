@@ -1,0 +1,23 @@
+appId: com.tentacode.pilbo.dev
+name: A scheduled med taken from its sheet asks first, then shows on today and can be deleted
+---
+- launchApp:
+    clearState: true
+- extendedWaitUntil:
+    visible: "Aujourd'hui"
+    timeout: 10000
+- tapOn: "Médicaments.*"
+- tapOn: "Lithium 250 mg.*"
+- tapOn: "Prendre 1 comprimé"
+- assertVisible: "Le prendre quand même ?"
+- tapOn: "Prendre quand même"
+- assertVisible: "\\d+ comprimés? aujourd’hui · .*"
+- tapOn: "Aujourd'hui.*"
+- scrollUntilVisible:
+    element:
+      text: "Autres médicaments"
+    centerElement: true
+- tapOn: "Lithium 250 mg, Pris à \\d\\d:\\d\\d"
+- assertVisible: "Prise de \\d\\d:\\d\\d"
+- tapOn: "Supprimer cette prise"
+- assertNotVisible: "Autres médicaments"

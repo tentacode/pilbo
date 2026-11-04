@@ -9,10 +9,9 @@ import { styles } from "./PillboxEmptyState.styles";
 
 type PillboxEmptyStateProps = {
   onCreateIntake: () => void;
-  onAddAsNeededMed: () => void;
 };
 
-export function PillboxEmptyState({ onCreateIntake, onAddAsNeededMed }: PillboxEmptyStateProps) {
+export function PillboxEmptyState({ onCreateIntake }: PillboxEmptyStateProps) {
   const { t } = useTranslation("pillbox");
   return (
     <View style={styles.container}>
@@ -25,11 +24,6 @@ export function PillboxEmptyState({ onCreateIntake, onAddAsNeededMed }: PillboxE
       </Text>
       <View style={styles.actions}>
         <Button label={t("Créer une prise")} icon="plus" onPress={onCreateIntake} />
-        <Button
-          label={t("Ajouter un médicament hors planning")}
-          variant="text"
-          onPress={onAddAsNeededMed}
-        />
       </View>
     </View>
   );

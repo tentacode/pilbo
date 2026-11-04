@@ -27,7 +27,6 @@ const intake: Intake = {
         name: "Lithium",
         strength: "250 mg",
         detail: "",
-        isAsNeeded: false,
         design: { shape: "round", size: "small", colors: ["#FFFFFF", "#FFFFFF"] },
       },
       quantity: 2,

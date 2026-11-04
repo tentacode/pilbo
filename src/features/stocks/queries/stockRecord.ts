@@ -20,7 +20,6 @@ export function selectMedStocks(database: Database, condition: SQL = sql`1 = 1`)
       ${medTable.strength} AS strength,
       ${medTable.detail} AS detail,
       ${medTable.design} AS design,
-      ${medTable.isAsNeeded} AS isAsNeeded,
       ${stockTable.quantity} AS quantity,
       ${stockTable.boxSize} AS boxSize,
       ${stockTable.lowStockDays} AS lowStockDays

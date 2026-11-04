@@ -9,27 +9,25 @@ import { useNotificationPermission } from "@/features/notifications/hooks/useNot
 import { LowStockNotice } from "@/features/stocks/components/LowStockNotice";
 import { StocksBelowZeroDialog } from "@/features/stocks/components/StocksBelowZeroDialog";
 import { useLowStockNotice } from "@/features/stocks/hooks/useLowStockNotice";
-import { useAsNeededTaking } from "@/features/today/hooks/useAsNeededTaking";
 import { useIntakeValidation } from "@/features/today/hooks/useIntakeValidation";
 import { useTodayData } from "@/features/today/hooks/useTodayData";
 import { openIntakeLogEditing } from "@/features/today/utils/openIntakeLogEditing";
-import { AsNeededSection } from "./AsNeededSection";
+import { OtherMedsSection } from "./OtherMedsSection";
 import { RemindersDisabledNotice } from "./RemindersDisabledNotice";
 import { styles } from "./TodayContent.styles";
 import { TodayDoneState } from "./TodayDoneState";
 import { TodayEmptyState } from "./TodayEmptyState";
 import { TodayIntakeSections } from "./TodayIntakeSections";
 
-function openStocks() {
-  router.navigate("/stocks");
+function openMeds() {
+  router.navigate("/meds");
 }
 
 export function TodayContent() {
-  const { date, intakes, sections, asNeededMeds, isEmpty, upcomingIntake, isAllHandled, refresh } =
+  const { date, intakes, sections, medLogs, isEmpty, upcomingIntake, isAllHandled, refresh } =
     useTodayData();
   const [medsBelowZero, setMedsBelowZero] = useState<Med[]>([]);
   const { validatingIntakeId, validate } = useIntakeValidation(intakes, refresh, setMedsBelowZero);
-  const asNeededTaking = useAsNeededTaking(refresh, setMedsBelowZero);
   const { isGranted: remindersEnabled, request: enableReminders } = useNotificationPermission();
   const lowStockNotice = useLowStockNotice();
 
@@ -39,7 +37,7 @@ export function TodayContent() {
 
   function showStocksFromDialog() {
     setMedsBelowZero([]);
-    openStocks();
+    openMeds();
   }
 
   return (
@@ -49,7 +47,7 @@ export function TodayContent() {
         {lowStockNotice.isVisible ? (
           <LowStockNotice
             lowStockCount={lowStockNotice.lowStockCount}
-            onPress={openStocks}
+            onPress={openMeds}
             onDismiss={lowStockNotice.dismiss}
           />
         ) : null}
@@ -64,13 +62,7 @@ export function TodayContent() {
             onEdit={handleEdit}
           />
         )}
-        {asNeededMeds.length > 0 ? (
-          <AsNeededSection
-            asNeededMeds={asNeededMeds}
-            onTake={asNeededTaking.take}
-            onCancel={asNeededTaking.cancel}
-          />
-        ) : null}
+        <OtherMedsSection medLogs={medLogs} />
       </View>
       <StocksBelowZeroDialog
         meds={medsBelowZero}

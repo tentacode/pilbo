@@ -1,14 +1,16 @@
 import { sql } from "drizzle-orm";
 
 import type { Intake } from "@/domain/intake";
+import type { Med } from "@/domain/med";
 import { intakeLogTable, intakeMedTable, intakeTable } from "@/shared/database/schema";
 import { createTestDatabase } from "@/shared/database/testDatabase";
 import { countRows } from "@/shared/database/testHelpers";
 import type { Database } from "@/shared/database/types";
 
+import { findMedId } from "@/features/stocks/queries/testStocks";
 import { insertIntakeLog } from "@/features/today/queries/insertIntakeLog";
 import { getAllIntakes } from "./getAllIntakes";
-import { getAsNeededMeds } from "./getAsNeededMeds";
+import { getMedById } from "./getMedById";
 import { getIntakeById } from "./getIntakeById";
 import { type IntakeToSave, saveIntake } from "./saveIntake";
 
@@ -66,7 +68,7 @@ function logMorningOn(database: Database, morning: Intake, localDate: string): v
 describe("saveIntake", () => {
   it("inserts a new intake with its meds, created today", () => {
     const database = createTestDatabase();
-    const [prazepam] = getAsNeededMeds(database);
+    const prazepam = getMedById(database, findMedId(database, "Prazépam", "25 mg")) as Med;
 
     const intakeId = saveIntake(
       database,
@@ -97,7 +99,7 @@ describe("saveIntake", () => {
   it("updates an intake without past logs in place and replaces its meds", () => {
     const database = createTestDatabase();
     const [morning] = getAllIntakes(database);
-    const [prazepam] = getAsNeededMeds(database);
+    const prazepam = getMedById(database, findMedId(database, "Prazépam", "25 mg")) as Med;
     const linksBefore = countRows(database, intakeMedTable);
     logMorningOn(database, morning, "2026-10-24");
 

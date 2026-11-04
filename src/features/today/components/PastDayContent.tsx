@@ -6,8 +6,8 @@ import { openIntakeLogEditing } from "@/features/today/utils/openIntakeLogEditin
 import { styles } from "./PastDayContent.styles";
 import { EarlierIntakeCard } from "./EarlierIntakeCard";
 import { MissedIntakeCard } from "./MissedIntakeCard";
+import { OtherMedsSection } from "./OtherMedsSection";
 import { PastDayEmptyState } from "./PastDayEmptyState";
-import { TakenAsNeededSection } from "./TakenAsNeededSection";
 import { TodaySectionTitle } from "./TodaySectionTitle";
 
 type PastDayContentProps = {
@@ -45,7 +45,7 @@ export function PastDayContent({ localDate }: PastDayContentProps) {
           </View>
         </View>
       )}
-      {medLogs.length > 0 ? <TakenAsNeededSection medLogs={medLogs} /> : null}
+      <OtherMedsSection medLogs={medLogs} />
     </View>
   );
 }

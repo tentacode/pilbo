@@ -15,9 +15,9 @@ export const tabs: Record<string, Tab> = {
     formatBadgeLabel: (t, count) => t("{{count}} prises à valider", { count }),
   },
   pillbox: { formatLabel: (t) => t("Pilulier"), icon: "pillbox" },
-  stocks: {
-    formatLabel: (t) => t("Stock"),
-    icon: "stocks",
+  meds: {
+    formatLabel: (t) => t("Médicaments"),
+    icon: "meds",
     formatBadgeLabel: (t, count) => t("{{count}} stocks bas", { count }),
   },
   settings: { formatLabel: (t) => t("Réglages"), icon: "settings" },

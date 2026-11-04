@@ -9,10 +9,10 @@ import { styles } from "./StockEditHeader.styles";
 
 type StockEditHeaderProps = {
   med: Med;
-  schedule: string;
+  subtitle: string;
 };
 
-export function StockEditHeader({ med, schedule }: StockEditHeaderProps) {
+export function StockEditHeader({ med, subtitle }: StockEditHeaderProps) {
   return (
     <View style={styles.header}>
       <Pill design={med.design} displaySize={sizes.pillInHeader} />
@@ -22,7 +22,7 @@ export function StockEditHeader({ med, schedule }: StockEditHeaderProps) {
           {med.strength === "" ? null : <Text variant="lead"> {med.strength}</Text>}
         </Text>
         <Text variant="small" tone="secondary">
-          {schedule}
+          {subtitle}
         </Text>
       </View>
     </View>

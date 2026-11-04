@@ -14,7 +14,6 @@ type PickerMedRowProps = {
   hasTopBorder: boolean;
   actionLabel?: string;
   unavailableLabel?: string;
-  statusLabel?: string;
   onPress: () => void;
 };
 
@@ -23,13 +22,11 @@ export function PickerMedRow({
   hasTopBorder,
   actionLabel,
   unavailableLabel,
-  statusLabel,
   onPress,
 }: PickerMedRowProps) {
   const styles = useStyles();
   const isUnavailable = unavailableLabel !== undefined;
-  const label = unavailableLabel ?? statusLabel;
-  const details = [formatMedLabel(med), med.detail, label].filter(Boolean).join(", ");
+  const details = [formatMedLabel(med), med.detail, unavailableLabel].filter(Boolean).join(", ");
   return (
     <Pressable
       accessibilityRole="button"
@@ -49,11 +46,11 @@ export function PickerMedRow({
       <View style={styles.texts}>
         <MedName med={med} tone={isUnavailable ? "secondary" : "primary"} />
       </View>
-      {label !== undefined ? (
+      {isUnavailable ? (
         <View style={styles.status}>
           <Icon name="check" size={sizes.iconSmall} color={colors.inkSecondary} />
           <Text variant="small" tone="secondary">
-            {label}
+            {unavailableLabel}
           </Text>
         </View>
       ) : (

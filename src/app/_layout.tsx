@@ -63,7 +63,9 @@ export default function RootLayout() {
             <Stack.Screen name="(tabs)" />
             <Stack.Screen name="not-medical" />
             <Stack.Screen name="intake" options={{ presentation: "modal" }} />
-            <Stack.Screen name="as-needed" options={{ presentation: "modal" }} />
+            <Stack.Screen name="med" options={{ presentation: "modal" }} />
+            <Stack.Screen name="med-appearance" options={{ presentation: "modal" }} />
+            <Stack.Screen name="med-log" options={{ presentation: "modal" }} />
             <Stack.Screen name="stock" options={{ presentation: "modal" }} />
             <Stack.Screen name="day/[date]" options={{ presentation: "modal" }} />
             <Stack.Screen name="intake-log" options={{ presentation: "modal" }} />

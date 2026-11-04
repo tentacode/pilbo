@@ -33,11 +33,6 @@ export type MedLogOfDay = {
   takenAt: string;
 };
 
-export type AsNeededMedOfDay = {
-  med: Med;
-  lastTakenAt?: string;
-};
-
 export type UpcomingIntake = {
   daysAhead: number;
   weekday: Weekday;

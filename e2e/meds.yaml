@@ -1,0 +1,54 @@
+appId: com.tentacode.pilbo.dev
+name: A new med can be created, its stock tracked, taken and the takings undone
+---
+- launchApp:
+    clearState: true
+- extendedWaitUntil:
+    visible: "Aujourd'hui"
+    timeout: 10000
+- tapOn: "Médicaments.*"
+- scrollUntilVisible:
+    element:
+      text: "Nouveau médicament"
+    centerElement: true
+- tapOn: "Nouveau médicament"
+- tapOn: "Nom"
+- inputText: "Doliprane"
+- tapOn: "Ajouter"
+- extendedWaitUntil:
+    visible: "Doliprane"
+    timeout: 5000
+- tapOn: "Suivre le stock"
+- tapOn: "Un comprimé de plus"
+- tapOn: "Un comprimé de plus"
+- tapOn: "Enregistrer"
+- scrollUntilVisible:
+    element:
+      text: "Stock : 2 comprimés.*"
+    centerElement: true
+- scrollUntilVisible:
+    element:
+      text: "Prendre 1 comprimé"
+    direction: UP
+- tapOn: "Prendre 1 comprimé"
+- assertVisible: "1 comprimé aujourd’hui · à \\d\\d:\\d\\d"
+- tapOn: "Prendre 1 comprimé"
+- assertVisible: "2 comprimés aujourd’hui · dernier à \\d\\d:\\d\\d"
+- scrollUntilVisible:
+    element:
+      text: "Stock bas : 0 comprimé.*"
+    centerElement: true
+- scrollUntilVisible:
+    element:
+      text: "Annuler la prise de \\d\\d:\\d\\d"
+    direction: UP
+- tapOn: "Annuler la prise de \\d\\d:\\d\\d"
+- tapOn: "Annuler la prise de \\d\\d:\\d\\d"
+- assertNotVisible: "Annuler la prise de \\d\\d:\\d\\d"
+- assertNotVisible: ".*aujourd’hui · .*"
+- scrollUntilVisible:
+    element:
+      text: "Stock : 2 comprimés.*"
+    centerElement: true
+- tapOn: "Médicaments"
+- assertVisible: "Doliprane, 2 comprimés"

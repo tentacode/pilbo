@@ -18,7 +18,6 @@ const lithium: Med = {
   strength: "250 mg",
   detail: "",
   design: { shape: "round", colors: ["#D6C9F5", "#D6C9F5"], size: "medium" },
-  isAsNeeded: false,
 };
 
 const quviviq: Med = { ...lithium, id: "quviviq", name: "Quviviq" };

@@ -2,8 +2,9 @@
 - [ ] android.
 - [ ] widget apple.
 - [ ] thèmes en IAP.
-- [x] trier les médicaments par ordre alpha.
-- [ ] ajouter un médicament depuis le stock (ex: doliprane -> une catégorie pharmacie ?)
-- [x] ⁠⁠Il faut un tri sur les médicaments sur tous les écrans (tri alpha + numérique pour les dosages : 100mg après 50mg)
-- [ ] Voir si on ferait pas une "pharmacie" plutôt que les médicaments hors planning, ex : doliprane
-- [ ] Pouvoir ajouter / modifier un médicament depuis autre part que la prise (ex : pharmacie)
+- [ ] Pouvoir ajouter/modifier un médicament ailleurs que sur une prise (ex : stock)
+  - [ ] Le stock devient un peu une "pharmacie"
+  - [ ] On peut gérer le stock de médicaments "hors planning" -> ex : doliprane
+- [ ] Bouton randomize à côté du lien vers apparence.
+- [ ] Stock : taille d'une boite ne devrait pas être dans "Stock bas" mais dans sa propre section
+- [ ] À la création d'un médicament, forcer le focus sur le nom du médicament

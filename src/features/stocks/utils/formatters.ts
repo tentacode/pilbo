@@ -7,10 +7,6 @@ import type { Language } from "@/shared/i18n/resources";
 
 import { dailyQuantityOf, intakeTimesOf } from "./medSchedule";
 import type { StockForecast } from "./stockForecast";
-import type { StockItem } from "./stockTypes";
-
-type DaysLeftDisplay =
-  { kind: "days"; count: number; unit: string } | { kind: "text"; text: string };
 
 export function formatPillUnit(t: TFunction<"stocks">, quantity: number): string {
   return t("comprimés", { count: quantity });
@@ -24,52 +20,8 @@ export function formatDayCount(t: TFunction<"stocks">, days: number): string {
   return t("{{count}} jours", { count: days });
 }
 
-function noScheduleText(t: TFunction<"stocks">, med: Pick<Med, "isAsNeeded">): string {
-  return med.isAsNeeded ? t("Si besoin") : t("Aucune prise prévue");
-}
-
-export function formatDaysLeft(
-  t: TFunction<"stocks">,
-  { med, forecast }: StockItem,
-): DaysLeftDisplay {
-  if (forecast.daysLeft === undefined) {
-    return { kind: "text", text: noScheduleText(t, med) };
-  }
-  return {
-    kind: "days",
-    count: forecast.daysLeft,
-    unit: t("jours", { count: forecast.daysLeft }),
-  };
-}
-
-export function formatLowStockMention(
-  t: TFunction<"stocks">,
-  language: Language,
-  { forecast }: StockItem,
-): string {
-  const { daysLeft, lastCoveredDate } = forecast;
-  if (daysLeft === undefined || daysLeft === 0 || lastCoveredDate === undefined) {
-    return t("Stock bas · à renouveler");
-  }
-  return t("Stock bas · jusqu’au {{date}}", { date: formatDayAndMonth(lastCoveredDate, language) });
-}
-
-export function formatStockCardAccessibilityLabel(
-  t: TFunction<"stocks">,
-  language: Language,
-  stockItem: StockItem,
-): string {
-  const daysLeft = formatDaysLeft(t, stockItem);
-  const status =
-    stockItem.forecast.status === "low"
-      ? formatLowStockMention(t, language, stockItem)
-      : t("Stock suffisant");
-  return [
-    formatMedLabel(stockItem.med),
-    formatPillCount(t, stockItem.stock.quantity),
-    daysLeft.kind === "days" ? formatDayCount(t, daysLeft.count) : daysLeft.text,
-    status.replace(" · ", " "),
-  ].join(", ");
+function noScheduleText(t: TFunction<"stocks">): string {
+  return t("Aucune prise prévue");
 }
 
 function joinWithAnd(t: TFunction<"stocks">, items: string[]): string {
@@ -84,7 +36,7 @@ function joinWithAnd(t: TFunction<"stocks">, items: string[]): string {
 export function formatMedSchedule(t: TFunction<"stocks">, med: Med, intakes: Intake[]): string {
   const times = intakeTimesOf(med.id, intakes);
   if (times.length === 0) {
-    return noScheduleText(t, med);
+    return noScheduleText(t);
   }
   const dailyQuantity = dailyQuantityOf(med.id, intakes);
   if (dailyQuantity !== undefined) {
@@ -99,11 +51,10 @@ export function formatMedSchedule(t: TFunction<"stocks">, med: Med, intakes: Int
 export function formatCoverage(
   t: TFunction<"stocks">,
   language: Language,
-  med: Pick<Med, "isAsNeeded">,
   { daysLeft, lastCoveredDate }: StockForecast,
 ): { emphasis: string; rest: string } {
   if (daysLeft === undefined || lastCoveredDate === undefined) {
-    return { emphasis: "", rest: noScheduleText(t, med) };
+    return { emphasis: "", rest: noScheduleText(t) };
   }
   return {
     emphasis: formatDayCount(t, daysLeft),
@@ -129,7 +80,7 @@ export function formatStocksBelowZeroMessage(
     count: meds.length,
     meds: joinWithAnd(t, meds.map(formatMedLabel)),
   });
-  return `${sentence} ${t("Pensez à mettre à jour les quantités dans Stock.")}`;
+  return `${sentence} ${t("Pensez à mettre à jour les quantités dans Médicaments.")}`;
 }
 
 export function formatLowStockNotice(t: TFunction<"stocks">, lowStockCount: number): string {

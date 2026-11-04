@@ -25,11 +25,9 @@ name: The app language can be changed
 - tapOn: "Today.*"
 - assertVisible: "Today"
 - assertVisible: "Pillbox"
-- assertVisible: "Stock.*"
-- scrollUntilVisible:
-    element:
-      text: "As needed"
-- assertVisible: "As needed"
+- assertVisible: "Meds.*"
+- tapOn: "Meds.*"
+- assertVisible: "Lithium 250 mg, low stock, .*"
 - tapOn: "Pillbox"
 - assertVisible: "New intake"
 
