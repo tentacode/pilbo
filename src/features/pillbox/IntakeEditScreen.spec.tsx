@@ -14,7 +14,7 @@ import { useSettingsStore } from "@/features/settings/store/settingsStore";
 import { IntakeDraftProvider, useIntakeDraft } from "./hooks/useIntakeDraft";
 import { IntakeEditScreen } from "./IntakeEditScreen";
 import { getAllIntakes } from "./queries/getAllIntakes";
-import { getAsNeededMeds } from "./queries/getAsNeededMeds";
+import { getAllMeds } from "./queries/getAllMeds";
 import { getIntakeById } from "./queries/getIntakeById";
 
 let mockDatabase: Database;
@@ -129,7 +129,10 @@ describe("IntakeEditScreen", () => {
     });
 
     it("saves the intake, reschedules the reminders and closes", async () => {
-      const [prazepam] = getAsNeededMeds(mockDatabase);
+      const prazepam = getAllMeds(mockDatabase).find(({ name }) => name === "Prazépam");
+      if (prazepam === undefined) {
+        throw new Error("Missing Prazépam");
+      }
       await renderScreen();
       await act(() => draftActions.addMed(prazepam));
 

@@ -8,9 +8,10 @@ import type { Database } from "@/shared/database/types";
 import { i18n } from "@/shared/i18n/i18n";
 
 import { IntakeDraftProvider, useIntakeDraft } from "./hooks/useIntakeDraft";
-import { AsNeededMedPickerScreen, IntakeMedPickerScreen } from "./MedPickerScreen";
+import { archiveMed } from "@/features/meds/queries/archiveMed";
+import { findMedId } from "@/features/stocks/queries/testStocks";
+import { IntakeMedPickerScreen } from "./MedPickerScreen";
 import { getAllIntakes } from "./queries/getAllIntakes";
-import { getAsNeededMeds } from "./queries/getAsNeededMeds";
 
 let mockDatabase: Database;
 
@@ -57,13 +58,6 @@ function renderIntakePicker() {
   return render(<IntakeMedPickerScreen />, { wrapper });
 }
 
-function renderAsNeededPicker() {
-  function wrapper({ children }: { children: ReactNode }) {
-    return <SafeAreaProvider initialMetrics={safeAreaMetrics}>{children}</SafeAreaProvider>;
-  }
-  return render(<AsNeededMedPickerScreen />, { wrapper });
-}
-
 beforeEach(() => {
   jest.clearAllMocks();
   mockDatabase = createTestDatabase();
@@ -82,6 +76,13 @@ describe("MedPickerScreen", () => {
         "Ajouter Prégabaline 50 mg",
         "Ajouter Quviviq 50 mg",
       ]);
+    });
+
+    it("hides the archived meds", async () => {
+      archiveMed(mockDatabase, findMedId(mockDatabase, "Prazépam", "25 mg"), new Date());
+      await renderIntakePicker();
+
+      expect(screen.queryByRole("button", { name: /Prazépam/ })).not.toBeOnTheScreen();
     });
 
     it("disables the meds already in the intake", async () => {
@@ -107,38 +108,6 @@ describe("MedPickerScreen", () => {
       await fireEvent.press(screen.getByRole("button", { name: "Nouveau médicament" }));
 
       expect(router.push).toHaveBeenCalledWith("/intake/med");
-    });
-  });
-
-  describe("from the as needed meds", () => {
-    it("disables the meds already as needed", async () => {
-      await renderAsNeededPicker();
-
-      expect(
-        screen.getByRole("button", { name: "Prazépam 25 mg, Si besoin, Déjà hors planning" }),
-      ).toBeDisabled();
-    });
-
-    it("marks the selected med as needed and closes", async () => {
-      await renderAsNeededPicker();
-
-      await fireEvent.press(
-        screen.getByRole("button", { name: "Ajouter Lithium 250 mg, Avec le repas" }),
-      );
-
-      expect(getAsNeededMeds(mockDatabase).map(({ name }) => name)).toEqual([
-        "Lithium",
-        "Prazépam",
-      ]);
-      expect(router.back).toHaveBeenCalledTimes(1);
-    });
-
-    it("opens the new med screen", async () => {
-      await renderAsNeededPicker();
-
-      await fireEvent.press(screen.getByRole("button", { name: "Nouveau médicament" }));
-
-      expect(router.push).toHaveBeenCalledWith("/as-needed/med");
     });
   });
 

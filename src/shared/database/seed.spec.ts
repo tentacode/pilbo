@@ -19,7 +19,7 @@ describe("seedDatabase", () => {
     expect(countRows(database, medTable)).toBe(6);
     expect(countRows(database, intakeTable)).toBe(4);
     expect(countRows(database, intakeMedTable)).toBe(7);
-    expect(countRows(database, stockTable)).toBe(3);
+    expect(countRows(database, stockTable)).toBe(4);
   });
 
   it("creates the intakes 45 days before now", () => {
@@ -161,7 +161,7 @@ describe("seedDatabase", () => {
       expect(readLogsOfDay("2026-09-08")).toEqual([]);
     });
 
-    it("inserts as-needed logs on past days", () => {
+    it("inserts med logs on past days", () => {
       const database = createTestDatabase({ withLogs: true, now: NOW });
 
       expect(countRows(database, medLogTable)).toBe(5);

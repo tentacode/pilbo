@@ -189,7 +189,7 @@ describe("StockEditScreen", () => {
   it("hides the threshold for a med without schedule", async () => {
     await renderFor("Prazépam", "25 mg");
 
-    expect(screen.getByLabelText("0 comprimé, Stock bas, Si besoin")).toBeOnTheScreen();
+    expect(screen.getByLabelText("15 comprimés, Aucune prise prévue")).toBeOnTheScreen();
     expect(screen.queryByRole("adjustable", { name: "Me prévenir à" })).toBeNull();
     expect(screen.getByLabelText("Taille d’une boîte, en comprimés")).toBeOnTheScreen();
   });

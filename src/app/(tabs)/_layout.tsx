@@ -7,7 +7,7 @@ import { NavigationTabBar } from "@/shared/navigation/NavigationTabBar";
 
 export default function TabsLayout() {
   useOpenTodayOnNotification();
-  const badgeCounts = { today: usePendingPastIntakeCount(), stocks: useLowStockCount() };
+  const badgeCounts = { today: usePendingPastIntakeCount(), meds: useLowStockCount() };
 
   return (
     <Tabs
@@ -17,7 +17,7 @@ export default function TabsLayout() {
     >
       <Tabs.Screen name="today" />
       <Tabs.Screen name="pillbox" />
-      <Tabs.Screen name="stocks" />
+      <Tabs.Screen name="meds" />
       <Tabs.Screen name="settings" />
     </Tabs>
   );

@@ -11,7 +11,6 @@ function createStockItem(name: string, strength: string, lowStockDate?: Date): S
     strength,
     detail: "",
     design: { shape: "round", colors: ["#D6C9F5", "#D6C9F5"], size: "medium" },
-    isAsNeeded: false,
   };
   const forecast: StockForecast = { status: "sufficient", daysLeft: 20, lowStockDate };
   return { med, stock: { medId: med.id, quantity: 20, boxSize: 30, lowStockDays: 7 }, forecast };

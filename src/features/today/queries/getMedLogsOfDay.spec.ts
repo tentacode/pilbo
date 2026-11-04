@@ -1,6 +1,6 @@
 import { createTestDatabase } from "@/shared/database/testDatabase";
 
-import { getAsNeededMeds } from "@/features/pillbox/queries/getAsNeededMeds";
+import { getMedById } from "@/features/pillbox/queries/getMedById";
 import { findMedId } from "@/features/stocks/queries/testStocks";
 import { getMedLogsOfDay } from "./getMedLogsOfDay";
 import { insertMedLog } from "./insertMedLog";
@@ -8,7 +8,10 @@ import { insertMedLog } from "./insertMedLog";
 describe("getMedLogsOfDay", () => {
   it("returns every med taken that day, with its time, ordered by time", () => {
     const database = createTestDatabase();
-    const [prazepam] = getAsNeededMeds(database);
+    const prazepam = getMedById(database, findMedId(database, "Prazépam", "25 mg"));
+    if (prazepam === undefined) {
+      throw new Error("Missing Prazépam");
+    }
     const lithiumId = findMedId(database, "Lithium", "250 mg");
     insertMedLog(database, prazepam.id, new Date(2026, 9, 21, 18, 0));
     insertMedLog(database, lithiumId, new Date(2026, 9, 21, 9, 30));

@@ -19,7 +19,6 @@ function insertIntake(
     strength: "250 mg",
     detail: "",
     design: { shape: "round", colors: ["#FFFFFF", "#FFFFFF"], size: "medium" },
-    isAsNeeded: false,
   });
   const { id: intakeId } = database
     .insert(intakeTable)

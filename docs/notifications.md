@@ -35,7 +35,8 @@ Déclencheurs :
 - permission accordée depuis la popup ;
 - retour au premier plan (`AppState` → `active`) ;
 - appui sur « Je l'ai pris » / « Ignorer » ;
-- prise d'un médicament hors planning, et son annulation ;
+- prise libre d'un médicament (fiche ou « Aujourd'hui »), sa modification et sa suppression ;
+- archivage d'un médicament ;
 - enregistrement ou suppression d'un stock ;
 - enregistrement d'une prise ou d'un médicament depuis le pilulier ;
 - changement de langue de l'app (événement `languageChanged` d'i18next, écouté par `useReminderScheduling`).

@@ -9,7 +9,6 @@ import { renderInEnglish } from "@/shared/i18n/testHelpers";
 
 import { PillboxScreen } from "./PillboxScreen";
 import { getAllIntakes } from "./queries/getAllIntakes";
-import { getAsNeededMeds } from "./queries/getAsNeededMeds";
 
 let mockDatabase: Database;
 
@@ -36,17 +35,13 @@ function wrapper({ children }: { children: ReactNode }) {
 }
 
 describe("PillboxScreen", () => {
-  it("shows the empty state when there is no intake and no unscheduled med", async () => {
+  it("shows the empty state when there is no intake", async () => {
     mockDatabase = createTestDatabase({ seed: false });
 
     await render(<PillboxScreen />, { wrapper });
 
     expect(screen.getByRole("header", { name: "Votre pilulier est vide" })).toBeOnTheScreen();
     expect(screen.getByRole("button", { name: "Créer une prise" })).toBeOnTheScreen();
-    expect(
-      screen.getByRole("button", { name: "Ajouter un médicament hors planning" }),
-    ).toBeOnTheScreen();
-    expect(screen.queryByRole("header", { name: "Hors planning" })).not.toBeOnTheScreen();
   });
 
   it("opens a new intake from the empty state", async () => {
@@ -58,24 +53,13 @@ describe("PillboxScreen", () => {
     expect(router.push).toHaveBeenCalledWith("/intake");
   });
 
-  it("opens the med picker from the empty state", async () => {
-    mockDatabase = createTestDatabase({ seed: false });
-    await render(<PillboxScreen />, { wrapper });
-
-    await fireEvent.press(
-      screen.getByRole("button", { name: "Ajouter un médicament hors planning" }),
-    );
-
-    expect(router.push).toHaveBeenCalledWith("/as-needed/med-picker");
-  });
-
   it("shows the intakes when the pillbox is not empty", async () => {
     mockDatabase = createTestDatabase();
 
     await render(<PillboxScreen />, { wrapper });
 
     expect(screen.queryByRole("header", { name: "Votre pilulier est vide" })).not.toBeOnTheScreen();
-    expect(screen.getByRole("header", { name: "Hors planning" })).toBeOnTheScreen();
+    expect(screen.getByRole("button", { name: /^08:20/ })).toBeOnTheScreen();
   });
 
   it("opens a new intake from the header", async () => {
@@ -100,27 +84,11 @@ describe("PillboxScreen", () => {
     });
   });
 
-  it("opens an as needed med and the med picker from the unscheduled section", async () => {
-    mockDatabase = createTestDatabase();
-    const [prazepam] = getAsNeededMeds(mockDatabase);
-    await render(<PillboxScreen />, { wrapper });
-
-    await fireEvent.press(screen.getByRole("button", { name: "Prazépam 25 mg, Si besoin" }));
-    await fireEvent.press(screen.getByRole("button", { name: "Ajouter un médicament" }));
-
-    expect(router.push).toHaveBeenCalledWith({
-      pathname: "/as-needed/med",
-      params: { medId: prazepam.id },
-    });
-    expect(router.push).toHaveBeenCalledWith("/as-needed/med-picker");
-  });
-
   it("is translated in English", async () => {
     await renderInEnglish(<PillboxScreen />, { wrapper });
 
     expect(screen.getByRole("header", { name: "Pillbox" })).toBeOnTheScreen();
     expect(screen.getByRole("button", { name: "New intake" })).toBeOnTheScreen();
-    expect(screen.getByRole("header", { name: "As needed" })).toBeOnTheScreen();
     expect(
       screen.getByRole("button", { name: /^08:20\. .*, reminder every 10 minutes\./ }),
     ).toBeOnTheScreen();

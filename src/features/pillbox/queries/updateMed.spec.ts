@@ -1,13 +1,13 @@
 import { createTestDatabase } from "@/shared/database/testDatabase";
 
-import { getAsNeededMeds } from "./getAsNeededMeds";
+import { findMedId } from "@/features/stocks/queries/testStocks";
 import { getMedById } from "./getMedById";
 import { updateMed } from "./updateMed";
 
 describe("updateMed", () => {
-  it("updates the name, strength, detail and design, and keeps the as needed flag", () => {
+  it("updates the name, strength, detail and design", () => {
     const database = createTestDatabase();
-    const [prazepam] = getAsNeededMeds(database);
+    const prazepam = { id: findMedId(database, "Prazépam", "25 mg") };
 
     updateMed(database, {
       id: prazepam.id,
@@ -23,7 +23,6 @@ describe("updateMed", () => {
       strength: "25 mg",
       detail: "",
       design: { shape: "oval", colors: ["#FFFFFF", "#FFFFFF"], size: "large" },
-      isAsNeeded: true,
     });
   });
 });

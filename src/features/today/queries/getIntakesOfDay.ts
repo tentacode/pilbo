@@ -19,7 +19,6 @@ type IntakeMedOfDayRecord = {
   medStrength: string;
   medDetail: string;
   medDesign: string;
-  medIsAsNeeded: number;
   quantity: number;
 };
 
@@ -37,7 +36,6 @@ export function getIntakesOfDay(database: Database, date: Date): Intake[] {
       ${medTable.strength} AS medStrength,
       ${medTable.detail} AS medDetail,
       ${medTable.design} AS medDesign,
-      ${medTable.isAsNeeded} AS medIsAsNeeded,
       ${intakeMedTable.quantity} AS quantity
     FROM ${intakeTable}
     INNER JOIN ${intakeMedTable} ON ${intakeMedTable.intakeId} = ${intakeTable.id}
@@ -66,7 +64,6 @@ export function getIntakesOfDay(database: Database, date: Date): Intake[] {
         strength: record.medStrength,
         detail: record.medDetail,
         design: record.medDesign,
-        isAsNeeded: record.medIsAsNeeded,
       }),
       quantity: record.quantity,
     });

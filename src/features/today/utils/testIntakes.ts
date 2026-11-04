@@ -15,7 +15,6 @@ export function createIntake(hour: number, minute: number): Intake {
           strength: "250 mg",
           detail: "",
           design: { shape: "round", colors: ["#D6C9F5", "#D6C9F5"], size: "medium" },
-          isAsNeeded: false,
         },
         quantity: 1,
       },

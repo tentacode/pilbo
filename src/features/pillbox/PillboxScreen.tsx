@@ -7,7 +7,6 @@ import { ScreenHeader } from "@/design-system/components/ScreenHeader/ScreenHead
 
 import { IntakeList } from "./components/IntakeList";
 import { PillboxEmptyState } from "./components/PillboxEmptyState";
-import { UnscheduledSection } from "./components/UnscheduledSection";
 import { usePillboxData } from "@/features/pillbox/hooks/usePillboxData";
 
 function openNewIntake() {
@@ -18,18 +17,9 @@ function openIntake(intakeId: string) {
   router.push({ pathname: "/intake", params: { intakeId } });
 }
 
-function openAsNeededMedPicker() {
-  router.push("/as-needed/med-picker");
-}
-
-function openAsNeededMed(medId: string) {
-  router.push({ pathname: "/as-needed/med", params: { medId } });
-}
-
 export function PillboxScreen() {
   const { t } = useTranslation("pillbox");
-  const { intakes, asNeededMeds } = usePillboxData();
-  const isEmpty = intakes.length === 0 && asNeededMeds.length === 0;
+  const { intakes } = usePillboxData();
 
   return (
     <Screen>
@@ -43,20 +33,10 @@ export function PillboxScreen() {
           />
         }
       />
-      {isEmpty ? (
-        <PillboxEmptyState
-          onCreateIntake={openNewIntake}
-          onAddAsNeededMed={openAsNeededMedPicker}
-        />
+      {intakes.length === 0 ? (
+        <PillboxEmptyState onCreateIntake={openNewIntake} />
       ) : (
-        <>
-          <IntakeList intakes={intakes} onIntakePress={openIntake} />
-          <UnscheduledSection
-            meds={asNeededMeds}
-            onMedPress={openAsNeededMed}
-            onAddMed={openAsNeededMedPicker}
-          />
-        </>
+        <IntakeList intakes={intakes} onIntakePress={openIntake} />
       )}
     </Screen>
   );

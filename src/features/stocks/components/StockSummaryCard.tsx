@@ -2,7 +2,6 @@ import { View } from "react-native";
 import { useTranslation } from "react-i18next";
 
 import { Text } from "@/design-system/components/Text/Text";
-import type { Med } from "@/domain/med";
 
 import {
   formatCoverage,
@@ -16,18 +15,17 @@ import { styles } from "./StockSummaryCard.styles";
 import { useLanguage } from "@/shared/i18n/hooks/useLanguage";
 
 type StockSummaryCardProps = {
-  med: Med;
   quantity: number;
   forecast: StockForecast;
 };
 
-export function StockSummaryCard({ med, quantity, forecast }: StockSummaryCardProps) {
+export function StockSummaryCard({ quantity, forecast }: StockSummaryCardProps) {
   const { t } = useTranslation("stocks");
   const language = useLanguage();
   const isLow = forecast.status === "low";
   const statusTexts = { low: t("Stock bas"), sufficient: t("Suffisant") };
   const statusText = forecast.status === "noSchedule" ? undefined : statusTexts[forecast.status];
-  const coverage = formatCoverage(t, language, med, forecast);
+  const coverage = formatCoverage(t, language, forecast);
   const pillCount = formatPillCount(t, quantity);
   const ratio = stockRatio(forecast);
 

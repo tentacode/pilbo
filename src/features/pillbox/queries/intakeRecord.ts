@@ -17,7 +17,6 @@ type IntakeMedRecord = {
   medStrength: string;
   medDetail: string;
   medDesign: string;
-  medIsAsNeeded: number;
   quantity: number;
 };
 
@@ -34,7 +33,6 @@ export function selectActiveIntakes(database: Database, condition: SQL = sql`1 =
       ${medTable.strength} AS medStrength,
       ${medTable.detail} AS medDetail,
       ${medTable.design} AS medDesign,
-      ${medTable.isAsNeeded} AS medIsAsNeeded,
       ${intakeMedTable.quantity} AS quantity
     FROM ${intakeTable}
     LEFT JOIN ${intakeMedTable} ON ${intakeMedTable.intakeId} = ${intakeTable.id}
@@ -62,7 +60,6 @@ export function selectActiveIntakes(database: Database, condition: SQL = sql`1 =
           strength: record.medStrength,
           detail: record.medDetail,
           design: record.medDesign,
-          isAsNeeded: record.medIsAsNeeded,
         }),
         quantity: record.quantity,
       });

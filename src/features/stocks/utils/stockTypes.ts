@@ -8,8 +8,3 @@ export type StockItem = {
   stock: Stock;
   forecast: StockForecast;
 };
-
-export type StockSections = {
-  low: StockItem[];
-  sufficient: StockItem[];
-};

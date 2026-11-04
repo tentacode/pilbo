@@ -1,5 +1,4 @@
 import { type Href, router } from "expo-router";
-import type { ReactNode } from "react";
 import { View } from "react-native";
 import { useTranslation } from "react-i18next";
 
@@ -12,48 +11,37 @@ import { FormSection } from "./components/FormSection";
 import { PickerMedRow } from "./components/PickerMedRow";
 import { useAllMeds } from "./hooks/useAllMeds";
 import { useIntakeDraft } from "./hooks/useIntakeDraft";
-import { useMedActions } from "./hooks/useMedActions";
 import { styles } from "./MedPickerScreen.styles";
 
 type MedPickerScreenProps = {
-  title?: string;
-  newMedHref?: Href;
-  rowActionLabel?: string;
-  unavailableLabelOf?: (med: Med) => string | undefined;
-  statusLabelOf?: (med: Med) => string | undefined;
-  emptyContent?: ReactNode;
+  newMedHref: Href;
+  rowActionLabel: string;
+  unavailableLabelOf: (med: Med) => string | undefined;
   onSelect: (med: Med) => void;
 };
 
 export function MedPickerScreen({
-  title,
   newMedHref,
   rowActionLabel,
   unavailableLabelOf,
-  statusLabelOf,
-  emptyContent,
   onSelect,
 }: MedPickerScreenProps) {
   const { t } = useTranslation("pillbox");
   const meds = useAllMeds();
   return (
     <Sheet
-      title={title ?? t("Ajouter un médicament")}
+      title={t("Ajouter un médicament")}
       leftAction={{ label: t("Annuler"), onPress: () => router.back() }}
     >
       <View style={styles.content}>
-        {newMedHref === undefined ? null : (
-          <FormGroup>
-            <AddMedRow
-              label={t("Nouveau médicament")}
-              hasTopBorder={false}
-              onPress={() => router.push(newMedHref)}
-            />
-          </FormGroup>
-        )}
-        {meds.length === 0 ? (
-          emptyContent
-        ) : (
+        <FormGroup>
+          <AddMedRow
+            label={t("Nouveau médicament")}
+            hasTopBorder={false}
+            onPress={() => router.push(newMedHref)}
+          />
+        </FormGroup>
+        {meds.length === 0 ? null : (
           <FormSection label={t("Vos médicaments")}>
             <FormGroup>
               {meds.map((med, index) => (
@@ -62,8 +50,7 @@ export function MedPickerScreen({
                   med={med}
                   hasTopBorder={index > 0}
                   actionLabel={rowActionLabel}
-                  unavailableLabel={unavailableLabelOf?.(med)}
-                  statusLabel={statusLabelOf?.(med)}
+                  unavailableLabel={unavailableLabelOf(med)}
                   onPress={() => onSelect(med)}
                 />
               ))}
@@ -86,22 +73,6 @@ export function IntakeMedPickerScreen() {
       unavailableLabelOf={(med) => (medIdsInIntake.has(med.id) ? t("Dans la prise") : undefined)}
       onSelect={(med) => {
         addMed(med);
-        router.back();
-      }}
-    />
-  );
-}
-
-export function AsNeededMedPickerScreen() {
-  const { t } = useTranslation("pillbox");
-  const medActions = useMedActions();
-  return (
-    <MedPickerScreen
-      newMedHref="/as-needed/med"
-      rowActionLabel={t("Ajouter")}
-      unavailableLabelOf={(med) => (med.isAsNeeded ? t("Déjà hors planning") : undefined)}
-      onSelect={(med) => {
-        medActions.setAsNeeded(med.id, true);
         router.back();
       }}
     />

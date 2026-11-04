@@ -3,20 +3,15 @@ import { sql } from "drizzle-orm";
 import type { ReactNode } from "react";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 
-import * as Haptics from "expo-haptics";
-
 import { router } from "expo-router";
 
-import { rescheduleReminders } from "@/features/notifications/rescheduleReminders";
 import { insertMed } from "@/features/pillbox/queries/insertMed";
-import { getStockByMedId } from "@/features/stocks/queries/getStockByMedId";
 import { saveStock } from "@/features/stocks/queries/saveStock";
 import { findMedId } from "@/features/stocks/queries/testStocks";
 import { useLowStockNoticeStore } from "@/features/stocks/store/lowStockNoticeStore";
 import { intakeLogTable, intakeTable, medLogTable } from "@/shared/database/schema";
 import { createTestDatabase } from "@/shared/database/testDatabase";
 import { renderInEnglish } from "@/shared/i18n/testHelpers";
-import { countRows } from "@/shared/database/testHelpers";
 import type { Database } from "@/shared/database/types";
 
 import { TodayScreen } from "./TodayScreen";
@@ -186,111 +181,86 @@ describe("TodayScreen", () => {
     ).toBeOnTheScreen();
   });
 
-  describe("as needed meds", () => {
-    const TAKE_PRAZEPAM = "Prendre Prazépam 25 mg";
-    const CANCEL_PRAZEPAM = /^Annuler la prise de Prazépam 25 mg/;
-
-    function setPrazepamStock(quantity: number) {
-      saveStock(mockDatabase, {
-        medId: findMedId(mockDatabase, "Prazépam", "25 mg"),
-        quantity,
-        boxSize: 30,
-        lowStockDays: 7,
-      });
+  describe("other meds", () => {
+    function takePrazepamAt(takenAt: string) {
+      mockDatabase
+        .insert(medLogTable)
+        .values({ medId: findMedId(mockDatabase, "Prazépam", "25 mg"), takenAt })
+        .run();
     }
 
-    function prazepamStock() {
-      return getStockByMedId(mockDatabase, findMedId(mockDatabase, "Prazépam", "25 mg"))?.stock
-        .quantity;
-    }
+    it("lists one card per free taking of the day, ordered by time", async () => {
+      takePrazepamAt("2026-10-04T15:40");
+      takePrazepamAt("2026-10-04T06:10");
+      takePrazepamAt("2026-10-03T09:00");
+      await renderAt(17, 0);
 
-    it("lists the as needed meds at the bottom", async () => {
-      await renderAt(7, 0);
-
-      expect(screen.getByRole("header", { name: "Hors planning" })).toBeOnTheScreen();
-      expect(screen.getByLabelText("Prazépam 25 mg, Si besoin")).toBeOnTheScreen();
-      expect(screen.queryByRole("button", { name: CANCEL_PRAZEPAM })).not.toBeOnTheScreen();
+      expect(screen.getByRole("header", { name: "Autres médicaments" })).toBeOnTheScreen();
+      expect(screen.getAllByRole("button", { name: /^Prazépam 25 mg/ }).map(nameOf)).toEqual([
+        "Prazépam 25 mg, Pris à 06:10",
+        "Prazépam 25 mg, Pris à 15:40",
+      ]);
     });
 
-    it("shows the as needed meds even without intakes", async () => {
+    it("opens the free taking", async () => {
+      takePrazepamAt("2026-10-04T06:10");
+      await renderAt(7, 0);
+
+      await fireEvent.press(screen.getByRole("button", { name: "Prazépam 25 mg, Pris à 06:10" }));
+
+      expect(router.push).toHaveBeenCalledWith({
+        pathname: "/med-log",
+        params: { medLogId: expect.any(String) },
+      });
+    });
+
+    it("is hidden without free taking", async () => {
+      await renderAt(7, 0);
+
+      expect(screen.queryByRole("header", { name: "Autres médicaments" })).not.toBeOnTheScreen();
+    });
+
+    it("shows the free takings even without intakes", async () => {
       mockDatabase = createTestDatabase({ seed: false });
-      insertMed(mockDatabase, {
+      const doliprane = insertMed(mockDatabase, {
         name: "Doliprane",
         strength: "1 g",
-        detail: "Si besoin",
+        detail: "",
         design: { shape: "round", colors: ["#FFFFFF", "#FFFFFF"], size: "medium" },
-        isAsNeeded: true,
       });
+      mockDatabase
+        .insert(medLogTable)
+        .values({ medId: doliprane.id, takenAt: "2026-10-04T06:10" })
+        .run();
       await renderAt(7, 0);
 
       expect(screen.getByRole("header", { name: "Rien à prendre aujourd'hui" })).toBeOnTheScreen();
-      expect(screen.getByRole("button", { name: "Prendre Doliprane 1 g" })).toBeOnTheScreen();
+      expect(screen.getByRole("button", { name: "Doliprane 1 g, Pris à 06:10" })).toBeOnTheScreen();
     });
+  });
 
-    it("takes an as needed med and shows the time of the last intake", async () => {
-      await renderAt(7, 0);
+  describe("stock below zero", () => {
+    it("warns and opens the meds tab", async () => {
+      saveStock(mockDatabase, {
+        medId: findMedId(mockDatabase, "Lamictal", "50 mg"),
+        quantity: 0,
+        boxSize: 30,
+        lowStockDays: 7,
+      });
+      await renderAt(8, 20);
 
-      await fireEvent.press(screen.getByRole("button", { name: TAKE_PRAZEPAM }));
-      jest.setSystemTime(new Date(2026, 9, 4, 9, 30));
-      await fireEvent.press(screen.getByRole("button", { name: TAKE_PRAZEPAM }));
-
-      expect(screen.getByText("Pris à 09:30")).toBeOnTheScreen();
-      expect(countRows(mockDatabase, medLogTable)).toBe(2);
-      expect(Haptics.notificationAsync).toHaveBeenCalledWith(
-        Haptics.NotificationFeedbackType.Success,
-      );
-    });
-
-    it("cancels only the last intake of the day and gives back a pill", async () => {
-      setPrazepamStock(5);
-      await renderAt(7, 0);
-      await fireEvent.press(screen.getByRole("button", { name: TAKE_PRAZEPAM }));
-      jest.setSystemTime(new Date(2026, 9, 4, 9, 30));
-      await fireEvent.press(screen.getByRole("button", { name: TAKE_PRAZEPAM }));
-      expect(prazepamStock()).toBe(3);
-      jest.mocked(rescheduleReminders).mockClear();
-
-      await fireEvent.press(
-        screen.getByRole("button", { name: "Annuler la prise de Prazépam 25 mg de 09:30" }),
-      );
-
-      expect(screen.getByText("Pris à 07:00")).toBeOnTheScreen();
-      expect(
-        screen.getByRole("button", { name: "Annuler la prise de Prazépam 25 mg de 07:00" }),
-      ).toBeOnTheScreen();
-      expect(countRows(mockDatabase, medLogTable)).toBe(1);
-      expect(prazepamStock()).toBe(4);
-      expect(rescheduleReminders).toHaveBeenCalledTimes(1);
-    });
-
-    it("warns once when the stock goes below zero", async () => {
-      setPrazepamStock(0);
-      await renderAt(7, 0);
-
-      await fireEvent.press(screen.getByRole("button", { name: TAKE_PRAZEPAM }));
+      await fireEvent.press(screen.getByRole("button", { name: "Prendre la prise de 08:20" }));
 
       expect(screen.getByRole("header", { name: "Stock à mettre à jour" })).toBeOnTheScreen();
       expect(
         screen.getByText(
-          "Le stock de Prazépam 25 mg est passé sous zéro. Pensez à mettre à jour les quantités dans Stock.",
+          "Le stock de Lamictal 50 mg est passé sous zéro. Pensez à mettre à jour les quantités dans Médicaments.",
         ),
       ).toBeOnTheScreen();
 
-      await fireEvent.press(screen.getByRole("button", { name: "Plus tard" }));
-      await fireEvent.press(screen.getByRole("button", { name: TAKE_PRAZEPAM }));
-
-      expect(prazepamStock()).toBe(-2);
-      expect(screen.queryByRole("header", { name: "Stock à mettre à jour" })).toBeNull();
-    });
-
-    it("opens the stocks from the below zero warning", async () => {
-      setPrazepamStock(0);
-      await renderAt(7, 0);
-      await fireEvent.press(screen.getByRole("button", { name: TAKE_PRAZEPAM }));
-
       await fireEvent.press(screen.getByRole("button", { name: "Voir le stock" }));
 
-      expect(router.navigate).toHaveBeenCalledWith("/stocks");
+      expect(router.navigate).toHaveBeenCalledWith("/meds");
       expect(screen.queryByRole("header", { name: "Stock à mettre à jour" })).toBeNull();
     });
   });
@@ -304,7 +274,7 @@ describe("TodayScreen", () => {
 
       await fireEvent.press(screen.getByRole("button", { name: NOTICE }));
 
-      expect(router.navigate).toHaveBeenCalledWith("/stocks");
+      expect(router.navigate).toHaveBeenCalledWith("/meds");
     });
 
     it("is hidden without low stock", async () => {
@@ -432,25 +402,26 @@ describe("TodayScreen", () => {
       expect(screen.queryByRole("button", { name: /Prendre|Ignorer/ })).not.toBeOnTheScreen();
     });
 
-    it("shows the as needed meds taken that day, without button", async () => {
+    it("shows the free takings of that day", async () => {
       logYesterday();
       await renderAt(10, 0);
 
       await fireEvent.press(screen.getByRole("button", { name: PREVIOUS_DAY }));
 
-      expect(screen.getByRole("header", { name: "Hors planning" })).toBeOnTheScreen();
-      expect(screen.getByLabelText("Prazépam 25 mg, Si besoin, Pris à 15:40")).toBeOnTheScreen();
-      expect(screen.queryByRole("button", { name: /Annuler/ })).not.toBeOnTheScreen();
+      expect(screen.getByRole("header", { name: "Autres médicaments" })).toBeOnTheScreen();
+      expect(
+        screen.getByRole("button", { name: "Prazépam 25 mg, Pris à 15:40" }),
+      ).toBeOnTheScreen();
     });
 
-    it("shows neither notices nor the as needed section on a past day without them", async () => {
+    it("shows neither notices nor the other meds on a past day without them", async () => {
       mockPermissionGranted = false;
       await renderAt(10, 0);
 
       await fireEvent.press(screen.getByRole("button", { name: PREVIOUS_DAY }));
 
       expect(screen.queryByText("Les rappels sont désactivés")).not.toBeOnTheScreen();
-      expect(screen.queryByRole("header", { name: "Hors planning" })).not.toBeOnTheScreen();
+      expect(screen.queryByRole("header", { name: "Autres médicaments" })).not.toBeOnTheScreen();
     });
 
     it("shows a simple empty state on a past day without planned intake", async () => {
@@ -490,3 +461,7 @@ describe("TodayScreen", () => {
     });
   });
 });
+
+function nameOf(element: { props: { accessibilityLabel?: string } }): string | undefined {
+  return element.props.accessibilityLabel;
+}

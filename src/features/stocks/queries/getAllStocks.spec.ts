@@ -19,7 +19,6 @@ describe("getAllStocks", () => {
         strength: "50 mg",
         detail: "",
         design: { shape: "softgel", colors: ["#F8C6DA", "#F8C6DA"], size: "medium" },
-        isAsNeeded: false,
       },
       stock: { medId, quantity: -2, boxSize: 28, lowStockDays: 5 },
     });

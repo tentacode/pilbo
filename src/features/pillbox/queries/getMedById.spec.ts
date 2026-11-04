@@ -1,15 +1,18 @@
+import { sql } from "drizzle-orm";
+
 import { medTable } from "@/shared/database/schema";
 import { createTestDatabase } from "@/shared/database/testDatabase";
 
-import { getAsNeededMeds } from "./getAsNeededMeds";
+import { findMedId } from "@/features/stocks/queries/testStocks";
+import { getAllMeds } from "./getAllMeds";
 import { getMedById } from "./getMedById";
 
 describe("getMedById", () => {
   it("returns the med", () => {
     const database = createTestDatabase();
-    const [prazepam] = getAsNeededMeds(database);
+    const prazepam = getAllMeds(database).find(({ name }) => name === "Prazépam");
 
-    expect(getMedById(database, prazepam.id)).toEqual(prazepam);
+    expect(getMedById(database, prazepam?.id ?? "")).toEqual(prazepam);
   });
 
   it("reads a single color design as a plain two color design", () => {
@@ -29,5 +32,17 @@ describe("getMedById", () => {
 
   it("returns undefined for an unknown med", () => {
     expect(getMedById(createTestDatabase(), "unknown")).toBeUndefined();
+  });
+
+  it("returns undefined for an archived med", () => {
+    const database = createTestDatabase();
+    const prazepamId = findMedId(database, "Prazépam", "25 mg");
+    database
+      .update(medTable)
+      .set({ archivedOn: "2026-11-04" })
+      .where(sql`${medTable.id} = ${prazepamId}`)
+      .run();
+
+    expect(getMedById(database, prazepamId)).toBeUndefined();
   });
 });

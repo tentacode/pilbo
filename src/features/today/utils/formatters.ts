@@ -193,7 +193,7 @@ export function formatTakenTime(takenAt: string): string {
   return formatIntakeTime({ hour, minute });
 }
 
-export function formatAsNeededTakenAt(t: TFunction<"today">, takenAt: string): string {
+export function formatMedLogTakenAt(t: TFunction<"today">, takenAt: string): string {
   return t("Pris à {{time}}", { time: formatTakenTime(takenAt) });
 }
 

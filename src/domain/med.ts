@@ -27,7 +27,6 @@ export interface Med {
   strength: string;
   detail: string;
   design: PillDesign;
-  isAsNeeded: boolean;
 }
 
 export interface MedQuantity {

@@ -13,9 +13,7 @@ describe("getAllMeds", () => {
       strength: "250 mg",
       detail: "Avec le repas",
       design: { shape: "round", colors: ["#D6C9F5", "#D6C9F5"], size: "medium" },
-      isAsNeeded: false,
     });
-    expect(meds.find(({ name }) => name === "Prazépam")?.isAsNeeded).toBe(true);
   });
 
   it("returns nothing when the database is empty", () => {

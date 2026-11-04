@@ -1,4 +1,4 @@
-import { router, useLocalSearchParams, useNavigation } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import { useState } from "react";
 import { View } from "react-native";
 import type { TFunction } from "i18next";
@@ -11,12 +11,9 @@ import type { Med } from "@/domain/med";
 import { DuplicateMedDialog } from "./components/DuplicateMedDialog";
 import { MedAppearanceBlock } from "./components/MedAppearanceBlock";
 import { MedFields } from "./components/MedFields";
-import { RemoveAsNeededDialog } from "./components/RemoveAsNeededDialog";
 import { useIntakeDraft } from "./hooks/useIntakeDraft";
 import { useMedActions } from "./hooks/useMedActions";
 import { useMedDraft } from "./hooks/useMedDraft";
-import { useHasStock } from "@/features/stocks/hooks/useHasStock";
-import { openStockFromTab } from "@/features/stocks/utils/openStock";
 import { createMedDraft, type MedDraft, type MedFlowOrigin } from "./utils/medDraft";
 import { validateMedDraft } from "./utils/validators";
 import { styles } from "./MedScreen.styles";
@@ -24,29 +21,26 @@ import { styles } from "./MedScreen.styles";
 type MedScreenProps = {
   origin: MedFlowOrigin;
   onSaved: (med: Med, isNew: boolean) => void;
-  onRemovedFromAsNeeded?: () => void;
 };
 
 function submitLabelOf(t: TFunction<"pillbox">, origin: MedFlowOrigin, isEditing: boolean): string {
   if (isEditing) {
     return t("Enregistrer");
   }
-  return origin === "intake" ? t("Ajouter à la prise") : t("Ajouter au hors planning");
+  return origin === "intake" ? t("Ajouter à la prise") : t("Ajouter");
 }
 
-export function MedScreen({ origin, onSaved, onRemovedFromAsNeeded }: MedScreenProps) {
+export function MedScreen({ origin, onSaved }: MedScreenProps) {
   const { t } = useTranslation("pillbox");
   const { medId } = useLocalSearchParams<{ medId?: string }>();
   const medActions = useMedActions();
   const { draft, update } = useMedDraft(() =>
-    createMedDraft(t, origin, medId === undefined ? undefined : medActions.getById(medId)),
+    createMedDraft(medId === undefined ? undefined : medActions.getById(medId)),
   );
   const [nameError, setNameError] = useState<string>();
   const [duplicate, setDuplicate] = useState<Med | null>(null);
-  const [isRemoveDialogVisible, setIsRemoveDialogVisible] = useState(false);
   const isEditing = draft.medId !== undefined;
-  const editingMedId = draft.medId;
-  const hasStock = useHasStock(editingMedId);
+  const isFirstScreen = isEditing || origin === "meds";
 
   function handleChange(changes: Partial<MedDraft>) {
     if (changes.name !== undefined) {
@@ -60,7 +54,7 @@ export function MedScreen({ origin, onSaved, onRemovedFromAsNeeded }: MedScreenP
       setNameError(t("Indiquez le nom du médicament."));
       return;
     }
-    const result = medActions.save(draft, origin === "asNeeded");
+    const result = medActions.save(draft);
     if (result.status === "duplicate") {
       setDuplicate(result.duplicate);
       return;
@@ -68,19 +62,11 @@ export function MedScreen({ origin, onSaved, onRemovedFromAsNeeded }: MedScreenP
     onSaved(result.med, !isEditing);
   }
 
-  function handleRemoveFromAsNeeded() {
-    setIsRemoveDialogVisible(false);
-    if (editingMedId !== undefined) {
-      medActions.setAsNeeded(editingMedId, false);
-    }
-    onRemovedFromAsNeeded?.();
-  }
-
   return (
     <Sheet
       title={isEditing ? t("Modifier le médicament") : t("Nouveau médicament")}
       leftAction={
-        isEditing
+        isFirstScreen
           ? { label: t("Annuler"), onPress: () => router.back() }
           : { label: t("Retour"), icon: "chevronLeft", onPress: () => router.back() }
       }
@@ -95,36 +81,11 @@ export function MedScreen({ origin, onSaved, onRemovedFromAsNeeded }: MedScreenP
       <View style={styles.content}>
         <MedAppearanceBlock
           design={draft.design}
-          onEdit={() =>
-            router.push(origin === "intake" ? "/intake/appearance" : "/as-needed/appearance")
-          }
+          onEdit={() => router.push(origin === "intake" ? "/intake/appearance" : "/med/appearance")}
         />
         <MedFields draft={draft} nameError={nameError} onChange={handleChange} />
-        {editingMedId === undefined ? null : (
-          <View style={styles.centeredButton}>
-            <Button
-              label={hasStock ? t("Modifier le stock") : t("Ajouter un stock")}
-              variant="secondary"
-              onPress={() => openStockFromTab(editingMedId)}
-            />
-          </View>
-        )}
-        {origin === "asNeeded" && isEditing ? (
-          <View style={styles.centeredButton}>
-            <Button
-              label={t("Enlever de « Hors planning »")}
-              variant="text"
-              onPress={() => setIsRemoveDialogVisible(true)}
-            />
-          </View>
-        ) : null}
       </View>
       <DuplicateMedDialog duplicate={duplicate} onClose={() => setDuplicate(null)} />
-      <RemoveAsNeededDialog
-        isVisible={isRemoveDialogVisible}
-        onRemove={handleRemoveFromAsNeeded}
-        onCancel={() => setIsRemoveDialogVisible(false)}
-      />
     </Sheet>
   );
 }
@@ -147,8 +108,16 @@ export function IntakeMedScreen() {
   );
 }
 
-export function AsNeededMedScreen() {
-  const navigation = useNavigation();
-  const closeModal = () => navigation.getParent()?.goBack();
-  return <MedScreen origin="asNeeded" onSaved={closeModal} onRemovedFromAsNeeded={closeModal} />;
+export function MedsMedScreen() {
+  return (
+    <MedScreen
+      origin="meds"
+      onSaved={(med, isNew) => {
+        router.back();
+        if (isNew) {
+          router.navigate({ pathname: "/meds/[medId]", params: { medId: med.id } });
+        }
+      }}
+    />
+  );
 }

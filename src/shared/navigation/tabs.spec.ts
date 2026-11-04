@@ -5,9 +5,9 @@ import { tabs } from "./tabs";
 const t = i18n.getFixedT(null, "common");
 
 describe("tabs", () => {
-  it("formats the badge of the stocks tab", () => {
-    expect(tabs.stocks.formatBadgeLabel?.(t, 1)).toBe("1 stock bas");
-    expect(tabs.stocks.formatBadgeLabel?.(t, 2)).toBe("2 stocks bas");
+  it("formats the badge of the meds tab", () => {
+    expect(tabs.meds.formatBadgeLabel?.(t, 1)).toBe("1 stock bas");
+    expect(tabs.meds.formatBadgeLabel?.(t, 2)).toBe("2 stocks bas");
   });
 
   it("formats the badge of the today tab", () => {
@@ -19,7 +19,8 @@ describe("tabs", () => {
     await i18n.changeLanguage("en");
 
     expect(tabs.today.formatLabel(t)).toBe("Today");
-    expect(tabs.stocks.formatBadgeLabel?.(t, 1)).toBe("1 low stock");
-    expect(tabs.stocks.formatBadgeLabel?.(t, 2)).toBe("2 low stocks");
+    expect(tabs.meds.formatLabel(t)).toBe("Meds");
+    expect(tabs.meds.formatBadgeLabel?.(t, 1)).toBe("1 low stock");
+    expect(tabs.meds.formatBadgeLabel?.(t, 2)).toBe("2 low stocks");
   });
 });

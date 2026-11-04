@@ -18,10 +18,11 @@ export const iconShapes = {
       <Path d="M8.5 8.5l7 7" />
     </>
   ),
-  stocks: (
+  meds: (
     <>
-      <Path d="M3.5 7.5L12 3l8.5 4.5v9L12 21l-8.5-4.5z" />
-      <Path d="M3.5 7.5L12 12l8.5-4.5M12 12v9" />
+      <Rect x={3.5} y={6.5} width={17} height={13.5} rx={3} />
+      <Path d="M9 6.5V5a1.5 1.5 0 0 1 1.5-1.5h3A1.5 1.5 0 0 1 15 5v1.5" />
+      <Path d="M12 10v6M9 13h6" />
     </>
   ),
   settings: (
@@ -36,6 +37,12 @@ export const iconShapes = {
   close: <Path d="M6.5 6.5l11 11M17.5 6.5l-11 11" />,
   chevronRight: <Path d="M9.5 6l6 6-6 6" />,
   chevronLeft: <Path d="M14.5 6l-6 6 6 6" />,
+  undo: (
+    <>
+      <Path d="M9 6.5L4.5 11 9 15.5" />
+      <Path d="M5 11h9.5a5 5 0 0 1 0 10H12" />
+    </>
+  ),
   calendar: (
     <>
       <Rect x={4} y={5.5} width={16} height={14.5} rx={3} />

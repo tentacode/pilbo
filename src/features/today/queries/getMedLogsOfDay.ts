@@ -1,4 +1,4 @@
-import { sql } from "drizzle-orm";
+import { type SQL, sql } from "drizzle-orm";
 
 import { medLogTable, medTable } from "@/shared/database/schema";
 import type { Database } from "@/shared/database/types";
@@ -14,7 +14,6 @@ type MedLogRecord = {
   medStrength: string;
   medDetail: string;
   medDesign: string;
-  medIsAsNeeded: number;
 };
 
 function toMedRecord(record: MedLogRecord): MedRecord {
@@ -24,11 +23,10 @@ function toMedRecord(record: MedLogRecord): MedRecord {
     strength: record.medStrength,
     detail: record.medDetail,
     design: record.medDesign,
-    isAsNeeded: record.medIsAsNeeded,
   };
 }
 
-export function getMedLogsOfDay(database: Database, localDate: string): MedLogOfDay[] {
+export function selectMedLogs(database: Database, condition: SQL): MedLogOfDay[] {
   const records = database.all<MedLogRecord>(sql`
     SELECT
       ${medLogTable.id} AS medLogId,
@@ -37,11 +35,10 @@ export function getMedLogsOfDay(database: Database, localDate: string): MedLogOf
       ${medTable.name} AS medName,
       ${medTable.strength} AS medStrength,
       ${medTable.detail} AS medDetail,
-      ${medTable.design} AS medDesign,
-      ${medTable.isAsNeeded} AS medIsAsNeeded
+      ${medTable.design} AS medDesign
     FROM ${medLogTable}
     INNER JOIN ${medTable} ON ${medTable.id} = ${medLogTable.medId}
-    WHERE ${medLogTable.takenAt} LIKE ${localDate} || '%'
+    WHERE ${condition}
     ORDER BY ${medLogTable.takenAt}, ${medLogTable}.rowid
   `);
   return records.map((record) => ({
@@ -49,4 +46,8 @@ export function getMedLogsOfDay(database: Database, localDate: string): MedLogOf
     med: toMed(toMedRecord(record)),
     takenAt: record.takenAt,
   }));
+}
+
+export function getMedLogsOfDay(database: Database, localDate: string): MedLogOfDay[] {
+  return selectMedLogs(database, sql`${medLogTable.takenAt} LIKE ${localDate} || '%'`);
 }
