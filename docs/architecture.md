@@ -122,9 +122,9 @@ Stack : i18next + react-i18next, extraction avec `i18next-cli` (`i18next.config.
 
 `scripts/generateArtwork.mjs` génère les sources SVG dans `assets/artwork/` et les PNG dans `assets/images/` :
 
-- `icon.png` et `icon-dev.png` (« Pilbo Dev », bandeau « DEV ») : 1024×1024, sans transparence.
+- `icon.png` et `icon-dev.png` (« Pilbo Dev », bandeau « DEV », gélule centrée au-dessus du bandeau) : 1024×1024, sans transparence.
 - `splash.png` et `splash-dark.png` : 1290×2796, affichés en plein écran (`enableFullScreenImage_legacy` + `resizeMode: "cover"` dans `app.config.ts`).
 
-Fond de petites pilules aléatoires (seed fixe) et grosse gélule centrée. Les réglages (nombre et taille des pilules, saturation, opacité…) sont dans `SETTINGS` en tête du script. Régénérer avec `make artwork`.
+Fond de petites pilules aléatoires (seed fixe) et grosse gélule centrée. Les réglages principaux (seed, couleurs de fond, couleurs et saturation de la gélule, saturation, densité et taille des pilules, séparément pour l'icône et le splash) sont dans `assets/artwork/config.ts`, documentés clé par clé. Ce fichier est lu directement par Node (d'où le `package.json` `"type": "module"` à côté) et par `app.config.ts` pour les couleurs de fond du splash. Les réglages plus fins (opacités, contours, nuancier…) restent dans `SETTINGS` en tête du script. Régénérer avec `make artwork`.
 
 Puis `npx expo prebuild --clean`.

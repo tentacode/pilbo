@@ -1,4 +1,5 @@
 import type { ExpoConfig } from "expo/config";
+import { artworkConfig } from "./assets/artwork/config.ts";
 
 const BASE_BUNDLE_IDENTIFIER = "com.tentacode.pilbo";
 
@@ -77,12 +78,12 @@ const config: ExpoConfig = {
     [
       "expo-splash-screen",
       {
-        backgroundColor: "#D6C9F5",
+        backgroundColor: artworkConfig.background,
         image: "./assets/images/splash.png",
         enableFullScreenImage_legacy: true,
         resizeMode: "cover",
         dark: {
-          backgroundColor: "#15122B",
+          backgroundColor: artworkConfig.darkBackground,
           image: "./assets/images/splash-dark.png",
         },
       },
