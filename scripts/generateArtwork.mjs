@@ -2,39 +2,30 @@ import { execFileSync } from "node:child_process";
 import { mkdtempSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
+import { artworkConfig } from "../assets/artwork/config.ts";
 
 const SETTINGS = {
-  seed: 7,
-  pillCount: 25,
   monochromeRatio: 1 / 3,
-  pillScaleRange: [4.5, 8],
   jitter: 14,
-  saturation: 1.35,
   lightness: -0.06,
   roseHue: 350,
-  heroLightness: -0.1,
   backgroundOpacity: 0.6,
   backgroundOutlineOpacity: 1,
   backgroundOutlineWidth: 1.8,
   heroAngle: -45,
-  heroScale: 22,
   splashWidth: 1290,
   splashHeight: 2796,
-  splashCellSize: 275,
-  splashPillScaleRange: [4.8, 8.4],
-  splashHeroScale: 20,
   splashDarkOpacity: 0.35,
 };
 
 const ICON_SIZE = 1024;
 const COLORS = {
-  background: "#D6C9F5",
-  darkBackground: "#15122B",
+  background: artworkConfig.background,
+  darkBackground: artworkConfig.darkBackground,
   ink: "#2E2A5C",
   highlight: "#FFFFFF",
 };
 const SWATCHES = ["#FFFFFF", "#FBE29A", "#F8C6DA", "#D6C9F5", "#C4DDF7", "#B3E8E0"];
-const HERO_COLORS = ["#F58FB8", "#FFFFFF"];
 
 const OUTLINE = `fill="none" stroke="${COLORS.ink}" stroke-opacity="${SETTINGS.backgroundOutlineOpacity}" stroke-width="${SETTINGS.backgroundOutlineWidth}" stroke-linejoin="round"`;
 const JUNCTION = `fill="none" stroke="${COLORS.ink}" stroke-opacity="${SETTINGS.backgroundOutlineOpacity}" stroke-width="${SETTINGS.backgroundOutlineWidth * 0.8}"`;
@@ -89,7 +80,7 @@ function createRandom(seed) {
   };
 }
 
-const random = createRandom(SETTINGS.seed);
+const random = createRandom(artworkConfig.seed);
 function toHsl(hex) {
   const [red, green, blue] = [1, 3, 5].map(
     (index) => parseInt(hex.slice(index, index + 2), 16) / 255,
@@ -127,20 +118,31 @@ function isRose(hue) {
   return hue >= 300 || hue < 20;
 }
 
-function intensify(hex, lightnessShift = SETTINGS.lightness) {
+const clamp = (value) => Math.max(0, Math.min(1, value));
+
+function saturate(hex, saturationFactor) {
+  if (saturationFactor === 1) {
+    return hex;
+  }
+  const [hue, saturation, lightness] = toHsl(hex);
+  return toHex([hue, clamp(saturation * saturationFactor), lightness]);
+}
+
+function intensify(hex, saturationFactor, lightnessShift) {
   const [hue, saturation, lightness] = toHsl(hex);
   if (saturation === 0) {
     return hex;
   }
-  const clamp = (value) => Math.max(0, Math.min(1, value));
   return toHex([
     isRose(hue) ? SETTINGS.roseHue : hue,
-    clamp(saturation * SETTINGS.saturation),
+    clamp(saturation * saturationFactor),
     clamp(lightness + lightnessShift),
   ]);
 }
 
-const ICON_SWATCHES = SWATCHES.map((color) => intensify(color));
+const ICON_SWATCHES = SWATCHES.map((color) =>
+  intensify(color, artworkConfig.pills.saturation, SETTINGS.lightness),
+);
 
 const pick = (items) => items[Math.floor(random() * items.length)];
 const pickOther = (items, excluded) => pick(items.filter((item) => item !== excluded));
@@ -151,7 +153,8 @@ function pillColors(previousColor) {
   return [first, second];
 }
 
-function backgroundPills({ width, height, cellSize, scaleRange, opacity }) {
+function backgroundPills({ width, height, pillsPerRow, scaleRange, opacity }) {
+  const cellSize = width / pillsPerRow;
   const rowHeight = cellSize * 0.866;
   const columns = Math.ceil(width / cellSize);
   const rows = Math.ceil(height / rowHeight) + 1;
@@ -178,7 +181,9 @@ function backgroundPills({ width, height, cellSize, scaleRange, opacity }) {
 }
 
 function heroPill({ centerX, centerY, scale }) {
-  const [first, second] = HERO_COLORS.map((color) => intensify(color, SETTINGS.heroLightness));
+  const [first, second] = artworkConfig.hero.colors.map((color) =>
+    saturate(color, artworkConfig.hero.saturation),
+  );
   const transform = `translate(${centerX} ${centerY}) rotate(${SETTINGS.heroAngle}) scale(${scale}) translate(-20 -20)`;
   return `
   <g transform="${transform}">
@@ -199,20 +204,36 @@ function svg({ width, height, background, content }) {
 `;
 }
 
+const DEV_BANNER_TOP = 784;
 const DEV_BANNER = `
-  <rect y="784" width="1024" height="240" fill="${COLORS.ink}"/>
+  <rect y="${DEV_BANNER_TOP}" width="${ICON_SIZE}" height="${ICON_SIZE - DEV_BANNER_TOP}" fill="${COLORS.ink}"/>
   <text x="512" y="958" text-anchor="middle" font-family="-apple-system, Helvetica, Arial, sans-serif" font-size="180" font-weight="800" letter-spacing="24" fill="#FFFFFF">DEV</text>`;
 
 function icon() {
-  const content =
-    backgroundPills({
+  const pills = backgroundPills({
+    width: ICON_SIZE,
+    height: ICON_SIZE,
+    pillsPerRow: artworkConfig.icon.pillsPerRow,
+    scaleRange: artworkConfig.icon.pillSize,
+    opacity: SETTINGS.backgroundOpacity,
+  });
+  const variant = (heroCenterY, banner = "") => {
+    const hero = heroPill({
+      centerX: ICON_SIZE / 2,
+      centerY: heroCenterY,
+      scale: artworkConfig.icon.heroSize,
+    });
+    return svg({
       width: ICON_SIZE,
       height: ICON_SIZE,
-      cellSize: ICON_SIZE / Math.round(Math.sqrt(SETTINGS.pillCount)),
-      scaleRange: SETTINGS.pillScaleRange,
-      opacity: SETTINGS.backgroundOpacity,
-    }) + heroPill({ centerX: ICON_SIZE / 2, centerY: ICON_SIZE / 2, scale: SETTINGS.heroScale });
-  return svg({ width: ICON_SIZE, height: ICON_SIZE, background: COLORS.background, content });
+      background: COLORS.background,
+      content: pills + hero + banner,
+    });
+  };
+  return {
+    regular: variant(ICON_SIZE / 2),
+    dev: variant(DEV_BANNER_TOP / 2, DEV_BANNER),
+  };
 }
 
 function splash() {
@@ -220,14 +241,14 @@ function splash() {
   const pills = backgroundPills({
     width,
     height,
-    cellSize: SETTINGS.splashCellSize,
-    scaleRange: SETTINGS.splashPillScaleRange,
+    pillsPerRow: artworkConfig.splash.pillsPerRow,
+    scaleRange: artworkConfig.splash.pillSize,
     opacity: "OPACITY",
   });
   const hero = heroPill({
     centerX: width / 2,
     centerY: height / 2,
-    scale: SETTINGS.splashHeroScale,
+    scale: artworkConfig.splash.heroSize,
   });
   const variant = (background, opacity) =>
     svg({ width, height, background, content: pills.replace("OPACITY", opacity) + hero });
@@ -259,13 +280,12 @@ function renderPng({ source, output, width, height, background }) {
   ]);
 }
 
-const iconSource = icon();
-const devIconSource = iconSource.replace("</svg>", `${DEV_BANNER}\n</svg>`);
+const iconSources = icon();
 const splashSources = splash();
 
 const artworks = [
-  { name: "icon", source: iconSource, size: ICON_SIZE, background: COLORS.background },
-  { name: "icon-dev", source: devIconSource, size: ICON_SIZE, background: COLORS.background },
+  { name: "icon", source: iconSources.regular, size: ICON_SIZE, background: COLORS.background },
+  { name: "icon-dev", source: iconSources.dev, size: ICON_SIZE, background: COLORS.background },
   { name: "splash", source: splashSources.light, background: COLORS.background },
   { name: "splash-dark", source: splashSources.dark, background: COLORS.darkBackground },
 ];
