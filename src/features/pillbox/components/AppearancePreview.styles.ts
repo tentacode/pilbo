@@ -26,6 +26,11 @@ export const styles = StyleSheet.create({
     flex: 1,
     gap: spacing.tiny,
   },
+  randomizeButton: {
+    position: "absolute",
+    top: spacing.extraSmall,
+    right: spacing.extraSmall,
+  },
   largePill: {
     width: sizes.pillPreviewLarge,
     height: sizes.pillPreviewLarge,

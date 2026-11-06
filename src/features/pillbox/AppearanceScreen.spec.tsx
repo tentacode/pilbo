@@ -1,6 +1,7 @@
 import { fireEvent, render, screen } from "@testing-library/react-native";
 import { router } from "expo-router";
 import { type ReactNode, useEffect } from "react";
+import { AccessibilityInfo } from "react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 
 import type { PillDesign } from "@/domain/med";
@@ -12,6 +13,8 @@ import { MedsAppearanceScreen, IntakeAppearanceScreen } from "./AppearanceScreen
 import { IntakeDraftProvider } from "./hooks/useIntakeDraft";
 import { MedDraftProvider, useMedDraftContext } from "./hooks/useMedDraft";
 import { createMedDraft } from "./utils/medDraft";
+
+const LILAC = "#D6C9F5";
 
 let mockDatabase: Database;
 
@@ -42,6 +45,11 @@ function MedDraftSpy() {
 function renderMedsAppearance() {
   const initialDraft = {
     ...createMedDraft(),
+    design: {
+      shape: "round" as const,
+      size: "medium" as const,
+      colors: [LILAC, LILAC] as [string, string],
+    },
     name: "Doliprane",
     strength: "1 g",
     detail: "Si douleur",
@@ -222,6 +230,30 @@ describe("AppearanceScreen", () => {
     await fireEvent.press(screen.getByRole("button", { name: "Autre couleur" }));
 
     await fireEvent.press(screen.getByRole("radio", { name: "Menthe" }));
+
+    expect(screen.queryByRole("adjustable", { name: "Teinte" })).not.toBeOnTheScreen();
+  });
+
+  it("draws a random appearance", async () => {
+    const random = jest.spyOn(Math, "random");
+    [0.4, 0.99, 0.2, 0.9].forEach((value) => random.mockReturnValueOnce(value));
+    const announce = jest.spyOn(AccessibilityInfo, "announceForAccessibility");
+    await renderMedsAppearance();
+
+    await fireEvent.press(screen.getByRole("button", { name: "Apparence aléatoire" }));
+
+    expect(previewLabel()).toBe("Aperçu : gélule, grande, jaune et menthe");
+    expect(screen.getByRole("radio", { name: "Gélule" })).toBeSelected();
+    expect(announce).toHaveBeenCalledWith("Aperçu : gélule, grande, jaune et menthe");
+    random.mockRestore();
+    announce.mockRestore();
+  });
+
+  it("closes the sliders when drawing a random appearance", async () => {
+    await renderMedsAppearance();
+    await fireEvent.press(screen.getByRole("button", { name: "Autre couleur" }));
+
+    await fireEvent.press(screen.getByRole("button", { name: "Apparence aléatoire" }));
 
     expect(screen.queryByRole("adjustable", { name: "Teinte" })).not.toBeOnTheScreen();
   });

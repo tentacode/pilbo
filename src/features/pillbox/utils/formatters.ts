@@ -112,6 +112,12 @@ export function formatPillDescriptionParts(t: TFunction<"pillbox">, design: Pill
   ];
 }
 
+export function formatPreviewLabel(t: TFunction<"pillbox">, design: PillDesign): string {
+  return t("Aperçu : {{description}}", {
+    description: formatPillDescriptionParts(t, design).join(", "),
+  });
+}
+
 export function formatPillDescription(t: TFunction<"pillbox">, design: PillDesign): string {
   return capitalize(formatPillDescriptionParts(t, design).join(" · "));
 }

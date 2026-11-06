@@ -17,7 +17,7 @@ export type MedDraft = {
 export const DEFAULT_PILL_DESIGN: PillDesign = {
   shape: "round",
   size: "medium",
-  colors: [pillSwatches.lilac, pillSwatches.lilac],
+  colors: [pillSwatches.white, pillSwatches.white],
 };
 
 export function createMedDraft(med?: Med): MedDraft {

@@ -70,6 +70,16 @@ export const iconShapes = {
       <Path d="M12 16.4v.1" />
     </>
   ),
+  dice: (
+    <>
+      <Rect x={2.5} y={2.5} width={19} height={19} rx={6} />
+      <Circle cx={7.75} cy={7.75} r={0.7} />
+      <Circle cx={16.25} cy={7.75} r={0.7} />
+      <Circle cx={12} cy={12} r={0.7} />
+      <Circle cx={7.75} cy={16.25} r={0.7} />
+      <Circle cx={16.25} cy={16.25} r={0.7} />
+    </>
+  ),
   check: <Path d="M5 12.5l4.5 4.5L19 7.5" />,
   lock: (
     <>

@@ -1,6 +1,6 @@
 import { router } from "expo-router";
 import { useRef, useState } from "react";
-import { type ScrollView, View } from "react-native";
+import { AccessibilityInfo, type ScrollView, View } from "react-native";
 import { useTranslation } from "react-i18next";
 
 import { Button } from "@/design-system/components/Button/Button";
@@ -17,7 +17,8 @@ import { useColorEditing } from "./hooks/useColorEditing";
 import { useIntakeDraft } from "./hooks/useIntakeDraft";
 import { useMedDraftContext } from "./hooks/useMedDraft";
 import { DEFAULT_PILL_DESIGN } from "./utils/medDraft";
-import { withShape } from "./utils/pillDesign";
+import { formatPreviewLabel } from "./utils/formatters";
+import { randomPillDesign, withShape } from "./utils/pillDesign";
 import { styles } from "./AppearanceScreen.styles";
 import { formatIntakeTime } from "@/shared/i18n/formatters";
 
@@ -46,6 +47,13 @@ export function AppearanceScreen({
     colorEditing.openCustomColorPanel();
   }
 
+  function randomizeDesign() {
+    const randomDesign = randomPillDesign(design);
+    colorEditing.closeCustomColorPanel();
+    setDesign(randomDesign);
+    AccessibilityInfo.announceForAccessibility(formatPreviewLabel(t, randomDesign));
+  }
+
   function revealCustomColorPanel() {
     if (isCustomColorPanelRevealRequested.current) {
       isCustomColorPanelRevealRequested.current = false;
@@ -63,7 +71,12 @@ export function AppearanceScreen({
       scrollReference={scrollReference}
     >
       <View style={styles.content}>
-        <AppearancePreview design={design} med={previewMed} context={previewContext} />
+        <AppearancePreview
+          design={design}
+          med={previewMed}
+          context={previewContext}
+          onRandomize={randomizeDesign}
+        />
         <ShapeField design={design} onChange={(shape) => setDesign(withShape(design, shape))} />
         <SizeField size={design.size} onChange={(size) => setDesign({ ...design, size })} />
         <ColorField

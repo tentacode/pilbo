@@ -126,7 +126,7 @@ describe("MedScreen", () => {
 
       await fireEvent.press(
         screen.getByRole("button", {
-          name: "Modifier l’apparence de la pilule : rond, moyenne, lilas",
+          name: "Modifier l’apparence de la pilule : rond, moyenne, blanc",
         }),
       );
 
@@ -221,7 +221,7 @@ describe("MedScreen", () => {
 
       await fireEvent.press(
         screen.getByRole("button", {
-          name: "Modifier l’apparence de la pilule : rond, moyenne, lilas",
+          name: "Modifier l’apparence de la pilule : rond, moyenne, blanc",
         }),
       );
 

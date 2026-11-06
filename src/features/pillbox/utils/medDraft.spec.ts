@@ -21,6 +21,14 @@ describe("createMedDraft", () => {
     });
   });
 
+  it("defaults to a white round pill", () => {
+    expect(DEFAULT_PILL_DESIGN).toEqual({
+      shape: "round",
+      size: "medium",
+      colors: ["#FFFFFF", "#FFFFFF"],
+    });
+  });
+
   it("starts from an existing med", () => {
     expect(createMedDraft(LITHIUM)).toEqual({
       medId: "lithium",

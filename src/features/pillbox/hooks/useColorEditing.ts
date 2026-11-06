@@ -27,6 +27,7 @@ export function useColorEditing(design: PillDesign, onDesignChange: (design: Pil
       setIsCustomColorPanelOpen(false);
       onDesignChange({ ...design, colors: withColor(design.colors, activeHalf, color) });
     },
+    closeCustomColorPanel: () => setIsCustomColorPanelOpen(false),
     openCustomColorPanel: () => {
       setIsCustomColorPanelOpen(true);
       setCustomColor(hueAndIntensityFromColor(design.colors[activeHalf]));
