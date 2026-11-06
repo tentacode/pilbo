@@ -30,6 +30,7 @@ const TEXT_PAIRS: [ColorName, ColorName[]][] = [
   ["inkSecondary", ["alertBackground"]],
   ["alertInk", ["background", "surface", "alertBackground"]],
   ["onAlert", ["alertChip", "alertNotice", "alertNoticePressed"]],
+  ["onCalendarMissed", ["calendarMissed"]],
   ["successInk", ["background", "surface", "successChip"]],
   ["warningInk", ["background", "surface", "warningChip"]],
   ["turquoiseInk", ["surface", "turquoiseSoft"]],

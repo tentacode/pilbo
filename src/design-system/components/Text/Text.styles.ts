@@ -43,6 +43,7 @@ export const toneStyles = StyleSheet.create({
   onProminent: { color: colors.onProminent },
   alert: { color: colors.alertInk },
   onAlert: { color: colors.onAlert },
+  onCalendarMissed: { color: colors.onCalendarMissed },
   success: { color: colors.successInk },
   warning: { color: colors.warningInk },
 });

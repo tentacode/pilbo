@@ -15,14 +15,14 @@ export const DAY_STATUS_APPEARANCES: Record<
 > = {
   taken: { icon: "check", tone: "success", color: colors.successInk },
   late: { icon: "clock", tone: "warning", color: colors.warningInk },
-  missed: { icon: "alert", tone: "onAlert", color: colors.onAlert },
+  missed: { icon: "alert", tone: "onCalendarMissed", color: colors.onCalendarMissed },
   skipped: { icon: "minus", tone: "secondary", color: colors.inkSecondary },
 };
 
 export const useDayStatusStyles = createThemedStyles((themeColors) => ({
   taken: { backgroundColor: themeColors.successChip },
   late: { backgroundColor: themeColors.warningChip },
-  missed: { backgroundColor: themeColors.alertNotice },
+  missed: { backgroundColor: themeColors.calendarMissed },
   skipped: { borderStyle: "dashed", borderColor: themeColors.calendarSkipLine },
   none: {},
   today: { borderWidth: borderWidth.today, borderStyle: "solid", borderColor: themeColors.ink },

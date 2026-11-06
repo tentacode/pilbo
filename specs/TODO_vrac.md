@@ -5,4 +5,3 @@
 - [ ] Bouton randomize à côté du lien vers apparence.
 - [ ] Stock : taille d'une boite ne devrait pas être dans "Stock bas" mais dans sa propre section
 - [ ] Vous aimez pilbo ?
-- [ ] Couleur d'erreur / stock bas et déjà prise à revoir
