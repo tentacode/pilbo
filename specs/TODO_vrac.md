@@ -2,5 +2,4 @@
 - [ ] android.
 - [ ] widget apple.
 - [ ] thèmes en IAP.
-- [ ] Bouton randomize à côté du lien vers apparence.
 - [ ] Vous aimez pilbo ?

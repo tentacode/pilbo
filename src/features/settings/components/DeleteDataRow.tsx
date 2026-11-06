@@ -5,6 +5,7 @@ import { Dialog } from "@/design-system/components/Dialog/Dialog";
 import { clearDatabase } from "@/shared/database/clearDatabase";
 import { database } from "@/shared/database/database";
 
+import { rescheduleReminders } from "@/features/notifications/rescheduleReminders";
 import { useOnboardingStore } from "@/features/onboarding/store/onboardingStore";
 
 import { SettingsRow } from "./SettingsRow";
@@ -18,6 +19,9 @@ export function DeleteDataRow() {
   const handleDelete = () => {
     setIsDialogVisible(false);
     clearDatabase(database);
+    rescheduleReminders(database, new Date()).catch((error: unknown) => {
+      console.error(error);
+    });
     setOnboardingDone(false);
   };
 

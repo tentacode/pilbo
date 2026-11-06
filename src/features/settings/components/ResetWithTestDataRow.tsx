@@ -5,6 +5,7 @@ import { Dialog } from "@/design-system/components/Dialog/Dialog";
 import { database } from "@/shared/database/database";
 import { resetDatabase } from "@/shared/database/resetDatabase";
 
+import { rescheduleReminders } from "@/features/notifications/rescheduleReminders";
 import { useOnboardingStore } from "@/features/onboarding/store/onboardingStore";
 
 import { SettingsRow } from "./SettingsRow";
@@ -18,6 +19,9 @@ export function ResetWithTestDataRow() {
   const handleReset = () => {
     setIsDialogVisible(false);
     resetDatabase(database, { withLogs: __DEV__ });
+    rescheduleReminders(database, new Date()).catch((error: unknown) => {
+      console.error(error);
+    });
     setOnboardingDone(true);
   };
 
