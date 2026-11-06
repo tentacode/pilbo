@@ -14,13 +14,18 @@
   "Inconnue": "Unknown",
   "Intervalle par défaut": "Default interval",
   "Intervalle par défaut des rappels": "Default reminder interval",
+  "J'ai trouvé un bug": "I found a bug",
+  "J'ai une idée": "I have an idea",
   "Langue de l'app": "App language",
   "Mode debug activé": "Debug mode on",
   "Mode debug désactivé": "Debug mode off",
   "Notifications": "Notifications",
   "Notifications : activer": "Notifications: turn on",
   "Notifications : autorisées": "Notifications: allowed",
+  "Ouvre un e-mail à l’équipe Pilbo": "Opens an e-mail to the Pilbo team",
   "Permet de recevoir les rappels de vos prises": "Lets you get the reminders for your intakes",
+  "Pilbo : j'ai trouvé un bug": "Pilbo: I found a bug",
+  "Pilbo : j'ai une idée": "Pilbo: I have an idea",
   "Pilbo n'est pas une application médicale": "Pilbo is not a medical app",
   "Rappels": "Reminders",
   "Réglages": "Settings",
@@ -45,5 +50,6 @@
   "Version {{version}}": "Version {{version}}",
   "Vos données": "Your data",
   "Vos prises, vos médicaments et leur historique seront effacés. Ce n'est pas réversible.": "Your intakes, your medications and their history will be erased. This can't be undone.",
-  "Vos prises, vos médicaments et leur historique seront remplacés par des données de test.": "Your intakes, your medications and their history will be replaced with test data."
+  "Vos prises, vos médicaments et leur historique seront remplacés par des données de test.": "Your intakes, your medications and their history will be replaced with test data.",
+  "Votre avis": "Your feedback"
 }

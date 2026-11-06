@@ -19,7 +19,7 @@ jest.mock("expo-application", () => ({
   nativeBuildVersion: "12",
 }));
 
-const SECTION_TITLES = ["Rappels", "Stock", "Affichage", "Vos données", "À propos"];
+const SECTION_TITLES = ["Rappels", "Stock", "Affichage", "Vos données", "Votre avis", "À propos"];
 
 const safeAreaMetrics = {
   frame: { x: 0, y: 0, width: 0, height: 0 },

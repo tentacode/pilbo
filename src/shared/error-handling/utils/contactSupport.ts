@@ -1,14 +1,19 @@
 import type { TFunction } from "i18next";
-import { Linking } from "react-native";
 
-const supportEmail = "pilbo@tentacode.dev";
+import { buildMailUrl, openMail } from "@/shared/mail/openMail";
 
-export function buildSupportMailUrl(t: TFunction<"common">, details?: string) {
+function buildSupportMailContent(t: TFunction<"common">, details?: string) {
   const subject = t("Pilbo : problème rencontré");
   const body = details ? `\n\n---\n${t("Détail technique : {{details}}", { details })}` : "";
-  return `mailto:${supportEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  return { subject, body };
+}
+
+export function buildSupportMailUrl(t: TFunction<"common">, details?: string) {
+  const { subject, body } = buildSupportMailContent(t, details);
+  return buildMailUrl(subject, body);
 }
 
 export function contactSupport(t: TFunction<"common">, details?: string) {
-  Linking.openURL(buildSupportMailUrl(t, details)).catch(() => {});
+  const { subject, body } = buildSupportMailContent(t, details);
+  openMail(subject, body);
 }

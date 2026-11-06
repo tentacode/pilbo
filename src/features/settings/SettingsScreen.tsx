@@ -8,6 +8,7 @@ import { AboutSection } from "./components/AboutSection";
 import { AppearanceRow } from "./components/AppearanceRow";
 import { DebugSection } from "./components/DebugSection";
 import { DefaultIntervalRow } from "./components/DefaultIntervalRow";
+import { FeedbackSection } from "./components/FeedbackSection";
 import { LanguageRow } from "./components/LanguageRow";
 import { LowStockRow } from "./components/LowStockRow";
 import { NotificationsRow } from "./components/NotificationsRow";
@@ -43,6 +44,7 @@ export function SettingsScreen() {
         <SettingsSection title={t("Vos données")}>
           <PrivacyCard />
         </SettingsSection>
+        <FeedbackSection />
         <AboutSection onVersionPress={registerPress} />
         {isDebugMode ? (
           <View onLayout={onDebugSectionLayout}>

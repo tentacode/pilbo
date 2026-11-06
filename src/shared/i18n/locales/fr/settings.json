@@ -15,13 +15,18 @@
   "Inconnue": "Inconnue",
   "Intervalle par défaut": "Intervalle par défaut",
   "Intervalle par défaut des rappels": "Intervalle par défaut des rappels",
+  "J'ai trouvé un bug": "J'ai trouvé un bug",
+  "J'ai une idée": "J'ai une idée",
   "Langue de l'app": "Langue de l'app",
   "Mode debug activé": "Mode debug activé",
   "Mode debug désactivé": "Mode debug désactivé",
   "Notifications": "Notifications",
   "Notifications : activer": "Notifications : activer",
   "Notifications : autorisées": "Notifications : autorisées",
+  "Ouvre un e-mail à l’équipe Pilbo": "Ouvre un e-mail à l’équipe Pilbo",
   "Permet de recevoir les rappels de vos prises": "Permet de recevoir les rappels de vos prises",
+  "Pilbo : j'ai trouvé un bug": "Pilbo : j'ai trouvé un bug",
+  "Pilbo : j'ai une idée": "Pilbo : j'ai une idée",
   "Pilbo n'est pas une application médicale": "Pilbo n'est pas une application médicale",
   "Rappels": "Rappels",
   "Réglages": "Réglages",
@@ -46,5 +51,6 @@
   "Version {{version}}": "Version {{version}}",
   "Vos données": "Vos données",
   "Vos prises, vos médicaments et leur historique seront effacés. Ce n'est pas réversible.": "Vos prises, vos médicaments et leur historique seront effacés. Ce n'est pas réversible.",
-  "Vos prises, vos médicaments et leur historique seront remplacés par des données de test.": "Vos prises, vos médicaments et leur historique seront remplacés par des données de test."
+  "Vos prises, vos médicaments et leur historique seront remplacés par des données de test.": "Vos prises, vos médicaments et leur historique seront remplacés par des données de test.",
+  "Votre avis": "Votre avis"
 }
