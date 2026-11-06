@@ -29,7 +29,7 @@ describe("compareMeds", () => {
     ]);
   });
 
-  it("sorts by descending strength, numerically, when names are equal", () => {
+  it("sorts by ascending strength, numerically, when names are equal", () => {
     const meds = [
       createMed("Lamictal", "50 mg"),
       createMed("Lamictal", "25 mg"),
@@ -37,22 +37,22 @@ describe("compareMeds", () => {
     ];
 
     expect(names(meds.sort(compareMeds))).toEqual([
-      "Lamictal 100 mg",
-      "Lamictal 50 mg",
       "Lamictal 25 mg",
+      "Lamictal 50 mg",
+      "Lamictal 100 mg",
     ]);
   });
 
   it("compares decimal strengths written with a comma", () => {
     const meds = [createMed("Xanax", "0,25 mg"), createMed("Xanax", "0,5 mg")];
 
-    expect(names(meds.sort(compareMeds))).toEqual(["Xanax 0,5 mg", "Xanax 0,25 mg"]);
+    expect(names(meds.sort(compareMeds))).toEqual(["Xanax 0,25 mg", "Xanax 0,5 mg"]);
   });
 
   it("compares decimal strengths written with a point", () => {
     const meds = [createMed("Xanax", "0.25 mg"), createMed("Xanax", "0.5 mg")];
 
-    expect(names(meds.sort(compareMeds))).toEqual(["Xanax 0.5 mg", "Xanax 0.25 mg"]);
+    expect(names(meds.sort(compareMeds))).toEqual(["Xanax 0.25 mg", "Xanax 0.5 mg"]);
   });
 
   it("compares decimal strengths mixing commas, points and integers", () => {
@@ -63,16 +63,16 @@ describe("compareMeds", () => {
     ];
 
     expect(names(meds.sort(compareMeds))).toEqual([
-      "Lysanxia 10 mg",
-      "Lysanxia 2.75 mg",
       "Lysanxia 2,5 mg",
+      "Lysanxia 2.75 mg",
+      "Lysanxia 10 mg",
     ]);
   });
 
-  it("puts the med without strength last", () => {
-    const meds = [createMed("Doliprane", ""), createMed("Doliprane", "500 mg")];
+  it("puts the med without strength first", () => {
+    const meds = [createMed("Doliprane", "500 mg"), createMed("Doliprane", "")];
 
-    expect(names(meds.sort(compareMeds))).toEqual(["Doliprane 500 mg", "Doliprane "]);
+    expect(names(meds.sort(compareMeds))).toEqual(["Doliprane ", "Doliprane 500 mg"]);
   });
 });
 

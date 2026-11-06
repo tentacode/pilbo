@@ -65,12 +65,12 @@ beforeEach(() => {
 
 describe("MedPickerScreen", () => {
   describe("from an intake", () => {
-    it("lists every med by name then descending strength", async () => {
+    it("lists every med by name then ascending strength", async () => {
       await renderIntakePicker();
 
       expect(screen.getAllByRole("button", { name: /mg/ }).map(nameOf)).toEqual([
-        "Ajouter Lamictal 100 mg",
         "Lamictal 50 mg, Dans la prise",
+        "Ajouter Lamictal 100 mg",
         "Lithium 250 mg, Avec le repas, Dans la prise",
         "Ajouter Prazépam 25 mg, Si besoin",
         "Ajouter Prégabaline 50 mg",

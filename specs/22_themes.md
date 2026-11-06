@@ -88,6 +88,19 @@ src/design-system/themes/
 - Tests en local avec un fichier de configuration StoreKit (`.storekit`) dans Xcode, sur le simulateur.
 - Section debug : « Débloquer tous les thèmes » (pour l'e2e et les tests sans achat).
 
+### Textes liés aux achats (règles Apple)
+
+À respecter dans l'app (écran « Thèmes », encart et écran « Soutenir pilbo ») et dans la fiche App Store (rédigée avec la spec de vente réelle).
+
+- Dire clairement ce qui est payant et que l'app reste entièrement utilisable sans achat : Apple le demande (guideline 2.3.2).
+- Pas de « don » ni de « donation » : c'est réservé aux associations reconnues (guideline 3.2.2). Utiliser « soutenir », « soutien » ou « pourboire ».
+- Pas de prix écrits en dur : ils varient selon le pays. Dans l'app, afficher le prix renvoyé par StoreKit (`displayPrice`), qui est localisé.
+- Fiche App Store : aucun prix ni aucune mention d'achat dans le nom, le sous-titre ou les captures (guideline 2.3.7). Ces informations vont uniquement dans la description.
+- Si un jour une fonctionnalité utile (pas seulement visuelle) devient payante, revoir ces textes.
+- Exemple pour la description :
+  > Pilbo est entièrement gratuit et toutes ses fonctionnalités sont accessibles sans achat. Des achats intégrés facultatifs permettent de soutenir le développement en débloquant des thèmes visuels.
+- Relire les sections 2.3 et 3.1 des [App Review Guidelines](https://developer.apple.com/app-store/review/guidelines/) avant la soumission.
+
 ### Accessibilité, pour chaque thème
 
 - Contraste AA vérifié sur chaque paire texte / fond de chaque variante (test Jest, comme les tokens sombres).

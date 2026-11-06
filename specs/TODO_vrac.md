@@ -2,9 +2,7 @@
 - [ ] android.
 - [ ] widget apple.
 - [ ] thèmes en IAP.
-- [ ] Pouvoir ajouter/modifier un médicament ailleurs que sur une prise (ex : stock)
-  - [ ] Le stock devient un peu une "pharmacie"
-  - [ ] On peut gérer le stock de médicaments "hors planning" -> ex : doliprane
 - [ ] Bouton randomize à côté du lien vers apparence.
 - [ ] Stock : taille d'une boite ne devrait pas être dans "Stock bas" mais dans sa propre section
-- [ ] À la création d'un médicament, forcer le focus sur le nom du médicament
+- [ ] Vous aimez pilbo ?
+- [ ] Couleur d'erreur / stock bas et déjà prise à revoir

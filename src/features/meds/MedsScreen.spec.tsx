@@ -61,8 +61,8 @@ describe("MedsScreen", () => {
 
     expect(screen.getByRole("header", { name: "Médicaments" })).toBeOnTheScreen();
     expect(screen.getAllByRole("button", { name: / mg, / }).map(nameOf)).toEqual([
-      "Lamictal 100 mg, 56 jours, 56 comprimés",
       "Lamictal 50 mg, 45 jours, 45 comprimés",
+      "Lamictal 100 mg, 56 jours, 56 comprimés",
       "Lithium 250 mg, stock bas, 4 jours, 18 comprimés",
       "Prazépam 25 mg, 15 comprimés",
       "Prégabaline 50 mg, stock non suivi",

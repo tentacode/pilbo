@@ -61,8 +61,8 @@ describe("createIntakeDraft", () => {
     };
 
     expect(labels(createIntakeDraft(10, intake).medQuantities)).toEqual([
-      "Lamictal 100 mg",
       "Lamictal 50 mg",
+      "Lamictal 100 mg",
       "Lithium 250 mg",
     ]);
   });
@@ -76,8 +76,8 @@ describe("addDraftMed", () => {
     ];
 
     expect(labels(addDraftMed(medQuantities, createMed("Lamictal", "50 mg"), 2))).toEqual([
-      "Lamictal 100 mg",
       "Lamictal 50 mg",
+      "Lamictal 100 mg",
       "Lithium 250 mg",
     ]);
   });

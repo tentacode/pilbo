@@ -47,19 +47,16 @@ function leadingNumberOf(text: string): number | undefined {
   return match === null ? undefined : Number(match[1].replace(",", "."));
 }
 
-function compareStrengthsDescending(first: string, second: string): number {
+function compareStrengths(first: string, second: string): number {
   const firstNumber = leadingNumberOf(first);
   const secondNumber = leadingNumberOf(second);
   const numberOrder =
-    firstNumber === undefined || secondNumber === undefined ? 0 : secondNumber - firstNumber;
-  return numberOrder || compareText(second, first);
+    firstNumber === undefined || secondNumber === undefined ? 0 : firstNumber - secondNumber;
+  return numberOrder || compareText(first, second);
 }
 
 export function compareMeds(first: Med, second: Med): number {
-  return (
-    compareText(first.name, second.name) ||
-    compareStrengthsDescending(first.strength, second.strength)
-  );
+  return compareText(first.name, second.name) || compareStrengths(first.strength, second.strength);
 }
 
 export function sortMedQuantities(medQuantities: MedQuantity[]): MedQuantity[] {
