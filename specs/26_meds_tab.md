@@ -38,7 +38,7 @@ Le design est sur Claude Design, section « 5 · Médicaments » : https://claud
 
 - **Une seule liste alphabétique**, compacte, pour gagner de la place. Disposition de la maquette `med-list` :
   - Pilule à gauche, nom + dosage au centre, avec « 84 cp » en petit sous le nom si les jours sont calculables.
-  - À droite : « 28 jours » avec une petite jauge de stock dessous ; « 12 cp » seul si aucune prise prévue ; une mention discrète (ex. « Sans stock ») si le stock n'est pas suivi.
+  - À droite : « 28 jours » avec une petite jauge de stock dessous ; « 12 cp » seul si aucune prise prévue ; une mention discrète (ex. « Non suivi ») si le stock n'est pas suivi.
   - Simple séparateur entre les lignes.
   - Stock bas : couleur d'alerte **et icône** devant le nombre de jours (l'info ne passe pas par la couleur seule, WCAG 1.4.1), « stock bas » dans le libellé VoiceOver de la ligne. Plus de mention « Stock bas · jusqu'au… ». Le bandeau d'« Aujourd'hui » et le badge restent.
 - Bouton du bas : « Nouveau médicament » (aussi dans l'état vide). Le sélecteur « Stock d'un médicament » disparaît : le stock s'ajoute depuis la fiche.

@@ -66,7 +66,7 @@ L'onglet « Stock » devient « Médicaments » : liste de tous les médicaments
 ## Étape 5 — Liste (`features/meds/MedsScreen.tsx`)
 
 - [x] Hook `useMedsData` : médicaments actifs triés (`sortMeds`), stock et prévision (`computeStockForecast`), relu au focus.
-- [x] Composant de ligne d'après `med-list` (spec > Liste) : pilule, nom + dosage, « 84 cp » sous le nom si jours calculables, à droite « 28 jours » + jauge (réutiliser `StockProgressBar` ou une variante compacte), « 12 cp » seul, ou « Sans stock ».
+- [x] Composant de ligne d'après `med-list` (spec > Liste) : pilule, nom + dosage, « 84 cp » sous le nom si jours calculables, à droite « 28 jours » + jauge (réutiliser `StockProgressBar` ou une variante compacte), « 12 cp » seul, ou « Non suivi ».
   - Stock bas : couleur d'alerte + icône `alert`.
   - Libellé VoiceOver complet (nom, jours, comprimés, « stock bas »), rôle bouton.
   - Dynamic Type : `useFitsInWidth` pour empiler la partie droite si elle ne tient pas.

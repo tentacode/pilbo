@@ -3,5 +3,4 @@
 - [ ] widget apple.
 - [ ] thèmes en IAP.
 - [ ] Bouton randomize à côté du lien vers apparence.
-- [ ] Stock : taille d'une boite ne devrait pas être dans "Stock bas" mais dans sa propre section
 - [ ] Vous aimez pilbo ?

@@ -21,7 +21,7 @@ export function MedListRowStock({ stockStatus, isStacked }: MedListRowStockProps
   if (stockStatus === undefined) {
     return (
       <Text variant="help" tone="secondary">
-        {t("Sans stock")}
+        {t("Non suivi")}
       </Text>
     );
   }
