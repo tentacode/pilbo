@@ -1,18 +1,11 @@
-import { radius, sizes, spacing } from "../../tokens";
-import { createThemedStyles } from "../../utils/createThemedStyles";
+import { StyleSheet } from "react-native";
 
-export const useStyles = createThemedStyles((themeColors) => ({
+import { sizes, spacing } from "../../tokens";
+
+export const styles = StyleSheet.create({
   header: {
     paddingTop: spacing.sheetTop,
     paddingHorizontal: spacing.large,
-  },
-  grabber: {
-    alignSelf: "center",
-    width: sizes.grabberWidth,
-    height: sizes.grabberHeight,
-    marginBottom: spacing.extraSmall,
-    borderRadius: radius.round,
-    backgroundColor: themeColors.grabber,
   },
   navigation: {
     flexDirection: "row",
@@ -47,4 +40,4 @@ export const useStyles = createThemedStyles((themeColors) => ({
     alignItems: "flex-start",
     opacity: 0,
   },
-}));
+});
