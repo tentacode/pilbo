@@ -6,6 +6,7 @@ import { Button } from "@/design-system/components/Button/Button";
 import { IconButton } from "@/design-system/components/IconButton/IconButton";
 import { Screen } from "@/design-system/components/Screen/Screen";
 import { ScreenHeader } from "@/design-system/components/ScreenHeader/ScreenHeader";
+import { useTabReset } from "@/shared/navigation/useTabReset";
 
 import { MedList } from "./components/MedList";
 import { MedsEmptyState } from "./components/MedsEmptyState";
@@ -23,9 +24,10 @@ function openMed(medId: string) {
 export function MedsScreen() {
   const { t } = useTranslation("meds");
   const items = useMedsData();
+  const scrollViewReference = useTabReset("meds");
 
   return (
-    <Screen>
+    <Screen ref={scrollViewReference}>
       <ScreenHeader
         title={t("Médicaments")}
         action={

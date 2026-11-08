@@ -8,6 +8,7 @@ import { type Intake, intakeDateOn } from "@/domain/intake";
 import { type IntakeLog, toLocalDateTime } from "@/domain/intakeLog";
 
 import { formatReminderBody, formatReminderTitle } from "./formatters";
+import { REMINDER_IDENTIFIER_PREFIX } from "./notificationTab";
 
 export type PlannedReminder = {
   identifier: string;
@@ -41,7 +42,7 @@ function planDayReminders(day: Date, pendingIntakes: Intake[]): PlannedReminder[
           reminderIndex * intake.reminderIntervalMinutes * MILLISECONDS_PER_MINUTE,
       );
       return {
-        identifier: `reminder-${intake.id}-${toLocalDateTime(date)}`,
+        identifier: `${REMINDER_IDENTIFIER_PREFIX}${intake.id}-${toLocalDateTime(date)}`,
         date,
         title: formatReminderTitle(intake),
         body: formatReminderBody(intake),

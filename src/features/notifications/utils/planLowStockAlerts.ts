@@ -4,6 +4,7 @@ import { compareMeds, type Med } from "@/domain/med";
 
 import type { StockItem } from "@/features/stocks/utils/stockTypes";
 import { formatLowStockAlertBody, formatLowStockAlertTitle } from "./formatters";
+import { LOW_STOCK_IDENTIFIER_PREFIX } from "./notificationTab";
 import type { PlannedReminder } from "./planReminders";
 
 export function planLowStockAlerts(stockItems: StockItem[], now: Date): PlannedReminder[] {
@@ -32,7 +33,7 @@ export function planLowStockAlerts(stockItems: StockItem[], now: Date): PlannedR
   return [...medsByDay.entries()]
     .sort(([firstDay], [secondDay]) => firstDay.localeCompare(secondDay))
     .map(([day, { date, meds }]) => ({
-      identifier: `low-stock-${day}`,
+      identifier: `${LOW_STOCK_IDENTIFIER_PREFIX}${day}`,
       date,
       title: formatLowStockAlertTitle(),
       body: formatLowStockAlertBody([...meds].sort(compareMeds)),

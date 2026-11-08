@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from "@testing-library/react-native";
+import { act, fireEvent, render, screen } from "@testing-library/react-native";
 import { sql } from "drizzle-orm";
 import type { ReactNode } from "react";
 import { SafeAreaProvider } from "react-native-safe-area-context";
@@ -12,6 +12,7 @@ import { useLowStockNoticeStore } from "@/features/stocks/store/lowStockNoticeSt
 import { intakeLogTable, intakeTable, medLogTable } from "@/shared/database/schema";
 import { createTestDatabase } from "@/shared/database/testDatabase";
 import { renderInEnglish } from "@/shared/i18n/testHelpers";
+import { useTabResetStore } from "@/shared/navigation/tabResetStore";
 import type { Database } from "@/shared/database/types";
 
 import { TodayScreen } from "./TodayScreen";
@@ -36,6 +37,7 @@ jest.mock("expo-router", () => {
   return {
     router: { navigate: jest.fn(), push: jest.fn(), back: jest.fn() },
     useFocusEffect: (effect: () => void) => useEffect(effect, [effect]),
+    useNavigation: () => ({ getState: () => undefined, dispatch: jest.fn() }),
   };
 });
 
@@ -450,6 +452,15 @@ describe("TodayScreen", () => {
 
       expect(screen.getByRole("header", { name: "Aujourd'hui" })).toBeOnTheScreen();
       expect(screen.getByRole("button", { name: "Prendre la prise de 08:20" })).toBeOnTheScreen();
+    });
+
+    it("goes back to today when the tab is reset", async () => {
+      await renderAt(10, 0);
+      await fireEvent.press(screen.getByRole("button", { name: PREVIOUS_DAY }));
+
+      await act(() => useTabResetStore.getState().requestTabReset("today"));
+
+      expect(screen.getByRole("header", { name: "Aujourd'hui" })).toBeOnTheScreen();
     });
 
     it("opens the calendar", async () => {

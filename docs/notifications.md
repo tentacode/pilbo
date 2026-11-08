@@ -15,6 +15,7 @@ Validé sur iPhone (spec 02) : notifications app fermée, son custom, badge, ann
 | `src/features/notifications/utils/planLowStockAlerts.ts`        | Calcul pur des alertes de stock bas (`now` en paramètre).                 |
 | `src/features/notifications/hooks/useReminderScheduling.ts`     | Replanification au lancement, au premier plan et au changement de langue. |
 | `src/features/notifications/hooks/useNotificationPermission.ts` | Statut de la permission (`isGranted`) et demande (`request`).             |
+| `src/features/notifications/hooks/useOpenTabOnNotification.ts`  | Ouvre l'onglet de la notification touchée.                                |
 | `src/features/notifications/notificationChannels.android.ts`    | Canaux Android (`.ios.ts` sans effet).                                    |
 | `plugins/withExactAlarmPermissions.js`                          | Permissions d'alarmes exactes Android.                                    |
 | `assets/sounds/beep.wav`                                        | Son custom.                                                               |
@@ -85,6 +86,15 @@ Fonctionne app fermée : chaque rappel porte un chiffre calculé à l'avance. C'
 ## Handler (premier plan)
 
 `setNotificationHandler` : sans lui, iOS n'affiche rien quand l'app est ouverte. Ici : bannière + liste + son + badge.
+
+## Tap sur une notification
+
+`useOpenTabOnNotification` (layout des onglets) choisit l'onglet d'après le préfixe de l'identifiant (`notificationTab`) :
+
+- rappel (`reminder-…`) : « Aujourd'hui », revenu au jour courant ;
+- alerte de stock (`low-stock-…`) : « Médicaments ».
+
+Puis `requestTabReset` (`src/shared/navigation/tabResetStore.ts`) : l'écran racine de l'onglet (`useTabReset`) dépile sa pile (calendrier, fiche d'un médicament) et remonte en haut. `router.navigate` seul ne dépile pas : il empilerait un doublon de l'écran racine.
 
 ## Permission
 

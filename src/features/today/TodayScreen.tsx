@@ -2,6 +2,7 @@ import { router } from "expo-router";
 import { View } from "react-native";
 
 import { Screen } from "@/design-system/components/Screen/Screen";
+import { useTabReset } from "@/shared/navigation/useTabReset";
 
 import { PastDayContent } from "./components/PastDayContent";
 import { TodayContent } from "./components/TodayContent";
@@ -15,9 +16,12 @@ function openCalendar() {
 
 export function TodayScreen() {
   const dayNavigation = useDayNavigation();
+  const scrollViewReference = useTabReset("today", () =>
+    dayNavigation.showDate(dayNavigation.today),
+  );
 
   return (
-    <Screen>
+    <Screen ref={scrollViewReference}>
       <TodayHeader dayNavigation={dayNavigation} onOpenCalendar={openCalendar} />
       <View style={styles.content}>
         {dayNavigation.isToday ? (

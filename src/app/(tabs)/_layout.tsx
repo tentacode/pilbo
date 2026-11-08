@@ -1,12 +1,12 @@
 import { Tabs } from "expo-router";
 
-import { useOpenTodayOnNotification } from "@/features/notifications/hooks/useOpenTodayOnNotification";
+import { useOpenTabOnNotification } from "@/features/notifications/hooks/useOpenTabOnNotification";
 import { useLowStockCount } from "@/features/stocks/hooks/useLowStockCount";
 import { usePendingPastIntakeCount } from "@/features/today/hooks/usePendingPastIntakeCount";
 import { NavigationTabBar } from "@/shared/navigation/NavigationTabBar";
 
 export default function TabsLayout() {
-  useOpenTodayOnNotification();
+  useOpenTabOnNotification();
   const badgeCounts = { today: usePendingPastIntakeCount(), meds: useLowStockCount() };
 
   return (
