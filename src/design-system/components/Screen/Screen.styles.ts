@@ -1,13 +1,12 @@
-import { StyleSheet } from "react-native";
+import { spacing } from "../../tokens";
+import { createThemedStyles } from "../../utils/createThemedStyles";
 
-import { colors, spacing } from "../../tokens";
-
-export const styles = StyleSheet.create({
+export const useStyles = createThemedStyles((themeColors) => ({
   screen: {
     flex: 1,
-    backgroundColor: colors.background,
+    backgroundColor: themeColors.background,
   },
   content: {
     paddingBottom: spacing.extraLarge,
   },
-});
+}));

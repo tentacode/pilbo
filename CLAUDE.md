@@ -23,7 +23,6 @@ Une fois le plan validé, ne rien faire tout de suite : créer d'abord le plan d
 ### Hors périmètre
 
 - Tout ce qui n'est pas dans la spec.
-- Android n'est absolument pas d'actualité pour l'instant.
 - Certaines fonctionnalités avancées présentes dans le design mais pas nécessaires pour une proof of concept, ex. : l'éditeur de pilules.
 - Widget iOS (Swift/WidgetKit + App Group, nécessite un compte Apple Developer payant) : sera traité plus tard. Il lira directement la base SQLite, donc le garder en tête : le fichier de base ira dans le conteneur App Group (paramètre `directory` de `openDatabaseSync`), et le schéma doit rester simple à requêter depuis Swift.
 
@@ -31,7 +30,7 @@ En gros, on cherche une proof of concept : dans le doute, demander si c'est dans
 
 ## Stack
 
-- React Native avec **Expo**, en **development builds** (pas Expo Go). iOS uniquement.
+- React Native avec **Expo**, en **development builds** (pas Expo Go). iOS et Android (voir `./docs/android_build.md`).
 - **TypeScript** en mode strict.
 - Navigation : **Expo Router**.
   - Pour quitter des modales ouvertes en ignorant leurs modifications non enregistrées (sans dialogue d'abandon) : `leaveWithoutConfirmation` (`features/pillbox/hooks/useModalClosing.ts`).
@@ -48,9 +47,9 @@ En gros, on cherche une proof of concept : dans le doute, demander si c'est dans
 - Données **100 % locales** : pas de backend, pas de compte utilisateur.
 - i18n : **i18next + react-i18next + expo-localization** (français et anglais), clés = texte français, un namespace par feature, `make i18n-extract`. Voir la section i18n de `docs/architecture.md`.
 - Notifications : **expo-notifications** (notifications locales programmées).
-- Tests : **Jest + React Native Testing Library**.
+- Tests : **Jest + React Native Testing Library**. Deux projets Jest : `ios` (toute la suite) et `android` (uniquement les `*.android.spec.ts(x)`).
 - Qualité du code : **ESLint + Prettier**.
-- L'app est testée sur un iPhone personnel via Xcode, avec un compte Apple Developer payant (équipe `APPLE_TEAM_ID`).
+- L'app est testée sur un iPhone personnel via Xcode, avec un compte Apple Developer payant (équipe `APPLE_TEAM_ID`), et sur un Galaxy S9 sous ROM Android 13 (adb le voit comme un `SM-N985F`).
 
 ### Contraintes iOS à garder en tête
 
@@ -62,14 +61,20 @@ En gros, on cherche une proof of concept : dans le doute, demander si c'est dans
 - `plugins/withoutPushEntitlement.js` retire l'entitlement push ajouté par `expo-notifications` ; il doit être déclaré **avant** `expo-notifications` dans `app.config.ts` (les mods iOS s'exécutent dans l'ordre inverse).
 - `ios.appleTeamId` dans `app.config.ts` (lu depuis `APPLE_TEAM_ID` dans `.env`) conserve la team de signature après `npx expo prebuild --clean`.
 
+### Contraintes Android à garder en tête
+
+- Canaux de notification : importance, son et vibration sont figés à la création. Pour les changer, changer l'identifiant du canal (`NOTIFICATION_CHANNEL_IDS`).
+- Rappels en alarmes exactes, reprogrammés après un redémarrage : voir la section Android de `docs/notifications.md`.
+
 ## Commandes
 
 Le gestionnaire de paquets est **pnpm**. Utiliser le `Makefile` (`make help` liste tout) :
 
-- Deux variantes, choisies par `APP_VARIANT` (fixé par le Makefile, pas dans `.env`) : « Pilbo Dev » (`com.tentacode.pilbo.dev`, données de test) et « Pilbo » (`com.tentacode.pilbo`). Le dossier `ios/` (projet `Pilbo` pour les deux) est partagé : chaque cible de build le met à jour pour sa variante (`prebuild --no-clean`, Expo vide `ios/` par défaut sinon).
+- Deux variantes, choisies par `APP_VARIANT` (fixé par le Makefile, pas dans `.env`) : « Pilbo Dev » (`com.tentacode.pilbo.dev`, données de test) et « Pilbo » (`com.tentacode.pilbo`). Les dossiers `ios/` (projet `Pilbo` pour les deux) et `android/` sont partagés : chaque cible de build le met à jour pour sa variante (`prebuild --no-clean`, Expo vide `ios/` par défaut sinon).
 - `make start` : Metro seul (Fast Refresh, sans rebuild natif).
 - `make build-simulator` / `make build-device` : « Pilbo Dev » en Debug. `make build-release` : « Pilbo » en Release (`DEVICE_ID` depuis `.env`).
-- `make clean` : `expo prebuild --clean` (`APP_VARIANT=dev` par défaut).
+- `make android-build-emulator` / `make android-build-device` (`ANDROID_DEVICE_ID`) : « Pilbo Dev » en Debug. `make android-build-release` : « Pilbo » en Release, APK signé avec le keystore hors du repo (voir `docs/android_build.md`). Keystore perdu = désinstaller l'app, donc perdre ses données.
+- `make clean` : `expo prebuild --clean`, régénère `ios/` et `android/` (`APP_VARIANT=dev` par défaut).
 - `make testflight` : « Pilbo » en Release envoyé sur TestFlight par fastlane (lane `beta`, `fastlane/Fastfile`) : numéro de build +1 automatique, envoi au groupe externe « Pilbo Externe ».
   - Clé API App Store Connect avec le rôle **Admin** (nécessaire pour la signature cloud), `.p8` hors du repo, identifiants dans `.env`.
   - fastlane tourne avec le Ruby Homebrew via Bundler ; le prebuild de la lane s'exécute hors de l'environnement Bundler (`Bundler.with_unbundled_env`), sinon `pod install` échoue.
@@ -79,6 +84,7 @@ Le gestionnaire de paquets est **pnpm**. Utiliser le `Makefile` (`make help` lis
   - Le CLI Maestro et le serveur MCP Maestro ne peuvent pas piloter le même simulateur en même temps (« Unable to set permissions… Failed to connect ») : utiliser l'un ou l'autre.
   - Un bouton caché sous le footer d'une modale (`Sheet`) est vu comme visible par Maestro, et le tap tombe sur le footer : `scroll` avant `tapOn`.
   - Si le CLI et le MCP Maestro échouent tous les deux (`Failed to connect`), redémarrer le simulateur : `xcrun simctl shutdown <id>` puis `xcrun simctl boot <id>`.
+- `make android-test-e2e` : flows Maestro sur l'émulateur Android démarré (« Pilbo Dev » installée, émulateur en français, voir `docs/android_build.md`).
 - `make db-generate` : générer une migration SQLite à partir de `src/shared/database/schema.ts`.
 - Variante dev : au premier lancement, insère les données de test et passe l'onboarding (e2e). « Pilbo » ne charge jamais de données de test. La section debug dans l'app (supprimer les données, réinitialiser avec les données de test, simuler une erreur) apparaît après 10 taps sur « Version » dans les réglages.
 
@@ -97,11 +103,13 @@ Conventions :
 - Préférer séparer le design et la logique.
 - Ne jamais écrire de commentaires dans le code, sauf s'ils sont vitaux pour comprendre la logique ou un cas limite.
 - Ne jamais abréger les noms de symboles (variables, noms de composants, props, etc.).
+- Code propre à une plateforme : fichiers `<Name>.ios.tsx` / `<Name>.android.tsx` et contrat `<Name>.d.ts`, jamais `Platform.OS`.
+- Couleurs : toujours par le thème (`createThemedStyles`, `useThemeColors`), jamais `colors` ni `DynamicColorIOS`. Voir `docs/architecture.md`.
 - Accessibilité : l'app doit être conforme WCAG AA, un effort particulier doit y être consacré, je testerai avec des lecteurs d'écran et des technologies d'assistance pour m'assurer que c'est valide. Concrètement :
   - `accessibilityLabel`, `accessibilityRole` et `accessibilityState` corrects sur les éléments interactifs.
-  - Respecter le réglage de taille de texte iOS (Dynamic Type) sans casser les mises en page.
+  - Respecter la taille de texte iOS (Dynamic Type) et Android (taille de police) sans casser les mises en page. Android 14+ grossit moins les grands textes : tester un plafond (`maximumFontScale`) à 2,0×.
   - Contraste des couleurs AA.
-  - Réduire les animations uniquement quand le réglage iOS « Réduire les animations » est activé.
+  - Réduire les animations uniquement quand le réglage « Réduire les animations » (iOS) ou « Supprimer les animations » (Android) est activé.
   - Zones tactiles d'au moins 44 pt.
 - Toujours utiliser des tokens pour les tailles/graisses de police, couleurs, dimensions, marges, etc.
 - Les composants peuvent aller dans le design-system ou dans le dossier features.

@@ -1,5 +1,3 @@
-import { type ColorValue, DynamicColorIOS } from "react-native";
-
 export const lightColors = {
   ink: "#2E2A5C",
   inkPressed: "#211E46",
@@ -116,18 +114,11 @@ export const darkColors: Palette = {
   shadow: "#000000",
 };
 
-type ColorName = keyof typeof lightColors;
+export type ColorName = keyof typeof lightColors;
 
 type Palette = Record<ColorName, string>;
 
 export type ThemeColors = Palette;
-
-export const colors = Object.fromEntries(
-  Object.entries(lightColors).map(([name, light]) => [
-    name,
-    DynamicColorIOS({ light, dark: darkColors[name as ColorName] }),
-  ]),
-) as Record<ColorName, ColorValue>;
 
 export const pillSwatches = {
   white: "#FFFFFF",
@@ -339,21 +330,7 @@ export const disabledOpacity = 0.5;
 export const pressedOpacity = 0.6;
 
 export const maximumFontScale = {
+  title: 1.1,
   tabLabel: 1.5,
   calendarGrid: 1.6,
 } as const;
-
-export const createShadows = (themeColors: ThemeColors) => ({
-  raised: {
-    shadowColor: themeColors.shadow,
-    shadowOpacity: 0.14,
-    shadowRadius: 2,
-    shadowOffset: { width: 0, height: 1 },
-  },
-  floating: {
-    shadowColor: themeColors.shadow,
-    shadowOpacity: 0.07,
-    shadowRadius: 16,
-    shadowOffset: { width: 0, height: 4 },
-  },
-});

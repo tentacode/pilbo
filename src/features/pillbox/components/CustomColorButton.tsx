@@ -4,7 +4,8 @@ import { useTranslation } from "react-i18next";
 import { ColorWheel } from "@/design-system/components/ColorWheel/ColorWheel";
 import { Icon } from "@/design-system/components/Icon/Icon";
 import { Text } from "@/design-system/components/Text/Text";
-import { colors, customColorWheel, sizes } from "@/design-system/tokens";
+import { useThemeColors } from "@/design-system/hooks/useThemeColors";
+import { customColorWheel, sizes } from "@/design-system/tokens";
 import { playPressHaptic } from "@/design-system/utils/playPressHaptic";
 
 import { useStyles } from "./CustomColorButton.styles";
@@ -22,6 +23,7 @@ export function CustomColorButton({
   isExpanded,
   onPress,
 }: CustomColorButtonProps) {
+  const themeColors = useThemeColors();
   const styles = useStyles();
   const { t } = useTranslation("pillbox");
   const label = t("Autre couleur");
@@ -45,7 +47,9 @@ export function CustomColorButton({
       <Text variant="buttonSmall" style={styles.label}>
         {label}
       </Text>
-      {isExpanded ? null : <Icon name="plus" size={sizes.iconSmall} color={colors.inkSecondary} />}
+      {isExpanded ? null : (
+        <Icon name="plus" size={sizes.iconSmall} color={themeColors.inkSecondary} />
+      )}
     </Pressable>
   );
 }

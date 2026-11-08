@@ -1,12 +1,11 @@
-import { StyleSheet } from "react-native";
+import { radius, sizes } from "@/design-system/tokens";
+import { createThemedStyles } from "@/design-system/utils/createThemedStyles";
 
-import { colors, radius, sizes } from "@/design-system/tokens";
-
-export const styles = StyleSheet.create({
+export const useStyles = createThemedStyles((themeColors) => ({
   track: {
     height: sizes.progressBarHeight,
     borderRadius: radius.round,
-    backgroundColor: colors.progressTrack,
+    backgroundColor: themeColors.progressTrack,
     overflow: "hidden",
   },
   compactTrack: {
@@ -14,14 +13,14 @@ export const styles = StyleSheet.create({
     height: sizes.compactProgressBarHeight,
   },
   lowTrack: {
-    backgroundColor: colors.surface,
+    backgroundColor: themeColors.surface,
   },
   fill: {
     height: "100%",
     borderRadius: radius.round,
-    backgroundColor: colors.inkSecondary,
+    backgroundColor: themeColors.inkSecondary,
   },
   lowFill: {
-    backgroundColor: colors.alertInk,
+    backgroundColor: themeColors.alertInk,
   },
-});
+}));

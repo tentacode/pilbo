@@ -1,13 +1,12 @@
-import { StyleSheet } from "react-native";
+import { radius, sizes, spacing } from "@/design-system/tokens";
+import { createThemedStyles } from "@/design-system/utils/createThemedStyles";
 
-import { colors, radius, sizes, spacing } from "@/design-system/tokens";
-
-export const styles = StyleSheet.create({
+export const useStyles = createThemedStyles((themeColors) => ({
   notice: {
     flexDirection: "row",
     alignItems: "flex-start",
     borderRadius: radius.card,
-    backgroundColor: colors.alertNotice,
+    backgroundColor: themeColors.alertNotice,
     overflow: "hidden",
   },
   content: {
@@ -19,7 +18,7 @@ export const styles = StyleSheet.create({
     paddingLeft: spacing.large,
   },
   pressed: {
-    backgroundColor: colors.alertNoticePressed,
+    backgroundColor: themeColors.alertNoticePressed,
   },
   texts: {
     flex: 1,
@@ -33,4 +32,4 @@ export const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-});
+}));

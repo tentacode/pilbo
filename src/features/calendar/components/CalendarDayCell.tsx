@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 
 import { Icon } from "@/design-system/components/Icon/Icon";
 import { Text } from "@/design-system/components/Text/Text";
+import { useThemeColors } from "@/design-system/hooks/useThemeColors";
 import { maximumFontScale, sizes } from "@/design-system/tokens";
 
 import type { CalendarDay } from "@/features/calendar/utils/calendarTypes";
@@ -19,6 +20,7 @@ type CalendarDayCellProps = {
 export function CalendarDayCell({ day, onPress }: CalendarDayCellProps) {
   const styles = useStyles();
   const dayStatusStyles = useDayStatusStyles();
+  const themeColors = useThemeColors();
   const { t } = useTranslation("calendar");
   const language = useLanguage();
   const appearance = day.status === "none" ? null : DAY_STATUS_APPEARANCES[day.status];
@@ -46,7 +48,7 @@ export function CalendarDayCell({ day, onPress }: CalendarDayCellProps) {
         {day.dayOfMonth}
       </Text>
       {appearance ? (
-        <Icon name={appearance.icon} size={sizes.iconSmall} color={appearance.color} />
+        <Icon name={appearance.icon} size={sizes.iconSmall} color={themeColors[appearance.color]} />
       ) : null}
     </Pressable>
   );

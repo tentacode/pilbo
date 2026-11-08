@@ -3,10 +3,10 @@ import { type AccessibilityRole, Pressable, View } from "react-native";
 
 import { Icon } from "@/design-system/components/Icon/Icon";
 import { Text, type TextTone } from "@/design-system/components/Text/Text";
-import { colors } from "@/design-system/tokens";
+import { useThemeColors } from "@/design-system/hooks/useThemeColors";
 
 import { useSettingsRowLayout } from "../hooks/useSettingsRowLayout";
-import { styles } from "./SettingsRow.styles";
+import { useStyles } from "./SettingsRow.styles";
 
 type SettingsRowProps = {
   label: string;
@@ -32,6 +32,8 @@ export function SettingsRow({
   accessibilityRole,
   accessibilityHint,
 }: SettingsRowProps) {
+  const styles = useStyles();
+  const themeColors = useThemeColors();
   const { onRowLayout, onTrailingLayout, isStacked: isOverflowing } = useSettingsRowLayout();
   const isStacked = isFullWidthControl || isOverflowing;
   const isGrouped = accessibilityLabel !== undefined;
@@ -58,7 +60,7 @@ export function SettingsRow({
           ]}
         >
           {children}
-          {hasChevron ? <Icon name="chevronRight" color={colors.inkSecondary} /> : null}
+          {hasChevron ? <Icon name="chevronRight" color={themeColors.inkSecondary} /> : null}
         </View>
       ) : null}
     </>

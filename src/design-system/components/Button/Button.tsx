@@ -1,12 +1,13 @@
-import { type ColorValue, Pressable } from "react-native";
+import { Pressable } from "react-native";
 
 import { useReduceMotion } from "../../hooks/useReduceMotion";
-import { colors } from "../../tokens";
+import { useThemeColors } from "../../hooks/useThemeColors";
+import type { ColorName } from "../../tokens";
 import { playPressHaptic } from "../../utils/playPressHaptic";
 import { Icon } from "../Icon/Icon";
 import type { IconName } from "../Icon/iconShapes";
 import { Text, type TextTone, type TextVariant } from "../Text/Text";
-import { pressedVariantStyles, sizeStyles, styles, useVariantStyles } from "./Button.styles";
+import { sizeStyles, styles, usePressedVariantStyles, useVariantStyles } from "./Button.styles";
 
 export type ButtonVariant = "primary" | "prominent" | "secondary" | "text";
 export type ButtonSize = "regular" | "large";
@@ -22,11 +23,11 @@ type ButtonProps = {
   isDisabled?: boolean;
 };
 
-const ICON_COLORS: Record<ButtonVariant, ColorValue> = {
-  primary: colors.onInk,
-  prominent: colors.onProminent,
-  secondary: colors.ink,
-  text: colors.ink,
+const ICON_COLORS: Record<ButtonVariant, ColorName> = {
+  primary: "onInk",
+  prominent: "onProminent",
+  secondary: "ink",
+  text: "ink",
 };
 
 const LABEL_TONES: Record<ButtonVariant, TextTone> = {
@@ -51,6 +52,8 @@ export function Button({
   isDisabled = false,
 }: ButtonProps) {
   const variantStyles = useVariantStyles();
+  const pressedVariantStyles = usePressedVariantStyles();
+  const themeColors = useThemeColors();
   const reduceMotion = useReduceMotion();
 
   return (
@@ -71,7 +74,7 @@ export function Button({
         isDisabled && styles.disabled,
       ]}
     >
-      {icon ? <Icon name={icon} color={ICON_COLORS[variant]} /> : null}
+      {icon ? <Icon name={icon} color={themeColors[ICON_COLORS[variant]]} /> : null}
       <Text variant={labelVariant(variant, size)} tone={LABEL_TONES[variant]} style={styles.label}>
         {label}
       </Text>

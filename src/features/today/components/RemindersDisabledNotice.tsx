@@ -4,13 +4,14 @@ import { useTranslation } from "react-i18next";
 import { Button } from "@/design-system/components/Button/Button";
 import { Text } from "@/design-system/components/Text/Text";
 
-import { styles } from "./RemindersDisabledNotice.styles";
+import { useStyles } from "./RemindersDisabledNotice.styles";
 
 type RemindersDisabledNoticeProps = {
   onEnable: () => void;
 };
 
 export function RemindersDisabledNotice({ onEnable }: RemindersDisabledNoticeProps) {
+  const styles = useStyles();
   const { t } = useTranslation("today");
   return (
     <View style={styles.notice}>

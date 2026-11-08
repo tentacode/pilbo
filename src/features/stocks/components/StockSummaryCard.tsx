@@ -11,7 +11,7 @@ import {
 import { stockRatio, type StockForecast } from "@/features/stocks/utils/stockForecast";
 import { StockProgressBar } from "./StockProgressBar";
 import { StockStatusLabel } from "./StockStatusLabel";
-import { styles } from "./StockSummaryCard.styles";
+import { useStyles } from "./StockSummaryCard.styles";
 import { useLanguage } from "@/shared/i18n/hooks/useLanguage";
 
 type StockSummaryCardProps = {
@@ -20,6 +20,7 @@ type StockSummaryCardProps = {
 };
 
 export function StockSummaryCard({ quantity, forecast }: StockSummaryCardProps) {
+  const styles = useStyles();
   const { t } = useTranslation("stocks");
   const language = useLanguage();
   const isLow = forecast.status === "low";

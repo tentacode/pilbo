@@ -3,7 +3,8 @@ import { useTranslation } from "react-i18next";
 
 import { Icon } from "@/design-system/components/Icon/Icon";
 import { Text } from "@/design-system/components/Text/Text";
-import { colors, sizes } from "@/design-system/tokens";
+import { useThemeColors } from "@/design-system/hooks/useThemeColors";
+import { sizes } from "@/design-system/tokens";
 
 import { formatDayUnit, formatPillUnitAbbreviation } from "@/features/meds/utils/formatters";
 import type { MedStockStatus } from "@/features/meds/utils/medsTypes";
@@ -17,6 +18,7 @@ type MedListRowStockProps = {
 };
 
 export function MedListRowStock({ stockStatus, isStacked }: MedListRowStockProps) {
+  const themeColors = useThemeColors();
   const { t } = useTranslation("meds");
   if (stockStatus === undefined) {
     return (
@@ -36,7 +38,7 @@ export function MedListRowStock({ stockStatus, isStacked }: MedListRowStockProps
   return (
     <View style={[styles.container, isStacked && styles.stackedContainer]}>
       <View style={styles.count}>
-        {isLow ? <Icon name="alert" size={sizes.iconSmall} color={colors.alertInk} /> : null}
+        {isLow ? <Icon name="alert" size={sizes.iconSmall} color={themeColors.alertInk} /> : null}
         <Text variant="heading" tone={isLow ? "alert" : "primary"} style={styles.number}>
           {count}
         </Text>

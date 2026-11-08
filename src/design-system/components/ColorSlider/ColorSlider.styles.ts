@@ -1,6 +1,7 @@
 import { StyleSheet } from "react-native";
 
-import { borderWidth, createShadows, radius, sizes } from "../../tokens";
+import { createShadows } from "../../shadows";
+import { borderWidth, radius, sizes } from "../../tokens";
 import { createThemedStyles } from "../../utils/createThemedStyles";
 
 export const useStyles = createThemedStyles((themeColors) => ({

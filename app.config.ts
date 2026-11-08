@@ -1,23 +1,42 @@
 import type { ExpoConfig } from "expo/config";
 import { artworkConfig } from "./assets/artwork/config.ts";
+import { darkColors, lightColors } from "./src/design-system/tokens.ts";
 
 const BASE_BUNDLE_IDENTIFIER = "com.tentacode.pilbo";
 
 type AppVariant = "dev" | "prod";
 
+// Added by Expo and its modules, unused by Pilbo
+const UNUSED_ANDROID_PERMISSIONS = [
+  "android.permission.SYSTEM_ALERT_WINDOW",
+  "android.permission.READ_EXTERNAL_STORAGE",
+  "android.permission.WRITE_EXTERNAL_STORAGE",
+];
+
 const VARIANTS: Record<
   AppVariant,
-  { displayName: string; bundleIdentifier: string; icon: string }
+  {
+    displayName: string;
+    bundleIdentifier: string;
+    icon: string;
+    adaptiveIconForeground: string;
+    blockedAndroidPermissions: string[];
+  }
 > = {
   dev: {
     displayName: "Pilbo Dev",
     bundleIdentifier: `${BASE_BUNDLE_IDENTIFIER}.dev`,
     icon: "./assets/images/icon-dev.png",
+    adaptiveIconForeground: "./assets/images/adaptive-icon-foreground-dev.png",
+    // Pilbo Dev loads its JavaScript from Metro over the network
+    blockedAndroidPermissions: UNUSED_ANDROID_PERMISSIONS,
   },
   prod: {
     displayName: "Pilbo",
     bundleIdentifier: BASE_BUNDLE_IDENTIFIER,
     icon: "./assets/images/icon.png",
+    adaptiveIconForeground: "./assets/images/adaptive-icon-foreground.png",
+    blockedAndroidPermissions: [...UNUSED_ANDROID_PERMISSIONS, "android.permission.INTERNET"],
   },
 };
 
@@ -69,12 +88,20 @@ const config: ExpoConfig = {
       ],
     },
   },
+  android: {
+    package: variant.bundleIdentifier,
+    blockedPermissions: variant.blockedAndroidPermissions,
+    adaptiveIcon: {
+      foregroundImage: variant.adaptiveIconForeground,
+      backgroundImage: "./assets/images/adaptive-icon-background.png",
+    },
+  },
   extra: {
     appVariant,
   },
   plugins: [
     "expo-router",
-    ["expo-build-properties", { ios: { ccacheEnabled: true } }],
+    ["expo-build-properties", { ios: { ccacheEnabled: true }, android: { minSdkVersion: 30 } }],
     [
       "expo-splash-screen",
       {
@@ -85,6 +112,12 @@ const config: ExpoConfig = {
         dark: {
           backgroundColor: artworkConfig.darkBackground,
           image: "./assets/images/splash-dark.png",
+        },
+        android: {
+          image: "./assets/images/splash-icon.png",
+          imageWidth: 200,
+          resizeMode: "contain",
+          dark: { image: "./assets/images/splash-icon.png" },
         },
       },
     ],
@@ -98,6 +131,11 @@ const config: ExpoConfig = {
     "expo-sqlite",
     "./plugins/withSqliteHeader",
     "expo-localization",
+    ["./plugins/withAndroidDisplayName", variant.displayName],
+    "./plugins/withExactAlarmPermissions",
+    "./plugins/withReleaseSigning",
+    "./plugins/withAbiSplits",
+    ["./plugins/withAndroidAccentColor", { light: lightColors.ink, dark: darkColors.ink }],
   ],
   experiments: {
     typedRoutes: true,

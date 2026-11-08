@@ -3,15 +3,11 @@ import { useTranslation } from "react-i18next";
 
 import { useThemeColors } from "@/design-system/hooks/useThemeColors";
 
+import type { MedRowActions } from "./useMedRowActionSheet";
+
 const EDIT_MED_INDEX = 0;
 const REMOVE_MED_INDEX = 1;
 const CANCEL_INDEX = 2;
-
-type MedRowActions = {
-  medLabel: string;
-  onEditMed: () => void;
-  onRemove: () => void;
-};
 
 export function useMedRowActionSheet() {
   const { t } = useTranslation("pillbox");

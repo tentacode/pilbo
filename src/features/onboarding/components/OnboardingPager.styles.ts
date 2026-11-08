@@ -1,8 +1,7 @@
-import { StyleSheet } from "react-native";
+import { radius, sizes, spacing } from "@/design-system/tokens";
+import { createThemedStyles } from "@/design-system/utils/createThemedStyles";
 
-import { colors, radius, sizes, spacing } from "@/design-system/tokens";
-
-export const styles = StyleSheet.create({
+export const useStyles = createThemedStyles((themeColors) => ({
   indicator: {
     flexDirection: "row",
     justifyContent: "center",
@@ -13,10 +12,10 @@ export const styles = StyleSheet.create({
     width: sizes.stepIndicatorDot,
     height: sizes.stepIndicatorDot,
     borderRadius: radius.round,
-    backgroundColor: colors.stepIndicatorInactive,
+    backgroundColor: themeColors.stepIndicatorInactive,
   },
   currentDot: {
     width: sizes.stepIndicatorCurrentDot,
-    backgroundColor: colors.ink,
+    backgroundColor: themeColors.ink,
   },
-});
+}));

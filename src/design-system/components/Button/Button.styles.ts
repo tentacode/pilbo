@@ -1,14 +1,6 @@
 import { StyleSheet } from "react-native";
 
-import {
-  borderWidth,
-  colors,
-  disabledOpacity,
-  pressedScale,
-  radius,
-  sizes,
-  spacing,
-} from "../../tokens";
+import { borderWidth, disabledOpacity, pressedScale, radius, sizes, spacing } from "../../tokens";
 import { createThemedStyles } from "../../utils/createThemedStyles";
 
 export const styles = StyleSheet.create({
@@ -61,12 +53,12 @@ export const useVariantStyles = createThemedStyles((themeColors) => ({
   },
 }));
 
-export const pressedVariantStyles = StyleSheet.create({
-  primary: { backgroundColor: colors.inkPressed },
-  prominent: { backgroundColor: colors.prominentBackgroundPressed },
-  secondary: { backgroundColor: colors.fill },
-  text: { backgroundColor: colors.fill },
-});
+export const usePressedVariantStyles = createThemedStyles((themeColors) => ({
+  primary: { backgroundColor: themeColors.inkPressed },
+  prominent: { backgroundColor: themeColors.prominentBackgroundPressed },
+  secondary: { backgroundColor: themeColors.fill },
+  text: { backgroundColor: themeColors.fill },
+}));
 
 export const sizeStyles = StyleSheet.create({
   regular: {},

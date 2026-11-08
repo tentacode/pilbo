@@ -1,8 +1,7 @@
-import { StyleSheet } from "react-native";
+import { radius, sizes, spacing } from "../../tokens";
+import { createThemedStyles } from "../../utils/createThemedStyles";
 
-import { radius, sizes, spacing, colors } from "../../tokens";
-
-export const styles = StyleSheet.create({
+export const useStyles = createThemedStyles((themeColors) => ({
   header: {
     paddingTop: spacing.sheetTop,
     paddingHorizontal: spacing.large,
@@ -13,7 +12,7 @@ export const styles = StyleSheet.create({
     height: sizes.grabberHeight,
     marginBottom: spacing.extraSmall,
     borderRadius: radius.round,
-    backgroundColor: colors.grabber,
+    backgroundColor: themeColors.grabber,
   },
   navigation: {
     flexDirection: "row",
@@ -48,4 +47,4 @@ export const styles = StyleSheet.create({
     alignItems: "flex-start",
     opacity: 0,
   },
-});
+}));

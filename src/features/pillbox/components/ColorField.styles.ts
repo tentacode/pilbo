@@ -1,8 +1,7 @@
-import { StyleSheet } from "react-native";
+import { radius, spacing } from "@/design-system/tokens";
+import { createThemedStyles } from "@/design-system/utils/createThemedStyles";
 
-import { colors, radius, spacing } from "@/design-system/tokens";
-
-export const styles = StyleSheet.create({
+export const useStyles = createThemedStyles((themeColors) => ({
   labelRow: {
     flexDirection: "row",
     flexWrap: "wrap",
@@ -17,7 +16,7 @@ export const styles = StyleSheet.create({
     gap: spacing.extraSmall,
     padding: spacing.extraSmall,
     borderRadius: radius.segment,
-    backgroundColor: colors.fill,
+    backgroundColor: themeColors.fill,
   },
   swatches: {
     flexDirection: "row",
@@ -27,4 +26,4 @@ export const styles = StyleSheet.create({
   customColorButton: {
     marginTop: spacing.customColorButtonTop,
   },
-});
+}));

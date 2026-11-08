@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 import { AccessibilityInfo, Pressable, TextInput, type TextInputProps } from "react-native";
 
-import { colors } from "../../tokens";
+import { useThemeColors } from "../../hooks/useThemeColors";
 import { Text } from "../Text/Text";
 import { useStyles } from "./TextField.styles";
 
@@ -15,6 +15,7 @@ type TextFieldProps = Pick<
 };
 
 export function TextField({ label, error, hasTopBorder = false, ...inputProps }: TextFieldProps) {
+  const themeColors = useThemeColors();
   const styles = useStyles();
   const inputReference = useRef<TextInput>(null);
 
@@ -37,7 +38,7 @@ export function TextField({ label, error, hasTopBorder = false, ...inputProps }:
         ref={inputReference}
         accessibilityLabel={label}
         accessibilityHint={error}
-        placeholderTextColor={colors.inkSecondary}
+        placeholderTextColor={themeColors.inkSecondary}
         style={styles.input}
         {...inputProps}
       />

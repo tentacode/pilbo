@@ -10,7 +10,7 @@ import type { PillDesign } from "@/domain/med";
 import { findSwatch, formatColorTitle } from "@/features/pillbox/utils/formatters";
 import { ColorHalfOption } from "./ColorHalfOption";
 import { CustomColorButton } from "./CustomColorButton";
-import { styles } from "./ColorField.styles";
+import { useStyles } from "./ColorField.styles";
 import type { TFunction } from "i18next";
 
 export type ColorHalf = 0 | 1;
@@ -41,6 +41,7 @@ export function ColorField({
   onCustomColorPress,
   children,
 }: ColorFieldProps) {
+  const styles = useStyles();
   const { t } = useTranslation("pillbox");
   const activeColor = design.colors[activeHalf];
   const activeSwatch = isCustomColorPanelOpen ? undefined : findSwatch(activeColor);

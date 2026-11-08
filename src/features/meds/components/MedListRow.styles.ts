@@ -1,8 +1,7 @@
-import { StyleSheet } from "react-native";
+import { sizes, spacing } from "@/design-system/tokens";
+import { createThemedStyles } from "@/design-system/utils/createThemedStyles";
 
-import { colors, sizes, spacing } from "@/design-system/tokens";
-
-export const styles = StyleSheet.create({
+export const useStyles = createThemedStyles((themeColors) => ({
   row: {
     flexDirection: "row",
     alignItems: "center",
@@ -13,10 +12,10 @@ export const styles = StyleSheet.create({
     paddingHorizontal: spacing.large,
   },
   pressed: {
-    backgroundColor: colors.separator,
+    backgroundColor: themeColors.separator,
   },
   texts: {
     flex: 1,
     gap: spacing.tiny,
   },
-});
+}));

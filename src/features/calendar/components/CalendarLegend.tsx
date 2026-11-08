@@ -4,10 +4,11 @@ import { useTranslation } from "react-i18next";
 import { Text } from "@/design-system/components/Text/Text";
 
 import { useLegendLayout } from "@/features/calendar/hooks/useLegendLayout";
-import { styles } from "./CalendarLegend.styles";
+import { useStyles } from "./CalendarLegend.styles";
 import { CalendarLegendItem } from "./CalendarLegendItem";
 
 export function CalendarLegend() {
+  const styles = useStyles();
   const { t } = useTranslation("calendar");
   const { onLayout, onLabelsMeasureLayout, hasTwoColumns } = useLegendLayout();
   const items = [

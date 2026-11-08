@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 
 import { Icon } from "@/design-system/components/Icon/Icon";
 import { Text } from "@/design-system/components/Text/Text";
-import { colors } from "@/design-system/tokens";
+import { useThemeColors } from "@/design-system/hooks/useThemeColors";
 import { type Intake } from "@/domain/intake";
 
 import {
@@ -11,7 +11,7 @@ import {
   formatIntakeSchedule,
 } from "@/features/pillbox/utils/formatters";
 import { pillStackLayoutOf } from "@/features/pillbox/utils/pillStack";
-import { styles } from "./IntakeCard.styles";
+import { useStyles } from "./IntakeCard.styles";
 import { IntakeMedRow } from "./IntakeMedRow";
 import { formatIntakeTime } from "@/shared/i18n/formatters";
 import { useLanguage } from "@/shared/i18n/hooks/useLanguage";
@@ -22,6 +22,8 @@ type IntakeCardProps = {
 };
 
 export function IntakeCard({ intake, onPress }: IntakeCardProps) {
+  const styles = useStyles();
+  const themeColors = useThemeColors();
   const { t } = useTranslation("pillbox");
   const language = useLanguage();
   const pillStackLayout = pillStackLayoutOf(intake.medQuantities);
@@ -34,7 +36,7 @@ export function IntakeCard({ intake, onPress }: IntakeCardProps) {
     >
       <View style={styles.header}>
         <Text variant="time">{formatIntakeTime(intake.time)}</Text>
-        <Icon name="chevronRight" color={colors.inkSecondary} />
+        <Icon name="chevronRight" color={themeColors.inkSecondary} />
       </View>
       <Text variant="small" tone="secondary" style={styles.schedule}>
         {formatIntakeSchedule(t, language, intake)}

@@ -3,7 +3,8 @@ import { useTranslation } from "react-i18next";
 
 import { Icon } from "@/design-system/components/Icon/Icon";
 import { Text } from "@/design-system/components/Text/Text";
-import { colors, sizes } from "@/design-system/tokens";
+import { useThemeColors } from "@/design-system/hooks/useThemeColors";
+import { sizes } from "@/design-system/tokens";
 
 import { useNotificationPermission } from "@/features/notifications/hooks/useNotificationPermission";
 
@@ -11,6 +12,7 @@ import { styles } from "./NotificationsRow.styles";
 import { SettingsRow } from "./SettingsRow";
 
 export function NotificationsRow() {
+  const themeColors = useThemeColors();
   const { t } = useTranslation("settings");
   const { isGranted, request } = useNotificationPermission();
   const label = t("Notifications");
@@ -23,7 +25,7 @@ export function NotificationsRow() {
     return (
       <SettingsRow label={label} accessibilityLabel={t("Notifications : autorisées")}>
         <View style={styles.granted}>
-          <Icon name="check" size={sizes.iconSmall} color={colors.successInk} />
+          <Icon name="check" size={sizes.iconSmall} color={themeColors.successInk} />
           <Text variant="body" tone="success">
             {t("Autorisées")}
           </Text>

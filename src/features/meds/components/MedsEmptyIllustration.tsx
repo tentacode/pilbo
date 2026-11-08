@@ -5,10 +5,13 @@ import {
   IllustrationRoundPill,
   IllustrationTabletPill,
 } from "@/design-system/components/Illustration/IllustrationPills";
-import { illustrationStrokes as strokes } from "@/design-system/components/Illustration/illustrationStrokes";
-import { colors, sizes } from "@/design-system/tokens";
+import { useIllustrationStrokes } from "@/design-system/components/Illustration/illustrationStrokes";
+import { useThemeColors } from "@/design-system/hooks/useThemeColors";
+import { sizes } from "@/design-system/tokens";
 
 export function MedsEmptyIllustration() {
+  const strokes = useIllustrationStrokes();
+  const themeColors = useThemeColors();
   return (
     <Svg
       width={sizes.pageEmptyIllustrationWidth}
@@ -16,24 +19,32 @@ export function MedsEmptyIllustration() {
       viewBox="0 0 220 186"
       accessible={false}
     >
-      <Circle cx={110} cy={106} r={80} fill={colors.accentSoft} />
+      <Circle cx={110} cy={106} r={80} fill={themeColors.accentSoft} />
       <Rect
         x={84}
         y={36}
         width={100}
         height={124}
         rx={12}
-        fill={colors.surface}
+        fill={themeColors.surface}
         {...strokes.filled}
       />
       <Path d="M84 78h100M84 118h100" {...strokes.outline} />
-      <Rect x={96} y={54} width={24} height={24} rx={4} fill={colors.butter} {...strokes.filled} />
+      <Rect
+        x={96}
+        y={54}
+        width={24}
+        height={24}
+        rx={4}
+        fill={themeColors.butter}
+        {...strokes.filled}
+      />
       <IllustrationCapsulePill
         x={128}
         y={46}
         tilt={-20}
-        firstHalfColor={colors.roseStrong}
-        secondHalfColor={colors.surface}
+        firstHalfColor={themeColors.roseStrong}
+        secondHalfColor={themeColors.surface}
       />
       <Rect
         x={103}
@@ -41,7 +52,7 @@ export function MedsEmptyIllustration() {
         width={14}
         height={7}
         rx={2}
-        fill={colors.roseStrong}
+        fill={themeColors.roseStrong}
         {...strokes.filled}
       />
       <Rect
@@ -50,16 +61,16 @@ export function MedsEmptyIllustration() {
         width={24}
         height={24}
         rx={6}
-        fill={colors.turquoise}
+        fill={themeColors.turquoise}
         {...strokes.filled}
       />
-      <IllustrationRoundPill x={134} y={92} size={28} color={colors.lavender} />
-      <IllustrationTabletPill x={102} y={126} color={colors.turquoise} />
-      <IllustrationRoundPill x={146} y={132} size={28} color={colors.butter} />
-      <Path d="M84 36L50 48v100l34 12z" fill={colors.surface} {...strokes.filled} />
-      <Rect x={64} y={86} width={7} height={24} rx={2} fill={colors.roseStrong} />
-      <Rect x={55.5} y={94.5} width={24} height={7} rx={2} fill={colors.roseStrong} />
-      <Circle cx={78} cy={98} r={2.5} fill={colors.ink} />
+      <IllustrationRoundPill x={134} y={92} size={28} color={themeColors.lavender} />
+      <IllustrationTabletPill x={102} y={126} color={themeColors.turquoise} />
+      <IllustrationRoundPill x={146} y={132} size={28} color={themeColors.butter} />
+      <Path d="M84 36L50 48v100l34 12z" fill={themeColors.surface} {...strokes.filled} />
+      <Rect x={64} y={86} width={7} height={24} rx={2} fill={themeColors.roseStrong} />
+      <Rect x={55.5} y={94.5} width={24} height={7} rx={2} fill={themeColors.roseStrong} />
+      <Circle cx={78} cy={98} r={2.5} fill={themeColors.ink} />
     </Svg>
   );
 }

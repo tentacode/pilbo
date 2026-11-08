@@ -1,19 +1,18 @@
-import { StyleSheet } from "react-native";
+import { radius, sizes, spacing } from "../../tokens";
+import { createThemedStyles } from "../../utils/createThemedStyles";
 
-import { colors, radius, sizes, spacing } from "../../tokens";
+export const useToneStyles = createThemedStyles((themeColors) => ({
+  neutral: { backgroundColor: themeColors.accentSoft },
+  warning: { backgroundColor: themeColors.butterSoft },
+}));
 
-export const toneStyles = StyleSheet.create({
-  neutral: { backgroundColor: colors.accentSoft },
-  warning: { backgroundColor: colors.butterSoft },
-});
-
-export const styles = StyleSheet.create({
+export const useStyles = createThemedStyles((themeColors) => ({
   backdrop: {
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
     padding: spacing.extraLarge,
-    backgroundColor: colors.backdrop,
+    backgroundColor: themeColors.backdrop,
   },
   card: {
     width: "100%",
@@ -22,7 +21,7 @@ export const styles = StyleSheet.create({
     gap: spacing.medium,
     padding: spacing.dialogPadding,
     borderRadius: radius.largeCard,
-    backgroundColor: colors.surface,
+    backgroundColor: themeColors.surface,
   },
   iconBadge: {
     width: sizes.dialogIconBadge,
@@ -39,4 +38,4 @@ export const styles = StyleSheet.create({
     gap: spacing.small,
     marginTop: spacing.small,
   },
-});
+}));

@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 
 import { Icon } from "@/design-system/components/Icon/Icon";
 import { Text } from "@/design-system/components/Text/Text";
-import { colors } from "@/design-system/tokens";
+import { useThemeColors } from "@/design-system/hooks/useThemeColors";
 import type { Intake } from "@/domain/intake";
 
 import { formatMedIntakeDetails } from "@/features/meds/utils/formatters";
@@ -11,7 +11,7 @@ import { formatIntakeDays } from "@/features/pillbox/utils/formatters";
 import { SettingsSection } from "@/features/settings/components/SettingsSection";
 import { formatIntakeTime } from "@/shared/i18n/formatters";
 import { useLanguage } from "@/shared/i18n/hooks/useLanguage";
-import { styles } from "./MedIntakesSection.styles";
+import { useStyles } from "./MedIntakesSection.styles";
 
 type MedIntakesSectionProps = {
   medId: string;
@@ -20,6 +20,8 @@ type MedIntakesSectionProps = {
 };
 
 export function MedIntakesSection({ medId, intakes, onOpenIntake }: MedIntakesSectionProps) {
+  const styles = useStyles();
+  const themeColors = useThemeColors();
   const { t } = useTranslation("meds");
   const { t: translatePillbox } = useTranslation("pillbox");
   const language = useLanguage();
@@ -44,7 +46,7 @@ export function MedIntakesSection({ medId, intakes, onOpenIntake }: MedIntakesSe
             <Text style={styles.text}>
               <Text variant="bodyBold">{time}</Text> · {details}
             </Text>
-            <Icon name="chevronRight" color={colors.inkSecondary} />
+            <Icon name="chevronRight" color={themeColors.inkSecondary} />
           </Pressable>
         );
       })}

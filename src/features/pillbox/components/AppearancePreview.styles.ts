@@ -1,8 +1,7 @@
-import { StyleSheet } from "react-native";
+import { radius, sizes, spacing } from "@/design-system/tokens";
+import { createThemedStyles } from "@/design-system/utils/createThemedStyles";
 
-import { colors, radius, sizes, spacing } from "@/design-system/tokens";
-
-export const styles = StyleSheet.create({
+export const useStyles = createThemedStyles((themeColors) => ({
   preview: {
     alignItems: "center",
     gap: spacing.medium,
@@ -10,7 +9,7 @@ export const styles = StyleSheet.create({
     paddingHorizontal: spacing.large,
     paddingBottom: spacing.previewBottom,
     borderRadius: radius.largeCard,
-    backgroundColor: colors.fill,
+    backgroundColor: themeColors.fill,
   },
   row: {
     alignSelf: "stretch",
@@ -20,7 +19,7 @@ export const styles = StyleSheet.create({
     paddingVertical: spacing.previewRowVertical,
     paddingHorizontal: spacing.previewRowHorizontal,
     borderRadius: radius.previewRow,
-    backgroundColor: colors.surface,
+    backgroundColor: themeColors.surface,
   },
   texts: {
     flex: 1,
@@ -35,4 +34,4 @@ export const styles = StyleSheet.create({
     width: sizes.pillPreviewLarge,
     height: sizes.pillPreviewLarge,
   },
-});
+}));

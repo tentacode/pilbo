@@ -1,8 +1,7 @@
-import { StyleSheet } from "react-native";
+import { sizes, spacing } from "@/design-system/tokens";
+import { createThemedStyles } from "@/design-system/utils/createThemedStyles";
 
-import { colors, sizes, spacing } from "@/design-system/tokens";
-
-export const styles = StyleSheet.create({
+export const useStyles = createThemedStyles((themeColors) => ({
   row: {
     flexDirection: "row",
     alignItems: "center",
@@ -20,7 +19,7 @@ export const styles = StyleSheet.create({
     paddingVertical: spacing.medium,
   },
   pressed: {
-    backgroundColor: colors.separator,
+    backgroundColor: themeColors.separator,
   },
   inlineLabel: {
     flexShrink: 1,
@@ -39,4 +38,4 @@ export const styles = StyleSheet.create({
     flexDirection: "column",
     alignItems: "stretch",
   },
-});
+}));

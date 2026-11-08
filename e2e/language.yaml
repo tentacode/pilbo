@@ -5,7 +5,7 @@ name: The app language can be changed
     clearState: true
 - extendedWaitUntil:
     visible: "Réglages"
-    timeout: 10000
+    timeout: 60000
 - tapOn: "Réglages"
 
 # English

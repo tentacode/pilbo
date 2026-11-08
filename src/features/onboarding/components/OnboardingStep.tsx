@@ -2,6 +2,7 @@ import { useWindowDimensions, View } from "react-native";
 
 import { Text } from "@/design-system/components/Text/Text";
 import { useAccessibilityFocusOnMount } from "@/design-system/hooks/useAccessibilityFocusOnMount";
+import { useThemeColors } from "@/design-system/hooks/useThemeColors";
 import { onboardingIllustrationScreenRatio, sizes } from "@/design-system/tokens";
 
 import type { OnboardingStepContent } from "./onboardingSteps";
@@ -13,6 +14,7 @@ type OnboardingStepProps = {
 
 export function OnboardingStep({ step }: OnboardingStepProps) {
   const { title, body, Illustration, illustrationLabel, illustrationBackground } = step;
+  const themeColors = useThemeColors();
   const titleReference = useAccessibilityFocusOnMount<View>();
   const { height: windowHeight } = useWindowDimensions();
   const illustrationHeight = Math.min(
@@ -30,7 +32,7 @@ export function OnboardingStep({ step }: OnboardingStepProps) {
         accessibilityLabel={illustrationLabel}
         style={[
           styles.illustration,
-          { height: illustrationHeight, backgroundColor: illustrationBackground },
+          { height: illustrationHeight, backgroundColor: themeColors[illustrationBackground] },
         ]}
       >
         <Illustration size={artSize} />

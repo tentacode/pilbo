@@ -1,6 +1,7 @@
 import { StyleSheet } from "react-native";
 
-import { colors, fontFamily, fontSize, lineHeight } from "../../tokens";
+import { fontFamily, fontSize, lineHeight } from "../../tokens";
+import { createThemedStyles } from "../../utils/createThemedStyles";
 
 export const variantStyles = StyleSheet.create({
   title: { fontFamily: fontFamily.display, fontSize: fontSize.title },
@@ -36,14 +37,14 @@ export const variantStyles = StyleSheet.create({
   tabLabelSelected: { fontFamily: fontFamily.bold, fontSize: fontSize.tabLabel },
 });
 
-export const toneStyles = StyleSheet.create({
-  primary: { color: colors.ink },
-  secondary: { color: colors.inkSecondary },
-  onInk: { color: colors.onInk },
-  onProminent: { color: colors.onProminent },
-  alert: { color: colors.alertInk },
-  onAlert: { color: colors.onAlert },
-  onCalendarMissed: { color: colors.onCalendarMissed },
-  success: { color: colors.successInk },
-  warning: { color: colors.warningInk },
-});
+export const useToneStyles = createThemedStyles((themeColors) => ({
+  primary: { color: themeColors.ink },
+  secondary: { color: themeColors.inkSecondary },
+  onInk: { color: themeColors.onInk },
+  onProminent: { color: themeColors.onProminent },
+  alert: { color: themeColors.alertInk },
+  onAlert: { color: themeColors.onAlert },
+  onCalendarMissed: { color: themeColors.onCalendarMissed },
+  success: { color: themeColors.successInk },
+  warning: { color: themeColors.warningInk },
+}));

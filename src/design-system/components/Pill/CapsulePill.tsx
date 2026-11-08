@@ -1,5 +1,6 @@
 import { G, Path, Rect } from "react-native-svg";
 
+import { useThemeColors } from "../../hooks/useThemeColors";
 import { PILL_CENTER, PILL_ROTATION, pillStrokes } from "./Pill.styles";
 
 type CapsulePillProps = {
@@ -9,7 +10,8 @@ type CapsulePillProps = {
 };
 
 export function CapsulePill({ colors, scale, outlineRatio }: CapsulePillProps) {
-  const strokes = pillStrokes(scale, outlineRatio);
+  const themeColors = useThemeColors();
+  const strokes = pillStrokes(themeColors, scale, outlineRatio);
   const [firstHalfColor, secondHalfColor] = colors;
   return (
     <G rotation={PILL_ROTATION} originX={PILL_CENTER} originY={PILL_CENTER}>

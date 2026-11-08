@@ -1,5 +1,6 @@
 import { Circle, Path } from "react-native-svg";
 
+import { useThemeColors } from "../../hooks/useThemeColors";
 import { pillStrokes } from "./Pill.styles";
 
 type RoundPillProps = {
@@ -9,7 +10,8 @@ type RoundPillProps = {
 };
 
 export function RoundPill({ colors, scale, outlineRatio }: RoundPillProps) {
-  const strokes = pillStrokes(scale, outlineRatio);
+  const themeColors = useThemeColors();
+  const strokes = pillStrokes(themeColors, scale, outlineRatio);
   const [topColor, bottomColor] = colors;
   return (
     <>

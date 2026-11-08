@@ -1,12 +1,13 @@
 import { Pressable } from "react-native";
 
-import { colors, sizes } from "../../tokens";
+import { useThemeColors } from "../../hooks/useThemeColors";
+import { sizes } from "../../tokens";
 import { Icon } from "../Icon/Icon";
 import type { IconName } from "../Icon/iconShapes";
 import { playPressHaptic } from "../../utils/playPressHaptic";
-import { styles, variantStyles } from "./IconButton.styles";
+import { styles, useVariantStyles } from "./IconButton.styles";
 
-export type IconButtonVariant = keyof typeof variantStyles;
+export type IconButtonVariant = keyof ReturnType<typeof useVariantStyles>;
 
 type IconButtonProps = {
   icon: IconName;
@@ -23,6 +24,8 @@ export function IconButton({
   variant = "filled",
   isDisabled = false,
 }: IconButtonProps) {
+  const variantStyles = useVariantStyles();
+  const themeColors = useThemeColors();
   return (
     <Pressable
       accessibilityRole="button"
@@ -41,7 +44,7 @@ export function IconButton({
       <Icon
         name={icon}
         size={sizes.iconLarge}
-        color={variant === "filled" ? colors.onInk : colors.ink}
+        color={variant === "filled" ? themeColors.onInk : themeColors.ink}
       />
     </Pressable>
   );

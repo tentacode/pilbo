@@ -1,8 +1,7 @@
-import type { ColorValue } from "react-native";
 import type { TFunction } from "i18next";
 import type { ComponentType } from "react";
 
-import { colors } from "@/design-system/tokens";
+import type { ColorName } from "@/design-system/tokens";
 
 import { OnboardingIntakesIllustration } from "./OnboardingIntakesIllustration";
 import { OnboardingNotMedicalIllustration } from "./OnboardingNotMedicalIllustration";
@@ -18,7 +17,7 @@ export type OnboardingStepContent = {
   body: string;
   Illustration: ComponentType<IllustrationProps>;
   illustrationLabel: string;
-  illustrationBackground: ColorValue;
+  illustrationBackground: ColorName;
 };
 
 export function notMedicalStepOf(t: TFunction<"onboarding">): OnboardingStepContent {
@@ -29,7 +28,7 @@ export function notMedicalStepOf(t: TFunction<"onboarding">): OnboardingStepCont
     ),
     Illustration: OnboardingNotMedicalIllustration,
     illustrationLabel: t("Un carnet ouvert : des notes d'un côté, des pilules de l'autre"),
-    illustrationBackground: colors.roseSoft,
+    illustrationBackground: "roseSoft",
   };
 }
 
@@ -44,7 +43,7 @@ export function onboardingStepsOf(t: TFunction<"onboarding">): OnboardingStepCon
       illustrationLabel: t(
         "Trois prises de la journée : 08:30 prise, 12:30 en retard, 20:30 à venir",
       ),
-      illustrationBackground: colors.accentSoft,
+      illustrationBackground: "accentSoft",
     },
     {
       title: t("Un rappel, puis un autre"),
@@ -55,7 +54,7 @@ export function onboardingStepsOf(t: TFunction<"onboarding">): OnboardingStepCon
       illustrationLabel: t(
         "Une cloche et trois rappels à 20:30, 20:40 et 20:50, le dernier validé",
       ),
-      illustrationBackground: colors.butterSoft,
+      illustrationBackground: "butterSoft",
     },
     notMedicalStepOf(t),
     {
@@ -65,7 +64,7 @@ export function onboardingStepsOf(t: TFunction<"onboarding">): OnboardingStepCon
       ),
       Illustration: OnboardingPrivacyIllustration,
       illustrationLabel: t("Un téléphone qui contient les pilules, fermé par un cadenas"),
-      illustrationBackground: colors.turquoiseSoft,
+      illustrationBackground: "turquoiseSoft",
     },
   ];
 }

@@ -4,7 +4,8 @@ import { useTranslation } from "react-i18next";
 import { Button } from "@/design-system/components/Button/Button";
 import { Icon } from "@/design-system/components/Icon/Icon";
 import { Text } from "@/design-system/components/Text/Text";
-import { colors, sizes } from "@/design-system/tokens";
+import { useThemeColors } from "@/design-system/hooks/useThemeColors";
+import { sizes } from "@/design-system/tokens";
 
 import { formatTakenTime } from "@/features/today/utils/formatters";
 import { styles } from "./MedTakingSection.styles";
@@ -26,6 +27,7 @@ export function MedTakingSection({
   onOpenDay,
   onUndo,
 }: MedTakingSectionProps) {
+  const themeColors = useThemeColors();
   const { t } = useTranslation("meds");
   return (
     <View>
@@ -46,7 +48,7 @@ export function MedTakingSection({
           <Text variant="small" tone="secondary" style={styles.summaryText}>
             {summary}
           </Text>
-          <Icon name="chevronRight" size={sizes.iconSmall} color={colors.inkSecondary} />
+          <Icon name="chevronRight" size={sizes.iconSmall} color={themeColors.inkSecondary} />
         </Pressable>
       )}
       {lastTakenAt === undefined ? null : (

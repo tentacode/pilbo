@@ -1,6 +1,7 @@
 import { View } from "react-native";
 
-import { colors, sizes } from "../../tokens";
+import { useThemeColors } from "../../hooks/useThemeColors";
+import { sizes } from "../../tokens";
 import { Icon } from "../Icon/Icon";
 import type { IconName } from "../Icon/iconShapes";
 import { Text } from "../Text/Text";
@@ -13,13 +14,14 @@ type SegmentedControlLabelProps = {
 };
 
 export function SegmentedControlLabel({ label, icon, isSelected }: SegmentedControlLabelProps) {
+  const themeColors = useThemeColors();
   return (
     <View style={styles.content}>
       {icon ? (
         <Icon
           name={icon}
           size={sizes.iconSmall}
-          color={isSelected ? colors.ink : colors.inkSecondary}
+          color={isSelected ? themeColors.ink : themeColors.inkSecondary}
         />
       ) : null}
       <Text

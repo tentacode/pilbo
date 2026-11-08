@@ -1,8 +1,6 @@
-import type { ColorValue } from "react-native";
-
 import type { IconName } from "@/design-system/components/Icon/iconShapes";
 import type { TextTone } from "@/design-system/components/Text/Text";
-import { borderWidth, colors } from "@/design-system/tokens";
+import { borderWidth, type ColorName } from "@/design-system/tokens";
 import { createThemedStyles } from "@/design-system/utils/createThemedStyles";
 
 import type { DayStatus } from "@/features/calendar/utils/calendarTypes";
@@ -11,12 +9,12 @@ type HandledDayStatus = Exclude<DayStatus, "none">;
 
 export const DAY_STATUS_APPEARANCES: Record<
   HandledDayStatus,
-  { icon: IconName; tone: TextTone; color: ColorValue }
+  { icon: IconName; tone: TextTone; color: ColorName }
 > = {
-  taken: { icon: "check", tone: "success", color: colors.successInk },
-  late: { icon: "clock", tone: "warning", color: colors.warningInk },
-  missed: { icon: "alert", tone: "onCalendarMissed", color: colors.onCalendarMissed },
-  skipped: { icon: "minus", tone: "secondary", color: colors.inkSecondary },
+  taken: { icon: "check", tone: "success", color: "successInk" },
+  late: { icon: "clock", tone: "warning", color: "warningInk" },
+  missed: { icon: "alert", tone: "onCalendarMissed", color: "onCalendarMissed" },
+  skipped: { icon: "minus", tone: "secondary", color: "inkSecondary" },
 };
 
 export const useDayStatusStyles = createThemedStyles((themeColors) => ({

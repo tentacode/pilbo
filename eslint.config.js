@@ -11,9 +11,9 @@ module.exports = defineConfig([
         "error",
         {
           selector:
-            "Property[key.name=/^(border[A-Za-z]*Color|outlineColor|shadowColor)$/] > MemberExpression.value[object.name='colors']",
+            "ImportDeclaration[source.value=/tokens$/] > ImportSpecifier[imported.name='colors']",
           message:
-            "React Native resolves dynamic colors with the system theme on borders, outlines and shadows: use createThemedStyles and themeColors instead.",
+            "Colors depend on the theme: use createThemedStyles (styles) or useThemeColors (props) instead.",
         },
       ],
     },

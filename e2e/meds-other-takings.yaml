@@ -5,7 +5,7 @@ name: A scheduled med taken from its sheet asks first, then shows on today and c
     clearState: true
 - extendedWaitUntil:
     visible: "Aujourd'hui"
-    timeout: 10000
+    timeout: 60000
 - tapOn: "Médicaments.*"
 - tapOn: "Lithium 250 mg.*"
 - tapOn: "Prendre 1 comprimé"

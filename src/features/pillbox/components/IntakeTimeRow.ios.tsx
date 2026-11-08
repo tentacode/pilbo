@@ -9,19 +9,13 @@ import { View } from "react-native";
 import { useTranslation } from "react-i18next";
 
 import { Text } from "@/design-system/components/Text/Text";
-import { colors } from "@/design-system/tokens";
+import { useThemeColors } from "@/design-system/hooks/useThemeColors";
 import { type Intake } from "@/domain/intake";
 
 import { FormGroup } from "./FormGroup";
+import type { IntakeTimeRowProps } from "./IntakeTimeRow";
 import { styles } from "./IntakeTimeRow.styles";
 import { formatIntakeTime } from "@/shared/i18n/formatters";
-
-type IntakeTimeRowProps = {
-  time: Intake["time"];
-  onChange: (time: Intake["time"]) => void;
-  label?: string;
-  accessibilityLabel?: string;
-};
 
 function dateOf({ hour, minute }: Intake["time"]): Date {
   const date = new Date();
@@ -35,6 +29,7 @@ export function IntakeTimeRow({
   label,
   accessibilityLabel: customAccessibilityLabel,
 }: IntakeTimeRowProps) {
+  const themeColors = useThemeColors();
   const { t } = useTranslation("pillbox");
   return (
     <FormGroup>
@@ -50,7 +45,7 @@ export function IntakeTimeRow({
             modifiers={[
               datePickerStyle("compact"),
               labelsHidden(),
-              tint(colors.ink),
+              tint(themeColors.ink),
               accessibilityLabel(
                 customAccessibilityLabel ?? t("Heure : {{time}}", { time: formatIntakeTime(time) }),
               ),

@@ -1,6 +1,6 @@
 import { Ellipse, G, Path } from "react-native-svg";
 
-import { colors as tokenColors } from "../../tokens";
+import { useThemeColors } from "../../hooks/useThemeColors";
 import { PILL_CENTER, PILL_ROTATION, pillStrokes } from "./Pill.styles";
 
 type SoftgelPillProps = {
@@ -10,7 +10,8 @@ type SoftgelPillProps = {
 };
 
 export function SoftgelPill({ colors, scale, outlineRatio }: SoftgelPillProps) {
-  const strokes = pillStrokes(scale, outlineRatio);
+  const themeColors = useThemeColors();
+  const strokes = pillStrokes(themeColors, scale, outlineRatio);
   const [firstHalfColor, secondHalfColor] = colors;
   return (
     <G rotation={PILL_ROTATION} originX={PILL_CENTER} originY={PILL_CENTER}>
@@ -22,7 +23,7 @@ export function SoftgelPill({ colors, scale, outlineRatio }: SoftgelPillProps) {
         cy={15.5}
         rx={3.4}
         ry={1.7}
-        fill={tokenColors.pillHighlight}
+        fill={themeColors.pillHighlight}
         opacity={0.8}
       />
     </G>

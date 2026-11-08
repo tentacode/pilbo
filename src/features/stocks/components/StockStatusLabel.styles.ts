@@ -1,8 +1,7 @@
-import { StyleSheet } from "react-native";
+import { radius, spacing } from "@/design-system/tokens";
+import { createThemedStyles } from "@/design-system/utils/createThemedStyles";
 
-import { colors, radius, spacing } from "@/design-system/tokens";
-
-export const styles = StyleSheet.create({
+export const useStyles = createThemedStyles((themeColors) => ({
   chip: {
     flexDirection: "row",
     alignItems: "center",
@@ -14,12 +13,12 @@ export const styles = StyleSheet.create({
     borderRadius: radius.round,
   },
   lowChip: {
-    backgroundColor: colors.alertChip,
+    backgroundColor: themeColors.alertChip,
   },
   sufficientChip: {
-    backgroundColor: colors.skipChip,
+    backgroundColor: themeColors.skipChip,
   },
   text: {
     flexShrink: 1,
   },
-});
+}));

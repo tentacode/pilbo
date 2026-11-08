@@ -3,7 +3,8 @@ import { Pressable, View } from "react-native";
 import { Icon } from "@/design-system/components/Icon/Icon";
 import { Pill } from "@/design-system/components/Pill/Pill";
 import { Text } from "@/design-system/components/Text/Text";
-import { colors, sizes } from "@/design-system/tokens";
+import { useThemeColors } from "@/design-system/hooks/useThemeColors";
+import { sizes } from "@/design-system/tokens";
 import { formatMedLabel, type Med } from "@/domain/med";
 
 import { MedName } from "./MedName";
@@ -24,6 +25,7 @@ export function PickerMedRow({
   unavailableLabel,
   onPress,
 }: PickerMedRowProps) {
+  const themeColors = useThemeColors();
   const styles = useStyles();
   const isUnavailable = unavailableLabel !== undefined;
   const details = [formatMedLabel(med), med.detail, unavailableLabel].filter(Boolean).join(", ");
@@ -48,7 +50,7 @@ export function PickerMedRow({
       </View>
       {isUnavailable ? (
         <View style={styles.status}>
-          <Icon name="check" size={sizes.iconSmall} color={colors.inkSecondary} />
+          <Icon name="check" size={sizes.iconSmall} color={themeColors.inkSecondary} />
           <Text variant="small" tone="secondary">
             {unavailableLabel}
           </Text>

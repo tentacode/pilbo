@@ -1,7 +1,6 @@
 import { View } from "react-native";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-import { spacing } from "../../tokens";
+import { useBottomSafeSpacing } from "../../hooks/useBottomSafeSpacing";
 import { useStyles } from "./TabBar.styles";
 import { TabBarItem, type TabBarItemProps } from "./TabBarItem";
 
@@ -11,9 +10,9 @@ type TabBarProps = {
 
 export function TabBar({ items }: TabBarProps) {
   const styles = useStyles();
-  const insets = useSafeAreaInsets();
+  const bottomSafeSpacing = useBottomSafeSpacing();
   return (
-    <View style={[styles.container, { paddingBottom: Math.max(insets.bottom, spacing.large) }]}>
+    <View style={[styles.container, { paddingBottom: bottomSafeSpacing }]}>
       <View accessibilityRole="tablist" style={styles.bar}>
         {items.map(({ key, ...item }) => (
           <TabBarItem key={key} {...item} />

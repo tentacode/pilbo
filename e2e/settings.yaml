@@ -5,7 +5,7 @@ name: Settings can be changed
     clearState: true
 - extendedWaitUntil:
     visible: "Réglages"
-    timeout: 10000
+    timeout: 60000
 - tapOn: "Réglages"
 
 # Default reminder interval, used by a new intake

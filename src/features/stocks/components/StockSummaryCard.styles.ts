@@ -1,16 +1,15 @@
-import { StyleSheet } from "react-native";
+import { radius, spacing } from "@/design-system/tokens";
+import { createThemedStyles } from "@/design-system/utils/createThemedStyles";
 
-import { colors, radius, spacing } from "@/design-system/tokens";
-
-export const styles = StyleSheet.create({
+export const useStyles = createThemedStyles((themeColors) => ({
   card: {
     gap: spacing.medium,
     borderRadius: radius.card,
-    backgroundColor: colors.fill,
+    backgroundColor: themeColors.fill,
     padding: spacing.large,
   },
   lowCard: {
-    backgroundColor: colors.alertBackground,
+    backgroundColor: themeColors.alertBackground,
   },
   top: {
     flexDirection: "row",
@@ -25,4 +24,4 @@ export const styles = StyleSheet.create({
     gap: spacing.small,
     flexShrink: 1,
   },
-});
+}));

@@ -3,6 +3,7 @@ import Animated from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useTranslation } from "react-i18next";
 
+import { useBottomSafeSpacing } from "@/design-system/hooks/useBottomSafeSpacing";
 import { spacing } from "@/design-system/tokens";
 
 import { OnboardingActions } from "./components/OnboardingActions";
@@ -11,12 +12,14 @@ import { OnboardingStep } from "./components/OnboardingStep";
 import { onboardingStepsOf } from "./components/onboardingSteps";
 import { useOnboardingProgress } from "./hooks/useOnboardingProgress";
 import { useStepSlide } from "./hooks/useStepSlide";
-import { styles } from "./OnboardingScreen.styles";
+import { useStyles } from "./OnboardingScreen.styles";
 
 export function OnboardingScreen() {
+  const styles = useStyles();
   const { t } = useTranslation("onboarding");
   const steps = onboardingStepsOf(t);
   const insets = useSafeAreaInsets();
+  const bottomSafeSpacing = useBottomSafeSpacing();
   const {
     stepIndex,
     areNotificationsAllowed,
@@ -28,7 +31,7 @@ export function OnboardingScreen() {
   const { displayedStepIndex, slideStyle } = useStepSlide(stepIndex);
 
   return (
-    <View style={[styles.screen, { paddingBottom: Math.max(insets.bottom, spacing.large) }]}>
+    <View style={[styles.screen, { paddingBottom: bottomSafeSpacing }]}>
       <Animated.View style={[styles.step, slideStyle]}>
         <ScrollView
           key={displayedStepIndex}

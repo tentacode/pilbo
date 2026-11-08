@@ -3,7 +3,7 @@ import { ScrollView } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { spacing } from "../../tokens";
-import { styles } from "./Screen.styles";
+import { useStyles } from "./Screen.styles";
 
 type ScreenProps = {
   children: ReactNode;
@@ -11,6 +11,7 @@ type ScreenProps = {
 };
 
 export function Screen({ children, ref }: ScreenProps) {
+  const styles = useStyles();
   const insets = useSafeAreaInsets();
   return (
     <ScrollView

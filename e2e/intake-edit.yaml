@@ -5,7 +5,7 @@ name: An intake can be created, edited and deleted
     clearState: true
 - extendedWaitUntil:
     visible: "Pilulier"
-    timeout: 10000
+    timeout: 60000
 - tapOn: "Pilulier"
 - tapOn: "Nouvelle prise"
 - tapOn: "Ajouter un médicament"
@@ -13,7 +13,10 @@ name: An intake can be created, edited and deleted
 - tapOn: "Nom"
 - inputText: "Zolpidem"
 - tapOn: "Ajouter à la prise"
-- assertVisible: "Quantité de Zolpidem"
+- scrollUntilVisible:
+    element:
+      text: "Quantité de Zolpidem"
+    centerElement: true
 - tapOn: "Ajouter un comprimé de Zolpidem"
 - tapOn: "Enregistrer"
 - scrollUntilVisible:

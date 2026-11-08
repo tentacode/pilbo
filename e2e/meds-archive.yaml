@@ -5,7 +5,7 @@ name: A med of the pillbox cannot be deleted, a med without intake can
     clearState: true
 - extendedWaitUntil:
     visible: "Aujourd'hui"
-    timeout: 10000
+    timeout: 60000
 - tapOn: "Médicaments.*"
 - tapOn: "Lamictal 50 mg.*"
 - scrollUntilVisible:

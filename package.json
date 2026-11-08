@@ -73,12 +73,34 @@
   "private": true,
   "packageManager": "pnpm@11.17.0",
   "jest": {
-    "preset": "jest-expo",
-    "setupFiles": [
-      "<rootDir>/jest.setup.ts"
-    ],
-    "setupFilesAfterEnv": [
-      "<rootDir>/jest.setupAfterEnv.ts"
+    "projects": [
+      {
+        "displayName": "ios",
+        "preset": "jest-expo/ios",
+        "setupFiles": [
+          "<rootDir>/jest.setup.ts"
+        ],
+        "setupFilesAfterEnv": [
+          "<rootDir>/jest.setupAfterEnv.ts"
+        ],
+        "testPathIgnorePatterns": [
+          "/node_modules/",
+          "\\.android\\.spec\\.tsx?$"
+        ]
+      },
+      {
+        "displayName": "android",
+        "preset": "jest-expo/android",
+        "setupFiles": [
+          "<rootDir>/jest.setup.ts"
+        ],
+        "setupFilesAfterEnv": [
+          "<rootDir>/jest.setupAfterEnv.ts"
+        ],
+        "testMatch": [
+          "**/*.android.spec.ts?(x)"
+        ]
+      }
     ]
   }
 }

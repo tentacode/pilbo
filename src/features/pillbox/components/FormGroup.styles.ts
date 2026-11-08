@@ -1,11 +1,10 @@
-import { StyleSheet } from "react-native";
+import { radius } from "@/design-system/tokens";
+import { createThemedStyles } from "@/design-system/utils/createThemedStyles";
 
-import { colors, radius } from "@/design-system/tokens";
-
-export const styles = StyleSheet.create({
+export const useStyles = createThemedStyles((themeColors) => ({
   group: {
     borderRadius: radius.group,
-    backgroundColor: colors.fill,
+    backgroundColor: themeColors.fill,
     overflow: "hidden",
   },
-});
+}));

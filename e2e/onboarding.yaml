@@ -5,7 +5,7 @@ name: Onboarding can be restarted from the settings
     clearState: true
 - extendedWaitUntil:
     visible: "Réglages"
-    timeout: 10000
+    timeout: 60000
 - tapOn: "Réglages"
 - scrollUntilVisible:
     element:

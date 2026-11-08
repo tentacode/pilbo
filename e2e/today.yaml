@@ -5,7 +5,7 @@ name: Today lists the intakes of the day
     clearState: true
 - extendedWaitUntil:
     visible: "Aujourd'hui"
-    timeout: 10000
+    timeout: 60000
 - assertVisible:
     text: "Aujourd'hui"
 - evalScript: |

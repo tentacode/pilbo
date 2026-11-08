@@ -1,13 +1,11 @@
-import { StyleSheet } from "react-native";
+import { createThemedStyles } from "@/design-system/utils/createThemedStyles";
 
-import { colors } from "@/design-system/tokens";
-
-export const styles = StyleSheet.create({
+export const useStyles = createThemedStyles((themeColors) => ({
   screen: {
     flex: 1,
-    backgroundColor: colors.background,
+    backgroundColor: themeColors.background,
   },
   step: {
     flex: 1,
   },
-});
+}));

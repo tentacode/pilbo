@@ -1,8 +1,7 @@
-import { StyleSheet } from "react-native";
+import { radius, sizes, spacing } from "@/design-system/tokens";
+import { createThemedStyles } from "@/design-system/utils/createThemedStyles";
 
-import { colors, radius, sizes, spacing } from "@/design-system/tokens";
-
-export const styles = StyleSheet.create({
+export const useStyles = createThemedStyles((themeColors) => ({
   legend: {
     flexDirection: "row",
     flexWrap: "wrap",
@@ -11,7 +10,7 @@ export const styles = StyleSheet.create({
     paddingVertical: spacing.legendVertical,
     paddingHorizontal: spacing.large,
     borderRadius: radius.legend,
-    backgroundColor: colors.fill,
+    backgroundColor: themeColors.fill,
   },
   halfCell: {
     width: "50%",
@@ -29,4 +28,4 @@ export const styles = StyleSheet.create({
     alignItems: "flex-start",
     opacity: 0,
   },
-});
+}));

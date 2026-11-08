@@ -11,7 +11,7 @@ import {
   intensityTrackColors,
 } from "@/design-system/utils/color";
 
-import { styles } from "./CustomColorPanel.styles";
+import { useStyles } from "./CustomColorPanel.styles";
 import type { TFunction } from "i18next";
 
 export type CustomColorSettings = {
@@ -29,6 +29,7 @@ function formatPercentage(t: TFunction<"pillbox">, value: number, maximum: numbe
 }
 
 export function CustomColorPanel({ hue, intensity, onChange, onLayout }: CustomColorPanelProps) {
+  const styles = useStyles();
   const { t } = useTranslation("pillbox");
   const color = colorFromHueAndIntensity(hue, intensity);
   return (

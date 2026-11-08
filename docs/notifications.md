@@ -15,6 +15,8 @@ Validé sur iPhone (spec 02) : notifications app fermée, son custom, badge, ann
 | `src/features/notifications/utils/planLowStockAlerts.ts`        | Calcul pur des alertes de stock bas (`now` en paramètre).                 |
 | `src/features/notifications/hooks/useReminderScheduling.ts`     | Replanification au lancement, au premier plan et au changement de langue. |
 | `src/features/notifications/hooks/useNotificationPermission.ts` | Statut de la permission (`isGranted`) et demande (`request`).             |
+| `src/features/notifications/notificationChannels.android.ts`    | Canaux Android (`.ios.ts` sans effet).                                    |
+| `plugins/withExactAlarmPermissions.js`                          | Permissions d'alarmes exactes Android.                                    |
 | `assets/sounds/beep.wav`                                        | Son custom.                                                               |
 | `plugins/withoutPushEntitlement.js`                             | Retire la permission push (compte gratuit).                               |
 | `app.config.ts`                                                 | Déclare le son, les plugins et la Team de signature.                      |
@@ -63,6 +65,7 @@ Un échec est seulement affiché en console : tout sera replanifié au prochain 
 - **Demain** : ajouté prise par prise (6 rappels entiers) tant que le total reste ≤ 64. Si une journée entière est sautée, les rappels du lendemain existent quand même.
 - **Identifiant** : `reminder-<intakeId>-<date locale>` (ex. `reminder-…-2026-10-14T08:40`).
 - **Contenu** : titre « C'est l'heure de votre prise de 08:20 », corps « 1 × Lithium 250 mg, 1 × Lamictal 50 mg ». Son `beep.wav`, `interruptionLevel: "active"`.
+- **Canal Android** : `channelId` « Rappels de prise » (`intake-reminders`), dans le trigger.
 - **Langue** : textes générés dans la langue courante de l'app (`i18n.t`, namespace `notifications`), heure au format 12 h / 24 h du réglage iOS.
 
 ### Alertes de stock bas (`planLowStockAlerts`)
@@ -73,7 +76,7 @@ Un échec est seulement affiché en console : tout sera replanifié au prochain 
 - Pas d'alerte pour un stock ≤ 0, ni pour un médicament sans prise (pas de date prévisible).
 - Rien n'est mémorisé : tout est recalculé à chaque replanification.
 - **Identifiant** : `low-stock-<date locale>` (ex. `low-stock-2026-10-22`).
-- **Contenu** : titre « Stock bas », corps « Lithium 250 mg, Lamictal 50 mg : pensez à les renouveler. ». Même son que les rappels, **sans `badge`** (le chiffre de l'icône ne change pas).
+- **Contenu** : titre « Stock bas », corps « Lithium 250 mg, Lamictal 50 mg : pensez à les renouveler. ». Même son que les rappels, **sans `badge`** (le chiffre de l'icône ne change pas). Canal Android « Stock bas » (`low-stock`).
 
 ### Badge
 
@@ -115,3 +118,51 @@ Fonctionne app fermée : chaque rappel porte un chiffre calculé à l'avance. C'
 3. Ouvrir l'app → autoriser → fermer l'app → attendre les notifications.
 
 Le Mac n'est utile qu'à l'ouverture de l'app (Metro). Une fois planifiées, iOS gère les notifications seul.
+
+## Android
+
+Même code que sur iOS : seuls les canaux et les permissions diffèrent.
+
+### Canaux (`notificationChannels.android.ts`)
+
+| Canal (`NOTIFICATION_CHANNEL_IDS`) | Nom                  | Importance                   | Son        |
+| ---------------------------------- | -------------------- | ---------------------------- | ---------- |
+| `intake-reminders`                 | « Rappels de prise » | Haute (son + bannière)       | `beep.wav` |
+| `low-stock`                        | « Stock bas »        | Normale (son, sans bannière) | `beep.wav` |
+
+- Vibration activée sur les deux.
+- Créés par `useReminderScheduling` avant chaque replanification (lancement, premier plan, changement de langue) : le nom suit la langue de l'app.
+- Android fige l'importance, le son et la vibration d'un canal à sa création (l'utilisateur peut ensuite les changer dans les réglages). Pour en changer : **nouvel identifiant**, et supprimer l'ancien canal (`deleteNotificationChannelAsync`).
+- Les canaux doivent exister avant la demande de permission (Android 13+) : c'est le cas, ils sont créés au lancement.
+
+### Alarmes exactes
+
+`expo-notifications` planifie avec `AlarmManager.setExactAndAllowWhileIdle` si l'app a le droit aux alarmes exactes, sinon l'alarme peut être décalée par Android.
+
+- `USE_EXACT_ALARM` (Android 13+) : accordée d'office, réservée aux apps d'alarme, de calendrier et de rappels (Google Play le vérifie).
+- `SCHEDULE_EXACT_ALARM` (`maxSdkVersion="32"`) : Android 12.
+- Ajoutées par `plugins/withExactAlarmPermissions.js`. Vérifier : `adb shell dumpsys alarm | grep -A1 com.tentacode.pilbo` → `RTC_WAKEUP`, `window=0`.
+
+### Permission
+
+- Android 13+ : popup système (`POST_NOTIFICATIONS`), même parcours que sur iOS (onboarding, Réglages).
+- Android autorise **deux** demandes : après deux refus, `canAskAgain` passe à `false` et « Activer » ouvre les infos de l'app (`Linking.openSettings()`).
+- Android 11 et 12 : accordée à l'installation.
+
+### Redémarrage
+
+`expo-notifications` déclare `RECEIVE_BOOT_COMPLETED` et replanifie les notifications enregistrées au démarrage du téléphone, sans ouvrir l'app.
+
+### Badge
+
+Le chiffre de `setBadgeCountAsync` et de `badge` dépend du lanceur (souvent un simple point sur l'icône). Pas d'erreur s'il n'est pas géré.
+
+### Économie d'énergie
+
+Les fabricants (Samsung, etc.) peuvent mettre en veille les apps peu ouvertes et retarder leurs alarmes. À surveiller sur un vrai téléphone (spec 17, étape 13) avant d'agir.
+
+### Tester sur Android
+
+1. `make android-build-device` (ou `make android-build-release`).
+2. Ouvrir l'app → autoriser → fermer l'app → attendre les notifications.
+3. Canaux : `adb shell dumpsys notification | grep "NotificationChannel{" | grep pilbo`.

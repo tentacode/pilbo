@@ -1,4 +1,5 @@
-import { createShadows, radius, sizes, spacing } from "../../tokens";
+import { createShadows } from "../../shadows";
+import { radius, sizes, spacing } from "../../tokens";
 import { createThemedStyles } from "../../utils/createThemedStyles";
 
 export const useStyles = createThemedStyles((themeColors) => ({

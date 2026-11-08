@@ -3,7 +3,8 @@ import { useTranslation } from "react-i18next";
 
 import { Icon } from "@/design-system/components/Icon/Icon";
 import { Text } from "@/design-system/components/Text/Text";
-import { colors, sizes } from "@/design-system/tokens";
+import { useThemeColors } from "@/design-system/hooks/useThemeColors";
+import { sizes } from "@/design-system/tokens";
 
 import type { MedStockStatus } from "@/features/meds/utils/medsTypes";
 import { AddMedRow } from "@/features/pillbox/components/AddMedRow";
@@ -12,7 +13,7 @@ import { StockProgressBar } from "@/features/stocks/components/StockProgressBar"
 import { formatCoverage, formatPillCount } from "@/features/stocks/utils/formatters";
 import { stockRatio } from "@/features/stocks/utils/stockForecast";
 import { useLanguage } from "@/shared/i18n/hooks/useLanguage";
-import { styles } from "./MedStockSection.styles";
+import { useStyles } from "./MedStockSection.styles";
 
 type MedStockSectionProps = {
   stockStatus?: MedStockStatus;
@@ -38,6 +39,8 @@ type MedStockRowProps = {
 };
 
 function MedStockRow({ stockStatus: { stock, forecast }, onPress }: MedStockRowProps) {
+  const styles = useStyles();
+  const themeColors = useThemeColors();
   const { t } = useTranslation("meds");
   const { t: translateStocks } = useTranslation("stocks");
   const language = useLanguage();
@@ -62,7 +65,7 @@ function MedStockRow({ stockStatus: { stock, forecast }, onPress }: MedStockRowP
     >
       <View style={styles.texts}>
         <View style={styles.title}>
-          {isLow ? <Icon name="alert" size={sizes.iconSmall} color={colors.alertInk} /> : null}
+          {isLow ? <Icon name="alert" size={sizes.iconSmall} color={themeColors.alertInk} /> : null}
           <Text variant="bodyBold" tone={isLow ? "alert" : "primary"} style={styles.titleText}>
             {title}
           </Text>
@@ -76,7 +79,7 @@ function MedStockRow({ stockStatus: { stock, forecast }, onPress }: MedStockRowP
           </View>
         )}
       </View>
-      <Icon name="chevronRight" color={colors.inkSecondary} />
+      <Icon name="chevronRight" color={themeColors.inkSecondary} />
     </Pressable>
   );
 }

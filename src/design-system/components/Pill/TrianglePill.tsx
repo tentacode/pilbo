@@ -1,5 +1,6 @@
 import { G, Path } from "react-native-svg";
 
+import { useThemeColors } from "../../hooks/useThemeColors";
 import { PILL_CENTER, pillStrokes } from "./Pill.styles";
 
 type TrianglePillProps = {
@@ -15,7 +16,8 @@ const TRIANGLE_PATH =
 const LEFT_HALF_PATH = "M20 8.83a5 5 0 0 0-4.33 2.5l-5.34 9.25a5 5 0 0 0 4.33 7.5H20z";
 
 export function TrianglePill({ colors, scale, outlineRatio }: TrianglePillProps) {
-  const strokes = pillStrokes(scale, outlineRatio);
+  const themeColors = useThemeColors();
+  const strokes = pillStrokes(themeColors, scale, outlineRatio);
   const [firstHalfColor, secondHalfColor] = colors;
   return (
     <G rotation={TRIANGLE_ROTATION} originX={PILL_CENTER} originY={PILL_CENTER}>

@@ -36,6 +36,7 @@ describe("planLowStockAlerts", () => {
         title: "Stock bas",
         body: "Lamictal 50 mg : pensez à le renouveler.",
         interruptionLevel: "active",
+        channelId: "low-stock",
       },
       {
         identifier: "low-stock-2026-10-25",
@@ -43,6 +44,7 @@ describe("planLowStockAlerts", () => {
         title: "Stock bas",
         body: "Lamictal 100 mg, Lithium 250 mg : pensez à les renouveler.",
         interruptionLevel: "active",
+        channelId: "low-stock",
       },
     ]);
   });

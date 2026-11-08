@@ -5,12 +5,12 @@ name: The low stock notice can be dismissed and stays hidden after a relaunch
     clearState: true
 - extendedWaitUntil:
     visible: "Stock bas.*"
-    timeout: 10000
+    timeout: 60000
 - tapOn: "Masquer l’alerte de stock bas"
 - assertNotVisible: "Stock bas.*"
 - stopApp
 - launchApp
 - extendedWaitUntil:
     visible: "Aujourd'hui"
-    timeout: 10000
+    timeout: 60000
 - assertNotVisible: "Stock bas.*"

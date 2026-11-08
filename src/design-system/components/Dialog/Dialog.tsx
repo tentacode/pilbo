@@ -7,9 +7,9 @@ import { Icon } from "../Icon/Icon";
 import type { IconName } from "../Icon/iconShapes";
 import { Text } from "../Text/Text";
 import { sizes } from "../../tokens";
-import { styles, toneStyles } from "./Dialog.styles";
+import { useStyles, useToneStyles } from "./Dialog.styles";
 
-export type DialogTone = keyof typeof toneStyles;
+export type DialogTone = keyof ReturnType<typeof useToneStyles>;
 
 export type DialogAction = {
   label: string;
@@ -28,6 +28,7 @@ type DialogProps = {
 };
 
 export function Dialog({ isVisible, onRequestClose, ...cardProps }: DialogProps) {
+  const styles = useStyles();
   const reduceMotion = useReduceMotion();
   return (
     <Modal
@@ -53,6 +54,8 @@ function DialogCard({
   confirmAction,
   cancelAction,
 }: DialogCardProps) {
+  const styles = useStyles();
+  const toneStyles = useToneStyles();
   const titleReference = useAccessibilityFocusOnMount<View>();
   return (
     <View accessibilityViewIsModal style={styles.card}>

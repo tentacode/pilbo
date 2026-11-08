@@ -4,7 +4,8 @@ import { useTranslation } from "react-i18next";
 import { Icon } from "@/design-system/components/Icon/Icon";
 import { Pill } from "@/design-system/components/Pill/Pill";
 import { Text } from "@/design-system/components/Text/Text";
-import { colors, sizes } from "@/design-system/tokens";
+import { useThemeColors } from "@/design-system/hooks/useThemeColors";
+import { sizes } from "@/design-system/tokens";
 import { formatMedLabel } from "@/domain/med";
 
 import { formatMedLogTakenAt } from "@/features/today/utils/formatters";
@@ -17,6 +18,7 @@ type MedLogCardProps = {
 };
 
 export function MedLogCard({ medLog: { med, takenAt }, onPress }: MedLogCardProps) {
+  const themeColors = useThemeColors();
   const styles = useStyles();
   const { t } = useTranslation("today");
   const takenText = formatMedLogTakenAt(t, takenAt);
@@ -38,7 +40,7 @@ export function MedLogCard({ medLog: { med, takenAt }, onPress }: MedLogCardProp
           {takenText}
         </Text>
       </View>
-      <Icon name="chevronRight" size={sizes.iconSmall} color={colors.inkSecondary} />
+      <Icon name="chevronRight" size={sizes.iconSmall} color={themeColors.inkSecondary} />
     </Pressable>
   );
 }

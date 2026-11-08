@@ -1,7 +1,7 @@
 import { View } from "react-native";
 import { useTranslation } from "react-i18next";
 
-import { styles } from "./OnboardingPager.styles";
+import { useStyles } from "./OnboardingPager.styles";
 
 type OnboardingPagerProps = {
   currentIndex: number;
@@ -9,6 +9,7 @@ type OnboardingPagerProps = {
 };
 
 export function OnboardingPager({ currentIndex, count }: OnboardingPagerProps) {
+  const styles = useStyles();
   const { t } = useTranslation("onboarding");
   return (
     <View

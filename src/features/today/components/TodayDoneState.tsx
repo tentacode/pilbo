@@ -5,11 +5,12 @@ import { Text } from "@/design-system/components/Text/Text";
 import { duration } from "@/design-system/tokens";
 
 import { TodayDoneIllustration } from "./TodayDoneIllustration";
-import { styles } from "./TodayDoneState.styles";
+import { useStyles } from "./TodayDoneState.styles";
 
 const entering = FadeInDown.duration(duration.long).reduceMotion(ReduceMotion.System);
 
 export function TodayDoneState() {
+  const styles = useStyles();
   const { t } = useTranslation("today");
   return (
     <Animated.View style={styles.card} entering={entering}>

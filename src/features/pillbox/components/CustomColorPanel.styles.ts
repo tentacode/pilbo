@@ -1,14 +1,13 @@
-import { StyleSheet } from "react-native";
+import { radius, spacing } from "@/design-system/tokens";
+import { createThemedStyles } from "@/design-system/utils/createThemedStyles";
 
-import { colors, radius, spacing } from "@/design-system/tokens";
-
-export const styles = StyleSheet.create({
+export const useStyles = createThemedStyles((themeColors) => ({
   panel: {
     gap: spacing.small,
     marginTop: spacing.large,
     padding: spacing.colorPanelPadding,
     borderRadius: radius.colorPanel,
-    backgroundColor: colors.fill,
+    backgroundColor: themeColors.fill,
   },
   label: {
     marginHorizontal: spacing.tiny,
@@ -16,4 +15,4 @@ export const styles = StyleSheet.create({
   secondLabel: {
     marginTop: spacing.small,
   },
-});
+}));

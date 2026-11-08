@@ -1,6 +1,6 @@
 import type { PillSize } from "@/domain/med";
 
-import { colors } from "../../tokens";
+import type { ThemeColors } from "../../tokens";
 
 export const PILL_VIEWBOX = "0 0 40 40";
 export const PILL_CENTER = 20;
@@ -22,23 +22,27 @@ export function outlineRatioFor(displaySize: number): number {
   return displaySize >= MEDIUM_DISPLAY_SIZE ? 1.4 / 1.8 : 1;
 }
 
-export function pillStrokes(scale: number, outlineRatio = 1) {
+export function pillStrokes(themeColors: ThemeColors, scale: number, outlineRatio = 1) {
   return {
     outline: {
-      stroke: colors.ink,
+      stroke: themeColors.ink,
       strokeWidth: (1.8 * outlineRatio) / scale,
       strokeLinejoin: "round",
     },
-    junction: { stroke: colors.onAccent, strokeWidth: (1.5 * outlineRatio) / scale, fill: "none" },
+    junction: {
+      stroke: themeColors.onAccent,
+      strokeWidth: (1.5 * outlineRatio) / scale,
+      fill: "none",
+    },
     scoreLine: {
-      stroke: colors.onAccent,
+      stroke: themeColors.onAccent,
       strokeOpacity: 0.35,
       strokeWidth: 1.6 / scale,
       strokeLinecap: "round",
       fill: "none",
     },
     highlight: {
-      stroke: colors.pillHighlight,
+      stroke: themeColors.pillHighlight,
       strokeWidth: 2.2 / scale,
       strokeLinecap: "round",
       opacity: 0.9,

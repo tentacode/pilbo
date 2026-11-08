@@ -1,6 +1,6 @@
 import { View } from "react-native";
 
-import { styles } from "./StockProgressBar.styles";
+import { useStyles } from "./StockProgressBar.styles";
 
 type StockProgressBarProps = {
   ratio: number;
@@ -9,6 +9,7 @@ type StockProgressBarProps = {
 };
 
 export function StockProgressBar({ ratio, isLow, isCompact = false }: StockProgressBarProps) {
+  const styles = useStyles();
   return (
     <View
       accessibilityElementsHidden

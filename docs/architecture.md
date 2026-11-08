@@ -74,12 +74,16 @@ Détails : [`docs/database.md`](database.md).
 - Racine d'une feature (ou d'un module de `shared/`) : uniquement les points d'entrée (écrans `*Screen.tsx`, cœur du module).
 - Le reste est rangé par type, même pour un seul fichier : `components/`, `hooks/`, `queries/`, `utils/`.
 
-- Un composant par fichier : `<Name>.tsx` + `<Name>.styles.ts` (`StyleSheet.create`).
+- Un composant par fichier : `<Name>.tsx` + `<Name>.styles.ts` (`StyleSheet.create`, ou `createThemedStyles` dès qu'il y a une couleur).
+- Code propre à une plateforme : `<Name>.ios.tsx` et `<Name>.android.tsx` (jamais `Platform.OS`), plus un contrat `<Name>.d.ts` (types des props et signature exportée) que les deux implémentations importent et que TypeScript résout pour les appelants. Ex. `features/pillbox/components/IntakeTimeRow`.
 - Logique et rendu séparés : formatage dans `utils/formatters.ts`, tri dans `utils/sorters.ts` (fonctions pures testées).
 - Tests unitaires au même niveau que le fichier testé, suffixe `.spec.ts(x)` (ex. `src/features/pillbox/PillboxScreen.spec.tsx`).
 - Imports absolus via `@/` (ex. `@/design-system/tokens`), relatifs dans un même dossier.
 - Aucune valeur en dur dans les styles : toujours un token (`tokens.ts`).
-- Bordures, contours et ombres : jamais `colors.*` (React Native les résout avec le thème du système, pas celui choisi dans l'app). Utiliser `createThemedStyles((themeColors) => ({...}))` (`design-system/utils/createThemedStyles.ts`), qui exporte un hook `useStyles()`, et `createShadows(themeColors)` pour les ombres. Vérifié par ESLint.
+- Couleurs : toujours selon le thème (clair ou sombre, choisi dans l'app ou par le système), sur iOS comme sur Android. Vérifié par ESLint (pas d'import de `colors`).
+  - Styles : `createThemedStyles((themeColors) => ({...}))` (`design-system/utils/createThemedStyles.ts`) dans `<Name>.styles.ts`, qui exporte un hook (`useStyles()`, ou `use<Name>Styles()` s'il y en a plusieurs), et `createShadows(themeColors)` (`design-system/shadows`, par plateforme) pour les ombres.
+  - Couleurs passées en props (`Icon`, SVG) : `const themeColors = useThemeColors()` (`design-system/hooks/useThemeColors.ts`).
+  - Tables de constantes hors composant : nom de la couleur (`ColorName`, ex. `"successInk"`), résolu dans le composant (`themeColors[name]`).
 - Polices : une famille par graisse (`fontFamily.regular`, `semiBold`, `bold`, `display`), pas de `fontWeight`.
 - Textes : toujours via le composant `Text` du design system (`variant` + `tone`).
 
@@ -124,7 +128,10 @@ Stack : i18next + react-i18next, extraction avec `i18next-cli` (`i18next.config.
 
 - `icon.png` et `icon-dev.png` (« Pilbo Dev », bandeau « DEV », gélule centrée au-dessus du bandeau) : 1024×1024, sans transparence.
 - `splash.png` et `splash-dark.png` : 1290×2796, affichés en plein écran (`enableFullScreenImage_legacy` + `resizeMode: "cover"` dans `app.config.ts`).
+- Android :
+  - icône adaptative : `adaptive-icon-background.png` (fond de pilules) et `adaptive-icon-foreground.png` / `adaptive-icon-foreground-dev.png` (gélule, bandeau « DEV » pour « Pilbo Dev », sur fond transparent), 1024×1024. Le lanceur découpe les calques selon sa propre forme : seul le cercle central (61 %) est toujours visible, la gélule et le bandeau doivent y tenir ;
+  - `splash-icon.png` : gélule seule sur fond transparent. Depuis Android 12, le splash n'affiche qu'une icône centrée sur une couleur de fond (pas d'image plein écran), clés `android` du plugin `expo-splash-screen`.
 
-Fond de petites pilules aléatoires (seed fixe) et grosse gélule centrée. Les réglages principaux (seed, couleurs de fond, couleurs et saturation de la gélule, saturation, densité et taille des pilules, séparément pour l'icône et le splash) sont dans `assets/artwork/config.ts`, documentés clé par clé. Ce fichier est lu directement par Node (d'où le `package.json` `"type": "module"` à côté) et par `app.config.ts` pour les couleurs de fond du splash. Les réglages plus fins (opacités, contours, nuancier…) restent dans `SETTINGS` en tête du script. Régénérer avec `make artwork`.
+Fond de petites pilules aléatoires (seed fixe) et grosse gélule centrée. Les réglages principaux (seed, couleurs de fond, couleurs et saturation de la gélule, saturation, densité et taille des pilules, séparément pour l'icône, l'icône adaptative et les splash) sont dans `assets/artwork/config.ts`, documentés clé par clé. Ce fichier est lu directement par Node (d'où le `package.json` `"type": "module"` à côté) et par `app.config.ts` pour les couleurs de fond du splash. Les réglages plus fins (opacités, contours, nuancier…) restent dans `SETTINGS` en tête du script. `qlmanage` rend toujours sur un fond opaque : les PNG transparents sont reconstitués à partir de deux rendus, sur noir et sur blanc. Régénérer avec `make artwork`.
 
 Puis `npx expo prebuild --clean`.

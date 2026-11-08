@@ -1,4 +1,4 @@
-import { LOW_STOCK_ALERT_HOUR } from "@/config/notifications";
+import { LOW_STOCK_ALERT_HOUR, NOTIFICATION_CHANNEL_IDS } from "@/config/notifications";
 import { toLocalDate } from "@/domain/intakeLog";
 import { compareMeds, type Med } from "@/domain/med";
 
@@ -37,5 +37,6 @@ export function planLowStockAlerts(stockItems: StockItem[], now: Date): PlannedR
       title: formatLowStockAlertTitle(),
       body: formatLowStockAlertBody([...meds].sort(compareMeds)),
       interruptionLevel: "active",
+      channelId: NOTIFICATION_CHANNEL_IDS.lowStock,
     }));
 }

@@ -4,7 +4,8 @@ import { useTranslation } from "react-i18next";
 import { Icon } from "@/design-system/components/Icon/Icon";
 import { Pill } from "@/design-system/components/Pill/Pill";
 import { Stepper } from "@/design-system/components/Stepper/Stepper";
-import { colors, sizes } from "@/design-system/tokens";
+import { useThemeColors } from "@/design-system/hooks/useThemeColors";
+import { sizes } from "@/design-system/tokens";
 import { formatMedLabel, type MedQuantity } from "@/domain/med";
 
 import { useMedRowActionSheet } from "@/features/pillbox/hooks/useMedRowActionSheet";
@@ -28,6 +29,7 @@ export function IntakeMedEditRow({
   onQuantityChange,
   onRemove,
 }: IntakeMedEditRowProps) {
+  const themeColors = useThemeColors();
   const styles = useStyles();
   const { t } = useTranslation("pillbox");
   const showActionSheet = useMedRowActionSheet();
@@ -53,7 +55,7 @@ export function IntakeMedEditRow({
         <View style={styles.texts}>
           <MedName med={med} />
         </View>
-        <Icon name="chevronRight" size={sizes.iconSmall} color={colors.inkSecondary} />
+        <Icon name="chevronRight" size={sizes.iconSmall} color={themeColors.inkSecondary} />
       </Pressable>
       <View onLayout={onStepperLayout} style={isStacked && styles.stackedStepper}>
         <Stepper

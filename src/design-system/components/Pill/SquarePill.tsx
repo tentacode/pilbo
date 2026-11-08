@@ -1,5 +1,6 @@
 import { G, Path, Rect } from "react-native-svg";
 
+import { useThemeColors } from "../../hooks/useThemeColors";
 import { PILL_CENTER, pillStrokes } from "./Pill.styles";
 
 const SQUARE_ROTATION = -15;
@@ -11,7 +12,8 @@ type SquarePillProps = {
 };
 
 export function SquarePill({ colors, scale, outlineRatio }: SquarePillProps) {
-  const strokes = pillStrokes(scale, outlineRatio);
+  const themeColors = useThemeColors();
+  const strokes = pillStrokes(themeColors, scale, outlineRatio);
   const [firstHalfColor, secondHalfColor] = colors;
   return (
     <G rotation={SQUARE_ROTATION} originX={PILL_CENTER} originY={PILL_CENTER}>

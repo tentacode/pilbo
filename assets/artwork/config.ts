@@ -13,7 +13,9 @@ export type ArtworkConfig = {
   hero: { colors: [string, string]; saturation: number };
   pills: { saturation: number };
   icon: ArtworkLayout;
+  adaptiveIcon: ArtworkLayout & { devHeroSize: number };
   splash: ArtworkLayout;
+  androidSplash: { heroSize: number };
 };
 
 export const artworkConfig: ArtworkConfig = {
@@ -47,6 +49,21 @@ export const artworkConfig: ArtworkConfig = {
     /** Random size range of the background pills [minimum, maximum], same scale as heroSize. */
     pillSize: [3, 13],
   },
+  /**
+   * Android adaptive icon, 1024 × 1024 px layers: background (pills) and foreground (capsule, transparent).
+   * The launcher crops the layers to its own shape and only the central 61 % is always visible,
+   * so the capsule must fit in a circle of about 626 px.
+   */
+  adaptiveIcon: {
+    /** Size of the central capsule, same scale as icon.heroSize. 22 touches the edge of the visible circle. */
+    heroSize: 20,
+    /** Size of the capsule of "Pilbo Dev", above the DEV banner. */
+    devHeroSize: 15,
+    /** Background density, higher than icon.pillsPerRow since only the center of the layer is visible. */
+    pillsPerRow: 4.5,
+    /** Random size range of the background pills, smaller than icon.pillSize for the same reason. */
+    pillSize: [2, 8.7],
+  },
   /** Light and dark splash screens, 1290 × 2796 px. */
   splash: {
     /** Size of the central capsule: scale factor of a 40-unit pill (20 ≈ 800 px wide). Higher = bigger. */
@@ -55,5 +72,10 @@ export const artworkConfig: ArtworkConfig = {
     pillsPerRow: 4.7,
     /** Random size range of the background pills [minimum, maximum], same scale as heroSize. */
     pillSize: [4.8, 8.4],
+  },
+  /** Android splash screen (Android 12+ only shows a centered icon): capsule on a transparent 1024 × 1024 px image. */
+  androidSplash: {
+    /** Size of the capsule, same scale as icon.heroSize. */
+    heroSize: 26,
   },
 };

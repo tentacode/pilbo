@@ -1,8 +1,7 @@
-import { StyleSheet } from "react-native";
+import { radius, spacing } from "@/design-system/tokens";
+import { createThemedStyles } from "@/design-system/utils/createThemedStyles";
 
-import { colors, radius, spacing } from "@/design-system/tokens";
-
-export const styles = StyleSheet.create({
+export const useStyles = createThemedStyles((themeColors) => ({
   card: {
     alignItems: "center",
     gap: spacing.emptyStateGap,
@@ -10,9 +9,9 @@ export const styles = StyleSheet.create({
     paddingHorizontal: spacing.emptyStateHorizontal,
     paddingBottom: spacing.emptyStateBottom,
     borderRadius: radius.largeCard,
-    backgroundColor: colors.fill,
+    backgroundColor: themeColors.fill,
   },
   text: {
     textAlign: "center",
   },
-});
+}));

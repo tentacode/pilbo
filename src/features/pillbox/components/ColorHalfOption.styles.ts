@@ -1,4 +1,5 @@
-import { borderWidth, createShadows, radius, sizes, spacing } from "@/design-system/tokens";
+import { createShadows } from "@/design-system/shadows";
+import { borderWidth, radius, sizes, spacing } from "@/design-system/tokens";
 import { createThemedStyles } from "@/design-system/utils/createThemedStyles";
 
 export const useStyles = createThemedStyles((themeColors) => ({

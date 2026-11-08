@@ -9,7 +9,7 @@ import type { Med, PillDesign } from "@/domain/med";
 
 import { usePillPop } from "@/features/pillbox/hooks/usePillPop";
 import { formatPreviewLabel } from "@/features/pillbox/utils/formatters";
-import { styles } from "./AppearancePreview.styles";
+import { useStyles } from "./AppearancePreview.styles";
 import { MedName } from "./MedName";
 
 type AppearancePreviewProps = {
@@ -20,6 +20,7 @@ type AppearancePreviewProps = {
 };
 
 export function AppearancePreview({ design, med, context, onRandomize }: AppearancePreviewProps) {
+  const styles = useStyles();
   const { t } = useTranslation("pillbox");
   const { popStyle, pop } = usePillPop();
   return (

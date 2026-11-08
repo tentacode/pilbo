@@ -1,6 +1,7 @@
 import { StyleSheet } from "react-native";
 
-import { colors, radius, spacing } from "@/design-system/tokens";
+import { radius, spacing } from "@/design-system/tokens";
+import { createThemedStyles } from "@/design-system/utils/createThemedStyles";
 
 export const styles = StyleSheet.create({
   chip: {
@@ -18,9 +19,9 @@ export const styles = StyleSheet.create({
   },
 });
 
-export const appearanceStyles = StyleSheet.create({
-  upcoming: { backgroundColor: colors.accentSoft },
-  late: { backgroundColor: colors.alertChip },
-  taken: { backgroundColor: colors.successChip },
-  skipped: { backgroundColor: colors.skipChip },
-});
+export const useAppearanceStyles = createThemedStyles((themeColors) => ({
+  upcoming: { backgroundColor: themeColors.accentSoft },
+  late: { backgroundColor: themeColors.alertChip },
+  taken: { backgroundColor: themeColors.successChip },
+  skipped: { backgroundColor: themeColors.skipChip },
+}));

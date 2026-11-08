@@ -1,8 +1,7 @@
-import { StyleSheet } from "react-native";
+import { radius, sizes, spacing } from "@/design-system/tokens";
+import { createThemedStyles } from "@/design-system/utils/createThemedStyles";
 
-import { colors, radius, sizes, spacing } from "@/design-system/tokens";
-
-export const styles = StyleSheet.create({
+export const useStyles = createThemedStyles((themeColors) => ({
   card: {
     flexDirection: "row",
     alignItems: "flex-start",
@@ -15,9 +14,9 @@ export const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     borderRadius: radius.round,
-    backgroundColor: colors.turquoiseSoft,
+    backgroundColor: themeColors.turquoiseSoft,
   },
   text: {
     flex: 1,
   },
-});
+}));

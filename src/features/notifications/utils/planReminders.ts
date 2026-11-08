@@ -1,4 +1,9 @@
-import { MAXIMUM_SCHEDULED_REMINDERS, REMINDER_COUNT } from "@/config/notifications";
+import {
+  MAXIMUM_SCHEDULED_REMINDERS,
+  NOTIFICATION_CHANNEL_IDS,
+  type NotificationChannelId,
+  REMINDER_COUNT,
+} from "@/config/notifications";
 import { type Intake, intakeDateOn } from "@/domain/intake";
 import { type IntakeLog, toLocalDateTime } from "@/domain/intakeLog";
 
@@ -11,6 +16,7 @@ export type PlannedReminder = {
   body: string;
   badge?: number;
   interruptionLevel: "active" | "timeSensitive";
+  channelId: NotificationChannelId;
 };
 
 type PlanRemindersOptions = {
@@ -41,6 +47,7 @@ function planDayReminders(day: Date, pendingIntakes: Intake[]): PlannedReminder[
         body: formatReminderBody(intake),
         badge: countPendingAt(date),
         interruptionLevel: "timeSensitive",
+        channelId: NOTIFICATION_CHANNEL_IDS.reminders,
       };
     }),
   );

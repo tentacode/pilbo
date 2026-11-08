@@ -1,13 +1,12 @@
-import { StyleSheet } from "react-native";
+import { radius, spacing } from "@/design-system/tokens";
+import { createThemedStyles } from "@/design-system/utils/createThemedStyles";
 
-import { colors, radius, spacing } from "@/design-system/tokens";
-
-export const styles = StyleSheet.create({
+export const useStyles = createThemedStyles((themeColors) => ({
   notice: {
     alignItems: "flex-start",
     gap: spacing.small,
     padding: spacing.large,
     borderRadius: radius.card,
-    backgroundColor: colors.fill,
+    backgroundColor: themeColors.fill,
   },
-});
+}));

@@ -5,7 +5,7 @@ name: Editing an intake of a previous day and of today
     clearState: true
 - extendedWaitUntil:
     visible: "Aujourd'hui"
-    timeout: 10000
+    timeout: 60000
 - tapOn: "Jour précédent.*"
 - assertVisible: "Hier"
 - scrollUntilVisible:

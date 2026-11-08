@@ -197,8 +197,11 @@ function heroPill({ centerX, centerY, scale }) {
 }
 
 function svg({ width, height, background, content }) {
+  const backgroundRect = background
+    ? `<rect width="${width}" height="${height}" fill="${background}"/>`
+    : "";
   return `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}">
-  <rect width="${width}" height="${height}" fill="${background}"/>
+  ${backgroundRect}
   ${content}
 </svg>
 `;
@@ -234,6 +237,56 @@ function icon() {
     regular: variant(ICON_SIZE / 2),
     dev: variant(DEV_BANNER_TOP / 2, DEV_BANNER),
   };
+}
+
+// Android adaptive icon layers are 108 dp, of which only the central 66 dp circle is always visible.
+const ADAPTIVE_SAFE_ZONE_TOP = (ICON_SIZE * 21) / 108;
+const ADAPTIVE_DEV_BANNER_TOP = 660;
+const ADAPTIVE_DEV_BANNER = `
+  <rect y="${ADAPTIVE_DEV_BANNER_TOP}" width="${ICON_SIZE}" height="${ICON_SIZE - ADAPTIVE_DEV_BANNER_TOP}" fill="${COLORS.ink}"/>
+  <text x="512" y="796" text-anchor="middle" font-family="-apple-system, Helvetica, Arial, sans-serif" font-size="110" font-weight="800" letter-spacing="14" fill="#FFFFFF">DEV</text>`;
+
+function adaptiveIcon() {
+  const { heroSize, devHeroSize, pillsPerRow, pillSize } = artworkConfig.adaptiveIcon;
+  const background = svg({
+    width: ICON_SIZE,
+    height: ICON_SIZE,
+    background: COLORS.background,
+    content: backgroundPills({
+      width: ICON_SIZE,
+      height: ICON_SIZE,
+      pillsPerRow,
+      scaleRange: pillSize,
+      opacity: SETTINGS.backgroundOpacity,
+    }),
+  });
+  const foreground = (centerY, scale, banner = "") =>
+    svg({
+      width: ICON_SIZE,
+      height: ICON_SIZE,
+      content: heroPill({ centerX: ICON_SIZE / 2, centerY, scale }) + banner,
+    });
+  return {
+    background,
+    foreground: foreground(ICON_SIZE / 2, heroSize),
+    devForeground: foreground(
+      (ADAPTIVE_SAFE_ZONE_TOP + ADAPTIVE_DEV_BANNER_TOP) / 2,
+      devHeroSize,
+      ADAPTIVE_DEV_BANNER,
+    ),
+  };
+}
+
+function androidSplashIcon() {
+  return svg({
+    width: ICON_SIZE,
+    height: ICON_SIZE,
+    content: heroPill({
+      centerX: ICON_SIZE / 2,
+      centerY: ICON_SIZE / 2,
+      scale: artworkConfig.androidSplash.heroSize,
+    }),
+  });
 }
 
 function splash() {
@@ -280,20 +333,62 @@ function renderPng({ source, output, width, height, background }) {
   ]);
 }
 
+// qlmanage always renders on an opaque background: the alpha is recovered from two renders, on
+// black and on white (a pixel of opacity a differs by 1 - a between them), then the color is unmixed.
+function renderTransparentPng({ source, output, width, height }) {
+  const directory = mkdtempSync(join(tmpdir(), "pilbo-artwork-"));
+  const [onBlack, onWhite] = ["#000000", "#FFFFFF"].map((background) => {
+    const path = join(directory, `${background.slice(1)}.png`);
+    const opaqueSource = source.replace(
+      /(<svg[^>]*>)/,
+      `$1<rect width="${width}" height="${height}" fill="${background}"/>`,
+    );
+    renderPng({ source: opaqueSource, output: path, width, height, background });
+    return path;
+  });
+  execFileSync("magick", [
+    onBlack,
+    onWhite,
+    ...["(", "-clone", "0,1", "-compose", "difference", "-composite"],
+    ...["-grayscale", "Rec709Luminance", "-negate", ")", "-delete", "1"],
+    ...["(", "-clone", "0,1", "-fx", "u/max(v,0.0001)", ")", "-delete", "0", "+swap"],
+    ...["-alpha", "off", "-compose", "CopyOpacity", "-composite", output],
+  ]);
+}
+
 const iconSources = icon();
 const splashSources = splash();
+const adaptiveIconSources = adaptiveIcon();
 
 const artworks = [
   { name: "icon", source: iconSources.regular, size: ICON_SIZE, background: COLORS.background },
   { name: "icon-dev", source: iconSources.dev, size: ICON_SIZE, background: COLORS.background },
   { name: "splash", source: splashSources.light, background: COLORS.background },
   { name: "splash-dark", source: splashSources.dark, background: COLORS.darkBackground },
+  {
+    name: "adaptive-icon-background",
+    source: adaptiveIconSources.background,
+    size: ICON_SIZE,
+    background: COLORS.background,
+  },
+  { name: "adaptive-icon-foreground", source: adaptiveIconSources.foreground, size: ICON_SIZE },
+  {
+    name: "adaptive-icon-foreground-dev",
+    source: adaptiveIconSources.devForeground,
+    size: ICON_SIZE,
+  },
+  { name: "splash-icon", source: androidSplashIcon(), size: ICON_SIZE },
 ];
 
 for (const { name, source, size, background } of artworks) {
   const width = size ?? SETTINGS.splashWidth;
   const height = size ?? SETTINGS.splashHeight;
   writeFileSync(`assets/artwork/${name}.svg`, source);
-  renderPng({ source, output: `assets/images/${name}.png`, width, height, background });
+  const output = `assets/images/${name}.png`;
+  if (background) {
+    renderPng({ source, output, width, height, background });
+  } else {
+    renderTransparentPng({ source, output, width, height });
+  }
   console.log(`Generated assets/images/${name}.png`);
 }

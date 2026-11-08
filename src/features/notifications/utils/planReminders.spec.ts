@@ -137,6 +137,7 @@ describe("planReminders", () => {
       title: "Stock bas",
       body: "Lithium 250 mg : pensez à le renouveler.",
       interruptionLevel: "active" as const,
+      channelId: "low-stock" as const,
     };
 
     const reminders = planReminders({
@@ -163,6 +164,7 @@ describe("planReminders", () => {
       title: "Stock bas",
       body: "",
       interruptionLevel: "active" as const,
+      channelId: "low-stock" as const,
     }));
 
     const reminders = planReminders({
@@ -236,6 +238,7 @@ describe("planReminders", () => {
       body: "1 × Lithium 250 mg",
       badge: 1,
       interruptionLevel: "timeSensitive",
+      channelId: "intake-reminders",
     });
   });
 });

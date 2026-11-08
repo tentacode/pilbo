@@ -1,6 +1,7 @@
 import { Pressable, View } from "react-native";
 
-import { colors, maximumFontScale, sizes } from "../../tokens";
+import { useThemeColors } from "../../hooks/useThemeColors";
+import { maximumFontScale, sizes } from "../../tokens";
 import { Icon } from "../Icon/Icon";
 import type { IconName } from "../Icon/iconShapes";
 import { Text } from "../Text/Text";
@@ -23,6 +24,7 @@ export function TabBarItem({
   badgeAccessibilityLabel,
   onPress,
 }: TabBarItemProps) {
+  const themeColors = useThemeColors();
   const styles = useStyles();
   const hasBadge = badgeCount > 0;
   return (
@@ -39,7 +41,7 @@ export function TabBarItem({
         <Icon
           name={icon}
           size={sizes.tabIcon}
-          color={selected ? colors.ink : colors.inkSecondary}
+          color={selected ? themeColors.ink : themeColors.inkSecondary}
         />
         {hasBadge ? (
           <View style={styles.badge}>

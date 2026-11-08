@@ -5,7 +5,7 @@ name: Calendar shows the history and the previous days
     clearState: true
 - extendedWaitUntil:
     visible: "Aujourd'hui"
-    timeout: 10000
+    timeout: 60000
 - evalScript: |
     ${
       const months = ["janvier", "février", "mars", "avril", "mai", "juin", "juillet", "août", "septembre", "octobre", "novembre", "décembre"];

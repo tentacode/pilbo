@@ -4,7 +4,7 @@ import { type LayoutChangeEvent, View } from "react-native";
 import { useFitsInWidth } from "../../hooks/useFitsInWidth";
 import { spacing } from "../../tokens";
 import { Text } from "../Text/Text";
-import { styles } from "./SheetHeader.styles";
+import { useStyles } from "./SheetHeader.styles";
 import { type SheetAction, SheetNavigationButton } from "./SheetNavigationButton";
 
 type SheetHeaderProps = {
@@ -14,6 +14,7 @@ type SheetHeaderProps = {
 };
 
 export function SheetHeader({ title, leftAction, rightAction }: SheetHeaderProps) {
+  const styles = useStyles();
   const [sideWidth, setSideWidth] = useState(0);
   const [longestWordWidth, setLongestWordWidth] = useState(0);
   const { onLayout, fits } = useFitsInWidth(sideWidth * 2 + spacing.small * 2 + longestWordWidth);

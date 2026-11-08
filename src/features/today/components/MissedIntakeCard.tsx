@@ -2,7 +2,8 @@ import { Pressable, View } from "react-native";
 import { useTranslation } from "react-i18next";
 
 import { Icon } from "@/design-system/components/Icon/Icon";
-import { colors, sizes } from "@/design-system/tokens";
+import { useThemeColors } from "@/design-system/hooks/useThemeColors";
+import { sizes } from "@/design-system/tokens";
 
 import { formatEarlierIntakeAccessibilityLabel } from "@/features/today/utils/formatters";
 import type { TodayIntake } from "@/features/today/utils/todayTypes";
@@ -16,6 +17,7 @@ type MissedIntakeCardProps = {
 };
 
 export function MissedIntakeCard({ todayIntake, onPress }: MissedIntakeCardProps) {
+  const themeColors = useThemeColors();
   const styles = useStyles();
   const { t } = useTranslation("today");
   return (
@@ -28,7 +30,7 @@ export function MissedIntakeCard({ todayIntake, onPress }: MissedIntakeCardProps
     >
       <View style={styles.head}>
         <IntakeCardHeading todayIntake={todayIntake} />
-        <Icon name="chevronRight" size={sizes.iconSmall} color={colors.inkSecondary} />
+        <Icon name="chevronRight" size={sizes.iconSmall} color={themeColors.inkSecondary} />
       </View>
       <TodayMedList medQuantities={todayIntake.intake.medQuantities} isLate />
     </Pressable>

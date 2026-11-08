@@ -12,7 +12,7 @@ import {
 } from "@/features/meds/utils/formatters";
 import type { MedListItem } from "@/features/meds/utils/medsTypes";
 import { MedListRowStock } from "./MedListRowStock";
-import { styles } from "./MedListRow.styles";
+import { useStyles } from "./MedListRow.styles";
 
 type MedListRowProps = {
   item: MedListItem;
@@ -20,6 +20,7 @@ type MedListRowProps = {
 };
 
 export function MedListRow({ item, onPress }: MedListRowProps) {
+  const styles = useStyles();
   const { t } = useTranslation("meds");
   const { med, stockStatus } = item;
   const { onRowLayout, onTrailingLayout, isStacked } = useMedListRowLayout();
