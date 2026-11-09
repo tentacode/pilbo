@@ -52,7 +52,7 @@ Comme sur iOS, deux variantes choisies par `APP_VARIANT` (fixé par le `Makefile
   - `app-arm64-v8a-release.apk` (environ 80 Mo) : presque tous les téléphones récents, à partager en priorité ;
   - `app-universal-release.apk` (environ 150 Mo) : les 4 architectures, pour les vieux téléphones 32 bits et les émulateurs.
 
-  Les splits ABI (`plugins/withAbiSplits.js`) ne s'activent qu'en Release et ne concernent que les APK, pas un AAB (spec 28, à vérifier à ce moment-là).
+  Les splits ABI (`plugins/withAbiSplits.js`) ne s'activent qu'en Release et ne concernent que les APK : l'AAB (`make android-bundle`) contient les 4 architectures, le Play Store les découpe lui-même.
 
 - `make clean` : régénère `ios/` et `android/` (`prebuild --clean`).
 
@@ -137,3 +137,50 @@ Android refuse une mise à jour signée par une autre clé. Sans le keystore, il
 ### Changer de variante
 
 `android/` est partagé entre « Pilbo Dev » et « Pilbo ». Le plugin Gradle de React Native garde en cache la configuration d'autolinking (dont le nom du package) : les cibles `make android-build-*` vident `android/build/generated/autolinking` après le prebuild, sinon la compilation échoue (« package com.tentacode.pilbo.dev does not exist »).
+
+## Play Console
+
+« Pilbo » (`com.tentacode.pilbo`) est distribuée en test fermé sur le Play Store (spec 29). Compte personnel : au moins 12 testeurs inscrits pendant 14 jours d'affilée avant de pouvoir demander l'accès à la production (spec 28).
+
+### Commandes
+
+- `make android-bundle BUILD_NUMBER=…` : construit l'AAB signé de « Pilbo » sans l'envoyer (`android/app/build/outputs/bundle/release/app-release.aab`), pour un envoi à la main dans la Play Console.
+- `make android-beta` : lane fastlane `android beta` (`fastlane/Fastfile`) :
+  - versionCode = plus grand versionCode des pistes `alpha` et `internal`, plus 1 ;
+  - notes de version : `fastlane/what_to_test/<langue>.txt` (communes avec TestFlight, 500 caractères max) copiées dans `fastlane/metadata/android/<langue>/changelogs/<versionCode>.txt` (non versionné) ;
+  - `prebuild --clean` en variante « Pilbo », puis AAB (`bundleRelease`), comme `make android-bundle` ;
+  - envoi sur la piste fermée avec la fiche de `fastlane/metadata/android/` (textes, icône, image de présentation, captures).
+- `make android-beta TRACK=internal` : piste de test interne (sans revue, testeurs ajoutés à la main dans la Play Console).
+
+Pistes : `alpha` (« Test fermé – Alpha », par défaut) et `internal` (test interne).
+
+L'icône 512 × 512 et l'image de présentation 1024 × 500 de la fiche sont générées par `make artwork`.
+
+Après `make android-bundle` ou `make android-beta`, `android/` est en variante « Pilbo », avec la ligne `INTERNET` en `tools:node="remove"` dans le manifeste : lancer `make clean` (ou supprimer cette ligne) avant `make android-build-emulator` / `make android-build-device`.
+
+### versionCode
+
+- `android.versionCode` (`app.config.ts`) est lu depuis `BUILD_NUMBER` (entier positif), comme `ios.buildNumber`. Sans `BUILD_NUMBER`, Expo met 1.
+- Le Play Store ne propose une mise à jour que si son versionCode est plus grand que celui de l'app installée.
+- `make android-build-release BUILD_NUMBER=…` : pour installer un APK local par-dessus une version du Play Store, passer un `BUILD_NUMBER` au-dessus de son versionCode. Sinon Android refuse la rétrogradation (`INSTALL_FAILED_VERSION_DOWNGRADE`), et désinstaller supprime les données.
+
+### Compte de service
+
+fastlane envoie les builds avec un compte de service Google Cloud :
+
+1. Google Cloud : un projet, l'API « Google Play Android Developer » activée, un compte de service et sa clé JSON.
+2. Clé rangée hors du repo, ex. `~/.google-play/pilbo-service-account.json` (`chmod 600`), chemin dans `GOOGLE_PLAY_JSON_KEY_PATH` (`.env`, lu par `fastlane/Appfile`).
+3. Play Console → Utilisateurs et autorisations : inviter l'adresse du compte de service, avec des droits sur Pilbo limités aux pistes de test et à la fiche.
+
+### Play App Signing
+
+Le keystore Release (voir « Signature Release ») a été envoyé à Google avec l'outil PEPK : il est à la fois la **clé de signature de l'app** (Google signe les APK distribués avec) et la **clé d'importation** (signature des AAB envoyés). Un APK installé à la main se met donc à jour par le Play Store, et inversement.
+
+La sauvegarde du keystore reste indispensable : en cas de perte, Google peut réinitialiser la clé d'importation (demande dans la Play Console), mais aucun APK local ne pourra plus s'installer par-dessus la version du Play Store.
+
+### Test fermé
+
+- Testeurs : Google Group `pilbo-testeurs` (« Tout le monde peut rejoindre »), déclaré comme liste de testeurs de la piste fermée.
+- Lien à partager : la page « Rejoindre la bêta » (`https://tentacode.github.io/pilbo/beta/`, sources dans `website/`), qui présente les deux étapes dans l'ordre : rejoindre le groupe, puis s'inscrire au test.
+- Revue de Google à chaque build envoyé (de quelques heures à plusieurs jours).
+- Ne pas mettre la piste en pause pendant les 14 jours.

@@ -54,3 +54,4 @@ fastlane/test_output
 fastlane/build
 *.ipa
 *.dSYM.zip
+fastlane/metadata/android/*/changelogs/

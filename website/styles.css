@@ -1,0 +1,254 @@
+@font-face {
+  font-family: "Atkinson Hyperlegible Next";
+  src: url("fonts/AtkinsonHyperlegibleNext_400Regular.ttf") format("truetype");
+  font-weight: 400;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Atkinson Hyperlegible Next";
+  src: url("fonts/AtkinsonHyperlegibleNext_700Bold.ttf") format("truetype");
+  font-weight: 700;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Young Serif";
+  src: url("fonts/YoungSerif_400Regular.ttf") format("truetype");
+  font-weight: 400;
+  font-display: swap;
+}
+
+/* Colors from src/design-system/tokens.ts (lightColors / darkColors) */
+:root {
+  color-scheme: light dark;
+  --ink: #2e2a5c;
+  --ink-secondary: #5c5780;
+  --background: #fdfcff;
+  --surface: #ffffff;
+  --line: #e9e4f5;
+  --accent-soft: #efeafc;
+  --prominent-background: #2e2a5c;
+  --prominent-background-pressed: #211e46;
+  --on-prominent: #ffffff;
+  --focus: #2e2a5c;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --ink: #eae5ff;
+    --ink-secondary: #b5aed6;
+    --background: #15122b;
+    --surface: #211d3b;
+    --line: #332e54;
+    --accent-soft: #352d62;
+    --prominent-background: #eae5ff;
+    --prominent-background-pressed: #cfc6f2;
+    --on-prominent: #1b1733;
+    --focus: #eae5ff;
+  }
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--background);
+  color: var(--ink);
+  font-family: "Atkinson Hyperlegible Next", system-ui, sans-serif;
+  font-size: 1.0625rem;
+  line-height: 1.6;
+}
+
+.page {
+  max-width: 42rem;
+  margin: 0 auto;
+  padding: 1.5rem 1rem 3rem;
+}
+
+.site-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem 1rem;
+  margin-bottom: 2rem;
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-height: 2.75rem;
+  color: var(--ink);
+  font-family: "Young Serif", Georgia, serif;
+  font-size: 1.5rem;
+  text-decoration: none;
+}
+
+.brand img {
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 0.75rem;
+}
+
+.language-link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.75rem;
+  padding: 0 1rem;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--surface);
+}
+
+h1,
+h2,
+h3 {
+  font-family: "Young Serif", Georgia, serif;
+  font-weight: 400;
+  line-height: 1.25;
+}
+
+h1 {
+  margin: 0 0 1rem;
+  font-size: 2.125rem;
+}
+
+h2 {
+  margin: 2.5rem 0 0.75rem;
+  font-size: 1.5rem;
+}
+
+h3 {
+  margin: 0 0 0.5rem;
+  font-size: 1.25rem;
+}
+
+p,
+ul,
+ol {
+  margin: 0 0 1rem;
+}
+
+.lead {
+  font-size: 1.125rem;
+}
+
+.secondary {
+  color: var(--ink-secondary);
+}
+
+a {
+  color: var(--ink);
+  text-decoration-thickness: 0.08em;
+  text-underline-offset: 0.18em;
+}
+
+a:hover {
+  text-decoration-thickness: 0.16em;
+}
+
+a:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 3px;
+  border-radius: 0.25rem;
+}
+
+.card {
+  margin: 0 0 1rem;
+  padding: 1.25rem;
+  border: 1px solid var(--line);
+  border-radius: 1.5rem;
+  background: var(--surface);
+}
+
+.card > :last-child {
+  margin-bottom: 0;
+}
+
+.features {
+  padding-left: 1.25rem;
+}
+
+.features li + li {
+  margin-top: 0.5rem;
+}
+
+.steps {
+  padding: 0;
+  list-style: none;
+  counter-reset: step;
+}
+
+.steps > li {
+  counter-increment: step;
+  position: relative;
+  padding-left: 3.75rem;
+}
+
+.steps > li::before {
+  content: counter(step);
+  position: absolute;
+  top: 1.25rem;
+  left: 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  border-radius: 999px;
+  background: var(--accent-soft);
+  font-weight: 700;
+}
+
+.steps h2 {
+  margin-top: 0;
+  font-size: 1.25rem;
+}
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.75rem;
+  padding: 0.5rem 1.375rem;
+  border-radius: 999px;
+  background: var(--prominent-background);
+  color: var(--on-prominent);
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.button:hover {
+  background: var(--prominent-background-pressed);
+}
+
+.site-footer {
+  margin-top: 3rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--line);
+  font-size: 0.9375rem;
+}
+
+.site-footer ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.5rem;
+  padding: 0;
+  list-style: none;
+}
+
+.site-footer a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.75rem;
+}

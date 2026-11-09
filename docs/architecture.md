@@ -31,6 +31,7 @@ src/
     error-handling/     // écran d'erreur générique, ErrorBoundary global
     i18n/               // i18next : instance, traductions (locales/<langue>/<namespace>.json), formatage dates/heures
     storage/            // stockage sync (kv-store) partagé par les stores Zustand persistés
+website/                // pages web statiques (support, confidentialité, bêta), anglais à la racine, français sous fr/, déployées sur GitHub Pages
 ```
 
 ## Règles

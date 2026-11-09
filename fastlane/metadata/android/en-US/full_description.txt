@@ -1,0 +1,31 @@
+Pilbo is a simple pill box on your phone. It reminds you of your medication intakes, tracks your stocks and keeps your history. No account needed: your data stays on your phone.
+
+YOUR INTAKES
+• Several intakes a day, each with its medications and quantities.
+• On the days of the week you choose.
+• As-needed medications, to take outside your intakes.
+
+REMINDERS
+• A notification at the time of each intake.
+• Confirm an intake right from the notification.
+• Choose the sound of your reminders.
+
+STOCKS
+• The stock goes down with each intake.
+• An alert before you run out.
+
+HISTORY
+• A calendar of your intakes, day by day.
+
+PRIVATE
+• No account, no server.
+• No advertising, no tracking.
+• Pilbo works without an internet connection.
+
+EASY TO READ
+• Dark mode.
+• Adapts to the text size of your phone.
+
+In English and French.
+
+Pilbo is not a medical device. It does not replace the advice of a doctor or pharmacist.

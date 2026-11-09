@@ -50,11 +50,11 @@ sql.d.ts                // import des fichiers .sql (migrations)
 
 ### Règle des migrations
 
-Les testeurs TestFlight ont de vraies données : aucune perte n'est acceptable.
+Les testeurs TestFlight et Play Store ont de vraies données : aucune perte n'est acceptable.
 
-- Une migration déjà envoyée (TestFlight ou App Store) est **figée** : ne jamais la modifier ni la supprimer.
+- Une migration déjà envoyée (TestFlight, App Store ou une piste du Play Store) est **figée** : ne jamais la modifier ni la supprimer.
 - Entre deux envois, tous les changements de schéma locaux vont dans **une seule migration « en cours »**. On peut la supprimer et la régénérer librement (`make db-generate`), en réinstallant l'app localement, sans compatibilité.
-- Avant `make testflight`, cette migration doit préserver les données des testeurs (conversion des données existantes si besoin).
+- Avant `make testflight` et `make android-beta`, cette migration doit préserver les données des testeurs (conversion des données existantes si besoin).
 - Même logique pour les réglages persistés (kv-store) : un changement de format envoyé doit relire l'ancien.
 
 ## Écrire une requête

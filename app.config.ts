@@ -49,6 +49,19 @@ function readAppVariant(): AppVariant {
   return appVariant;
 }
 
+function readAndroidVersionCode(): number | undefined {
+  const buildNumber = process.env.BUILD_NUMBER;
+  if (buildNumber === undefined || buildNumber === "") {
+    return undefined;
+  }
+  if (!/^[1-9]\d*$/.test(buildNumber)) {
+    throw new Error(
+      `BUILD_NUMBER "${buildNumber}" must be a positive integer (Android versionCode).`,
+    );
+  }
+  return Number(buildNumber);
+}
+
 const appVariant = readAppVariant();
 const variant = VARIANTS[appVariant];
 
@@ -91,6 +104,7 @@ const config: ExpoConfig = {
   },
   android: {
     package: variant.bundleIdentifier,
+    versionCode: readAndroidVersionCode(),
     blockedPermissions: variant.blockedAndroidPermissions,
     adaptiveIcon: {
       foregroundImage: variant.adaptiveIconForeground,
