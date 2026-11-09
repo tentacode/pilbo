@@ -2,6 +2,7 @@ import { pillSwatches } from "@/design-system/tokens";
 import type { Med, PillDesign } from "@/domain/med";
 
 import type { MedToUpdate } from "@/features/pillbox/queries/updateMed";
+import { type ColorCount, colorCountOf } from "@/features/pillbox/utils/pillDesign";
 import type { Language } from "@/shared/i18n/resources";
 
 export type MedFlowOrigin = "intake" | "meds";
@@ -36,6 +37,13 @@ export function createMedDraft(med?: Med): MedDraft {
     detail: "",
     design: DEFAULT_PILL_DESIGN,
   };
+}
+
+export function initialColorCount(draft: MedDraft): ColorCount {
+  const isNewWhitePill =
+    draft.medId === undefined &&
+    draft.design.colors.every((color) => color.toLowerCase() === pillSwatches.white.toLowerCase());
+  return isNewWhitePill ? 2 : colorCountOf(draft.design);
 }
 
 function capitalizeFirstLetter(text: string, language: Language): string {

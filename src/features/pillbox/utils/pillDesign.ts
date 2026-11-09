@@ -3,6 +3,8 @@ import { PILL_SHAPES, type PillDesign, type PillShape, type PillSize } from "@/d
 
 const PILL_SIZES: PillSize[] = ["small", "medium", "large"];
 
+export type ColorCount = 1 | 2;
+
 export function withShape(design: PillDesign, shape: PillShape): PillDesign {
   return { ...design, shape };
 }
@@ -19,8 +21,20 @@ export function withColor(
   colors: PillDesign["colors"],
   half: 0 | 1,
   color: string,
+  colorCount: ColorCount = 2,
 ): PillDesign["colors"] {
+  if (colorCount === 1) {
+    return [color, color];
+  }
   return half === 0 ? [color, colors[1]] : [colors[0], color];
+}
+
+export function colorCountOf(design: PillDesign): ColorCount {
+  return design.colors[0].toLowerCase() === design.colors[1].toLowerCase() ? 1 : 2;
+}
+
+export function withSingleColor(design: PillDesign): PillDesign {
+  return { ...design, colors: [design.colors[0], design.colors[0]] };
 }
 
 function pickRandom<Item>(items: readonly Item[], random: () => number): Item {

@@ -52,6 +52,12 @@ describe("MedAppearanceScreen", () => {
     expect(screen.getByText("Avec le repas", { includeHiddenElements: true })).toBeOnTheScreen();
   });
 
+  it("opens on one color for a med with identical colors", async () => {
+    await renderScreen();
+
+    expect(screen.getByRole("radio", { name: "Une couleur" })).toBeSelected();
+  });
+
   it("saves the design directly when validating", async () => {
     const medId = await renderScreen();
 

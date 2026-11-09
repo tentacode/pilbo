@@ -1,6 +1,7 @@
 import { router, useLocalSearchParams } from "expo-router";
 
 import { AppearanceScreen } from "@/features/pillbox/AppearanceScreen";
+import { colorCountOf } from "@/features/pillbox/utils/pillDesign";
 import { useMedAppearanceEditing } from "./hooks/useMedAppearanceEditing";
 
 export function MedAppearanceScreen() {
@@ -12,6 +13,7 @@ export function MedAppearanceScreen() {
   return (
     <AppearanceScreen
       initialDesign={med.design}
+      initialColorCount={colorCountOf(med.design)}
       previewMed={med}
       previewContext={med.detail}
       onValidate={(design) => {

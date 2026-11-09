@@ -1,6 +1,6 @@
 import type { Med } from "@/domain/med";
 
-import { createMedDraft, DEFAULT_PILL_DESIGN, toMedValues } from "./medDraft";
+import { createMedDraft, DEFAULT_PILL_DESIGN, initialColorCount, toMedValues } from "./medDraft";
 import { validateMedDraft } from "./validators";
 
 const LITHIUM: Med = {
@@ -37,6 +37,29 @@ describe("createMedDraft", () => {
       detail: "Avec le repas",
       design: LITHIUM.design,
     });
+  });
+});
+
+describe("initialColorCount", () => {
+  const WHITE = { ...LITHIUM.design, colors: ["#FFFFFF", "#FFFFFF"] as [string, string] };
+
+  it("offers two colors for a new white med", () => {
+    expect(initialColorCount(createMedDraft())).toBe(2);
+  });
+
+  it("offers one color for a new med with another identical color", () => {
+    expect(initialColorCount({ ...createMedDraft(), design: LITHIUM.design })).toBe(1);
+  });
+
+  it("offers one color for an existing white med", () => {
+    expect(initialColorCount(createMedDraft({ ...LITHIUM, design: WHITE }))).toBe(1);
+  });
+
+  it("offers two colors when the colors differ", () => {
+    const design = { ...LITHIUM.design, colors: ["#D6C9F5", "#FFFFFF"] as [string, string] };
+
+    expect(initialColorCount({ ...createMedDraft(), design })).toBe(2);
+    expect(initialColorCount(createMedDraft({ ...LITHIUM, design }))).toBe(2);
   });
 });
 

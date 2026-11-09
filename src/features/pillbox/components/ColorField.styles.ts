@@ -14,6 +14,7 @@ export const useStyles = createThemedStyles((themeColors) => ({
   halves: {
     flexDirection: "row",
     gap: spacing.extraSmall,
+    marginTop: spacing.medium,
     padding: spacing.extraSmall,
     borderRadius: radius.segment,
     backgroundColor: themeColors.fill,

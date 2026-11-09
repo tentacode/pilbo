@@ -16,14 +16,15 @@ import type { Med, PillDesign } from "@/domain/med";
 import { useColorEditing } from "./hooks/useColorEditing";
 import { useIntakeDraft } from "./hooks/useIntakeDraft";
 import { useMedDraftContext } from "./hooks/useMedDraft";
-import { DEFAULT_PILL_DESIGN } from "./utils/medDraft";
+import { DEFAULT_PILL_DESIGN, initialColorCount } from "./utils/medDraft";
 import { formatPreviewLabel } from "./utils/formatters";
-import { randomPillDesign, withShape } from "./utils/pillDesign";
+import { type ColorCount, randomPillDesign, withShape } from "./utils/pillDesign";
 import { styles } from "./AppearanceScreen.styles";
 import { formatIntakeTime } from "@/shared/i18n/formatters";
 
 type AppearanceScreenProps = {
   initialDesign: PillDesign;
+  initialColorCount: ColorCount;
   previewMed: Pick<Med, "name" | "strength">;
   previewContext: string;
   onValidate: (design: PillDesign) => void;
@@ -31,13 +32,14 @@ type AppearanceScreenProps = {
 
 export function AppearanceScreen({
   initialDesign,
+  initialColorCount,
   previewMed,
   previewContext,
   onValidate,
 }: AppearanceScreenProps) {
   const { t } = useTranslation("pillbox");
   const [design, setDesign] = useState(initialDesign);
-  const colorEditing = useColorEditing(design, setDesign);
+  const colorEditing = useColorEditing(design, setDesign, initialColorCount);
   const reduceMotion = useReduceMotion();
   const scrollReference = useRef<ScrollView>(null);
   const isCustomColorPanelRevealRequested = useRef(false);
@@ -50,6 +52,7 @@ export function AppearanceScreen({
   function randomizeDesign() {
     const randomDesign = randomPillDesign(design);
     colorEditing.closeCustomColorPanel();
+    colorEditing.syncColorCount(randomDesign);
     setDesign(randomDesign);
     AccessibilityInfo.announceForAccessibility(formatPreviewLabel(t, randomDesign));
   }
@@ -81,8 +84,10 @@ export function AppearanceScreen({
         <SizeField size={design.size} onChange={(size) => setDesign({ ...design, size })} />
         <ColorField
           design={design}
+          colorCount={colorEditing.colorCount}
           activeHalf={colorEditing.activeHalf}
           isCustomColorPanelOpen={colorEditing.isCustomColorPanelOpen}
+          onColorCountChange={colorEditing.selectColorCount}
           onActiveHalfChange={colorEditing.selectHalf}
           onColorChange={colorEditing.selectSwatchColor}
           onCustomColorPress={openCustomColorPanel}
@@ -106,6 +111,7 @@ function DraftAppearanceScreen({ previewContext }: { previewContext?: string }) 
   return (
     <AppearanceScreen
       initialDesign={draft?.design ?? DEFAULT_PILL_DESIGN}
+      initialColorCount={draft === null ? 2 : initialColorCount(draft)}
       previewMed={{
         name: draft?.name.trim() || t("Votre médicament"),
         strength: draft?.strength.trim() ?? "",

@@ -12,9 +12,10 @@ import { i18n } from "@/shared/i18n/i18n";
 import { MedsAppearanceScreen, IntakeAppearanceScreen } from "./AppearanceScreen";
 import { IntakeDraftProvider } from "./hooks/useIntakeDraft";
 import { MedDraftProvider, useMedDraftContext } from "./hooks/useMedDraft";
-import { createMedDraft } from "./utils/medDraft";
+import { createMedDraft, type MedDraft } from "./utils/medDraft";
 
 const LILAC = "#D6C9F5";
+const MINT = "#B3E8E0";
 
 let mockDatabase: Database;
 
@@ -42,7 +43,7 @@ function MedDraftSpy() {
   return null;
 }
 
-function renderMedsAppearance() {
+function renderMedsAppearance(draftChanges: Partial<MedDraft> = {}) {
   const initialDraft = {
     ...createMedDraft(),
     design: {
@@ -53,6 +54,7 @@ function renderMedsAppearance() {
     name: "Doliprane",
     strength: "1 g",
     detail: "Si douleur",
+    ...draftChanges,
   };
   function wrapper({ children }: { children: ReactNode }) {
     return (
@@ -69,6 +71,14 @@ function renderMedsAppearance() {
 
 function previewLabel(): string | undefined {
   return screen.getByRole("image", { name: /^Aperçu/ }).props.accessibilityLabel;
+}
+
+function withColors(colors: [string, string]): Pick<MedDraft, "design"> {
+  return { design: { shape: "round", size: "medium", colors } };
+}
+
+async function switchToTwoColors() {
+  await fireEvent.press(screen.getByRole("radio", { name: "Deux couleurs" }));
 }
 
 beforeEach(() => {
@@ -122,6 +132,7 @@ describe("AppearanceScreen", () => {
 
   it("colors the first half from the swatches", async () => {
     await renderMedsAppearance();
+    await switchToTwoColors();
 
     expect(screen.getByRole("radio", { name: "Couleur 1 : lilas" })).toBeSelected();
     expect(screen.getByRole("radio", { name: "Lilas" })).toBeSelected();
@@ -133,6 +144,7 @@ describe("AppearanceScreen", () => {
 
   it("colors the second half", async () => {
     await renderMedsAppearance();
+    await switchToTwoColors();
 
     await fireEvent.press(screen.getByRole("radio", { name: "Couleur 2 : lilas" }));
     await fireEvent.press(screen.getByRole("radio", { name: "Menthe" }));
@@ -161,6 +173,7 @@ describe("AppearanceScreen", () => {
 
   it("applies a custom color to the selected half with the sliders", async () => {
     await renderMedsAppearance();
+    await switchToTwoColors();
     await fireEvent.press(screen.getByRole("radio", { name: "Couleur 2 : lilas" }));
     await fireEvent.press(screen.getByRole("button", { name: "Autre couleur" }));
 
@@ -193,6 +206,7 @@ describe("AppearanceScreen", () => {
 
   it("keeps the sliders open when switching to the other half", async () => {
     await renderMedsAppearance();
+    await switchToTwoColors();
     await fireEvent.press(screen.getByRole("button", { name: "Autre couleur" }));
 
     await fireEvent.press(screen.getByRole("radio", { name: "Couleur 2 : lilas" }));
@@ -258,6 +272,107 @@ describe("AppearanceScreen", () => {
     expect(screen.queryByRole("adjustable", { name: "Teinte" })).not.toBeOnTheScreen();
   });
 
+  describe("number of colors", () => {
+    it("offers two colors for a new white med", async () => {
+      await renderMedsAppearance(withColors(["#FFFFFF", "#FFFFFF"]));
+
+      expect(screen.getByRole("radio", { name: "Deux couleurs" })).toBeSelected();
+      expect(screen.getByRole("radio", { name: "Couleur 1 : blanc" })).toBeSelected();
+    });
+
+    it("offers one color for an existing med with identical colors", async () => {
+      await renderMedsAppearance({ medId: "doliprane", ...withColors(["#FFFFFF", "#FFFFFF"]) });
+
+      expect(screen.getByRole("radio", { name: "Une couleur" })).toBeSelected();
+      expect(screen.queryByRole("radio", { name: /^Couleur 1/ })).not.toBeOnTheScreen();
+    });
+
+    it("offers two colors when the colors differ", async () => {
+      await renderMedsAppearance({ medId: "doliprane", ...withColors([LILAC, MINT]) });
+
+      expect(screen.getByRole("radio", { name: "Deux couleurs" })).toBeSelected();
+    });
+
+    it("applies the first color to both halves when switching to one color", async () => {
+      await renderMedsAppearance(withColors([LILAC, MINT]));
+      await fireEvent.press(screen.getByRole("radio", { name: "Couleur 2 : menthe" }));
+
+      await fireEvent.press(screen.getByRole("radio", { name: "Une couleur" }));
+
+      expect(screen.getByRole("radio", { name: "Une couleur" })).toBeSelected();
+      expect(screen.queryByRole("radio", { name: /^Couleur 1/ })).not.toBeOnTheScreen();
+      expect(screen.queryByRole("radio", { name: /^Couleur 2/ })).not.toBeOnTheScreen();
+      expect(screen.getByLabelText("Couleur")).toHaveProp("accessibilityRole", "radiogroup");
+      expect(screen.getByRole("radio", { name: "Lilas" })).toBeSelected();
+      expect(previewLabel()).toBe("Aperçu : rond, moyenne, lilas");
+    });
+
+    it("colors both halves from the swatches with one color", async () => {
+      await renderMedsAppearance();
+
+      await fireEvent.press(screen.getByRole("radio", { name: "Jaune" }));
+
+      expect(previewLabel()).toBe("Aperçu : rond, moyenne, jaune");
+    });
+
+    it("colors both halves with the sliders with one color", async () => {
+      await renderMedsAppearance();
+      await fireEvent.press(screen.getByRole("button", { name: "Autre couleur" }));
+
+      const intensity = screen.getByRole("adjustable", { name: "Intensité, du clair au foncé" });
+      await fireEvent(intensity, "accessibilityAction", {
+        nativeEvent: { actionName: "increment" },
+      });
+
+      expect(previewLabel()).toBe("Aperçu : rond, moyenne, couleur personnalisée");
+    });
+
+    it("keeps the sliders open when switching to one color", async () => {
+      await renderMedsAppearance(withColors([LILAC, MINT]));
+      await fireEvent.press(screen.getByRole("button", { name: "Autre couleur" }));
+
+      await fireEvent.press(screen.getByRole("radio", { name: "Une couleur" }));
+
+      expect(screen.getByRole("adjustable", { name: "Teinte" })).toBeOnTheScreen();
+    });
+
+    it("keeps identical halves when switching back to two colors", async () => {
+      await renderMedsAppearance();
+
+      await switchToTwoColors();
+
+      expect(screen.getByRole("radio", { name: "Couleur 1 : lilas" })).toBeSelected();
+      expect(screen.getByRole("radio", { name: "Couleur 2 : lilas" })).not.toBeSelected();
+      expect(screen.getByLabelText("Couleur 1")).toHaveProp("accessibilityRole", "radiogroup");
+      expect(previewLabel()).toBe("Aperçu : rond, moyenne, lilas");
+    });
+
+    it("follows a random appearance with different colors", async () => {
+      const random = jest.spyOn(Math, "random");
+      [0.4, 0.99, 0.2, 0.9].forEach((value) => random.mockReturnValueOnce(value));
+      await renderMedsAppearance();
+
+      await fireEvent.press(screen.getByRole("button", { name: "Apparence aléatoire" }));
+
+      expect(screen.getByRole("radio", { name: "Deux couleurs" })).toBeSelected();
+      expect(screen.getByRole("radio", { name: "Couleur 1 : jaune" })).toBeSelected();
+      random.mockRestore();
+    });
+
+    it("follows a random appearance with identical colors", async () => {
+      const random = jest.spyOn(Math, "random");
+      [0.4, 0.99, 0.2, 0.2].forEach((value) => random.mockReturnValueOnce(value));
+      await renderMedsAppearance(withColors([LILAC, MINT]));
+      await fireEvent.press(screen.getByRole("radio", { name: "Couleur 2 : menthe" }));
+
+      await fireEvent.press(screen.getByRole("button", { name: "Apparence aléatoire" }));
+
+      expect(screen.getByRole("radio", { name: "Une couleur" })).toBeSelected();
+      expect(previewLabel()).toBe("Aperçu : gélule, grande, jaune");
+      random.mockRestore();
+    });
+  });
+
   it("saves the design in the med draft when validating", async () => {
     await renderMedsAppearance();
 
@@ -306,5 +421,7 @@ describe("AppearanceScreen", () => {
     expect(screen.getByRole("header", { name: "Appearance" })).toBeOnTheScreen();
     expect(screen.getByRole("radio", { name: "Round" })).toBeOnTheScreen();
     expect(screen.getByRole("button", { name: "Other color" })).toBeOnTheScreen();
+    expect(screen.getByRole("radio", { name: "One color" })).toBeOnTheScreen();
+    expect(screen.getByLabelText("Number of colors")).toHaveProp("accessibilityRole", "radiogroup");
   });
 });

@@ -6,26 +6,53 @@ import type { PillDesign } from "@/domain/med";
 import type { ColorHalf } from "@/features/pillbox/components/ColorField";
 import type { CustomColorSettings } from "@/features/pillbox/components/CustomColorPanel";
 import { findSwatch } from "@/features/pillbox/utils/formatters";
-import { withColor } from "@/features/pillbox/utils/pillDesign";
+import {
+  type ColorCount,
+  colorCountOf,
+  withColor,
+  withSingleColor,
+} from "@/features/pillbox/utils/pillDesign";
 
-export function useColorEditing(design: PillDesign, onDesignChange: (design: PillDesign) => void) {
+export function useColorEditing(
+  design: PillDesign,
+  onDesignChange: (design: PillDesign) => void,
+  initialColorCount: ColorCount,
+) {
+  const [colorCount, setColorCount] = useState(initialColorCount);
   const [activeHalf, setActiveHalf] = useState<ColorHalf>(0);
   const [isCustomColorPanelOpen, setIsCustomColorPanelOpen] = useState(
     () => findSwatch(design.colors[0]) === undefined,
   );
   const [customColor, setCustomColor] = useState(() => hueAndIntensityFromColor(design.colors[0]));
 
+  function applyColor(color: string) {
+    onDesignChange({ ...design, colors: withColor(design.colors, activeHalf, color, colorCount) });
+  }
+
   return {
+    colorCount,
     activeHalf,
     isCustomColorPanelOpen,
     customColor,
+    selectColorCount: (count: ColorCount) => {
+      setColorCount(count);
+      setActiveHalf(0);
+      setCustomColor(hueAndIntensityFromColor(design.colors[0]));
+      if (count === 1) {
+        onDesignChange(withSingleColor(design));
+      }
+    },
+    syncColorCount: (newDesign: PillDesign) => {
+      setColorCount(colorCountOf(newDesign));
+      setActiveHalf(0);
+    },
     selectHalf: (half: ColorHalf) => {
       setActiveHalf(half);
       setCustomColor(hueAndIntensityFromColor(design.colors[half]));
     },
     selectSwatchColor: (color: string) => {
       setIsCustomColorPanelOpen(false);
-      onDesignChange({ ...design, colors: withColor(design.colors, activeHalf, color) });
+      applyColor(color);
     },
     closeCustomColorPanel: () => setIsCustomColorPanelOpen(false),
     openCustomColorPanel: () => {
@@ -34,8 +61,7 @@ export function useColorEditing(design: PillDesign, onDesignChange: (design: Pil
     },
     changeCustomColor: (settings: CustomColorSettings) => {
       setCustomColor(settings);
-      const color = colorFromHueAndIntensity(settings.hue, settings.intensity);
-      onDesignChange({ ...design, colors: withColor(design.colors, activeHalf, color) });
+      applyColor(colorFromHueAndIntensity(settings.hue, settings.intensity));
     },
   };
 }

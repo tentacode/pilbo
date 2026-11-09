@@ -8,6 +8,8 @@ import { type PillSwatch, pillSwatches } from "@/design-system/tokens";
 import type { PillDesign } from "@/domain/med";
 
 import { findSwatch, formatColorTitle } from "@/features/pillbox/utils/formatters";
+import type { ColorCount } from "@/features/pillbox/utils/pillDesign";
+import { ColorCountField } from "./ColorCountField";
 import { ColorHalfOption } from "./ColorHalfOption";
 import { CustomColorButton } from "./CustomColorButton";
 import { useStyles } from "./ColorField.styles";
@@ -24,8 +26,10 @@ function halfLabel(t: TFunction<"pillbox">, half: ColorHalf): string {
 
 type ColorFieldProps = {
   design: PillDesign;
+  colorCount: ColorCount;
   activeHalf: ColorHalf;
   isCustomColorPanelOpen: boolean;
+  onColorCountChange: (colorCount: ColorCount) => void;
   onActiveHalfChange: (half: ColorHalf) => void;
   onColorChange: (color: string) => void;
   onCustomColorPress: () => void;
@@ -34,8 +38,10 @@ type ColorFieldProps = {
 
 export function ColorField({
   design,
+  colorCount,
   activeHalf,
   isCustomColorPanelOpen,
+  onColorCountChange,
   onActiveHalfChange,
   onColorChange,
   onCustomColorPress,
@@ -55,24 +61,27 @@ export function ColorField({
           {formatColorTitle(t, activeColor)}
         </Text>
       </View>
+      <ColorCountField colorCount={colorCount} onChange={onColorCountChange} />
+      {colorCount === 2 ? (
+        <View
+          accessibilityRole="radiogroup"
+          accessibilityLabel={t("Partie à colorer")}
+          style={styles.halves}
+        >
+          {HALVES.map((half) => (
+            <ColorHalfOption
+              key={half}
+              label={halfLabel(t, half)}
+              color={design.colors[half]}
+              isSelected={half === activeHalf}
+              onPress={() => onActiveHalfChange(half)}
+            />
+          ))}
+        </View>
+      ) : null}
       <View
         accessibilityRole="radiogroup"
-        accessibilityLabel={t("Partie à colorer")}
-        style={styles.halves}
-      >
-        {HALVES.map((half) => (
-          <ColorHalfOption
-            key={half}
-            label={halfLabel(t, half)}
-            color={design.colors[half]}
-            isSelected={half === activeHalf}
-            onPress={() => onActiveHalfChange(half)}
-          />
-        ))}
-      </View>
-      <View
-        accessibilityRole="radiogroup"
-        accessibilityLabel={halfLabel(t, activeHalf)}
+        accessibilityLabel={colorCount === 1 ? t("Couleur") : halfLabel(t, activeHalf)}
         style={styles.swatches}
       >
         {SWATCHES.map((swatch) => (
