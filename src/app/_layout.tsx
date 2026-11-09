@@ -4,6 +4,7 @@ import { StatusBar } from "expo-status-bar";
 import { useEffect } from "react";
 import { StyleSheet } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { KeyboardProvider } from "react-native-keyboard-controller";
 
 import { IS_DEV_VARIANT } from "@/config/appVariant";
 import { useDesignSystemFonts } from "@/design-system/fonts";
@@ -50,29 +51,31 @@ export default function RootLayout() {
 
   return (
     <GestureHandlerRootView style={styles.root}>
-      <StatusBar style="auto" />
-      {databaseError ? (
-        <DatabaseErrorScreen error={databaseError} />
-      ) : (
-        <Stack screenOptions={{ headerShown: false }}>
-          <Stack.Screen name="index" />
-          <Stack.Protected guard={!onboardingDone}>
-            <Stack.Screen name="onboarding" />
-          </Stack.Protected>
-          <Stack.Protected guard={onboardingDone}>
-            <Stack.Screen name="(tabs)" />
-            <Stack.Screen name="not-medical" />
-            <Stack.Screen name="intake" options={{ presentation: "modal" }} />
-            <Stack.Screen name="med" options={{ presentation: "modal" }} />
-            <Stack.Screen name="med-appearance" options={{ presentation: "modal" }} />
-            <Stack.Screen name="med-log" options={{ presentation: "modal" }} />
-            <Stack.Screen name="stock" options={{ presentation: "modal" }} />
-            <Stack.Screen name="day/[date]" options={{ presentation: "modal" }} />
-            <Stack.Screen name="intake-log" options={{ presentation: "modal" }} />
-            <Stack.Screen name="sound" options={{ presentation: "modal" }} />
-          </Stack.Protected>
-        </Stack>
-      )}
+      <KeyboardProvider>
+        <StatusBar style="auto" />
+        {databaseError ? (
+          <DatabaseErrorScreen error={databaseError} />
+        ) : (
+          <Stack screenOptions={{ headerShown: false }}>
+            <Stack.Screen name="index" />
+            <Stack.Protected guard={!onboardingDone}>
+              <Stack.Screen name="onboarding" />
+            </Stack.Protected>
+            <Stack.Protected guard={onboardingDone}>
+              <Stack.Screen name="(tabs)" />
+              <Stack.Screen name="not-medical" />
+              <Stack.Screen name="intake" options={{ presentation: "modal" }} />
+              <Stack.Screen name="med" options={{ presentation: "modal" }} />
+              <Stack.Screen name="med-appearance" options={{ presentation: "modal" }} />
+              <Stack.Screen name="med-log" options={{ presentation: "modal" }} />
+              <Stack.Screen name="stock" options={{ presentation: "modal" }} />
+              <Stack.Screen name="day/[date]" options={{ presentation: "modal" }} />
+              <Stack.Screen name="intake-log" options={{ presentation: "modal" }} />
+              <Stack.Screen name="sound" options={{ presentation: "modal" }} />
+            </Stack.Protected>
+          </Stack>
+        )}
+      </KeyboardProvider>
     </GestureHandlerRootView>
   );
 }

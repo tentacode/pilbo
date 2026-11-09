@@ -51,6 +51,7 @@ En gros, on cherche une proof of concept : dans le doute, demander si c'est dans
 - Tests : **Jest + React Native Testing Library**. Deux projets Jest : `ios` (toute la suite) et `android` (uniquement les `*.android.spec.ts(x)`).
 - Qualité du code : **ESLint + Prettier**.
 - L'app est testée sur un iPhone personnel via Xcode, avec un compte Apple Developer payant (équipe `APPLE_TEAM_ID`), et sur un Galaxy S9 sous ROM Android 13 (adb le voit comme un `SM-N985F`).
+  - Vérifier un changement ou un bug : installer la build sur mon téléphone et me demander de tester, plutôt que le simulateur iOS ou l'émulateur Android (trop lents). Simulateur ou émulateur seulement si l'installation sur le téléphone échoue après un essai.
 
 ### Contraintes iOS à garder en tête
 
@@ -64,6 +65,7 @@ En gros, on cherche une proof of concept : dans le doute, demander si c'est dans
 
 ### Contraintes Android à garder en tête
 
+- Clavier : `react-native-keyboard-controller` (`KeyboardProvider` à la racine), pas `useAnimatedKeyboard` de Reanimated (sa hauteur se fige sur Android).
 - Canaux de notification : importance, son et vibration sont figés à la création. Pour les changer, changer l'identifiant du canal (`NOTIFICATION_CHANNEL_IDS`).
 - Rappels en alarmes exactes, reprogrammés après un redémarrage : voir la section Android de `docs/notifications.md`.
 - expo-notifications est patché (`patches/expo-notifications.patch`) et compilé depuis les sources sur Android (`buildFromSource` dans `package.json`) : à revérifier à chaque montée de version.

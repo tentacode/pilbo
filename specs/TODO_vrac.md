@@ -5,7 +5,9 @@
 - [ ] Rappels d'évènements (ex: prise de sang, rendez-vous médecin, séance de kiné)
 - [ ] Récurrence personnalisé (une semaine sur deux, tous les mois, toutes les trois semaines) - après les évènements
 - [ ] Lien "pas pris" sur les prises en retard (j'ai manqué un cachet, je veux quand même le savoir, ce n'est pas ignoré).
+- [ ] Deux sonneries sur la même prise (par défaut et nocture)
 
 ## Bugs
 
 - [ ] Sur android (en tout cas), si on met deux prises à la même heure, on a 4 badges au lieu de 2. À tester le résultat sur iOS.
+- [ ] Quand on arrive sur Pilbo la premiere fois et qu'on a une prise pour la journée, il y a la flèche pour aller au jour précédent, mais rien ne se passe.

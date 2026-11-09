@@ -23,15 +23,15 @@ Le compte Play Console, la création de l'app et les déclarations se font à la
   - [x] `beta/` / `fr/beta/` : « Rejoindre la bêta », les deux étapes Android dans l'ordre (rejoindre le groupe, puis s'inscrire au test). Liens provisoires, remplis à l'étape 8.
 - [x] Une feuille de style commune (`website/styles.css`) : couleurs reprises des tokens de l'app (`lightColors` / `darkColors`), mode sombre par `prefers-color-scheme`, contraste AA, tailles relatives (zoom du navigateur), responsive.
 - [x] Accessibilité : `lang` sur chaque page, titres hiérarchisés, liens explicites, `hreflang` sur le lien de langue.
-- [ ] Textes en vouvoiement, ton de l'app (`CLAUDE.md`). Tu relis les textes FR et EN.
+- [x] Textes en vouvoiement, ton de l'app (`CLAUDE.md`). Tu relis les textes FR et EN.
 - [x] Workflow `.github/workflows/website.yaml` : déploiement GitHub Pages (`actions/upload-pages-artifact` + `actions/deploy-pages`) à chaque push sur `main` qui modifie `website/**`, permissions minimales (`pages: write`, `id-token: write`), même style que `ci.yaml`.
-- [ ] Tu actives GitHub Pages (Settings → Pages → Source : « GitHub Actions ») et tu pousses.
-- [ ] Tu vérifies les pages en ligne : `https://tentacode.github.io/pilbo/`, `…/privacy/`, `…/beta/` et leurs versions `fr/`.
+- [x] Tu actives GitHub Pages (Settings → Pages → Source : « GitHub Actions ») et tu pousses.
+- [x] Tu vérifies les pages en ligne : `https://tentacode.github.io/pilbo/`, `…/privacy/`, `…/beta/` et leurs versions `fr/`.
 
 ## Étape 2 — Notes de version neutres
 
 - [x] Réécrire `fastlane/what_to_test/fr-FR.txt` et `en-US.txt` sans mention de TestFlight (ex. retours par e-mail à `pilbo@tentacode.dev`), 500 caractères max.
-- [ ] Tu valides les textes.
+- [x] Tu valides les textes.
 
 ## Étape 3 — versionCode et AAB
 
@@ -45,7 +45,7 @@ Le compte Play Console, la création de l'app et les déclarations se font à la
 - [x] `Makefile` : cible `android-bundle` (`## Build the "Pilbo" Android App Bundle without uploading it (BUILD_NUMBER=…)`), même appel que `testflight` (`PATH="$(RUBY_BIN):$$PATH" bundle exec fastlane android bundle`), ajoutée à `.PHONY`.
 - [x] Splits ABI : vérifier que `make android-bundle BUILD_NUMBER=2` réussit avec `plugins/withAbiSplits.js`. Si les splits gênent, limiter `enable` aux tâches `assemble…Release`.
 - [x] Vérifier l'AAB : `bundletool` ou `jarsigner -verify -verbose -certs` (certificat du keystore), `versionCode` 2 (`aapt2 dump badging` sur un APK extrait, ou `bundletool dump manifest`), permissions sans `INTERNET`.
-- [ ] Vérifier que `make android-build-release` sans `BUILD_NUMBER` fonctionne toujours (versionCode 1).
+- [x] Vérifier que `make android-build-release` sans `BUILD_NUMBER` fonctionne toujours (versionCode 1).
 
 ## Étape 4 — Visuels de la fiche
 
@@ -53,12 +53,12 @@ Le compte Play Console, la création de l'app et les déclarations se font à la
   - [x] `icon.png` : icône 512 × 512 (même rendu que `icon()`) ;
   - [x] `featureGraphic.png` : 1024 × 500, fond de pilules et gélule centrée, sans texte (réglages dans `assets/artwork/config.ts`, documentés comme les autres). Vérifier que `renderPng` gère ce format non carré.
 - [x] `make artwork`.
-- [ ] Tu valides visuellement les deux images.
+- [x] Tu valides visuellement les deux images.
 
 ## Étape 5 — Textes et captures de la fiche
 
 - [x] `fastlane/metadata/android/<fr-FR|en-US>/` : `title.txt` (« Pilbo »), `short_description.txt` (80 caractères max), `full_description.txt` (4 000 max). Ton et vocabulaire prudent de la spec 25 (un pilulier et des rappels, pas de conseil médical).
-- [ ] Tu valides les textes FR et EN.
+- [x] Tu valides les textes FR et EN.
 - [x] Captures sur l'émulateur (« Pilbo Dev », données de test), FR et EN, 4 à 6 écrans (Aujourd'hui, pilulier, stock, calendrier…) : `adb exec-out screencap -p`, rangées dans `images/phoneScreenshots/` de chaque langue (`1_<nom>.png`…). Pas de barre de debug, heure et batterie propres si possible (mode démo : `adb shell settings put global sysui_demo_allowed 1`).
 - [ ] Tu valides les captures.
 
@@ -146,3 +146,4 @@ Le compte Play Console, la création de l'app et les déclarations se font à la
 
 - [x] `make tests` passe.
 - [ ] Proposer une mise à jour de `CLAUDE.md` / docs si besoin (après ta validation seulement).
+- [ ] Supprimer `checklist_android_fastlane.md` une fois tes textes reportés dans les fichiers sources (remplacé par le brouillon de la spec 33).

@@ -36,7 +36,7 @@ export function MedSheetHeader({ med, onEditAppearance, onEdit }: MedSheetHeader
       </Pressable>
       <Text variant="largeHeading" accessibilityRole="header" style={styles.centered}>
         {med.name}
-        {med.strength === "" ? null : <Text variant="lead"> {med.strength}</Text>}
+        {med.strength === "" ? null : <Text variant="leadInline"> {med.strength}</Text>}
       </Text>
       {med.detail === "" ? null : (
         <Text variant="small" tone="secondary" style={styles.centered}>
