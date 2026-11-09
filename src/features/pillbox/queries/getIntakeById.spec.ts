@@ -12,6 +12,13 @@ describe("getIntakeById", () => {
     expect(getIntakeById(database, morning.id)).toEqual(morning);
   });
 
+  it("reads the sound of the intake", () => {
+    const database = createTestDatabase();
+    const night = getAllIntakes(database)[3];
+
+    expect(getIntakeById(database, night.id)?.sound).toBe("nocturne");
+  });
+
   it("returns undefined for an unknown intake", () => {
     expect(getIntakeById(createTestDatabase(), "unknown")).toBeUndefined();
   });

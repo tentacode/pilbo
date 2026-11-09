@@ -51,6 +51,7 @@ function toIntakeToSave(intake: Intake, changes: Partial<IntakeToSave> = {}): In
     time: intake.time,
     days: intake.days,
     reminderIntervalMinutes: intake.reminderIntervalMinutes,
+    sound: intake.sound,
     medQuantities: intake.medQuantities.map(({ med, quantity }) => ({ medId: med.id, quantity })),
     ...changes,
   };
@@ -76,6 +77,7 @@ describe("saveIntake", () => {
         time: { hour: 7, minute: 45 },
         days: ["monday", "friday"],
         reminderIntervalMinutes: 15,
+        sound: "chime",
         medQuantities: [{ medId: prazepam.id, quantity: 2 }],
       },
       TODAY,
@@ -86,6 +88,7 @@ describe("saveIntake", () => {
       time: { hour: 7, minute: 45 },
       days: ["monday", "friday"],
       reminderIntervalMinutes: 15,
+      sound: "chime",
       medQuantities: [{ med: prazepam, quantity: 2 }],
     });
     expect(readVersion(database, intakeId)).toEqual({
@@ -110,6 +113,7 @@ describe("saveIntake", () => {
         time: { hour: 9, minute: 0 },
         days: ["sunday"],
         reminderIntervalMinutes: 30,
+        sound: "drop",
         medQuantities: [{ medId: prazepam.id, quantity: 3 }],
       },
       TODAY,
@@ -121,6 +125,7 @@ describe("saveIntake", () => {
       time: { hour: 9, minute: 0 },
       days: ["sunday"],
       reminderIntervalMinutes: 30,
+      sound: "drop",
       medQuantities: [{ med: prazepam, quantity: 3 }],
     });
     expect(countRows(database, intakeTable)).toBe(4);
@@ -198,6 +203,18 @@ describe("saveIntake", () => {
 
     expect(intakeId).toBe(morning.id);
     expect(getIntakeById(database, morning.id)?.reminderIntervalMinutes).toBe(30);
+    expect(countRows(database, intakeTable)).toBe(4);
+  });
+
+  it("updates in place when only the sound changes", () => {
+    const database = createTestDatabase();
+    const [morning] = getAllIntakes(database);
+    logMorningOn(database, morning, "2026-10-23");
+
+    const intakeId = saveIntake(database, toIntakeToSave(morning, { sound: "shire" }), TODAY);
+
+    expect(intakeId).toBe(morning.id);
+    expect(getIntakeById(database, morning.id)?.sound).toBe("shire");
     expect(countRows(database, intakeTable)).toBe(4);
   });
 });

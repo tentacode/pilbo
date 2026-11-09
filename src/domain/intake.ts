@@ -1,4 +1,5 @@
 import { type MedQuantity, sortMedQuantities } from "./med";
+import type { NotificationSound } from "./sound";
 
 export type Weekday =
   "monday" | "tuesday" | "wednesday" | "thursday" | "friday" | "saturday" | "sunday";
@@ -22,6 +23,7 @@ export interface Intake {
   time: { hour: number; minute: number };
   days: Weekday[];
   reminderIntervalMinutes: number;
+  sound: NotificationSound;
   medQuantities: MedQuantity[];
 }
 

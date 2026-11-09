@@ -137,7 +137,8 @@ describe("planReminders", () => {
       title: "Stock bas",
       body: "Lithium 250 mg : pensez à le renouveler.",
       interruptionLevel: "active" as const,
-      channelId: "low-stock" as const,
+      sound: "beep" as const,
+      channelId: "low-stock",
     };
 
     const reminders = planReminders({
@@ -164,7 +165,8 @@ describe("planReminders", () => {
       title: "Stock bas",
       body: "",
       interruptionLevel: "active" as const,
-      channelId: "low-stock" as const,
+      sound: "beep" as const,
+      channelId: "low-stock",
     }));
 
     const reminders = planReminders({
@@ -238,7 +240,19 @@ describe("planReminders", () => {
       body: "1 × Lithium 250 mg",
       badge: 1,
       interruptionLevel: "timeSensitive",
+      sound: "beep",
       channelId: "intake-reminders",
     });
+  });
+
+  it("uses the sound of the intake and its channel", () => {
+    const [reminder] = planReminders({
+      todayIntakes: [{ ...MORNING, sound: "chime" }],
+      tomorrowIntakes: [],
+      todayLogs: [],
+      now: at(4, 7, 0),
+    });
+
+    expect(reminder).toMatchObject({ sound: "chime", channelId: "intake-reminders-chime" });
   });
 });

@@ -3,6 +3,7 @@ import { integer, primaryKey, sqliteTable, text } from "drizzle-orm/sqlite-core"
 import type { Weekday } from "@/domain/intake";
 import type { IntakeLogStatus } from "@/domain/intakeLog";
 import type { PillDesign } from "@/domain/med";
+import type { NotificationSound } from "@/domain/sound";
 
 function generateId(): string {
   // Lazy require: drizzle-kit loads this schema in Node, where React Native code cannot be parsed.
@@ -26,6 +27,7 @@ export const intakeTable = sqliteTable("intake", {
   minute: integer("minute").notNull(),
   days: text("days", { mode: "json" }).$type<Weekday[]>().notNull(),
   reminderIntervalMinutes: integer("reminder_interval_minutes").notNull(),
+  sound: text("sound").$type<NotificationSound>().notNull().default("beep"),
   isArchived: integer("is_archived", { mode: "boolean" }).notNull().default(false),
   createdOn: text("created_on").notNull(),
   archivedOn: text("archived_on"),

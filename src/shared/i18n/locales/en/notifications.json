@@ -1,7 +1,21 @@
 {
   "{{meds}} : pensez à les renouveler._one": "{{meds}}: consider renewing it.",
   "{{meds}} : pensez à les renouveler._other": "{{meds}}: consider renewing them.",
+  "Annuler": "Cancel",
+  "Beep Boop": "Beep Boop",
+  "Beep Boop Beep Boop": "Beep Boop Beep Boop",
   "C'est l'heure de votre prise de {{time}}": "Time for your {{time}} intake",
-  "Rappels de prise": "Intake reminders",
-  "Stock bas": "Low stock"
+  "Fait vibrer le téléphone": "Vibrates the phone",
+  "Fantôme": "Spooky",
+  "Glissade": "Slippery",
+  "Joue le son": "Plays the sound",
+  "Nocturne": "Nocturne",
+  "Pilbo Sacquet": "Pilbo Baggins",
+  "Rappels de prise – {{sound}}": "Intake reminders – {{sound}}",
+  "Secoue ton pilbo": "Shake your pilbo",
+  "Sonnette": "Doorbell",
+  "Stock bas": "Low stock",
+  "Stock bas – {{sound}}": "Low stock – {{sound}}",
+  "Valider": "Confirm",
+  "Vibration seule": "Vibration only"
 }

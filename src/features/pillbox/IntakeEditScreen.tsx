@@ -11,6 +11,7 @@ import { DiscardChangesDialog } from "./components/DiscardChangesDialog";
 import { IntakeDaysField } from "./components/IntakeDaysField";
 import { IntakeDraftErrorDialog } from "./components/IntakeDraftErrorDialog";
 import { IntakeMedsField } from "./components/IntakeMedsField";
+import { IntakeSoundField } from "./components/IntakeSoundField";
 import { IntakeTimeRow } from "./components/IntakeTimeRow";
 import { ReminderIntervalField } from "./components/ReminderIntervalField";
 import { useIntakeActions } from "./hooks/useIntakeActions";
@@ -71,6 +72,7 @@ export function IntakeEditScreen() {
           minutes={draft.reminderIntervalMinutes}
           onChange={intakeDraft.setReminderInterval}
         />
+        <IntakeSoundField sound={draft.sound} onPress={() => router.push("/intake/sound")} />
         <IntakeMedsField
           medQuantities={draft.medQuantities}
           onEditMed={(medId) => router.push({ pathname: "/intake/med", params: { medId } })}

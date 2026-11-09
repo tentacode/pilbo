@@ -1,13 +1,18 @@
-import { LOW_STOCK_ALERT_HOUR, NOTIFICATION_CHANNEL_IDS } from "@/config/notifications";
+import { LOW_STOCK_ALERT_HOUR, lowStockChannelId } from "@/config/notifications";
 import { toLocalDate } from "@/domain/intakeLog";
 import { compareMeds, type Med } from "@/domain/med";
+import type { NotificationSound } from "@/domain/sound";
 
 import type { StockItem } from "@/features/stocks/utils/stockTypes";
 import { formatLowStockAlertBody, formatLowStockAlertTitle } from "./formatters";
 import { LOW_STOCK_IDENTIFIER_PREFIX } from "./notificationTab";
 import type { PlannedReminder } from "./planReminders";
 
-export function planLowStockAlerts(stockItems: StockItem[], now: Date): PlannedReminder[] {
+export function planLowStockAlerts(
+  stockItems: StockItem[],
+  now: Date,
+  sound: NotificationSound,
+): PlannedReminder[] {
   const medsByDay = new Map<string, { date: Date; meds: Med[] }>();
 
   for (const { med, forecast } of stockItems) {
@@ -38,6 +43,7 @@ export function planLowStockAlerts(stockItems: StockItem[], now: Date): PlannedR
       title: formatLowStockAlertTitle(),
       body: formatLowStockAlertBody([...meds].sort(compareMeds)),
       interruptionLevel: "active",
-      channelId: NOTIFICATION_CHANNEL_IDS.lowStock,
+      sound,
+      channelId: lowStockChannelId(sound),
     }));
 }

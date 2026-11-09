@@ -74,6 +74,12 @@ describe("getIntakesOfDay", () => {
     );
   });
 
+  it("reads the sound of each intake", () => {
+    const intakes = getIntakesOfDay(createTestDatabase(), TUESDAY);
+
+    expect(intakes.map(({ sound }) => sound)).toEqual(["beep", "beep", "beep", "nocturne"]);
+  });
+
   it("keeps only the intakes planned on the weekday of the date", () => {
     const database = createTestDatabase();
     const intakeId = insertIntake(database);
@@ -115,6 +121,7 @@ describe("getIntakesOfDay", () => {
         time: { hour: 9, minute: 0 },
         days: morning.days,
         reminderIntervalMinutes: morning.reminderIntervalMinutes,
+        sound: morning.sound,
         medQuantities: morning.medQuantities.map(({ med, quantity }) => ({
           medId: med.id,
           quantity,

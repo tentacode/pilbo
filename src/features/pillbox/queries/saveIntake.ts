@@ -64,6 +64,7 @@ export function saveIntake(database: Database, intake: IntakeToSave, today: Date
     minute: intake.time.minute,
     days: intake.days,
     reminderIntervalMinutes: intake.reminderIntervalMinutes,
+    sound: intake.sound,
   };
 
   return database.transaction((transaction) => {

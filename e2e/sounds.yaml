@@ -1,0 +1,49 @@
+appId: com.tentacode.pilbo.dev
+name: Sounds can be chosen for an intake and by default
+---
+- launchApp:
+    clearState: true
+- extendedWaitUntil:
+    visible: "Pilulier"
+    timeout: 60000
+- tapOn: "Pilulier"
+
+# Sound of an intake, kept after saving
+- tapOn: "08:20.*Lamictal 50 mg.*"
+- scrollUntilVisible:
+    element:
+      text: "Son : Beep Boop Beep Boop"
+    centerElement: true
+- tapOn: "Son : Beep Boop Beep Boop"
+- assertVisible: "Son du rappel"
+- tapOn: "Sonnette"
+- tapOn: "Valider"
+- assertVisible: "Son : Sonnette"
+- tapOn: "Enregistrer"
+- tapOn: "08:20.*Lamictal 50 mg.*"
+- scrollUntilVisible:
+    element:
+      text: "Son : Sonnette"
+    centerElement: true
+
+# Cancel keeps the previous sound
+- tapOn: "Son : Sonnette"
+- tapOn: "Fantôme"
+- tapOn: "Annuler"
+- assertVisible: "Son : Sonnette"
+- tapOn: "Annuler"
+
+# Default sound, applied to every intake
+- tapOn: "Réglages"
+- tapOn: "Son par défaut : Beep Boop Beep Boop"
+- assertVisible: "Son par défaut"
+- tapOn: "Glissade"
+- tapOn: "Valider"
+- tapOn: "Toutes les prises"
+- assertVisible: "Son par défaut : Glissade"
+- tapOn: "Pilulier"
+- tapOn: "12:20.*Lithium 250 mg.*"
+- scrollUntilVisible:
+    element:
+      text: "Son : Glissade"
+    centerElement: true

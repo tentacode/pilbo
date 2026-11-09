@@ -7,6 +7,7 @@ export function createIntake(hour: number, minute: number): Intake {
     time: { hour, minute },
     days: [...WEEKDAYS],
     reminderIntervalMinutes: 10,
+    sound: "beep",
     medQuantities: [
       {
         med: {

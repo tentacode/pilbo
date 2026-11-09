@@ -6,7 +6,10 @@ import {
   formatLowStockAlertTitle,
   formatReminderBody,
   formatReminderTitle,
+  formatSoundName,
 } from "./formatters";
+
+const t = i18n.getFixedT(null, "notifications");
 
 describe("formatReminderTitle", () => {
   it("names the intake time", () => {
@@ -43,6 +46,22 @@ describe("formatLowStockAlertBody", () => {
   });
 });
 
+describe("formatSoundName", () => {
+  it.each([
+    ["beep_short", "Beep Boop"],
+    ["beep", "Beep Boop Beep Boop"],
+    ["chime", "Sonnette"],
+    ["drop", "Glissade"],
+    ["pill_rattle", "Secoue ton pilbo"],
+    ["gentle_alert_resolved", "Fantôme"],
+    ["nocturne", "Nocturne"],
+    ["shire", "Pilbo Sacquet"],
+    ["vibration", "Vibration seule"],
+  ] as const)("names %s", (sound, expected) => {
+    expect(formatSoundName(t, sound)).toBe(expected);
+  });
+});
+
 describe("in English", () => {
   beforeEach(async () => {
     await i18n.changeLanguage("en");
@@ -63,5 +82,19 @@ describe("in English", () => {
         { name: "Lamictal", strength: "50 mg" },
       ]),
     ).toBe("Lithium 250 mg, Lamictal 50 mg: consider renewing them.");
+  });
+
+  it.each([
+    ["beep_short", "Beep Boop"],
+    ["beep", "Beep Boop Beep Boop"],
+    ["chime", "Doorbell"],
+    ["drop", "Slippery"],
+    ["pill_rattle", "Shake your pilbo"],
+    ["gentle_alert_resolved", "Spooky"],
+    ["nocturne", "Nocturne"],
+    ["shire", "Pilbo Baggins"],
+    ["vibration", "Vibration only"],
+  ] as const)("translates the name of %s", (sound, expected) => {
+    expect(formatSoundName(t, sound)).toBe(expected);
   });
 });

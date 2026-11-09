@@ -1,6 +1,7 @@
 import { type SQL, sql } from "drizzle-orm";
 
 import type { Intake, Weekday } from "@/domain/intake";
+import { toNotificationSound } from "@/domain/sound";
 import { intakeMedTable, intakeTable, medTable } from "@/shared/database/schema";
 import type { Database } from "@/shared/database/types";
 
@@ -12,6 +13,7 @@ type IntakeMedRecord = {
   minute: number;
   days: string;
   reminderIntervalMinutes: number;
+  sound: string;
   medId: string | null;
   medName: string;
   medStrength: string;
@@ -28,6 +30,7 @@ export function selectActiveIntakes(database: Database, condition: SQL = sql`1 =
       ${intakeTable.minute} AS minute,
       ${intakeTable.days} AS days,
       ${intakeTable.reminderIntervalMinutes} AS reminderIntervalMinutes,
+      ${intakeTable.sound} AS sound,
       ${medTable.id} AS medId,
       ${medTable.name} AS medName,
       ${medTable.strength} AS medStrength,
@@ -48,6 +51,7 @@ export function selectActiveIntakes(database: Database, condition: SQL = sql`1 =
       time: { hour: record.hour, minute: record.minute },
       days: JSON.parse(record.days) as Weekday[],
       reminderIntervalMinutes: record.reminderIntervalMinutes,
+      sound: toNotificationSound(record.sound),
       medQuantities: [],
     };
     intakes.set(record.intakeId, intake);

@@ -15,6 +15,13 @@
       "when": 1793824423022,
       "tag": "0001_meds_archive",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1794229266100,
+      "tag": "0002_intake_sound",
+      "breakpoints": true
     }
   ]
 }

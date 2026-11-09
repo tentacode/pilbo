@@ -1,11 +1,11 @@
 import {
   MAXIMUM_SCHEDULED_REMINDERS,
-  NOTIFICATION_CHANNEL_IDS,
-  type NotificationChannelId,
   REMINDER_COUNT,
+  reminderChannelId,
 } from "@/config/notifications";
 import { type Intake, intakeDateOn } from "@/domain/intake";
 import { type IntakeLog, toLocalDateTime } from "@/domain/intakeLog";
+import type { NotificationSound } from "@/domain/sound";
 
 import { formatReminderBody, formatReminderTitle } from "./formatters";
 import { REMINDER_IDENTIFIER_PREFIX } from "./notificationTab";
@@ -17,7 +17,8 @@ export type PlannedReminder = {
   body: string;
   badge?: number;
   interruptionLevel: "active" | "timeSensitive";
-  channelId: NotificationChannelId;
+  sound: NotificationSound;
+  channelId: string;
 };
 
 type PlanRemindersOptions = {
@@ -48,7 +49,8 @@ function planDayReminders(day: Date, pendingIntakes: Intake[]): PlannedReminder[
         body: formatReminderBody(intake),
         badge: countPendingAt(date),
         interruptionLevel: "timeSensitive",
-        channelId: NOTIFICATION_CHANNEL_IDS.reminders,
+        sound: intake.sound,
+        channelId: reminderChannelId(intake.sound),
       };
     }),
   );

@@ -2,6 +2,7 @@ import { createContext, type ReactNode, useContext, useState } from "react";
 
 import type { Intake, Weekday } from "@/domain/intake";
 import type { Med } from "@/domain/med";
+import type { NotificationSound } from "@/domain/sound";
 import { database } from "@/shared/database/database";
 
 import { getIntakeById } from "@/features/pillbox/queries/getIntakeById";
@@ -26,6 +27,7 @@ type IntakeDraftContextValue = {
   setDayMode: (dayMode: DayMode) => void;
   toggleDay: (day: Weekday) => void;
   setReminderInterval: (minutes: number) => void;
+  setSound: (sound: NotificationSound) => void;
   addMed: (med: Med, quantity?: number) => void;
   updateMed: (med: Med) => void;
   setQuantity: (medId: string, quantity: number) => void;
@@ -43,9 +45,11 @@ export function IntakeDraftProvider({ intakeId, children }: IntakeDraftProviderP
   const defaultReminderIntervalMinutes = useSettingsStore(
     (state) => state.defaultReminderIntervalMinutes,
   );
+  const defaultReminderSound = useSettingsStore((state) => state.defaultReminderSound);
   const [initialDraft] = useState(() =>
     createIntakeDraft(
       defaultReminderIntervalMinutes,
+      defaultReminderSound,
       intakeId === undefined ? undefined : getIntakeById(database, intakeId),
     ),
   );
@@ -68,6 +72,7 @@ export function IntakeDraftProvider({ intakeId, children }: IntakeDraftProviderP
       })),
     setReminderInterval: (reminderIntervalMinutes) =>
       updateDraft(() => ({ reminderIntervalMinutes })),
+    setSound: (sound) => updateDraft(() => ({ sound })),
     addMed: (med, quantity = MINIMUM_MED_QUANTITY) =>
       updateDraft((current) => ({
         medQuantities: addDraftMed(current.medQuantities, med, quantity),

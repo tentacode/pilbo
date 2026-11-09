@@ -85,6 +85,7 @@ export const intakeFixtures: IntakeFixture[] = [
     minute: 0,
     days: EVERY_DAY,
     reminderIntervalMinutes: REMINDER_INTERVAL_MINUTES,
+    sound: "nocturne",
     medQuantities: [
       { med: "lamictal100", quantity: 1 },
       { med: "quviviq50", quantity: 1 },

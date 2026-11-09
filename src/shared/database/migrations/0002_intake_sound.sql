@@ -1,0 +1,1 @@
+ALTER TABLE `intake` ADD `sound` text DEFAULT 'beep' NOT NULL;

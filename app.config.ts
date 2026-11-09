@@ -1,6 +1,7 @@
 import type { ExpoConfig } from "expo/config";
 import { artworkConfig } from "./assets/artwork/config.ts";
 import { darkColors, lightColors } from "./src/design-system/tokens.ts";
+import { NOTIFICATION_SOUNDS, soundFileOf } from "./src/domain/sound.ts";
 
 const BASE_BUNDLE_IDENTIFIER = "com.tentacode.pilbo";
 
@@ -125,7 +126,17 @@ const config: ExpoConfig = {
     [
       "expo-notifications",
       {
-        sounds: ["./assets/sounds/beep.wav"],
+        sounds: NOTIFICATION_SOUNDS.map((sound) => `./assets/sounds/${soundFileOf(sound)}`),
+      },
+    ],
+    [
+      "expo-audio",
+      {
+        // Only previews the notification sounds. The purpose string is still required by App Store
+        // Connect because the module contains recording code, but the microphone is never requested.
+        microphonePermission: "Pilbo n’utilise pas le micro.",
+        recordAudioAndroid: false,
+        enableBackgroundPlayback: false,
       },
     ],
     "expo-sqlite",

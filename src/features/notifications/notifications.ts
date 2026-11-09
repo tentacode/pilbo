@@ -1,5 +1,7 @@
 import * as Notifications from "expo-notifications";
 
+import { soundFileOf } from "@/domain/sound";
+
 import type { PlannedReminder } from "./utils/planReminders";
 
 // Without this handler, iOS hides notifications while the app is in the foreground.
@@ -46,6 +48,7 @@ export async function resetReminders(plannedReminders: PlannedReminder[]): Promi
     body,
     badge,
     interruptionLevel,
+    sound,
     channelId,
   } of plannedReminders) {
     await Notifications.scheduleNotificationAsync({
@@ -54,7 +57,7 @@ export async function resetReminders(plannedReminders: PlannedReminder[]): Promi
         title,
         body,
         ...(badge === undefined ? {} : { badge }),
-        sound: "beep.wav",
+        sound: soundFileOf(sound),
         interruptionLevel,
       },
       trigger: { type: Notifications.SchedulableTriggerInputTypes.DATE, date, channelId },

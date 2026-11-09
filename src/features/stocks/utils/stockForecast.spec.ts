@@ -33,6 +33,7 @@ function createIntake(
     time: { hour, minute: 0 },
     days,
     reminderIntervalMinutes: 10,
+    sound: "beep",
     medQuantities: [{ med, quantity }],
   };
 }

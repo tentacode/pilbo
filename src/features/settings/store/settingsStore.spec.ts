@@ -11,12 +11,11 @@ describe("settingsStore", () => {
   });
 
   it("has default values", () => {
-    const { defaultReminderIntervalMinutes, lowStockDays, language, colorScheme } =
-      useSettingsStore.getState();
-
-    expect({ defaultReminderIntervalMinutes, lowStockDays, language, colorScheme }).toEqual({
+    expect(useSettingsStore.getState()).toMatchObject({
       defaultReminderIntervalMinutes: 10,
+      defaultReminderSound: "beep",
       lowStockDays: 7,
+      lowStockSound: "beep",
       language: null,
       colorScheme: null,
     });
@@ -26,6 +25,18 @@ describe("settingsStore", () => {
     useSettingsStore.getState().setDefaultReminderIntervalMinutes(15);
 
     expect(useSettingsStore.getState().defaultReminderIntervalMinutes).toBe(15);
+  });
+
+  it("updates the default reminder sound", () => {
+    useSettingsStore.getState().setDefaultReminderSound("chime");
+
+    expect(useSettingsStore.getState().defaultReminderSound).toBe("chime");
+  });
+
+  it("updates the low stock sound", () => {
+    useSettingsStore.getState().setLowStockSound("vibration");
+
+    expect(useSettingsStore.getState().lowStockSound).toBe("vibration");
   });
 
   it("updates the language", () => {
@@ -56,13 +67,43 @@ describe("settingsStore", () => {
 
     expect(JSON.parse(Storage.getItemSync("settings") ?? "{}").state).toEqual({
       defaultReminderIntervalMinutes: 10,
+      defaultReminderSound: "beep",
       lowStockDays: 7,
+      lowStockSound: "beep",
       language: "fr",
       colorScheme: "dark",
     });
   });
 
   it("reads the values from the storage", () => {
+    Storage.setItemSync(
+      "settings",
+      JSON.stringify({
+        state: {
+          defaultReminderIntervalMinutes: 30,
+          defaultReminderSound: "nocturne",
+          lowStockDays: 3,
+          lowStockSound: "drop",
+          language: "en",
+          colorScheme: "light",
+        },
+        version: 0,
+      }),
+    );
+
+    useSettingsStore.persist.rehydrate();
+
+    expect(useSettingsStore.getState()).toMatchObject({
+      defaultReminderIntervalMinutes: 30,
+      defaultReminderSound: "nocturne",
+      lowStockDays: 3,
+      lowStockSound: "drop",
+      language: "en",
+      colorScheme: "light",
+    });
+  });
+
+  it("keeps the default sounds when reading values saved without them", () => {
     Storage.setItemSync(
       "settings",
       JSON.stringify({
@@ -80,9 +121,8 @@ describe("settingsStore", () => {
 
     expect(useSettingsStore.getState()).toMatchObject({
       defaultReminderIntervalMinutes: 30,
-      lowStockDays: 3,
-      language: "en",
-      colorScheme: "light",
+      defaultReminderSound: "beep",
+      lowStockSound: "beep",
     });
   });
 });

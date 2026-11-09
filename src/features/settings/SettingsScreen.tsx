@@ -11,8 +11,10 @@ import { DefaultIntervalRow } from "./components/DefaultIntervalRow";
 import { FeedbackSection } from "./components/FeedbackSection";
 import { LanguageRow } from "./components/LanguageRow";
 import { LowStockRow } from "./components/LowStockRow";
+import { LowStockSoundRow } from "./components/LowStockSoundRow";
 import { NotificationsRow } from "./components/NotificationsRow";
 import { PrivacyCard } from "./components/PrivacyCard";
+import { ReminderSoundRow } from "./components/ReminderSoundRow";
 import { SettingsSection } from "./components/SettingsSection";
 import { useDebugModeToggle } from "./hooks/useDebugModeToggle";
 import { useRevealDebugSection } from "./hooks/useRevealDebugSection";
@@ -29,13 +31,15 @@ export function SettingsScreen() {
       <View style={styles.sections}>
         <SettingsSection
           title={t("Rappels")}
-          help={t("Utilisé pour les nouvelles prises. Chaque prise peut avoir le sien.")}
+          help={t("Utilisés pour les nouvelles prises. Chaque prise peut avoir les siens.")}
         >
           <NotificationsRow />
           <DefaultIntervalRow />
+          <ReminderSoundRow />
         </SettingsSection>
         <SettingsSection title={t("Stock")}>
           <LowStockRow />
+          <LowStockSoundRow />
         </SettingsSection>
         <SettingsSection title={t("Affichage")}>
           <LanguageRow />

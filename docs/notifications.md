@@ -8,7 +8,8 @@ Validé sur iPhone (spec 02) : notifications app fermée, son custom, badge, ann
 
 | Fichier                                                         | Rôle                                                                      |
 | --------------------------------------------------------------- | ------------------------------------------------------------------------- |
-| `src/config/notifications.ts`                                   | Nombre de rappels, plafond de 64.                                         |
+| `src/config/notifications.ts`                                   | Nombre de rappels, plafond de 64, identifiants des canaux Android.        |
+| `src/domain/sound.ts`                                           | Liste et ordre des sons (`NOTIFICATION_SOUNDS`), fichier d'un son.        |
 | `src/features/notifications/notifications.ts`                   | Appels iOS : permission, nettoyage, planification.                        |
 | `src/features/notifications/rescheduleReminders.ts`             | Lit la base, calcule les rappels, les replanifie.                         |
 | `src/features/notifications/utils/planReminders.ts`             | Calcul pur des rappels et des badges (`now` en paramètre).                |
@@ -17,14 +18,17 @@ Validé sur iPhone (spec 02) : notifications app fermée, son custom, badge, ann
 | `src/features/notifications/hooks/useNotificationPermission.ts` | Statut de la permission (`isGranted`) et demande (`request`).             |
 | `src/features/notifications/hooks/useOpenTabOnNotification.ts`  | Ouvre l'onglet de la notification touchée.                                |
 | `src/features/notifications/notificationChannels.android.ts`    | Canaux Android (`.ios.ts` sans effet).                                    |
+| `src/features/notifications/SoundPickerScreen.tsx`              | Écran de choix d'un son (prise, réglages).                                |
+| `src/features/notifications/hooks/useSoundPreview.ts`           | Écoute d'un son dans l'écran de choix (`expo-audio`).                     |
 | `plugins/withExactAlarmPermissions.js`                          | Permissions d'alarmes exactes Android.                                    |
-| `assets/sounds/beep.wav`                                        | Son custom.                                                               |
+| `assets/sounds/`                                                | Sons des notifications (`make sounds`, sauf `beep.wav`).                  |
+| `scripts/generateSounds.mjs`                                    | Génère les sons et `silence.wav`.                                         |
 | `plugins/withoutPushEntitlement.js`                             | Retire la permission push (compte gratuit).                               |
-| `app.config.ts`                                                 | Déclare le son, les plugins et la Team de signature.                      |
+| `app.config.ts`                                                 | Déclare les sons, les plugins et la Team de signature.                    |
 
 ## Configuration (`app.config.ts`)
 
-1. **Son** : déclaré dans le plugin `expo-notifications` → `sounds`. Il est copié dans l'app au `prebuild`.
+1. **Sons** : tous les fichiers de `NOTIFICATION_SOUNDS` (via `soundFileOf`) sont déclarés dans le plugin `expo-notifications` → `sounds`. Ils sont copiés dans l'app au `prebuild`.
 2. **Push retiré** : `./plugins/withoutPushEntitlement` est déclaré **avant** `expo-notifications`.
    - `expo-notifications` ajoute toujours `aps-environment` (push), interdit avec un compte gratuit.
    - Les mods iOS s'exécutent en ordre inverse : déclaré avant = exécuté après → il peut retirer la permission.
@@ -46,10 +50,11 @@ Déclencheurs :
 
 À chaque déclencheur, `rescheduleReminders(database, now)` :
 
-1. Ne fait rien si la permission n'est pas accordée.
-2. Lit les prises du jour et de demain, les logs du jour et les stocks.
-3. `planLowStockAlerts()` calcule les alertes de stock bas, `planReminders()` la liste complète.
-4. `resetReminders()` fait un **nettoyage complet** (annule les planifiées, efface celles affichées, badge à 0), puis planifie chaque rappel.
+1. Crée les canaux Android des sons utilisés et supprime les autres (voir [Canaux](#canaux-notificationchannelsandroidts)). Sons lus dans `useSettingsStore`.
+2. S'arrête là si la permission n'est pas accordée.
+3. Lit les prises du jour et de demain, les logs du jour et les stocks.
+4. `planLowStockAlerts()` calcule les alertes de stock bas, `planReminders()` la liste complète.
+5. `resetReminders()` fait un **nettoyage complet** (annule les planifiées, efface celles affichées, badge à 0), puis planifie chaque rappel.
 
 Un échec est seulement affiché en console : tout sera replanifié au prochain déclencheur.
 
@@ -65,8 +70,8 @@ Un échec est seulement affiché en console : tout sera replanifié au prochain 
 - **Alertes de stock bas** : ajoutées après les rappels du jour, dans la limite de 64.
 - **Demain** : ajouté prise par prise (6 rappels entiers) tant que le total reste ≤ 64. Si une journée entière est sautée, les rappels du lendemain existent quand même.
 - **Identifiant** : `reminder-<intakeId>-<date locale>` (ex. `reminder-…-2026-10-14T08:40`).
-- **Contenu** : titre « C'est l'heure de votre prise de 08:20 », corps « 1 × Lithium 250 mg, 1 × Lamictal 50 mg ». Son `beep.wav`, `interruptionLevel: "active"`.
-- **Canal Android** : `channelId` « Rappels de prise » (`intake-reminders`), dans le trigger.
+- **Contenu** : titre « C'est l'heure de votre prise de 08:20 », corps « 1 × Lithium 250 mg, 1 × Lamictal 50 mg ». Son de la prise (`intake.sound`), `interruptionLevel: "timeSensitive"`.
+- **Canal Android** : `channelId` du son de la prise (`reminderChannelId`), dans le trigger.
 - **Langue** : textes générés dans la langue courante de l'app (`i18n.t`, namespace `notifications`), heure au format 12 h / 24 h du réglage iOS.
 
 ### Alertes de stock bas (`planLowStockAlerts`)
@@ -77,7 +82,29 @@ Un échec est seulement affiché en console : tout sera replanifié au prochain 
 - Pas d'alerte pour un stock ≤ 0, ni pour un médicament sans prise (pas de date prévisible).
 - Rien n'est mémorisé : tout est recalculé à chaque replanification.
 - **Identifiant** : `low-stock-<date locale>` (ex. `low-stock-2026-10-22`).
-- **Contenu** : titre « Stock bas », corps « Lithium 250 mg, Lamictal 50 mg : pensez à les renouveler. ». Même son que les rappels, **sans `badge`** (le chiffre de l'icône ne change pas). Canal Android « Stock bas » (`low-stock`).
+- **Contenu** : titre « Stock bas », corps « Lithium 250 mg, Lamictal 50 mg : pensez à les renouveler. ». Son des alertes (réglage `lowStockSound`), `interruptionLevel: "active"`, **sans `badge`** (le chiffre de l'icône ne change pas). Canal Android du son (`lowStockChannelId`).
+
+### Sons
+
+| Clé (`NotificationSound`) | Fichier                     | Nom (FR)            |
+| ------------------------- | --------------------------- | ------------------- |
+| `beep_short`              | `beep_short.wav`            | Beep Boop           |
+| `beep` (défaut)           | `beep.wav`                  | Beep Boop Beep Boop |
+| `chime`                   | `chime.wav`                 | Sonnette            |
+| `drop`                    | `drop.wav`                  | Glissade            |
+| `pill_rattle`             | `pill_rattle.wav`           | Secoue ton pilbo    |
+| `gentle_alert_resolved`   | `gentle_alert_resolved.wav` | Fantôme             |
+| `nocturne`                | `nocturne.wav`              | Nocturne            |
+| `shire`                   | `shire.wav`                 | Pilbo Sacquet       |
+| `vibration`               | `silence.wav`               | Vibration seule     |
+
+- Chaque prise a son son (colonne `intake.sound`), réglé dans l'écran de la prise (`/intake/sound`). Une nouvelle prise reçoit le son par défaut des réglages (`defaultReminderSound`).
+- Les alertes de stock bas utilisent toutes `lowStockSound` (réglages).
+- Changer le son par défaut propose de l'appliquer à toutes les prises actives (`setAllActiveIntakesSound`), si au moins une a un autre son.
+- **Vibration seule** : iOS joue `silence.wav` (0,5 s de silence). Testé sur iPhone, app fermée : la notification vibre en mode sonnerie et en mode silencieux (selon les réglages haptiques). Android : canal sans son, vibration activée.
+- **Écoute** (`useSoundPreview`, `expo-audio`) : joue même en mode silencieux (`playsInSilentMode`), baisse la musique en cours sans la couper (`duckOthers`). expo-audio libère la session à la fin du son, la musique reprend. « Vibration seule » fait vibrer le téléphone (`Vibration.vibrate()`). Le son s'arrête quand on quitte l'écran.
+- Plugin `expo-audio` : sans enregistrement ni lecture en arrière-plan. Le texte d'usage du micro est déclaré seulement parce que le module contient du code d'enregistrement (exigé par App Store Connect), le micro n'est jamais demandé.
+- **Générer les sons** : `make sounds` (`scripts/generateSounds.mjs`), sauf `beep.wav` (fichier d'origine).
 
 ### Badge
 
@@ -135,15 +162,22 @@ Même code que sur iOS : seuls les canaux et les permissions diffèrent.
 
 ### Canaux (`notificationChannels.android.ts`)
 
-| Canal (`NOTIFICATION_CHANNEL_IDS`) | Nom                  | Importance                   | Son        |
-| ---------------------------------- | -------------------- | ---------------------------- | ---------- |
-| `intake-reminders`                 | « Rappels de prise » | Haute (son + bannière)       | `beep.wav` |
-| `low-stock`                        | « Stock bas »        | Normale (son, sans bannière) | `beep.wav` |
+Un canal par type et par son : Android fige le son d'un canal à sa création.
 
-- Vibration activée sur les deux.
-- Créés par `useReminderScheduling` avant chaque replanification (lancement, premier plan, changement de langue) : le nom suit la langue de l'app.
-- Android fige l'importance, le son et la vibration d'un canal à sa création (l'utilisateur peut ensuite les changer dans les réglages). Pour en changer : **nouvel identifiant**, et supprimer l'ancien canal (`deleteNotificationChannelAsync`).
-- Les canaux doivent exister avant la demande de permission (Android 13+) : c'est le cas, ils sont créés au lancement.
+| Canal                                               | Nom                               | Importance                   | Son         |
+| --------------------------------------------------- | --------------------------------- | ---------------------------- | ----------- |
+| `intake-reminders` (`beep`)                         | « Rappels de prise – Beep Boop… » | Haute (son + bannière)       | `beep.wav`  |
+| `intake-reminders-<clé>` (autres sons)              | « Rappels de prise – Sonnette »   | Haute (son + bannière)       | `<clé>.wav` |
+| `low-stock` (`beep`)                                | « Stock bas – Beep Boop… »        | Normale (son, sans bannière) | `beep.wav`  |
+| `low-stock-<clé>` (autres sons)                     | « Stock bas – Sonnette »          | Normale (son, sans bannière) | `<clé>.wav` |
+| `intake-reminders-vibration`, `low-stock-vibration` | « … – Vibration seule »           | Selon le type                | aucun       |
+
+- Identifiants : `reminderChannelId(sound)` / `lowStockChannelId(sound)` (`src/config/notifications.ts`). `beep` garde les identifiants d'origine.
+- Vibration activée sur tous.
+- Créés par `rescheduleReminders` à chaque replanification, avant le test de permission : le nom suit la langue de l'app.
+- Sons utilisés : son par défaut des rappels et sons de toutes les prises actives (les canaux restent stables d'un jour à l'autre), son des alertes de stock. Les autres canaux Pilbo (`intake-reminders…`, `low-stock…`) sont supprimés (`deleteNotificationChannelAsync`), après la création des nouveaux.
+- Android fige l'importance, le son et la vibration d'un canal à sa création (l'utilisateur peut ensuite les changer dans les réglages). Pour changer l'importance : **nouvel identifiant**, et supprimer l'ancien canal.
+- Les canaux doivent exister avant la demande de permission (Android 13+) : c'est le cas, le canal du son par défaut des rappels existe toujours.
 
 ### Alarmes exactes
 

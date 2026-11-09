@@ -2,6 +2,7 @@ import { sql } from "drizzle-orm";
 
 import type { Intake, Weekday } from "@/domain/intake";
 import { toLocalDate } from "@/domain/intakeLog";
+import { toNotificationSound } from "@/domain/sound";
 import { intakeMedTable, intakeTable, medTable } from "@/shared/database/schema";
 import type { Database } from "@/shared/database/types";
 
@@ -14,6 +15,7 @@ type IntakeMedOfDayRecord = {
   minute: number;
   days: string;
   reminderIntervalMinutes: number;
+  sound: string;
   medId: string;
   medName: string;
   medStrength: string;
@@ -31,6 +33,7 @@ export function getIntakesOfDay(database: Database, date: Date): Intake[] {
       ${intakeTable.minute} AS minute,
       ${intakeTable.days} AS days,
       ${intakeTable.reminderIntervalMinutes} AS reminderIntervalMinutes,
+      ${intakeTable.sound} AS sound,
       ${medTable.id} AS medId,
       ${medTable.name} AS medName,
       ${medTable.strength} AS medStrength,
@@ -53,6 +56,7 @@ export function getIntakesOfDay(database: Database, date: Date): Intake[] {
       time: { hour: record.hour, minute: record.minute },
       days: JSON.parse(record.days) as Weekday[],
       reminderIntervalMinutes: record.reminderIntervalMinutes,
+      sound: toNotificationSound(record.sound),
       medQuantities: [],
     };
     intakes.set(record.intakeId, intake);

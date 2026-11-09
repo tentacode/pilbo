@@ -29,6 +29,7 @@ describe("computeStockItems", () => {
       time: { hour: 8, minute: 0 },
       days: [...WEEKDAYS],
       reminderIntervalMinutes: 10,
+      sound: "beep",
       medQuantities: [{ med: scheduled, quantity: 1 }],
     };
 

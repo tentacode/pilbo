@@ -1,6 +1,6 @@
 -include .env
 
-.PHONY: help install start testflight version-bump artwork doctor clean build-simulator build-device build-release check-device-id android-build-emulator android-build-device android-build-release check-android-device-id android-test-e2e check-android-emulator db-generate i18n-extract prettier lint typescript test-unit audit test-e2e tests
+.PHONY: help install start testflight version-bump artwork sounds doctor clean build-simulator build-device build-release check-device-id android-build-emulator android-build-device android-build-release check-android-device-id android-test-e2e check-android-emulator db-generate i18n-extract prettier lint typescript test-unit audit test-e2e tests
 
 RUBY_BIN = /opt/homebrew/opt/ruby/bin
 
@@ -81,6 +81,9 @@ version-bump: ## Bump the app version in app.config.ts (TYPE=major|minor|patch)
 
 artwork: ## Generate the app icons and splash screens (SVG sources and PNG)
 	@node scripts/generateArtwork.mjs
+
+sounds: ## Generate the notification sounds
+	@node scripts/generateSounds.mjs
 
 check-device-id:
 	@test -n "$(DEVICE_ID)" || (echo "$(RED)DEVICE_ID is missing in .env$(NC)" && exit 1)

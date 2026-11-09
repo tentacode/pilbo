@@ -27,6 +27,7 @@ describe("planLowStockAlerts", () => {
         createStockItem("Lamictal", "100 mg", new Date(2026, 9, 25)),
       ],
       MONDAY_MORNING,
+      "beep",
     );
 
     expect(alerts).toEqual([
@@ -36,6 +37,7 @@ describe("planLowStockAlerts", () => {
         title: "Stock bas",
         body: "Lamictal 50 mg : pensez à le renouveler.",
         interruptionLevel: "active",
+        sound: "beep",
         channelId: "low-stock",
       },
       {
@@ -44,6 +46,7 @@ describe("planLowStockAlerts", () => {
         title: "Stock bas",
         body: "Lamictal 100 mg, Lithium 250 mg : pensez à les renouveler.",
         interruptionLevel: "active",
+        sound: "beep",
         channelId: "low-stock",
       },
     ]);
@@ -52,8 +55,8 @@ describe("planLowStockAlerts", () => {
   it("plans the alert of today before 9 a.m. only", () => {
     const stockItems = [createStockItem("Lithium", "250 mg", new Date(2026, 9, 19))];
 
-    expect(planLowStockAlerts(stockItems, MONDAY_MORNING)).toHaveLength(1);
-    expect(planLowStockAlerts(stockItems, new Date(2026, 9, 19, 9, 0))).toEqual([]);
+    expect(planLowStockAlerts(stockItems, MONDAY_MORNING, "beep")).toHaveLength(1);
+    expect(planLowStockAlerts(stockItems, new Date(2026, 9, 19, 9, 0), "beep")).toEqual([]);
   });
 
   it("plans nothing for a past crossing day or without crossing day", () => {
@@ -64,7 +67,18 @@ describe("planLowStockAlerts", () => {
           createStockItem("Prazépam", "25 mg"),
         ],
         MONDAY_MORNING,
+        "beep",
       ),
     ).toEqual([]);
+  });
+
+  it("uses the low stock sound and its channel", () => {
+    const [alert] = planLowStockAlerts(
+      [createStockItem("Lithium", "250 mg", new Date(2026, 9, 22))],
+      MONDAY_MORNING,
+      "vibration",
+    );
+
+    expect(alert).toMatchObject({ sound: "vibration", channelId: "low-stock-vibration" });
   });
 });

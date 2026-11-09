@@ -30,6 +30,7 @@ function intakeAt(hour: number, quantity = 1): Intake {
     time: { hour, minute: 0 },
     days: [...WEEKDAYS],
     reminderIntervalMinutes: 10,
+    sound: "beep",
     medQuantities: [{ med: lithium, quantity }],
   };
 }

@@ -8,6 +8,7 @@ const intake: Intake = {
   time: { hour: 8, minute: 0 },
   days: ["monday"],
   reminderIntervalMinutes: 10,
+  sound: "beep",
   medQuantities: [],
 };
 

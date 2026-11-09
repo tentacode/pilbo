@@ -25,6 +25,7 @@ describe("computeMedListItems", () => {
       time: { hour: 8, minute: 0 },
       days: [...WEEKDAYS],
       reminderIntervalMinutes: 10,
+      sound: "beep",
       medQuantities: [{ med: lithium, quantity: 1 }],
     };
 

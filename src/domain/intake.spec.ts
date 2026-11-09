@@ -18,6 +18,7 @@ describe("sortIntakeMeds", () => {
       time: { hour: 22, minute: 0 },
       days: ["monday"],
       reminderIntervalMinutes: 10,
+      sound: "beep",
       medQuantities: [
         { med: createMed("Quviviq", "50 mg"), quantity: 1 },
         { med: createMed("Lamictal", "100 mg"), quantity: 2 },

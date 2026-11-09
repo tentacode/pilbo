@@ -1,4 +1,5 @@
 import { WEEKDAYS } from "@/domain/intake";
+import type { NotificationSound } from "@/domain/sound";
 import { intakeTable } from "@/shared/database/schema";
 import { createTestDatabase } from "@/shared/database/testDatabase";
 
@@ -57,9 +58,33 @@ describe("getAllIntakes", () => {
         time: { hour: 7, minute: 0 },
         days: ["monday"],
         reminderIntervalMinutes: 5,
+        sound: "beep",
         medQuantities: [],
       },
     ]);
+  });
+
+  it("reads the sound of each intake", () => {
+    const intakes = getAllIntakes(createTestDatabase());
+
+    expect(intakes.map(({ sound }) => sound)).toEqual(["beep", "beep", "beep", "nocturne"]);
+  });
+
+  it("falls back to the default sound for an unknown sound", () => {
+    const database = createTestDatabase({ seed: false });
+    database
+      .insert(intakeTable)
+      .values({
+        hour: 7,
+        minute: 0,
+        days: ["monday"],
+        reminderIntervalMinutes: 5,
+        sound: "removed_sound" as NotificationSound,
+        createdOn: "2026-10-01",
+      })
+      .run();
+
+    expect(getAllIntakes(database)[0].sound).toBe("beep");
   });
 
   it("hides an archived intake", () => {

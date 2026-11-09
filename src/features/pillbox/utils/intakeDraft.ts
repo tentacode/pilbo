@@ -1,5 +1,6 @@
 import { type Intake, type Weekday, WEEKDAYS } from "@/domain/intake";
 import { type Med, type MedQuantity, sortMedQuantities } from "@/domain/med";
+import type { NotificationSound } from "@/domain/sound";
 
 import type { IntakeToSave } from "@/features/pillbox/queries/saveIntake";
 
@@ -11,6 +12,7 @@ export type IntakeDraft = {
   dayMode: DayMode;
   days: Weekday[];
   reminderIntervalMinutes: number;
+  sound: NotificationSound;
   medQuantities: MedQuantity[];
 };
 
@@ -22,6 +24,7 @@ function isEveryDay(days: Weekday[]): boolean {
 
 export function createIntakeDraft(
   defaultReminderIntervalMinutes: number,
+  defaultReminderSound: NotificationSound,
   intake?: Intake,
 ): IntakeDraft {
   if (intake === undefined) {
@@ -30,6 +33,7 @@ export function createIntakeDraft(
       dayMode: "everyDay",
       days: [...WEEKDAYS],
       reminderIntervalMinutes: defaultReminderIntervalMinutes,
+      sound: defaultReminderSound,
       medQuantities: [],
     };
   }
@@ -39,6 +43,7 @@ export function createIntakeDraft(
     dayMode: isEveryDay(intake.days) ? "everyDay" : "someDays",
     days: intake.days,
     reminderIntervalMinutes: intake.reminderIntervalMinutes,
+    sound: intake.sound,
     medQuantities: sortMedQuantities(intake.medQuantities),
   };
 }
@@ -74,6 +79,7 @@ export function draftSignature(draft: IntakeDraft): string {
     time: draft.time,
     days: selectedDaysOf(draft),
     reminderIntervalMinutes: draft.reminderIntervalMinutes,
+    sound: draft.sound,
     medQuantities: draft.medQuantities.map(({ med, quantity }) => [med.id, quantity]),
   });
 }
@@ -84,6 +90,7 @@ export function toIntakeToSave(draft: IntakeDraft): IntakeToSave {
     time: draft.time,
     days: selectedDaysOf(draft),
     reminderIntervalMinutes: draft.reminderIntervalMinutes,
+    sound: draft.sound,
     medQuantities: draft.medQuantities.map(({ med, quantity }) => ({ medId: med.id, quantity })),
   };
 }

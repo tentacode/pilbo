@@ -58,6 +58,7 @@ describe("stock edit formatters", () => {
     time: { hour: 8, minute: 30 },
     days: [...WEEKDAYS],
     reminderIntervalMinutes: 10,
+    sound: "beep",
     medQuantities: [{ med: lithium, quantity: 2 }],
   };
   const evening: Intake = { ...morning, id: "evening", time: { hour: 20, minute: 30 } };

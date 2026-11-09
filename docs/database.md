@@ -162,6 +162,7 @@ Format de `design` (`src/domain/med.ts`) :
 | `minute`                    | integer                 | obligatoire (0–59)                      |
 | `days`                      | text (JSON `Weekday[]`) | obligatoire                             |
 | `reminder_interval_minutes` | integer                 | obligatoire                             |
+| `sound`                     | text                    | obligatoire, `"beep"` par défaut        |
 | `is_archived`               | integer (booléen)       | obligatoire, `false` par défaut         |
 | `created_on`                | text                    | obligatoire, date locale (`2026-10-24`) |
 | `archived_on`               | text                    | facultatif, date locale                 |
@@ -170,7 +171,8 @@ Une ligne `intake` est une **version** de prise, valable sur `[created_on, archi
 
 - Création : `created_on` = aujourd'hui.
 - Archivage : `is_archived` et `archived_on` = aujourd'hui.
-- Modification de l'heure, des jours, des médicaments ou des quantités d'une prise qui a des logs **avant aujourd'hui** (`saveIntake`) : l'ancienne version est archivée, une nouvelle est créée (`created_on` = aujourd'hui) et les logs du jour passent sur la nouvelle. Sinon (pas de log passé, ou seul l'intervalle de rappel change) : modification sur place.
+- Modification de l'heure, des jours, des médicaments ou des quantités d'une prise qui a des logs **avant aujourd'hui** (`saveIntake`) : l'ancienne version est archivée, une nouvelle est créée (`created_on` = aujourd'hui) et les logs du jour passent sur la nouvelle. Sinon (pas de log passé, ou seuls l'intervalle de rappel ou le son changent) : modification sur place.
+- Son des rappels (`sound`) : clé de `NOTIFICATION_SOUNDS` (`src/domain/sound.ts`), c'est-à-dire le nom du fichier sans extension (`chime`), ou `vibration` pour « Vibration seule ». Une valeur inconnue est relue comme `beep` (`toNotificationSound`). « Appliquer à toutes les prises » depuis les réglages (`setAllActiveIntakesSound`) modifie sur place les prises non archivées.
 - Prises prévues un jour D (`getIntakesOfDay`) : `created_on ≤ D`, `archived_on` nul ou `> D`, jour de la semaine de D dans `days`. Une prise archivée aujourd'hui n'apparaît donc plus aujourd'hui.
 
 ### `intake_med`

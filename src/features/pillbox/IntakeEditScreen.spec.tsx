@@ -84,7 +84,7 @@ beforeEach(() => {
   jest.restoreAllMocks();
   jest.clearAllMocks();
   mockDatabase = createTestDatabase();
-  useSettingsStore.setState({ defaultReminderIntervalMinutes: 10 });
+  useSettingsStore.setState({ defaultReminderIntervalMinutes: 10, defaultReminderSound: "beep" });
 });
 
 describe("IntakeEditScreen", () => {
@@ -108,6 +108,22 @@ describe("IntakeEditScreen", () => {
       await renderScreen();
 
       expect(screen.getByRole("radio", { name: "30 minutes" })).toBeSelected();
+    });
+
+    it("uses the default reminder sound from the settings", async () => {
+      useSettingsStore.setState({ defaultReminderSound: "chime" });
+
+      await renderScreen();
+
+      expect(screen.getByRole("button", { name: "Son : Sonnette" })).toBeOnTheScreen();
+    });
+
+    it("opens the sound picker", async () => {
+      await renderScreen();
+
+      await fireEvent.press(screen.getByRole("button", { name: "Son : Beep Boop Beep Boop" }));
+
+      expect(router.push).toHaveBeenCalledWith("/intake/sound");
     });
 
     it("opens the med picker", async () => {
@@ -165,6 +181,25 @@ describe("IntakeEditScreen", () => {
       await renderScreen(morning.id);
 
       expect(screen.getByRole("radio", { name: "10 minutes" })).toBeSelected();
+    });
+
+    it("keeps its own sound", async () => {
+      useSettingsStore.setState({ defaultReminderSound: "chime" });
+      const night = getAllIntakes(mockDatabase)[3];
+      await renderScreen(night.id);
+
+      expect(screen.getByRole("button", { name: "Son : Nocturne" })).toBeOnTheScreen();
+    });
+
+    it("saves a new sound", async () => {
+      const [morning] = getAllIntakes(mockDatabase);
+      await renderScreen(morning.id);
+
+      await act(() => draftActions.setSound("drop"));
+      expect(screen.getByRole("button", { name: "Son : Glissade" })).toBeOnTheScreen();
+      await fireEvent.press(screen.getByRole("button", { name: "Enregistrer" }));
+
+      expect(getIntakeById(mockDatabase, morning.id)?.sound).toBe("drop");
     });
 
     it("updates the quantities and the days in place", async () => {
@@ -247,6 +282,14 @@ describe("IntakeEditScreen", () => {
 
       await fireEvent.press(screen.getByRole("button", { name: "Abandonner" }));
       expect(mockNavigation.dispatch).toHaveBeenCalledWith(action);
+    });
+
+    it("asks before discarding a new sound", async () => {
+      await renderScreen();
+
+      await act(() => draftActions.setSound("shire"));
+
+      expect(mockPreventRemove.isPrevented).toBe(true);
     });
 
     it("keeps editing with continue", async () => {
