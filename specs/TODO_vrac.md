@@ -4,6 +4,7 @@
 - [ ] Vous aimez pilbo ?
 - [ ] Rappels d'évènements (ex: prise de sang, rendez-vous médecin, séance de kiné)
 - [ ] Récurrence personnalisé (une semaine sur deux, tous les mois, toutes les trois semaines) - après les évènements
+- [ ] Lien "pas pris" sur les prises en retard (j'ai manqué un cachet, je veux quand même le savoir, ce n'est pas ignoré).
 
 ## Bugs
 
