@@ -1,0 +1,31 @@
+Pilbo est un pilulier simple dans votre téléphone. Il vous rappelle vos prises de médicaments, suit vos stocks et garde votre historique. Sans compte : vos données restent sur votre téléphone.
+
+VOS PRISES
+• Plusieurs prises par jour, chacune avec ses médicaments et ses quantités.
+• Les jours de la semaine de votre choix.
+• Des médicaments à la demande, à prendre en dehors des prises.
+
+RAPPELS
+• Une notification à l'heure de chaque prise.
+• Validez une prise directement depuis la notification.
+• Choisissez le son de vos rappels.
+
+STOCKS
+• Le stock diminue à chaque prise.
+• Une alerte avant d'en manquer.
+
+HISTORIQUE
+• Un calendrier de vos prises, jour par jour.
+
+CONFIDENTIALITÉ
+• Pas de compte, pas de serveur.
+• Pas de publicité, pas de suivi.
+• Pilbo fonctionne sans connexion internet.
+
+FACILE À LIRE
+• Mode sombre.
+• S'adapte à la taille du texte de votre téléphone.
+
+En français et en anglais.
+
+Pilbo n'est pas un dispositif médical. Il ne remplace pas l'avis d'un médecin ou d'un pharmacien.

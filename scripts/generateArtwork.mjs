@@ -1,5 +1,5 @@
 import { execFileSync } from "node:child_process";
-import { mkdtempSync, writeFileSync } from "node:fs";
+import { copyFileSync, mkdirSync, mkdtempSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { artworkConfig } from "../assets/artwork/config.ts";
@@ -16,9 +16,13 @@ const SETTINGS = {
   splashWidth: 1290,
   splashHeight: 2796,
   splashDarkOpacity: 0.35,
+  featureGraphicWidth: 1024,
+  featureGraphicHeight: 500,
 };
 
 const ICON_SIZE = 1024;
+const STORE_ICON_SIZE = 512;
+const STORE_LOCALES = ["en-US", "fr-FR"];
 const COLORS = {
   background: artworkConfig.background,
   darkBackground: artworkConfig.darkBackground,
@@ -311,6 +315,24 @@ function splash() {
   };
 }
 
+function featureGraphic() {
+  const { featureGraphicWidth: width, featureGraphicHeight: height } = SETTINGS;
+  const { heroSize, pillsPerRow, pillSize } = artworkConfig.featureGraphic;
+  return svg({
+    width,
+    height,
+    background: COLORS.background,
+    content:
+      backgroundPills({
+        width,
+        height,
+        pillsPerRow,
+        scaleRange: pillSize,
+        opacity: SETTINGS.backgroundOpacity,
+      }) + heroPill({ centerX: width / 2, centerY: height / 2, scale: heroSize }),
+  });
+}
+
 function renderPng({ source, output, width, height, background }) {
   const size = Math.max(width, height);
   const offsetX = (size - width) / 2;
@@ -359,6 +381,7 @@ function renderTransparentPng({ source, output, width, height }) {
 const iconSources = icon();
 const splashSources = splash();
 const adaptiveIconSources = adaptiveIcon();
+const featureGraphicSource = featureGraphic();
 
 const artworks = [
   { name: "icon", source: iconSources.regular, size: ICON_SIZE, background: COLORS.background },
@@ -391,4 +414,31 @@ for (const { name, source, size, background } of artworks) {
     renderTransparentPng({ source, output, width, height });
   }
   console.log(`Generated assets/images/${name}.png`);
+}
+
+writeFileSync("assets/artwork/feature-graphic.svg", featureGraphicSource);
+const [firstStoreDirectory, ...otherStoreDirectories] = STORE_LOCALES.map(
+  (locale) => `fastlane/metadata/android/${locale}/images`,
+);
+mkdirSync(firstStoreDirectory, { recursive: true });
+execFileSync("magick", [
+  "assets/images/icon.png",
+  ...["-resize", `${STORE_ICON_SIZE}x${STORE_ICON_SIZE}`],
+  `${firstStoreDirectory}/icon.png`,
+]);
+renderPng({
+  source: featureGraphicSource,
+  output: `${firstStoreDirectory}/featureGraphic.png`,
+  width: SETTINGS.featureGraphicWidth,
+  height: SETTINGS.featureGraphicHeight,
+  background: COLORS.background,
+});
+for (const directory of otherStoreDirectories) {
+  mkdirSync(directory, { recursive: true });
+  for (const name of ["icon.png", "featureGraphic.png"]) {
+    copyFileSync(`${firstStoreDirectory}/${name}`, `${directory}/${name}`);
+  }
+}
+for (const directory of [firstStoreDirectory, ...otherStoreDirectories]) {
+  console.log(`Generated ${directory}/icon.png and featureGraphic.png`);
 }

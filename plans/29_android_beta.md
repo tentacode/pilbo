@@ -18,48 +18,48 @@ Le compte Play Console, la création de l'app et les déclarations se font à la
 ## Étape 1 — Pages web
 
 - Structure statique dans `website/`, anglais à la racine, français sous `fr/`, lien de changement de langue sur chaque page :
-  - [ ] `index.html` / `fr/index.html` : support (présentation courte de Pilbo, contact `pilbo@tentacode.dev`, liens vers les autres pages) ;
-  - [ ] `privacy/` / `fr/privacy/` : politique de confidentialité (contenu de la spec 25 : aucune donnée collectée, tout reste sur le téléphone, pas de compte, pas de publicité, pas de suivi), pour iOS et Android, avec une date de mise à jour ;
-  - [ ] `beta/` / `fr/beta/` : « Rejoindre la bêta », les deux étapes Android dans l'ordre (rejoindre le groupe, puis s'inscrire au test). Liens provisoires, remplis à l'étape 8.
-- [ ] Une feuille de style commune (`website/styles.css`) : couleurs reprises des tokens de l'app (`lightColors` / `darkColors`), mode sombre par `prefers-color-scheme`, contraste AA, tailles relatives (zoom du navigateur), responsive.
-- [ ] Accessibilité : `lang` sur chaque page, titres hiérarchisés, liens explicites, `hreflang` sur le lien de langue.
+  - [x] `index.html` / `fr/index.html` : support (présentation courte de Pilbo, contact `pilbo@tentacode.dev`, liens vers les autres pages) ;
+  - [x] `privacy/` / `fr/privacy/` : politique de confidentialité (contenu de la spec 25 : aucune donnée collectée, tout reste sur le téléphone, pas de compte, pas de publicité, pas de suivi), pour iOS et Android, avec une date de mise à jour ;
+  - [x] `beta/` / `fr/beta/` : « Rejoindre la bêta », les deux étapes Android dans l'ordre (rejoindre le groupe, puis s'inscrire au test). Liens provisoires, remplis à l'étape 8.
+- [x] Une feuille de style commune (`website/styles.css`) : couleurs reprises des tokens de l'app (`lightColors` / `darkColors`), mode sombre par `prefers-color-scheme`, contraste AA, tailles relatives (zoom du navigateur), responsive.
+- [x] Accessibilité : `lang` sur chaque page, titres hiérarchisés, liens explicites, `hreflang` sur le lien de langue.
 - [ ] Textes en vouvoiement, ton de l'app (`CLAUDE.md`). Tu relis les textes FR et EN.
-- [ ] Workflow `.github/workflows/website.yaml` : déploiement GitHub Pages (`actions/upload-pages-artifact` + `actions/deploy-pages`) à chaque push sur `main` qui modifie `website/**`, permissions minimales (`pages: write`, `id-token: write`), même style que `ci.yaml`.
+- [x] Workflow `.github/workflows/website.yaml` : déploiement GitHub Pages (`actions/upload-pages-artifact` + `actions/deploy-pages`) à chaque push sur `main` qui modifie `website/**`, permissions minimales (`pages: write`, `id-token: write`), même style que `ci.yaml`.
 - [ ] Tu actives GitHub Pages (Settings → Pages → Source : « GitHub Actions ») et tu pousses.
 - [ ] Tu vérifies les pages en ligne : `https://tentacode.github.io/pilbo/`, `…/privacy/`, `…/beta/` et leurs versions `fr/`.
 
 ## Étape 2 — Notes de version neutres
 
-- [ ] Réécrire `fastlane/what_to_test/fr-FR.txt` et `en-US.txt` sans mention de TestFlight (ex. retours par e-mail à `pilbo@tentacode.dev`), 500 caractères max.
+- [x] Réécrire `fastlane/what_to_test/fr-FR.txt` et `en-US.txt` sans mention de TestFlight (ex. retours par e-mail à `pilbo@tentacode.dev`), 500 caractères max.
 - [ ] Tu valides les textes.
 
 ## Étape 3 — versionCode et AAB
 
-- [ ] `app.config.ts` : `android.versionCode` lu depuis `BUILD_NUMBER` (entier, erreur claire si la valeur n'est pas un entier positif), non défini sinon (Expo met alors 1).
-- [ ] `Makefile` : `android-build-release` transmet `BUILD_NUMBER` s'il est fourni (`make android-build-release BUILD_NUMBER=5`), aide de la cible mise à jour.
-- [ ] Lane fastlane `android bundle` (`fastlane/Fastfile`, `platform :android`) qui :
-  - [ ] exige `BUILD_NUMBER` ;
-  - [ ] lance `APP_VARIANT=prod BUILD_NUMBER=… pnpm expo prebuild --clean --platform android` dans `Bundler.with_unbundled_env` (comme la lane iOS) ;
-  - [ ] vide `android/build/generated/autolinking` ;
-  - [ ] construit l'AAB (`gradle`, tâche `bundleRelease`, `project_dir: "android/"`) ; les variables de signature viennent de `.env` (chargé par fastlane).
-- [ ] `Makefile` : cible `android-bundle` (`## Build the "Pilbo" Android App Bundle without uploading it (BUILD_NUMBER=…)`), même appel que `testflight` (`PATH="$(RUBY_BIN):$$PATH" bundle exec fastlane android bundle`), ajoutée à `.PHONY`.
-- [ ] Splits ABI : vérifier que `make android-bundle BUILD_NUMBER=2` réussit avec `plugins/withAbiSplits.js`. Si les splits gênent, limiter `enable` aux tâches `assemble…Release`.
-- [ ] Vérifier l'AAB : `bundletool` ou `jarsigner -verify -verbose -certs` (certificat du keystore), `versionCode` 2 (`aapt2 dump badging` sur un APK extrait, ou `bundletool dump manifest`), permissions sans `INTERNET`.
+- [x] `app.config.ts` : `android.versionCode` lu depuis `BUILD_NUMBER` (entier, erreur claire si la valeur n'est pas un entier positif), non défini sinon (Expo met alors 1).
+- [x] `Makefile` : `android-build-release` transmet `BUILD_NUMBER` s'il est fourni (`make android-build-release BUILD_NUMBER=5`), aide de la cible mise à jour.
+- [x] Lane fastlane `android bundle` (`fastlane/Fastfile`, `platform :android`) qui :
+  - [x] exige `BUILD_NUMBER` ;
+  - [x] lance `APP_VARIANT=prod BUILD_NUMBER=… pnpm expo prebuild --clean --platform android` dans `Bundler.with_unbundled_env` (comme la lane iOS) ;
+  - [x] vide `android/build/generated/autolinking` ;
+  - [x] construit l'AAB (`gradle`, tâche `bundleRelease`, `project_dir: "android/"`) ; les variables de signature viennent de `.env` (chargé par fastlane).
+- [x] `Makefile` : cible `android-bundle` (`## Build the "Pilbo" Android App Bundle without uploading it (BUILD_NUMBER=…)`), même appel que `testflight` (`PATH="$(RUBY_BIN):$$PATH" bundle exec fastlane android bundle`), ajoutée à `.PHONY`.
+- [x] Splits ABI : vérifier que `make android-bundle BUILD_NUMBER=2` réussit avec `plugins/withAbiSplits.js`. Si les splits gênent, limiter `enable` aux tâches `assemble…Release`.
+- [x] Vérifier l'AAB : `bundletool` ou `jarsigner -verify -verbose -certs` (certificat du keystore), `versionCode` 2 (`aapt2 dump badging` sur un APK extrait, ou `bundletool dump manifest`), permissions sans `INTERNET`.
 - [ ] Vérifier que `make android-build-release` sans `BUILD_NUMBER` fonctionne toujours (versionCode 1).
 
 ## Étape 4 — Visuels de la fiche
 
-- [ ] `scripts/generateArtwork.mjs` : deux nouvelles sorties, écrites dans `fastlane/metadata/android/<fr-FR|en-US>/images/` :
-  - [ ] `icon.png` : icône 512 × 512 (même rendu que `icon()`) ;
-  - [ ] `featureGraphic.png` : 1024 × 500, fond de pilules et gélule centrée, sans texte (réglages dans `assets/artwork/config.ts`, documentés comme les autres). Vérifier que `renderPng` gère ce format non carré.
-- [ ] `make artwork`.
+- [x] `scripts/generateArtwork.mjs` : deux nouvelles sorties, écrites dans `fastlane/metadata/android/<fr-FR|en-US>/images/` :
+  - [x] `icon.png` : icône 512 × 512 (même rendu que `icon()`) ;
+  - [x] `featureGraphic.png` : 1024 × 500, fond de pilules et gélule centrée, sans texte (réglages dans `assets/artwork/config.ts`, documentés comme les autres). Vérifier que `renderPng` gère ce format non carré.
+- [x] `make artwork`.
 - [ ] Tu valides visuellement les deux images.
 
 ## Étape 5 — Textes et captures de la fiche
 
-- [ ] `fastlane/metadata/android/<fr-FR|en-US>/` : `title.txt` (« Pilbo »), `short_description.txt` (80 caractères max), `full_description.txt` (4 000 max). Ton et vocabulaire prudent de la spec 25 (un pilulier et des rappels, pas de conseil médical).
+- [x] `fastlane/metadata/android/<fr-FR|en-US>/` : `title.txt` (« Pilbo »), `short_description.txt` (80 caractères max), `full_description.txt` (4 000 max). Ton et vocabulaire prudent de la spec 25 (un pilulier et des rappels, pas de conseil médical).
 - [ ] Tu valides les textes FR et EN.
-- [ ] Captures sur l'émulateur (« Pilbo Dev », données de test), FR et EN, 4 à 6 écrans (Aujourd'hui, pilulier, stock, calendrier…) : `adb exec-out screencap -p`, rangées dans `images/phoneScreenshots/` de chaque langue (`1_<nom>.png`…). Pas de barre de debug, heure et batterie propres si possible (mode démo : `adb shell settings put global sysui_demo_allowed 1`).
+- [x] Captures sur l'émulateur (« Pilbo Dev », données de test), FR et EN, 4 à 6 écrans (Aujourd'hui, pilulier, stock, calendrier…) : `adb exec-out screencap -p`, rangées dans `images/phoneScreenshots/` de chaque langue (`1_<nom>.png`…). Pas de barre de debug, heure et batterie propres si possible (mode démo : `adb shell settings put global sysui_demo_allowed 1`).
 - [ ] Tu valides les captures.
 
 ## Étape 6 — Compte Play Console
@@ -67,7 +67,9 @@ Le compte Play Console, la création de l'app et les déclarations se font à la
 - [ ] Tu crées le compte **personnel** (play.google.com/console, 25 $).
 - [ ] Tu fais la vérification d'identité, puis celle de l'appareil avec l'app Play Console sur le S9.
 - [ ] Tu déclares le statut **non-trader** (DSA).
-- [ ] Relire l'aide officielle sur le test fermé des comptes personnels (12 testeurs, 14 jours d'affilée) et noter tout écart avec la spec.
+- [x] Relire l'aide officielle sur le test fermé des comptes personnels (12 testeurs, 14 jours d'affilée) et noter tout écart avec la spec.
+  - Pas d'écart : 12 testeurs inscrits au moment de la demande, chacun depuis 14 jours consécutifs (un testeur qui se désinscrit repart à zéro).
+  - À préparer pour la spec 28 : la demande d'accès à la production demande un résumé des retours des testeurs (et comment ils ont été recueillis), leur engagement (fonctions utilisées) et les changements faits depuis le test.
 
 ## Étape 7 — App, signature et déclarations
 
@@ -103,35 +105,35 @@ Le compte Play Console, la création de l'app et les déclarations se font à la
 - [ ] Tu crées le compte de service :
   - [ ] Google Cloud : projet, API « Google Play Android Developer » activée, compte de service, clé JSON rangée hors du repo (ex. `~/.google-play/pilbo-service-account.json`, `chmod 600`) ;
   - [ ] Play Console → Utilisateurs et autorisations : inviter l'adresse du compte de service, droits sur Pilbo limités aux pistes de test et à la fiche.
-- [ ] `.env.dist` : `GOOGLE_PLAY_JSON_KEY_PATH=` avec un commentaire (comme la clé App Store Connect). Tu remplis `.env`.
-- [ ] `fastlane/Appfile` : `package_name("com.tentacode.pilbo")` et `json_key_file` lu depuis `GOOGLE_PLAY_JSON_KEY_PATH` (sans casser la lane iOS si la variable manque).
-- [ ] Lane `android beta` :
-  - [ ] piste : `alpha` par défaut, `internal` si `TRACK=internal`, erreur claire pour toute autre valeur ;
-  - [ ] `versionCode` = plus grand de `google_play_track_version_codes` sur `alpha` et `internal` (piste vide ignorée) + 1 ;
-  - [ ] appelle la lane `bundle` avec ce numéro ;
-  - [ ] notes de version : copie de `fastlane/what_to_test/<langue>.txt` vers `fastlane/metadata/android/<langue>/changelogs/<versionCode>.txt`, erreur si plus de 500 caractères ; `changelogs/` ajouté au `.gitignore` ;
-  - [ ] `upload_to_play_store` : AAB, piste, `release_status: "completed"`, textes et images de `fastlane/metadata/android/`.
-- [ ] `Makefile` : cible `android-beta` (`## Build "Pilbo" and send it to the Play Store closed test (fastlane, TRACK=internal for the internal test)`), ajoutée à `.PHONY`.
+- [x] `.env.dist` : `GOOGLE_PLAY_JSON_KEY_PATH=` avec un commentaire (comme la clé App Store Connect). Tu remplis `.env`.
+- [x] `fastlane/Appfile` : `package_name("com.tentacode.pilbo")` et `json_key_file` lu depuis `GOOGLE_PLAY_JSON_KEY_PATH` (sans casser la lane iOS si la variable manque).
+- [x] Lane `android beta` :
+  - [x] piste : `alpha` par défaut, `internal` si `TRACK=internal`, erreur claire pour toute autre valeur ;
+  - [x] `versionCode` = plus grand de `google_play_track_version_codes` sur `alpha` et `internal` (piste vide ignorée) + 1 ;
+  - [x] appelle la lane `bundle` avec ce numéro ;
+  - [x] notes de version : copie de `fastlane/what_to_test/<langue>.txt` vers `fastlane/metadata/android/<langue>/changelogs/<versionCode>.txt`, erreur si plus de 500 caractères ; `changelogs/` ajouté au `.gitignore` ;
+  - [x] `upload_to_play_store` : AAB, piste, `release_status: "completed"`, textes et images de `fastlane/metadata/android/`.
+- [x] `Makefile` : cible `android-beta` (`## Build "Pilbo" and send it to the Play Store closed test (fastlane, TRACK=internal for the internal test)`), ajoutée à `.PHONY`.
 - [ ] `make android-beta` : un build en versionCode 3 sur la piste fermée. Si fastlane répond que l'app est encore en brouillon, on en parle.
 
 ## Étape 10 — Données des testeurs
 
-- [ ] `docs/database.md` (« Règle des migrations ») : migration figée dès qu'elle est envoyée sur TestFlight, l'App Store **ou une piste du Play Store** ; la migration « en cours » préserve les données avant `make testflight` **et** `make android-beta`.
-- [ ] Mettre à jour la mémoire `no-migration.md` (même règle).
-- [ ] `CLAUDE.md` : même règle (après ta validation).
+- [x] `docs/database.md` (« Règle des migrations ») : migration figée dès qu'elle est envoyée sur TestFlight, l'App Store **ou une piste du Play Store** ; la migration « en cours » préserve les données avant `make testflight` **et** `make android-beta`.
+- [x] Mettre à jour la mémoire `no-migration.md` (même règle).
+- [x] `CLAUDE.md` : même règle (après ta validation).
 
 ## Étape 11 — Documentation
 
-- [ ] `docs/android_build.md`, nouvelle section Play Console :
-  - [ ] compte de service, `GOOGLE_PLAY_JSON_KEY_PATH` ;
-  - [ ] Play App Signing (keystore actuel = clé de l'app et d'importation, la sauvegarde reste indispensable) ;
-  - [ ] `make android-bundle`, `make android-beta`, `TRACK=internal`, pistes `alpha` / `internal` ;
-  - [ ] Google Group, page « Rejoindre la bêta » ;
-  - [ ] `make android-build-release BUILD_NUMBER=…` : au-dessus du versionCode du Play Store, sinon Android refuse la rétrogradation (désinstaller = perdre les données) ;
-  - [ ] après `make android-bundle` / `make android-beta`, `android/` est en variante « Pilbo » (note `INTERNET` de `CLAUDE.md`) ;
-  - [ ] retirer la mention « splits ABI … AAB (spec 28, à vérifier) ».
-- [ ] `docs/architecture.md` : `website/` dans l'arborescence.
-- [ ] `CLAUDE.md` : commandes `make android-bundle` et `make android-beta`, `website/` (après ta validation).
+- [x] `docs/android_build.md`, nouvelle section Play Console :
+  - [x] compte de service, `GOOGLE_PLAY_JSON_KEY_PATH` ;
+  - [x] Play App Signing (keystore actuel = clé de l'app et d'importation, la sauvegarde reste indispensable) ;
+  - [x] `make android-bundle`, `make android-beta`, `TRACK=internal`, pistes `alpha` / `internal` ;
+  - [x] Google Group, page « Rejoindre la bêta » ;
+  - [x] `make android-build-release BUILD_NUMBER=…` : au-dessus du versionCode du Play Store, sinon Android refuse la rétrogradation (désinstaller = perdre les données) ;
+  - [x] après `make android-bundle` / `make android-beta`, `android/` est en variante « Pilbo » (note `INTERNET` de `CLAUDE.md`) ;
+  - [x] retirer la mention « splits ABI … AAB (spec 28, à vérifier) ».
+- [x] `docs/architecture.md` : `website/` dans l'arborescence.
+- [x] `CLAUDE.md` : commandes `make android-bundle` et `make android-beta`, `website/` (après ta validation).
 
 ## Étape 12 — Assurance qualité
 
@@ -142,5 +144,5 @@ Le compte Play Console, la création de l'app et les déclarations se font à la
 
 ## Étape 13 — Fin
 
-- [ ] `make tests` passe.
+- [x] `make tests` passe.
 - [ ] Proposer une mise à jour de `CLAUDE.md` / docs si besoin (après ta validation seulement).

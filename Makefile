@@ -1,6 +1,6 @@
 -include .env
 
-.PHONY: help install start testflight version-bump artwork sounds doctor clean build-simulator build-device build-release check-device-id android-build-emulator android-build-device android-build-release check-android-device-id android-test-e2e check-android-emulator db-generate i18n-extract prettier lint typescript test-unit audit test-e2e tests
+.PHONY: help install start testflight version-bump artwork sounds doctor clean build-simulator build-device build-release check-device-id android-build-emulator android-build-device android-build-release android-bundle android-beta check-android-device-id android-test-e2e check-android-emulator db-generate i18n-extract prettier lint typescript test-unit audit test-e2e tests
 
 RUBY_BIN = /opt/homebrew/opt/ruby/bin
 
@@ -66,8 +66,8 @@ android-build-device: check-android-device-id ## Build and run "Pilbo Dev" in De
 	rm -rf $(ANDROID_AUTOLINKING_CACHE)
 	APP_VARIANT=dev pnpm expo run:android --device $(ANDROID_DEVICE_NAME)
 
-android-build-release: check-android-device-id ## Build and install "Pilbo" in Release on the Android phone (ANDROID_DEVICE_ID), signed arm64 and universal APKs
-	APP_VARIANT=prod pnpm expo prebuild --no-clean --platform android
+android-build-release: check-android-device-id ## Build and install "Pilbo" in Release on the Android phone (ANDROID_DEVICE_ID), signed arm64 and universal APKs (BUILD_NUMBER=… for the versionCode, 1 by default)
+	APP_VARIANT=prod BUILD_NUMBER=$(BUILD_NUMBER) pnpm expo prebuild --no-clean --platform android
 	rm -rf $(ANDROID_AUTOLINKING_CACHE) $(ANDROID_RELEASE_APK_DIRECTORY)
 	APP_VARIANT=prod pnpm expo run:android --device $(ANDROID_DEVICE_NAME) --variant release --no-bundler
 	@echo "$(GREEN)APK arm64: $(CURDIR)/$(ANDROID_RELEASE_APK_DIRECTORY)/app-arm64-v8a-release.apk$(NC)"
@@ -75,6 +75,12 @@ android-build-release: check-android-device-id ## Build and install "Pilbo" in R
 
 testflight: ## Build "Pilbo" and send it to TestFlight (fastlane)
 	PATH="$(RUBY_BIN):$$PATH" bundle exec fastlane ios beta
+
+android-bundle: ## Build the "Pilbo" Android App Bundle without uploading it (BUILD_NUMBER=…)
+	BUILD_NUMBER=$(BUILD_NUMBER) PATH="$(RUBY_BIN):$$PATH" bundle exec fastlane android bundle
+
+android-beta: ## Build "Pilbo" and send it to the Play Store closed test (fastlane, TRACK=internal for the internal test)
+	TRACK=$(TRACK) PATH="$(RUBY_BIN):$$PATH" bundle exec fastlane android beta
 
 version-bump: ## Bump the app version in app.config.ts (TYPE=major|minor|patch)
 	@node scripts/bumpVersion.mjs $(TYPE)

@@ -36,7 +36,7 @@ En gros, on cherche une proof of concept : dans le doute, demander si c'est dans
   - Pour quitter des modales ouvertes en ignorant leurs modifications non enregistrées (sans dialogue d'abandon) : `leaveWithoutConfirmation` (`features/pillbox/hooks/useModalClosing.ts`).
 - Stockage : **expo-sqlite + Drizzle ORM**, migrations générées par drizzle-kit. Comment travailler avec la base : voir `./docs/database.md`.
   - Mettre à jour la section **Schéma** de `docs/database.md` à chaque migration.
-  - Une migration livrée sur TestFlight est figée. Entre deux livraisons, une seule migration « en cours », qui doit conserver les données des testeurs avant `make testflight`.
+  - Une migration livrée sur TestFlight ou sur une piste du Play Store est figée. Entre deux livraisons, une seule migration « en cours », qui doit conserver les données des testeurs avant `make testflight` et `make android-beta`.
   - Le schéma Drizzle est la source de vérité des types (`$inferSelect` / `$inferInsert`).
   - Lectures : SQL brut avec le tag `sql` (``database.all<Type>(sql`...`)``), pas de query builder pour les selects. Référencer les colonnes du schéma (`${table.column}`) au lieu de noms en dur, et aliaser les colonnes en camelCase (`AS takenAt`).
   - Écritures : Drizzle ORM (`insert`, `update`, `delete`), conditions écrites avec `sql`.
@@ -45,6 +45,7 @@ En gros, on cherche une proof of concept : dans le doute, demander si c'est dans
 - État UI : état local ou contexte React d'abord. **Zustand** seulement si un état UI doit être partagé entre des composants éloignés. Jamais pour les données persistées (SQLite uniquement).
   - Exception : les petits réglages UI persistés (ex. `onboardingDone`, préférences dans `features/settings/store/settingsStore.ts`) utilisent Zustand `persist` avec `expo-sqlite/kv-store`, via le stockage synchrone partagé `shared/storage/synchronousStorage.ts` pour éviter un flash au démarrage.
 - Données **100 % locales** : pas de backend, pas de compte utilisateur.
+- Pages web (support, confidentialité, « Rejoindre la bêta ») : `website/`, FR/EN, déployées sur GitHub Pages à chaque push sur `main`.
 - i18n : **i18next + react-i18next + expo-localization** (français et anglais), clés = texte français, un namespace par feature, `make i18n-extract`. Voir la section i18n de `docs/architecture.md`.
 - Notifications : **expo-notifications** (notifications locales programmées).
 - Tests : **Jest + React Native Testing Library**. Deux projets Jest : `ios` (toute la suite) et `android` (uniquement les `*.android.spec.ts(x)`).
@@ -79,6 +80,7 @@ Le gestionnaire de paquets est **pnpm**. Utiliser le `Makefile` (`make help` lis
 - `make testflight` : « Pilbo » en Release envoyé sur TestFlight par fastlane (lane `beta`, `fastlane/Fastfile`) : numéro de build +1 automatique, envoi au groupe externe « Pilbo Externe ».
   - Clé API App Store Connect avec le rôle **Admin** (nécessaire pour la signature cloud), `.p8` hors du repo, identifiants dans `.env`.
   - fastlane tourne avec le Ruby Homebrew via Bundler ; le prebuild de la lane s'exécute hors de l'environnement Bundler (`Bundler.with_unbundled_env`), sinon `pod install` échoue.
+- `make android-bundle BUILD_NUMBER=…` : AAB signé de « Pilbo », sans envoi. `make android-beta` : « Pilbo » envoyé en test fermé sur le Play Store par fastlane (lane `android beta`, versionCode automatique, `TRACK=internal` pour le test interne). Ensuite `android/` est en variante « Pilbo » (voir la note `INTERNET`). Voir la section Play Console de `docs/android_build.md`.
 - `make version-bump TYPE=major|minor|patch` : change `version` dans `app.config.ts`. Le premier build d'une nouvelle version repasse par la revue bêta d'Apple.
 - `make tests` : lint, prettier, TypeScript, Jest et audit. Doit passer avant de considérer une étape terminée.
 - `make test-e2e` : flows Maestro dans `e2e/` (« Pilbo Dev » doit être installée sur un simulateur démarré). Après une nouvelle installation, fermer l'alerte « Ouvrir dans « Pilbo Dev » ? » avant de lancer les flows. Si l'iPhone est branché, Maestro le cible et échoue : lancer `maestro --device <id du simulateur> test e2e/`.

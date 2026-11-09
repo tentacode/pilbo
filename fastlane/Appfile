@@ -1,2 +1,5 @@
 app_identifier("com.tentacode.pilbo")
 team_id(ENV.fetch("APPLE_TEAM_ID"))
+
+package_name("com.tentacode.pilbo")
+json_key_file(ENV.fetch("GOOGLE_PLAY_JSON_KEY_PATH", nil))

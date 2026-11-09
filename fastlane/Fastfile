@@ -55,3 +55,46 @@ platform :ios do
     )
   end
 end
+
+ANDROID_TRACKS = ["alpha", "internal"].freeze
+ANDROID_RELEASE_NOTES_MAXIMUM_LENGTH = 500
+ANDROID_BUNDLE_PATH = "android/app/build/outputs/bundle/release/app-release.aab".freeze
+
+platform :android do
+  desc "Build the Pilbo Android App Bundle without uploading it (BUILD_NUMBER=…)"
+  lane :bundle do |options|
+    build_number = (options[:build_number] || ENV.fetch("BUILD_NUMBER", "")).to_s
+    UI.user_error!("BUILD_NUMBER must be a positive integer, e.g. make android-bundle BUILD_NUMBER=2") unless build_number.match?(/\A[1-9]\d*\z/)
+
+    Bundler.with_unbundled_env do
+      sh("cd .. && APP_VARIANT=prod BUILD_NUMBER=#{build_number} pnpm expo prebuild --clean --platform android")
+    end
+    FileUtils.rm_rf(File.join(__dir__, "../android/build/generated/autolinking"))
+
+    gradle(task: "bundle", build_type: "Release", project_dir: "android/")
+  end
+
+  desc "Build Pilbo and send it to the Play Store closed test (TRACK=internal for the internal test)"
+  lane :beta do
+    track = ENV.fetch("TRACK", "").empty? ? "alpha" : ENV.fetch("TRACK")
+    UI.user_error!("Unknown TRACK \"#{track}\", expected \"alpha\" (closed test) or \"internal\"") unless ANDROID_TRACKS.include?(track)
+
+    version_code = ANDROID_TRACKS.flat_map { |name| google_play_track_version_codes(track: name) }.max.to_i + 1
+
+    LOCALES.each do |locale|
+      release_notes = read_text("what_to_test/#{locale}.txt")
+      UI.user_error!("what_to_test/#{locale}.txt is longer than #{ANDROID_RELEASE_NOTES_MAXIMUM_LENGTH} characters") if release_notes.length > ANDROID_RELEASE_NOTES_MAXIMUM_LENGTH
+      changelogs_directory = File.join(__dir__, "metadata/android/#{locale}/changelogs")
+      FileUtils.mkdir_p(changelogs_directory)
+      File.write(File.join(changelogs_directory, "#{version_code}.txt"), release_notes)
+    end
+
+    bundle(build_number: version_code)
+
+    upload_to_play_store(
+      track: track,
+      aab: ANDROID_BUNDLE_PATH,
+      release_status: "completed"
+    )
+  end
+end

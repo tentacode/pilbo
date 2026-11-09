@@ -1,3 +1,3 @@
 Merci de tester Pilbo !
 
-Essayez d'ajouter vos prises, de valider un rappel depuis la notification et de suivre un stock. Si quelque chose vous semble étrange, envoyez-nous une capture d'écran depuis TestFlight.
+Essayez d'ajouter vos prises, de valider un rappel depuis la notification et de suivre un stock. Si quelque chose vous semble étrange, écrivez-nous à pilbo@tentacode.dev, avec une capture d'écran si possible.

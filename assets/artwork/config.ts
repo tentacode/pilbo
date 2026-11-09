@@ -16,6 +16,7 @@ export type ArtworkConfig = {
   adaptiveIcon: ArtworkLayout & { devHeroSize: number };
   splash: ArtworkLayout;
   androidSplash: { heroSize: number };
+  featureGraphic: ArtworkLayout;
 };
 
 export const artworkConfig: ArtworkConfig = {
@@ -77,5 +78,14 @@ export const artworkConfig: ArtworkConfig = {
   androidSplash: {
     /** Size of the capsule, same scale as icon.heroSize. */
     heroSize: 26,
+  },
+  /** Play Store feature graphic, 1024 × 500 px, without text. The Play Store icon (512 × 512 px) is the app icon, resized. */
+  featureGraphic: {
+    /** Size of the central capsule, same scale as icon.heroSize (12 ≈ 350 px tall once tilted). Higher = bigger. */
+    heroSize: 12,
+    /** Background density: pills per row, decimals allowed. Higher = more pills, closer together. */
+    pillsPerRow: 6,
+    /** Random size range of the background pills [minimum, maximum], same scale as heroSize. */
+    pillSize: [3, 5.5],
   },
 };
