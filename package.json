@@ -103,5 +103,14 @@
         ]
       }
     ]
+  },
+  "expo": {
+    "autolinking": {
+      "android": {
+        "buildFromSource": [
+          "expo-notifications"
+        ]
+      }
+    }
   }
 }

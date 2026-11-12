@@ -225,6 +225,24 @@ describe("planReminders", () => {
     expect(reminders.map(({ badge }) => badge)).toEqual([1, 1, 1, 1, 1, 1]);
   });
 
+  it("groups the reminders of an intake by day", () => {
+    const reminders = planReminders({
+      todayIntakes: [MORNING, NOON],
+      tomorrowIntakes: [MORNING],
+      todayLogs: [],
+      now: at(4, 7, 0),
+    });
+
+    expect([...new Set(reminders.map(({ presentationGroup }) => presentationGroup))]).toEqual([
+      "reminder-intake-8-20-2026-10-04",
+      "reminder-intake-12-20-2026-10-04",
+      "reminder-intake-8-20-2026-10-05",
+    ]);
+    expect(
+      reminders.filter(({ presentationGroup }) => presentationGroup?.endsWith("8-20-2026-10-04")),
+    ).toHaveLength(6);
+  });
+
   it("writes the identifier, the title and the body", () => {
     const [reminder] = planReminders({
       todayIntakes: [MORNING],
@@ -239,6 +257,7 @@ describe("planReminders", () => {
       title: "C'est l'heure de votre prise de 08:20",
       body: "1 × Lithium 250 mg",
       badge: 1,
+      presentationGroup: "reminder-intake-8-20-2026-10-04",
       interruptionLevel: "timeSensitive",
       sound: "beep",
       channelId: "intake-reminders",

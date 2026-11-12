@@ -4,11 +4,12 @@ import {
   reminderChannelId,
 } from "@/config/notifications";
 import { type Intake, intakeDateOn } from "@/domain/intake";
-import { type IntakeLog, toLocalDateTime } from "@/domain/intakeLog";
+import { type IntakeLog, toLocalDate, toLocalDateTime } from "@/domain/intakeLog";
 import type { NotificationSound } from "@/domain/sound";
 
 import { formatReminderBody, formatReminderTitle } from "./formatters";
 import { REMINDER_IDENTIFIER_PREFIX } from "./notificationTab";
+import { reminderBadge } from "./reminderBadge";
 
 export type PlannedReminder = {
   identifier: string;
@@ -16,6 +17,7 @@ export type PlannedReminder = {
   title: string;
   body: string;
   badge?: number;
+  presentationGroup?: string;
   interruptionLevel: "active" | "timeSensitive";
   sound: NotificationSound;
   channelId: string;
@@ -47,7 +49,8 @@ function planDayReminders(day: Date, pendingIntakes: Intake[]): PlannedReminder[
         date,
         title: formatReminderTitle(intake),
         body: formatReminderBody(intake),
-        badge: countPendingAt(date),
+        badge: reminderBadge(countPendingAt(date)),
+        presentationGroup: `${REMINDER_IDENTIFIER_PREFIX}${intake.id}-${toLocalDate(day)}`,
         interruptionLevel: "timeSensitive",
         sound: intake.sound,
         channelId: reminderChannelId(intake.sound),

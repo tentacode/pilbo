@@ -66,6 +66,7 @@ En gros, on cherche une proof of concept : dans le doute, demander si c'est dans
 
 - Canaux de notification : importance, son et vibration sont figés à la création. Pour les changer, changer l'identifiant du canal (`NOTIFICATION_CHANNEL_IDS`).
 - Rappels en alarmes exactes, reprogrammés après un redémarrage : voir la section Android de `docs/notifications.md`.
+- expo-notifications est patché (`patches/expo-notifications.patch`) et compilé depuis les sources sur Android (`buildFromSource` dans `package.json`) : à revérifier à chaque montée de version.
 - Après un build « Pilbo » (`make android-build-release`), `android/app/src/main/AndroidManifest.xml` garde `INTERNET` avec `tools:node="remove"`, et `prebuild --no-clean` ne le retire pas. « Pilbo Dev » ne joint alors plus Metro (« Unable to load script »). Supprimer cette ligne, ou lancer `make clean`, avant `make android-build-emulator` / `make android-build-device`.
 
 ## Commandes

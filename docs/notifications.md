@@ -6,25 +6,27 @@ Validé sur iPhone (spec 02) : notifications app fermée, son custom, badge, ann
 
 ## Fichiers
 
-| Fichier                                                         | Rôle                                                                      |
-| --------------------------------------------------------------- | ------------------------------------------------------------------------- |
-| `src/config/notifications.ts`                                   | Nombre de rappels, plafond de 64, identifiants des canaux Android.        |
-| `src/domain/sound.ts`                                           | Liste et ordre des sons (`NOTIFICATION_SOUNDS`), fichier d'un son.        |
-| `src/features/notifications/notifications.ts`                   | Appels iOS : permission, nettoyage, planification.                        |
-| `src/features/notifications/rescheduleReminders.ts`             | Lit la base, calcule les rappels, les replanifie.                         |
-| `src/features/notifications/utils/planReminders.ts`             | Calcul pur des rappels et des badges (`now` en paramètre).                |
-| `src/features/notifications/utils/planLowStockAlerts.ts`        | Calcul pur des alertes de stock bas (`now` en paramètre).                 |
-| `src/features/notifications/hooks/useReminderScheduling.ts`     | Replanification au lancement, au premier plan et au changement de langue. |
-| `src/features/notifications/hooks/useNotificationPermission.ts` | Statut de la permission (`isGranted`) et demande (`request`).             |
-| `src/features/notifications/hooks/useOpenTabOnNotification.ts`  | Ouvre l'onglet de la notification touchée.                                |
-| `src/features/notifications/notificationChannels.android.ts`    | Canaux Android (`.ios.ts` sans effet).                                    |
-| `src/features/notifications/SoundPickerScreen.tsx`              | Écran de choix d'un son (prise, réglages).                                |
-| `src/features/notifications/hooks/useSoundPreview.ts`           | Écoute d'un son dans l'écran de choix (`expo-audio`).                     |
-| `plugins/withExactAlarmPermissions.js`                          | Permissions d'alarmes exactes Android.                                    |
-| `assets/sounds/`                                                | Sons des notifications (`make sounds`, sauf `beep.wav`).                  |
-| `scripts/generateSounds.mjs`                                    | Génère les sons et `silence.wav`.                                         |
-| `plugins/withoutPushEntitlement.js`                             | Retire la permission push (compte gratuit).                               |
-| `app.config.ts`                                                 | Déclare les sons, les plugins et la Team de signature.                    |
+| Fichier                                                         | Rôle                                                                                   |
+| --------------------------------------------------------------- | -------------------------------------------------------------------------------------- |
+| `src/config/notifications.ts`                                   | Nombre de rappels, plafond de 64, identifiants des canaux Android.                     |
+| `src/domain/sound.ts`                                           | Liste et ordre des sons (`NOTIFICATION_SOUNDS`), fichier d'un son.                     |
+| `src/features/notifications/notifications.ts`                   | Appels iOS : permission, nettoyage, planification.                                     |
+| `src/features/notifications/rescheduleReminders.ts`             | Lit la base, calcule les rappels, les replanifie.                                      |
+| `src/features/notifications/utils/planReminders.ts`             | Calcul pur des rappels et des badges (`now` en paramètre).                             |
+| `src/features/notifications/utils/planLowStockAlerts.ts`        | Calcul pur des alertes de stock bas (`now` en paramètre).                              |
+| `src/features/notifications/utils/reminderBadge.ios.ts`         | Badge d'un rappel : le nombre de prises en attente (`.android.ts` : aucun).            |
+| `patches/expo-notifications.patch`                              | Groupe de présentation (voir [Groupe de présentation](#groupe-de-présentation-patch)). |
+| `src/features/notifications/hooks/useReminderScheduling.ts`     | Replanification au lancement, au premier plan et au changement de langue.              |
+| `src/features/notifications/hooks/useNotificationPermission.ts` | Statut de la permission (`isGranted`) et demande (`request`).                          |
+| `src/features/notifications/hooks/useOpenTabOnNotification.ts`  | Ouvre l'onglet de la notification touchée.                                             |
+| `src/features/notifications/notificationChannels.android.ts`    | Canaux Android (`.ios.ts` sans effet).                                                 |
+| `src/features/notifications/SoundPickerScreen.tsx`              | Écran de choix d'un son (prise, réglages).                                             |
+| `src/features/notifications/hooks/useSoundPreview.ts`           | Écoute d'un son dans l'écran de choix (`expo-audio`).                                  |
+| `plugins/withExactAlarmPermissions.js`                          | Permissions d'alarmes exactes Android.                                                 |
+| `assets/sounds/`                                                | Sons des notifications (`make sounds`, sauf `beep.wav`).                               |
+| `scripts/generateSounds.mjs`                                    | Génère les sons et `silence.wav`.                                                      |
+| `plugins/withoutPushEntitlement.js`                             | Retire la permission push (compte gratuit).                                            |
+| `app.config.ts`                                                 | Déclare les sons, les plugins et la Team de signature.                                 |
 
 ## Configuration (`app.config.ts`)
 
@@ -72,6 +74,7 @@ Un échec est seulement affiché en console : tout sera replanifié au prochain 
 - **Identifiant** : `reminder-<intakeId>-<date locale>` (ex. `reminder-…-2026-10-14T08:40`).
 - **Contenu** : titre « C'est l'heure de votre prise de 08:20 », corps « 1 × Lithium 250 mg, 1 × Lamictal 50 mg ». Son de la prise (`intake.sound`), `interruptionLevel: "timeSensitive"`.
 - **Canal Android** : `channelId` du son de la prise (`reminderChannelId`), dans le trigger.
+- **Groupe de présentation** : `presentationGroup` = `reminder-<intakeId>-<date locale du jour>` (ex. `reminder-…-2026-10-14`), le même pour les 6 rappels d'une prise. Envoyé dans `data.presentationGroup`, voir [Groupe de présentation](#groupe-de-présentation-patch).
 - **Langue** : textes générés dans la langue courante de l'app (`i18n.t`, namespace `notifications`), heure au format 12 h / 24 h du réglage iOS.
 
 ### Alertes de stock bas (`planLowStockAlerts`)
@@ -109,6 +112,19 @@ Un échec est seulement affiché en console : tout sera replanifié au prochain 
 ### Badge
 
 Fonctionne app fermée : chaque rappel porte un chiffre calculé à l'avance. C'est le nombre de prises du même jour, sans log, dont l'heure est ≤ l'heure du rappel. iOS l'affiche quand le rappel se déclenche.
+
+iOS uniquement (`reminderBadge.ios.ts`) : sur Android, aucun `badge` (voir [Badge Android](#badge-1)).
+
+### Groupe de présentation (patch)
+
+expo-notifications ne sait ni remplacer une notification affichée par une autre planifiée, ni regrouper des notifications locales. Un patch pnpm (`patches/expo-notifications.patch`, `patchedDependencies` dans `pnpm-workspace.yaml`) lit `data.presentationGroup` :
+
+- **Android** (`ExpoPresentationDelegate.kt`) : tag de la notification affichée = le groupe (l'identifiant sinon). Une relance **remplace** la précédente dans le volet : une notification par prise en attente. Le son rejoue à chaque relance.
+- **iOS** (`NotificationRecords.swift`) : `threadIdentifier` = le groupe. Les relances d'une prise forment **une pile** dans le centre de notifications.
+
+Android utilise par défaut un AAR précompilé d'expo-notifications, qui ignorerait le patch : `expo.autolinking.android.buildFromSource` (`package.json`) force la compilation depuis les sources. iOS compile déjà depuis les sources.
+
+L'identifiant de la requête ne change pas (tap, annulation). Montée de version d'expo-notifications : `pnpm install` échoue si le patch ne s'applique plus, le refaire avec `pnpm patch expo-notifications`.
 
 ## Handler (premier plan)
 
@@ -200,6 +216,8 @@ Un canal par type et par son : Android fige le son d'un canal à sa création.
 ### Badge
 
 Le chiffre de `setBadgeCountAsync` et de `badge` dépend du lanceur (souvent un simple point sur l'icône). Pas d'erreur s'il n'est pas géré.
+
+`badge` devient `setNumber()` sur **chaque** notification, et les lanceurs additionnent ces nombres (deux rappels avec `badge: 2` → 4). Les rappels n'ont donc pas de `badge` sur Android : le lanceur compte les notifications affichées, une par prise grâce au [groupe de présentation](#groupe-de-présentation-patch). L'alerte de stock bas compte aussi pour 1.
 
 ### Économie d'énergie
 

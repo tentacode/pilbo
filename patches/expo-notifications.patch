@@ -1,0 +1,52 @@
+diff --git a/android/src/main/java/expo/modules/notifications/service/delegates/ExpoPresentationDelegate.kt b/android/src/main/java/expo/modules/notifications/service/delegates/ExpoPresentationDelegate.kt
+index 38f6fbaf0c595009031fff8659dcd2def12e5205..40325ed78ab1879a083088b1dbd6aa71d1a4e7b3 100644
+--- a/android/src/main/java/expo/modules/notifications/service/delegates/ExpoPresentationDelegate.kt
++++ b/android/src/main/java/expo/modules/notifications/service/delegates/ExpoPresentationDelegate.kt
+@@ -106,7 +106,7 @@ open class ExpoPresentationDelegate(
+       val androidNotification = createNotification(notification, behavior)
+ 
+       NotificationManagerCompat.from(context).notify(
+-        notification.notificationRequest.identifier,
++        getNotifyTag(notification.notificationRequest),
+         getNotifyId(notification.notificationRequest),
+         androidNotification
+       )
+@@ -124,6 +124,12 @@ open class ExpoPresentationDelegate(
+     }
+   }
+ 
++  // Pilbo patch: notifications sharing a "presentationGroup" data value replace each other.
++  protected open fun getNotifyTag(request: NotificationRequest): String {
++    val presentationGroup = request.content.body?.optString("presentationGroup")
++    return if (presentationGroup.isNullOrEmpty()) request.identifier else presentationGroup
++  }
++
+   protected open fun getNotifyId(request: NotificationRequest?): Int {
+     return ANDROID_NOTIFICATION_ID
+   }
+@@ -149,7 +155,8 @@ open class ExpoPresentationDelegate(
+       } else {
+         // If the notification exists, let's assume it's ours, we have no reason to believe otherwise
+         val existingNotification = this.getAllPresentedNotifications().find { it.notificationRequest.identifier == identifier }
+-        NotificationManagerCompat.from(context).cancel(identifier, getNotifyId(existingNotification?.notificationRequest))
++        val tag = existingNotification?.notificationRequest?.let { getNotifyTag(it) } ?: identifier
++        NotificationManagerCompat.from(context).cancel(tag, getNotifyId(existingNotification?.notificationRequest))
+       }
+     }
+   }
+diff --git a/ios/ExpoNotifications/Notifications/NotificationRecords.swift b/ios/ExpoNotifications/Notifications/NotificationRecords.swift
+index 58f69014923a0d32119b992fbdcaccaed1928121..cb82f5d7835b68260d8078ca6c4e791ca52e83a0 100644
+--- a/ios/ExpoNotifications/Notifications/NotificationRecords.swift
++++ b/ios/ExpoNotifications/Notifications/NotificationRecords.swift
+@@ -365,6 +365,11 @@ public struct NotificationContentRecord: Record {
+       content.categoryIdentifier = categoryIdentifier
+     }
+ 
++    // Pilbo patch: notifications sharing a "presentationGroup" data value are grouped together.
++    if let presentationGroup = data?["presentationGroup"] as? String {
++      content.threadIdentifier = presentationGroup
++    }
++
+     if let sound = sound {
+       if let soundBool = try? sound.as(Bool.self) {
+         content.sound = soundBool ? .default : .none

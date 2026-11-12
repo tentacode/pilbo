@@ -19,3 +19,5 @@ audit:
     - GHSA-vcc3-ghjq-m6fr
     - GHSA-qr28-fpjm-wq7f
     - GHSA-gcqx-w48m-w2h4
+patchedDependencies:
+  expo-notifications: patches/expo-notifications.patch
