@@ -7,6 +7,8 @@ export const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     flexShrink: 1,
+  },
+  withPreviousButton: {
     marginLeft: -spacing.small,
   },
   date: {

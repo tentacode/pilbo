@@ -24,18 +24,15 @@ export function DaySwitcher({ dayNavigation }: DaySwitcherProps) {
   const date = formatSwitcherDate(displayedDate, language);
 
   return (
-    <View style={styles.switcher}>
-      <IconButton
-        icon="chevronLeft"
-        variant="plain"
-        accessibilityLabel={formatPreviousDayAccessibilityLabel(
-          t,
-          previousDate ?? displayedDate,
-          language,
-        )}
-        isDisabled={previousDate === null}
-        onPress={() => previousDate && showDate(previousDate)}
-      />
+    <View style={[styles.switcher, previousDate !== null && styles.withPreviousButton]}>
+      {previousDate === null ? null : (
+        <IconButton
+          icon="chevronLeft"
+          variant="plain"
+          accessibilityLabel={formatPreviousDayAccessibilityLabel(t, previousDate, language)}
+          onPress={() => showDate(previousDate)}
+        />
+      )}
       <Text
         variant="small"
         tone="secondary"

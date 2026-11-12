@@ -90,7 +90,7 @@ describe("TodayHeader", () => {
     expect(dayNavigation.showDate).toHaveBeenNthCalledWith(2, "2026-10-24");
   });
 
-  it("disables the previous day button on the first day of history", async () => {
+  it("hides the previous day button on the first day of history", async () => {
     await render(
       <TodayHeader
         dayNavigation={createDayNavigation({ ...PAST_DAY, previousDate: null })}
@@ -99,7 +99,22 @@ describe("TodayHeader", () => {
       { wrapper },
     );
 
-    expect(screen.getByRole("button", { name: /^Jour précédent/ })).toBeDisabled();
+    expect(screen.queryByRole("button", { name: /^Jour précédent/ })).not.toBeOnTheScreen();
+    expect(screen.getByRole("button", { name: /^Jour suivant/ })).toBeOnTheScreen();
+  });
+
+  it("shows today without day buttons when the history starts today", async () => {
+    await render(
+      <TodayHeader
+        dayNavigation={createDayNavigation({ previousDate: null })}
+        onOpenCalendar={jest.fn()}
+      />,
+      { wrapper },
+    );
+
+    expect(screen.getByText("24 oct. 2026")).toBeOnTheScreen();
+    expect(screen.queryByRole("button", { name: /^Jour précédent/ })).not.toBeOnTheScreen();
+    expect(screen.queryByRole("button", { name: /^Jour suivant/ })).not.toBeOnTheScreen();
   });
 
   it("opens the calendar", async () => {
