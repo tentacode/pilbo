@@ -60,13 +60,13 @@ Le compte Play Console, la création de l'app et les déclarations se font à la
 - [x] `fastlane/metadata/android/<fr-FR|en-US>/` : `title.txt` (« Pilbo »), `short_description.txt` (80 caractères max), `full_description.txt` (4 000 max). Ton et vocabulaire prudent de la spec 25 (un pilulier et des rappels, pas de conseil médical).
 - [x] Tu valides les textes FR et EN.
 - [x] Captures sur l'émulateur (« Pilbo Dev », données de test), FR et EN, 4 à 6 écrans (Aujourd'hui, pilulier, stock, calendrier…) : `adb exec-out screencap -p`, rangées dans `images/phoneScreenshots/` de chaque langue (`1_<nom>.png`…). Pas de barre de debug, heure et batterie propres si possible (mode démo : `adb shell settings put global sysui_demo_allowed 1`).
-- [ ] Tu valides les captures.
+- [x] Tu valides les captures.
 
 ## Étape 6 — Compte Play Console
 
-- [ ] Tu crées le compte **personnel** (play.google.com/console, 25 $).
-- [ ] Tu fais la vérification d'identité, puis celle de l'appareil avec l'app Play Console sur le S9.
-- [ ] Tu déclares le statut **non-trader** (DSA).
+- [x] Tu crées le compte **personnel** (play.google.com/console, 25 $).
+- [ ] Tu fais la vérification d'identité, puis celle de l'appareil avec l'app Play Console sur le S9 (envoyées, en attente de Google).
+- [x] Tu déclares le statut **non-trader** (DSA).
 - [x] Relire l'aide officielle sur le test fermé des comptes personnels (12 testeurs, 14 jours d'affilée) et noter tout écart avec la spec.
   - Pas d'écart : 12 testeurs inscrits au moment de la demande, chacun depuis 14 jours consécutifs (un testeur qui se désinscrit repart à zéro).
   - À préparer pour la spec 28 : la demande d'accès à la production demande un résumé des retours des testeurs (et comment ils ont été recueillis), leur engagement (fonctions utilisées) et les changements faits depuis le test.
@@ -92,7 +92,7 @@ Le compte Play Console, la création de l'app et les déclarations se font à la
 
 ## Étape 8 — Test fermé et premier envoi
 
-- [ ] Tu crées le Google Group `pilbo-testeurs`, « Tout le monde peut rejoindre » (et voir les membres réservé aux gestionnaires).
+- [x] Tu crées le Google Group `pilbo-beta` (https://groups.google.com/g/pilbo-beta), « Tout le monde peut rejoindre » (et voir les membres réservé aux gestionnaires).
 - [ ] Piste « Test fermé – Alpha » : le groupe comme liste de testeurs, pays : tous, e-mail de retour `pilbo@tentacode.dev`.
 - [ ] `make android-bundle BUILD_NUMBER=2`.
 - [ ] Tu envoies `android/app/build/outputs/bundle/release/app-release.aab` sur la piste fermée, notes de version de `fastlane/what_to_test/`, puis tu envoies en revue.

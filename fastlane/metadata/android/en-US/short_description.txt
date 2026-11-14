@@ -1,1 +1,1 @@
-A simple pill box: intake reminders, stocks and history, with no account.
+Pilbo is your assistant that helps you take your medications.

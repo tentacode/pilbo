@@ -1,1 +1,1 @@
-Un pilulier simple : rappels de prises, stocks et historique, sans compte.
+Pilbo est votre assistant qui vous aide à prendre vos médicaments.
