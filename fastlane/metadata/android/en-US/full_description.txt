@@ -1,31 +1,33 @@
-Pilbo is a simple pill box on your phone. It reminds you of your medication intakes, tracks your stocks and keeps your history. No account needed: your data stays on your phone.
+Pilbo is a virtual pill box designed for people who take a lot of medications and sometimes forget a dose. Pilbo is completely free, with no account, and your data stays on your phone.
 
-YOUR INTAKES
-• Several intakes a day, each with its medications and quantities.
-• On the days of the week you choose.
-• As-needed medications, to take outside your intakes.
+YOUR MEDICATION INTAKES IN YOUR PILL BOX
+• Organize your intakes at different times, each with its medications and quantities.
+• Pick the days of the week that suit you.
+• Customize the shape, size and colors of your medications to recognize them at a glance.
 
-REMINDERS
-• A notification at the time of each intake.
-• Confirm an intake right from the notification.
-• Choose the sound of your reminders.
+DISCREET, EFFECTIVE REMINDERS
+• A discreet notification every 10 minutes, instead of an alarm you turn off without taking your medications.
+• Confirm an intake right from the notification or in the app.
+• Customize the sound of your reminders.
+• Find the history of your intakes in a calendar.
 
-STOCKS
-• The stock goes down with each intake.
-• An alert before you run out.
+NO MORE EMPTY BOXES
+• Choose to track the stock of the important medications in your pill box.
+• Each intake automatically lowers your stock.
+• A notification alerts you before you run out.
+• Add a new box to your stock in one tap.
+• It also works for your everyday medications (e.g. paracetamol).
 
-HISTORY
-• A calendar of your intakes, day by day.
-
-PRIVATE
-• No account, no server.
-• No advertising, no tracking.
+PRIVACY
+• Pilbo is free, with no ads and no collection of your data.
+• No account, no server: your data is only on your phone.
 • Pilbo works without an internet connection.
+• Pilbo is an open source project: https://github.com/tentacode/pilbo
 
-EASY TO READ
-• Dark mode.
-• Adapts to the text size of your phone.
+ACCESSIBILITY
+• Pilbo was designed to meet the WCAG / RAAM standards.
+• The app works with assistive technologies: screen readers, keyboard navigation…
 
-In English and French.
+Available in English and French.
 
 Pilbo is not a medical device. It does not replace the advice of a doctor or pharmacist.

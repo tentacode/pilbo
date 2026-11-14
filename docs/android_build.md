@@ -142,17 +142,19 @@ Android refuse une mise à jour signée par une autre clé. Sans le keystore, il
 
 « Pilbo » (`com.tentacode.pilbo`) est distribuée en test fermé sur le Play Store (spec 29). Compte personnel : au moins 12 testeurs inscrits pendant 14 jours d'affilée avant de pouvoir demander l'accès à la production (spec 28).
 
+L'interface de la Play Console change souvent : passer par les tâches du tableau de bord plutôt que par les menus. La signature de l'app se trouve dans « Protected with Play ».
+
 ### Commandes
 
 - `make android-bundle BUILD_NUMBER=…` : construit l'AAB signé de « Pilbo » sans l'envoyer (`android/app/build/outputs/bundle/release/app-release.aab`), pour un envoi à la main dans la Play Console.
 - `make android-beta` : lane fastlane `android beta` (`fastlane/Fastfile`) :
-  - versionCode = plus grand versionCode des pistes `alpha` et `internal`, plus 1 ;
+  - versionCode = plus grand versionCode du test fermé (`alpha`) et du test interne (`internal`), plus 1 ;
   - notes de version : `fastlane/what_to_test/<langue>.txt` (communes avec TestFlight, 500 caractères max) copiées dans `fastlane/metadata/android/<langue>/changelogs/<versionCode>.txt` (non versionné) ;
   - `prebuild --clean` en variante « Pilbo », puis AAB (`bundleRelease`), comme `make android-bundle` ;
-  - envoi sur la piste fermée avec la fiche de `fastlane/metadata/android/` (textes, icône, image de présentation, captures).
-- `make android-beta TRACK=internal` : piste de test interne (sans revue, testeurs ajoutés à la main dans la Play Console).
+  - envoi en test fermé avec la fiche de `fastlane/metadata/android/` (textes, icône, image de présentation, captures).
+- `make android-beta TRACK=internal` : test interne (sans revue, testeurs ajoutés à la main dans la Play Console).
 
-Pistes : `alpha` (« Test fermé – Alpha », par défaut) et `internal` (test interne).
+Identifiants fastlane : `alpha` (test fermé, « Test fermé – Alpha » dans la Play Console, par défaut) et `internal` (test interne).
 
 L'icône 512 × 512 et l'image de présentation 1024 × 500 de la fiche sont générées par `make artwork`.
 
@@ -170,7 +172,7 @@ fastlane envoie les builds avec un compte de service Google Cloud :
 
 1. Google Cloud : un projet, l'API « Google Play Android Developer » activée, un compte de service et sa clé JSON.
 2. Clé rangée hors du repo, ex. `~/.google-play/pilbo-service-account.json` (`chmod 600`), chemin dans `GOOGLE_PLAY_JSON_KEY_PATH` (`.env`, lu par `fastlane/Appfile`).
-3. Play Console → Utilisateurs et autorisations : inviter l'adresse du compte de service, avec des droits sur Pilbo limités aux pistes de test et à la fiche.
+3. Play Console → Utilisateurs et autorisations : inviter l'adresse du compte de service, avec des droits sur Pilbo limités aux tests et à la fiche.
 
 ### Play App Signing
 
@@ -180,7 +182,7 @@ La sauvegarde du keystore reste indispensable : en cas de perte, Google peut ré
 
 ### Test fermé
 
-- Testeurs : Google Group `pilbo-testeurs` (« Tout le monde peut rejoindre »), déclaré comme liste de testeurs de la piste fermée.
+- Testeurs : Google Group `pilbo-beta` (« Tout le monde peut rejoindre »), déclaré comme liste de testeurs du test fermé.
 - Lien à partager : la page « Rejoindre la bêta » (`https://tentacode.github.io/pilbo/beta/`, sources dans `website/`), qui présente les deux étapes dans l'ordre : rejoindre le groupe, puis s'inscrire au test.
 - Revue de Google à chaque build envoyé (de quelques heures à plusieurs jours).
-- Ne pas mettre la piste en pause pendant les 14 jours.
+- Ne pas mettre le test fermé en pause pendant les 14 jours.

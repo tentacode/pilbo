@@ -21,6 +21,7 @@ export const variantStyles = StyleSheet.create({
     fontVariant: ["tabular-nums"],
   },
   lead: { fontFamily: fontFamily.regular, fontSize: fontSize.lead, lineHeight: lineHeight.lead },
+  leadInline: { fontFamily: fontFamily.regular, fontSize: fontSize.lead },
   body: { fontFamily: fontFamily.regular, fontSize: fontSize.body },
   bodyBold: { fontFamily: fontFamily.bold, fontSize: fontSize.body },
   callout: {

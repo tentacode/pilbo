@@ -19,7 +19,7 @@ export function StockEditHeader({ med, subtitle }: StockEditHeaderProps) {
       <View style={styles.texts}>
         <Text variant="largeHeading" accessibilityRole="header">
           {med.name}
-          {med.strength === "" ? null : <Text variant="lead"> {med.strength}</Text>}
+          {med.strength === "" ? null : <Text variant="leadInline"> {med.strength}</Text>}
         </Text>
         <Text variant="small" tone="secondary">
           {subtitle}

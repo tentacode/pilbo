@@ -1,6 +1,7 @@
 import type { ReactNode, Ref } from "react";
 import { ScrollView, View } from "react-native";
-import Animated, { useAnimatedKeyboard, useAnimatedStyle } from "react-native-reanimated";
+import { useReanimatedKeyboardAnimation } from "react-native-keyboard-controller";
+import Animated, { useAnimatedStyle } from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { spacing } from "../../tokens";
@@ -27,9 +28,9 @@ export function Sheet({
 }: SheetProps) {
   const styles = useStyles();
   const insets = useSafeAreaInsets();
-  const keyboard = useAnimatedKeyboard();
+  const keyboard = useReanimatedKeyboardAnimation();
   const footerKeyboardStyle = useAnimatedStyle(() => ({
-    paddingBottom: Math.max(keyboard.height.get(), insets.bottom) + spacing.medium,
+    paddingBottom: Math.max(-keyboard.height.get(), insets.bottom) + spacing.medium,
   }));
   return (
     <View style={styles.sheet}>

@@ -36,7 +36,7 @@ En gros, on cherche une proof of concept : dans le doute, demander si c'est dans
   - Pour quitter des modales ouvertes en ignorant leurs modifications non enregistrées (sans dialogue d'abandon) : `leaveWithoutConfirmation` (`features/pillbox/hooks/useModalClosing.ts`).
 - Stockage : **expo-sqlite + Drizzle ORM**, migrations générées par drizzle-kit. Comment travailler avec la base : voir `./docs/database.md`.
   - Mettre à jour la section **Schéma** de `docs/database.md` à chaque migration.
-  - Une migration livrée sur TestFlight ou sur une piste du Play Store est figée. Entre deux livraisons, une seule migration « en cours », qui doit conserver les données des testeurs avant `make testflight` et `make android-beta`.
+  - Une migration livrée sur TestFlight ou sur le Play Store (test ou production) est figée. Entre deux livraisons, une seule migration « en cours », qui doit conserver les données des testeurs avant `make testflight` et `make android-beta`.
   - Le schéma Drizzle est la source de vérité des types (`$inferSelect` / `$inferInsert`).
   - Lectures : SQL brut avec le tag `sql` (``database.all<Type>(sql`...`)``), pas de query builder pour les selects. Référencer les colonnes du schéma (`${table.column}`) au lieu de noms en dur, et aliaser les colonnes en camelCase (`AS takenAt`).
   - Écritures : Drizzle ORM (`insert`, `update`, `delete`), conditions écrites avec `sql`.
@@ -51,6 +51,7 @@ En gros, on cherche une proof of concept : dans le doute, demander si c'est dans
 - Tests : **Jest + React Native Testing Library**. Deux projets Jest : `ios` (toute la suite) et `android` (uniquement les `*.android.spec.ts(x)`).
 - Qualité du code : **ESLint + Prettier**.
 - L'app est testée sur un iPhone personnel via Xcode, avec un compte Apple Developer payant (équipe `APPLE_TEAM_ID`), et sur un Galaxy S9 sous ROM Android 13 (adb le voit comme un `SM-N985F`).
+  - Vérifier un changement ou un bug : installer la build sur mon téléphone et me demander de tester, plutôt que le simulateur iOS ou l'émulateur Android (trop lents). Simulateur ou émulateur seulement si l'installation sur le téléphone échoue après un essai.
 
 ### Contraintes iOS à garder en tête
 
@@ -64,10 +65,12 @@ En gros, on cherche une proof of concept : dans le doute, demander si c'est dans
 
 ### Contraintes Android à garder en tête
 
+- Clavier : `react-native-keyboard-controller` (`KeyboardProvider` à la racine), pas `useAnimatedKeyboard` de Reanimated (sa hauteur se fige sur Android).
 - Canaux de notification : importance, son et vibration sont figés à la création. Pour les changer, changer l'identifiant du canal (`NOTIFICATION_CHANNEL_IDS`).
 - Rappels en alarmes exactes, reprogrammés après un redémarrage : voir la section Android de `docs/notifications.md`.
 - expo-notifications est patché (`patches/expo-notifications.patch`) et compilé depuis les sources sur Android (`buildFromSource` dans `package.json`) : à revérifier à chaque montée de version.
 - Après un build « Pilbo » (`make android-build-release`), `android/app/src/main/AndroidManifest.xml` garde `INTERNET` avec `tools:node="remove"`, et `prebuild --no-clean` ne le retire pas. « Pilbo Dev » ne joint alors plus Metro (« Unable to load script »). Supprimer cette ligne, ou lancer `make clean`, avant `make android-build-emulator` / `make android-build-device`.
+- Le shell de Claude ne charge pas `~/.zshrc` : avant un build Android, exporter `ANDROID_HOME="$HOME/Library/Android/sdk"` et `JAVA_HOME="$(/usr/libexec/java_home -v 17)"`.
 
 ## Commandes
 
@@ -82,6 +85,7 @@ Le gestionnaire de paquets est **pnpm**. Utiliser le `Makefile` (`make help` lis
   - Clé API App Store Connect avec le rôle **Admin** (nécessaire pour la signature cloud), `.p8` hors du repo, identifiants dans `.env`.
   - fastlane tourne avec le Ruby Homebrew via Bundler ; le prebuild de la lane s'exécute hors de l'environnement Bundler (`Bundler.with_unbundled_env`), sinon `pod install` échoue.
 - `make android-bundle BUILD_NUMBER=…` : AAB signé de « Pilbo », sans envoi. `make android-beta` : « Pilbo » envoyé en test fermé sur le Play Store par fastlane (lane `android beta`, versionCode automatique, `TRACK=internal` pour le test interne). Ensuite `android/` est en variante « Pilbo » (voir la note `INTERNET`). Voir la section Play Console de `docs/android_build.md`.
+- Avant une bêta ou une version publique : suivre `docs/make_a_beta.md` ou `docs/make_a_release.md`.
 - `make version-bump TYPE=major|minor|patch` : change `version` dans `app.config.ts`. Le premier build d'une nouvelle version repasse par la revue bêta d'Apple.
 - `make tests` : lint, prettier, TypeScript, Jest et audit. Doit passer avant de considérer une étape terminée.
 - `make test-e2e` : flows Maestro dans `e2e/` (« Pilbo Dev » doit être installée sur un simulateur démarré). Après une nouvelle installation, fermer l'alerte « Ouvrir dans « Pilbo Dev » ? » avant de lancer les flows. Si l'iPhone est branché, Maestro le cible et échoue : lancer `maestro --device <id du simulateur> test e2e/`.

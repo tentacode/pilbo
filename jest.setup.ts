@@ -38,13 +38,6 @@ jest.mock("@expo/ui/swift-ui/modifiers", () => ({
   labelsHidden: () => ({ labelsHidden: true }),
   tint: (color: string) => ({ tint: color }),
 }));
-jest.mock("react-native-reanimated", () => {
-  const reanimated =
-    jest.requireActual<typeof import("react-native-reanimated")>("react-native-reanimated");
-  return {
-    __esModule: true,
-    ...reanimated,
-    default: reanimated.default,
-    useAnimatedKeyboard: () => ({ height: { get: () => 0 }, state: { get: () => 0 } }),
-  };
-});
+jest.mock("react-native-keyboard-controller", () =>
+  jest.requireActual("react-native-keyboard-controller/jest"),
+);

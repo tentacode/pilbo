@@ -73,7 +73,7 @@ Demandées pour la revue du test fermé. Version simple ici, version finale dans
 
 - **Sécurité des données** : aucune donnée collectée ni partagée.
 - **Classification du contenu** : questionnaire.
-- **Public cible** : adultes.
+- **Public cible** : 13 ans et plus (adolescents inclus, sans le règlement Familles des moins de 13 ans).
 - **Applications de santé** : formulaire de déclaration.
 - **Politique de confidentialité** : URL (section 8).
 - **Accès à l'app** : pas de compte, pas de connexion.
