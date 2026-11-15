@@ -24,7 +24,9 @@ export function computeDayStatus(
     return "none";
   }
   const logs = consideredIntakes.flatMap(({ id }) => logsByIntakeId.get(id) ?? []);
-  if (logs.length === 0) {
+  const isAnyIntakeMissed =
+    logs.length < consideredIntakes.length || logs.some(({ status }) => status === "missed");
+  if (isAnyIntakeMissed) {
     return "missed";
   }
   if (logs.some((intakeLog) => toValidation(intakeLog).isTakenLate)) {

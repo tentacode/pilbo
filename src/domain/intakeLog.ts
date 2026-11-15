@@ -1,4 +1,6 @@
-export type IntakeLogStatus = "taken" | "skipped";
+export type IntakeLogStatus = "taken" | "skipped" | "missed";
+
+export type NotTakenStatus = Exclude<IntakeLogStatus, "taken">;
 
 export interface IntakeLog {
   id: string;

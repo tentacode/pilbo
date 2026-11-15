@@ -29,6 +29,19 @@ describe("computeDayStatus", () => {
     expect(computeDayStatus([MORNING, EVENING], [])).toBe("missed");
   });
 
+  it("is missed as soon as one intake has no action, before the other statuses", () => {
+    expect(computeDayStatus([MORNING, EVENING], [log("morning", "taken", "09:35")])).toBe("missed");
+  });
+
+  it("is missed when an intake was marked as forgotten", () => {
+    expect(
+      computeDayStatus(
+        [MORNING, EVENING],
+        [log("morning", "taken", "08:25"), log("evening", "missed", "20:20", "20:20")],
+      ),
+    ).toBe("missed");
+  });
+
   it("is late when an intake was taken late, before the other statuses", () => {
     expect(
       computeDayStatus(
@@ -38,8 +51,7 @@ describe("computeDayStatus", () => {
     ).toBe("late");
   });
 
-  it("is taken when an intake was taken, others skipped or without action", () => {
-    expect(computeDayStatus([MORNING, EVENING], [log("morning", "taken", "08:25")])).toBe("taken");
+  it("is taken when an intake was taken and the others skipped", () => {
     expect(
       computeDayStatus(
         [MORNING, EVENING],
@@ -48,10 +60,13 @@ describe("computeDayStatus", () => {
     ).toBe("taken");
   });
 
-  it("is skipped when every intake with an action was skipped", () => {
-    expect(computeDayStatus([MORNING, EVENING], [log("morning", "skipped", "08:20")])).toBe(
-      "skipped",
-    );
+  it("is skipped when every intake was skipped", () => {
+    expect(
+      computeDayStatus(
+        [MORNING, EVENING],
+        [log("morning", "skipped", "08:20"), log("evening", "skipped", "20:20", "20:20")],
+      ),
+    ).toBe("skipped");
   });
 
   it("ignores the logs of intakes that were not planned that day", () => {
@@ -65,6 +80,16 @@ describe("computeDayStatus", () => {
 
     it("is missed when an intake is late without action", () => {
       expect(computeDayStatus([MORNING, EVENING], [], new Date(2026, 9, 20, 9, 30))).toBe("missed");
+    });
+
+    it("is missed when an intake was marked as forgotten before its time", () => {
+      expect(
+        computeDayStatus(
+          [MORNING, EVENING],
+          [log("morning", "taken", "08:25"), log("evening", "missed", "12:00", "20:20")],
+          new Date(2026, 9, 20, 12, 0),
+        ),
+      ).toBe("missed");
     });
 
     it("only looks at the handled and late intakes", () => {

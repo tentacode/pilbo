@@ -18,6 +18,7 @@ export function IntakeLogStatusField({ status, onChange }: IntakeLogStatusFieldP
         options={[
           { value: "taken", label: t("Prise") },
           { value: "skipped", label: t("Ignorée") },
+          { value: "missed", label: t("Oubliée") },
           { value: "none", label: t("Supprimer") },
         ]}
         selectedValue={status}

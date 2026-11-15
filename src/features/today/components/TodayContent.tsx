@@ -2,7 +2,7 @@ import { router } from "expo-router";
 import { useState } from "react";
 import { View } from "react-native";
 
-import { toLocalDate } from "@/domain/intakeLog";
+import { type NotTakenStatus, toLocalDate } from "@/domain/intakeLog";
 import type { Med } from "@/domain/med";
 
 import { useNotificationPermission } from "@/features/notifications/hooks/useNotificationPermission";
@@ -32,7 +32,7 @@ export function TodayContent() {
   const lowStockNotice = useLowStockNotice();
 
   const handleTake = (intakeId: string) => validate(intakeId, "taken");
-  const handleSkip = (intakeId: string) => validate(intakeId, "skipped");
+  const handleNotTaken = (intakeId: string, status: NotTakenStatus) => validate(intakeId, status);
   const handleEdit = (intakeId: string) => openIntakeLogEditing(intakeId, toLocalDate(date));
 
   function showStocksFromDialog() {
@@ -58,7 +58,7 @@ export function TodayContent() {
             sections={sections}
             validatingIntakeId={validatingIntakeId}
             onTake={handleTake}
-            onSkip={handleSkip}
+            onNotTaken={handleNotTaken}
             onEdit={handleEdit}
           />
         )}

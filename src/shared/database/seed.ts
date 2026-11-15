@@ -1,7 +1,7 @@
 import { sql } from "drizzle-orm";
 
 import { type Intake, intakeDateOn } from "@/domain/intake";
-import { addDays, toLocalDate, toLocalDateTime } from "@/domain/intakeLog";
+import { addDays, type IntakeLogStatus, toLocalDate, toLocalDateTime } from "@/domain/intakeLog";
 
 import {
   medLogFixture,
@@ -92,6 +92,13 @@ function insertVersion(
   };
 }
 
+function historyLogStatus(kind: HistoryDayKind | undefined, isLastLog: boolean): IntakeLogStatus {
+  if (kind === "allSkipped") {
+    return "skipped";
+  }
+  return kind === "markedForgotten" && isLastLog ? "missed" : "taken";
+}
+
 function historyLogsOfDay(
   versions: SeededVersion[],
   day: Date,
@@ -108,7 +115,7 @@ function historyLogsOfDay(
   const loggedVersions = kind === "partlyForgotten" ? versionsOfDay.slice(0, -1) : versionsOfDay;
   return loggedVersions.map(({ id, time }, index) => ({
     intakeId: id,
-    status: kind === "allSkipped" ? "skipped" : "taken",
+    status: historyLogStatus(kind, index === loggedVersions.length - 1),
     ...logDates(
       day,
       time,

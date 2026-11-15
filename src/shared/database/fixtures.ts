@@ -113,7 +113,8 @@ export const intakeVersionFixture = {
   daysAgo: 10,
 };
 
-export type HistoryDayKind = "late" | "partlyForgotten" | "allSkipped" | "allForgotten";
+export type HistoryDayKind =
+  "late" | "partlyForgotten" | "markedForgotten" | "allSkipped" | "allForgotten";
 
 export const historyDayFixtures: Record<number, HistoryDayKind> = {
   3: "late",
@@ -121,6 +122,7 @@ export const historyDayFixtures: Record<number, HistoryDayKind> = {
   9: "allForgotten",
   12: "late",
   15: "partlyForgotten",
+  18: "markedForgotten",
   20: "late",
   27: "partlyForgotten",
   33: "late",

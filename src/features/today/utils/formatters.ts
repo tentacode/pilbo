@@ -173,8 +173,8 @@ export function formatTakeAccessibilityLabel(t: TFunction<"today">, intake: Inta
   return t("Prendre la prise de {{time}}", { time: formatIntakeTime(intake.time) });
 }
 
-export function formatSkipAccessibilityLabel(t: TFunction<"today">, intake: Intake): string {
-  return t("Ignorer la prise de {{time}}", { time: formatIntakeTime(intake.time) });
+export function formatNotTakenAccessibilityLabel(t: TFunction<"today">, intake: Intake): string {
+  return t("Pas pris, prise de {{time}}", { time: formatIntakeTime(intake.time) });
 }
 
 export function formatValidationAnnouncement(
@@ -183,9 +183,12 @@ export function formatValidationAnnouncement(
   status: IntakeLogStatus,
 ): string {
   const time = formatIntakeTime(intake.time);
-  return status === "taken"
-    ? t("Prise de {{time}} validée", { time })
-    : t("Prise de {{time}} ignorée", { time });
+  const announcements: Record<IntakeLogStatus, string> = {
+    taken: t("Prise de {{time}} validée", { time }),
+    skipped: t("Prise de {{time}} ignorée", { time }),
+    missed: t("Prise de {{time}} oubliée", { time }),
+  };
+  return announcements[status];
 }
 
 export function formatTakenTime(takenAt: string): string {

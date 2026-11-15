@@ -195,7 +195,9 @@ Historique des prises validées. Une prise archivée garde ses logs.
 | `intake_id`          | text        | → `intake.id`, suppression de la prise bloquée         |
 | `expected_intake_at` | text        | obligatoire, jour et heure prévus (`2026-10-14T08:20`) |
 | `created_at`         | text        | obligatoire, moment de l'appui (`2026-10-14T09:05`)    |
-| `status`             | text        | obligatoire, `"taken"` ou `"skipped"`                  |
+| `status`             | text        | obligatoire, `"taken"`, `"skipped"` ou `"missed"`      |
+
+`skipped` : non prise volontairement (« Je l'ai ignoré »). `missed` : non prise par oubli (« Je l'ai oublié »). Seul `taken` décompte le stock.
 
 ### `med_log`
 

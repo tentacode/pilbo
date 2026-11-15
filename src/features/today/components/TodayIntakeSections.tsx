@@ -2,6 +2,8 @@ import { View } from "react-native";
 import { LayoutAnimationConfig } from "react-native-reanimated";
 import { useTranslation } from "react-i18next";
 
+import type { NotTakenStatus } from "@/domain/intakeLog";
+
 import { formatLateSectionTitle } from "@/features/today/utils/formatters";
 import type { TodaySections } from "@/features/today/utils/todayTypes";
 import { AnimatedIntakeItem } from "./AnimatedIntakeItem";
@@ -9,6 +11,7 @@ import { AnimatedIntakeSection } from "./AnimatedIntakeSection";
 import { EarlierIntakeCard } from "./EarlierIntakeCard";
 import { LateIntakeCard } from "./LateIntakeCard";
 import { LaterIntakeCard } from "./LaterIntakeCard";
+import { MissedIntakeCard } from "./MissedIntakeCard";
 import { NextIntakeCard } from "./NextIntakeCard";
 import { styles } from "./TodayIntakeSections.styles";
 import { TodaySectionTitle } from "./TodaySectionTitle";
@@ -17,7 +20,7 @@ type TodayIntakeSectionsProps = {
   sections: TodaySections;
   validatingIntakeId: string | null;
   onTake: (intakeId: string) => void;
-  onSkip: (intakeId: string) => void;
+  onNotTaken: (intakeId: string, status: NotTakenStatus) => void;
   onEdit: (intakeId: string) => void;
 };
 
@@ -25,7 +28,7 @@ export function TodayIntakeSections({
   sections,
   validatingIntakeId,
   onTake,
-  onSkip,
+  onNotTaken,
   onEdit,
 }: TodayIntakeSectionsProps) {
   const { t } = useTranslation("today");
@@ -39,7 +42,7 @@ export function TodayIntakeSections({
         todayIntake={next}
         isDisabled={next.intake.id === validatingIntakeId}
         onTake={onTake}
-        onSkip={onSkip}
+        onNotTaken={onNotTaken}
       />
     </AnimatedIntakeItem>
   ) : null;
@@ -66,7 +69,7 @@ export function TodayIntakeSections({
                     todayIntake={todayIntake}
                     isDisabled={todayIntake.intake.id === validatingIntakeId}
                     onTake={onTake}
-                    onSkip={onSkip}
+                    onNotTaken={onNotTaken}
                   />
                 </AnimatedIntakeItem>
               ))}
@@ -98,14 +101,18 @@ export function TodayIntakeSections({
           <AnimatedIntakeSection>
             <TodaySectionTitle title={t("Déjà prise")} />
             <View style={styles.list}>
-              {earlier.map((todayIntake) => (
-                <AnimatedIntakeItem key={todayIntake.intake.id}>
-                  <EarlierIntakeCard
-                    todayIntake={todayIntake}
-                    onPress={() => onEdit(todayIntake.intake.id)}
-                  />
-                </AnimatedIntakeItem>
-              ))}
+              {earlier.map((todayIntake) => {
+                const openEditing = () => onEdit(todayIntake.intake.id);
+                return (
+                  <AnimatedIntakeItem key={todayIntake.intake.id}>
+                    {todayIntake.status === "missed" ? (
+                      <MissedIntakeCard todayIntake={todayIntake} onPress={openEditing} />
+                    ) : (
+                      <EarlierIntakeCard todayIntake={todayIntake} onPress={openEditing} />
+                    )}
+                  </AnimatedIntakeItem>
+                );
+              })}
             </View>
           </AnimatedIntakeSection>
         ) : null}

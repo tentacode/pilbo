@@ -7,9 +7,9 @@ import {
   formatIntakeStatus,
   formatLateSectionTitle,
   formatMedNames,
+  formatNotTakenAccessibilityLabel,
   formatNextDayAccessibilityLabel,
   formatPreviousDayAccessibilityLabel,
-  formatSkipAccessibilityLabel,
   formatTakeAccessibilityLabel,
   formatSwitcherDate,
   formatUpcomingIntakeSentence,
@@ -200,7 +200,7 @@ describe("button accessibility labels", () => {
     const intake = createIntake(12, 20);
 
     expect(formatTakeAccessibilityLabel(t, intake)).toBe("Prendre la prise de 12:20");
-    expect(formatSkipAccessibilityLabel(t, intake)).toBe("Ignorer la prise de 12:20");
+    expect(formatNotTakenAccessibilityLabel(t, intake)).toBe("Pas pris, prise de 12:20");
   });
 });
 
@@ -208,6 +208,7 @@ describe("formatValidationAnnouncement", () => {
   it.each([
     ["taken", "Prise de 12:20 validée"],
     ["skipped", "Prise de 12:20 ignorée"],
+    ["missed", "Prise de 12:20 oubliée"],
   ] as const)("announces a %s intake", (status, expected) => {
     expect(formatValidationAnnouncement(t, createIntake(12, 20), status)).toBe(expected);
   });

@@ -5,6 +5,8 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 
 import { router } from "expo-router";
 
+import type { IntakeLogStatus } from "@/domain/intakeLog";
+
 import { insertMed } from "@/features/pillbox/queries/insertMed";
 import { saveStock } from "@/features/stocks/queries/saveStock";
 import { findMedId } from "@/features/stocks/queries/testStocks";
@@ -50,12 +52,7 @@ function wrapper({ children }: { children: ReactNode }) {
   return <SafeAreaProvider initialMetrics={safeAreaMetrics}>{children}</SafeAreaProvider>;
 }
 
-function logIntakeOn(
-  localDate: string,
-  hour: number,
-  status: "taken" | "skipped",
-  createdAt: string,
-) {
+function logIntakeOn(localDate: string, hour: number, status: IntakeLogStatus, createdAt: string) {
   const { id, minute } = mockDatabase.get<{ id: string; minute: number }>(sql`
     SELECT ${intakeTable.id} AS id, ${intakeTable.minute} AS minute
     FROM ${intakeTable}
@@ -72,7 +69,7 @@ function logIntakeOn(
     .run();
 }
 
-function logIntakes(hours: number[], status: "taken" | "skipped") {
+function logIntakes(hours: number[], status: IntakeLogStatus) {
   const intakes = mockDatabase.all<{ id: string; hour: number; minute: number }>(sql`
     SELECT ${intakeTable.id} AS id, ${intakeTable.hour} AS hour, ${intakeTable.minute} AS minute
     FROM ${intakeTable}
@@ -334,6 +331,17 @@ describe("TodayScreen", () => {
     expect(screen.queryByText(/en retard/)).not.toBeOnTheScreen();
   });
 
+  it("shows a forgotten intake as not taken in the earlier section", async () => {
+    logIntakes([20], "missed");
+    await renderAt(13, 0);
+
+    expect(screen.getByRole("header", { name: "Déjà prise" })).toBeOnTheScreen();
+    expect(screen.getByText("Non prise")).toBeOnTheScreen();
+    expect(
+      screen.queryByRole("button", { name: "Prendre la prise de 20:20" }),
+    ).not.toBeOnTheScreen();
+  });
+
   it("shows the done state above the earlier section when everything is handled", async () => {
     logIntakes([8, 12, 20, 22], "taken");
     await renderAt(23, 0);
@@ -401,7 +409,7 @@ describe("TodayScreen", () => {
       expect(screen.getByLabelText(/^12:20, Pris en retard à 14:00/)).toBeOnTheScreen();
       expect(screen.getByLabelText(/^20:20, Ignorée/)).toBeOnTheScreen();
       expect(screen.getByLabelText("22:00, Non prise")).toBeOnTheScreen();
-      expect(screen.queryByRole("button", { name: /Prendre|Ignorer/ })).not.toBeOnTheScreen();
+      expect(screen.queryByRole("button", { name: /Prendre|Pas pris/ })).not.toBeOnTheScreen();
     });
 
     it("shows the free takings of that day", async () => {

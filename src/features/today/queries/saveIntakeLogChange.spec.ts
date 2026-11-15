@@ -80,6 +80,22 @@ describe("saveIntakeLogChange", () => {
     expect(stockOf(database, medId)).toBe(INITIAL_STOCK);
   });
 
+  it("gives the pills back when a taken intake becomes forgotten", () => {
+    const { database, intake, medId } = setup();
+    change(database, intake, "taken");
+
+    expect(change(database, intake, "missed")).toMatchObject({ status: "missed" });
+    expect(stockOf(database, medId)).toBe(INITIAL_STOCK);
+  });
+
+  it("takes the pills when a forgotten intake becomes taken", () => {
+    const { database, intake, medId, quantity } = setup();
+    change(database, intake, "missed");
+
+    expect(change(database, intake, "taken")).toMatchObject({ status: "taken" });
+    expect(stockOf(database, medId)).toBe(INITIAL_STOCK - quantity);
+  });
+
   it("takes the pills when a skipped intake becomes taken", () => {
     const { database, intake, medId, quantity } = setup();
     change(database, intake, "skipped");

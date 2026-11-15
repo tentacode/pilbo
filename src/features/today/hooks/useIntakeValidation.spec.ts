@@ -93,6 +93,17 @@ describe("useIntakeValidation", () => {
     expect(announce).toHaveBeenCalledWith(expect.stringContaining("ignorée"));
   });
 
+  it("announces a forgotten intake without the success haptic", async () => {
+    const announce = jest.spyOn(AccessibilityInfo, "announceForAccessibility");
+    const intakes = getIntakesOfDay(mockDatabase, NOW);
+    const { result } = await renderHook(() => useIntakeValidation(intakes, jest.fn(), jest.fn()));
+
+    await act(() => result.current.validate(intakes[0].id, "missed"));
+
+    expect(Haptics.notificationAsync).not.toHaveBeenCalled();
+    expect(announce).toHaveBeenCalledWith(expect.stringContaining("oubliée"));
+  });
+
   it("keeps the log when the reminders cannot be rescheduled", async () => {
     jest.mocked(rescheduleReminders).mockRejectedValueOnce(new Error("Notifications failed"));
     const intakes = getIntakesOfDay(mockDatabase, NOW);
@@ -141,11 +152,11 @@ describe("useIntakeValidation", () => {
       expect(onStocksBelowZero).not.toHaveBeenCalled();
     });
 
-    it("keeps the stocks of a skipped intake", async () => {
+    it.each(["skipped", "missed"] as const)("keeps the stocks of a %s intake", async (status) => {
       const intakes = getIntakesOfDay(mockDatabase, NOW);
       const { result } = await renderHook(() => useIntakeValidation(intakes, jest.fn(), jest.fn()));
 
-      await act(() => result.current.validate(intakes[0].id, "skipped"));
+      await act(() => result.current.validate(intakes[0].id, status));
 
       expect(quantityOf("Lithium", "250 mg")).toBe(18);
       expect(quantityOf("Lamictal", "50 mg")).toBe(45);

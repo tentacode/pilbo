@@ -133,6 +133,17 @@ describe("computeTodayIntakes", () => {
     expect(earlier.validation?.isTakenLate).toBe(false);
   });
 
+  it("moves an intake marked as forgotten to earlier, even before its time", () => {
+    const logs = [createIntakeLog(INTAKES[2], "missed", { hour: 12, minute: 0 })];
+
+    const sections = computeTodayIntakes(INTAKES, logs, createDate(12, 0));
+
+    expect(sections.earlier.map(({ intake, status }) => [intake.id, status])).toEqual([
+      [INTAKES[2].id, "missed"],
+    ]);
+    expect(sections.later.map(({ intake }) => intake.id)).toEqual([INTAKES[3].id]);
+  });
+
   it("keeps the usual rules for the intakes without log", () => {
     const logs = [createIntakeLog(INTAKES[1], "taken", { hour: 12, minute: 0 })];
 

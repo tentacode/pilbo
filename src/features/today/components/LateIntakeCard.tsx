@@ -1,5 +1,7 @@
 import { View } from "react-native";
 
+import type { NotTakenStatus } from "@/domain/intakeLog";
+
 import type { TodayIntake } from "@/features/today/utils/todayTypes";
 import { IntakeCardActions } from "./IntakeCardActions";
 import { IntakeCardHeading } from "./IntakeCardHeading";
@@ -10,10 +12,15 @@ type LateIntakeCardProps = {
   todayIntake: TodayIntake;
   isDisabled?: boolean;
   onTake: (intakeId: string) => void;
-  onSkip: (intakeId: string) => void;
+  onNotTaken: (intakeId: string, status: NotTakenStatus) => void;
 };
 
-export function LateIntakeCard({ todayIntake, isDisabled, onTake, onSkip }: LateIntakeCardProps) {
+export function LateIntakeCard({
+  todayIntake,
+  isDisabled,
+  onTake,
+  onNotTaken,
+}: LateIntakeCardProps) {
   const styles = useStyles();
   return (
     <View style={styles.card}>
@@ -26,7 +33,7 @@ export function LateIntakeCard({ todayIntake, isDisabled, onTake, onSkip }: Late
         isDisabled={isDisabled}
         isLate
         onTake={onTake}
-        onSkip={onSkip}
+        onNotTaken={onNotTaken}
       />
     </View>
   );

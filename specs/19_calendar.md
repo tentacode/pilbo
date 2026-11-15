@@ -32,10 +32,10 @@ Depuis le calendrier, toucher un jour ouvre un sous-écran de la journée en que
 
 Un seul état par jour, par ordre de priorité (les avertissements d'abord, puis les prises faites, puis les jours tout ignorés) :
 
-1. « Non pris » : des prises étaient prévues et aucune n'a eu d'action (oubli total).
+1. « Non pris » : au moins une prise est oubliée (« Je l'ai oublié ») ou n'a eu aucune action.
 2. « Pris en retard » : au moins une prise prise en retard (seuil existant `LATE_THRESHOLD_MINUTES`, 60 min).
-3. « Pris » : au moins une prise prise, les autres peuvent être ignorées ou sans action.
-4. « Ignoré » : toutes les prises avec une action sont ignorées.
+3. « Pris » : au moins une prise prise, les autres peuvent être ignorées.
+4. « Ignoré » : toutes les prises sont ignorées.
 
 - Jour sans prise prévue : neutre (numéro seul).
 - Le hors planning ne change pas l'état du jour.
