@@ -11,20 +11,27 @@ import { useStyles } from "./LowStockNotice.styles";
 
 type LowStockNoticeProps = {
   lowStockCount: number;
+  hasEmptyStock: boolean;
   onPress: () => void;
   onDismiss: () => void;
 };
 
-export function LowStockNotice({ lowStockCount, onPress, onDismiss }: LowStockNoticeProps) {
+export function LowStockNotice({
+  lowStockCount,
+  hasEmptyStock,
+  onPress,
+  onDismiss,
+}: LowStockNoticeProps) {
   const styles = useStyles();
   const themeColors = useThemeColors();
   const { t } = useTranslation("stocks");
   const message = formatLowStockNotice(t, lowStockCount);
+  const title = hasEmptyStock ? t("Stock vide") : t("Stock bas");
   return (
     <View style={styles.notice}>
       <Pressable
         accessibilityRole="button"
-        accessibilityLabel={`${t("Stock bas")}. ${message}`}
+        accessibilityLabel={`${title}. ${message}`}
         accessibilityHint={t("Ouvre l’écran Stock.")}
         onPress={onPress}
         style={({ pressed }) => [styles.content, pressed && styles.pressed]}
@@ -32,7 +39,7 @@ export function LowStockNotice({ lowStockCount, onPress, onDismiss }: LowStockNo
         <Icon name="alert" color={themeColors.onAlert} />
         <View style={styles.texts}>
           <Text variant="bodyBold" tone="onAlert">
-            {t("Stock bas")}
+            {title}
           </Text>
           <Text variant="small" tone="onAlert">
             {message}

@@ -24,7 +24,10 @@ export function StockSummaryCard({ quantity, forecast }: StockSummaryCardProps) 
   const { t } = useTranslation("stocks");
   const language = useLanguage();
   const isLow = forecast.status === "low";
-  const statusTexts = { low: t("Stock bas"), sufficient: t("Suffisant") };
+  const statusTexts = {
+    low: quantity === 0 ? t("Stock vide") : t("Stock bas"),
+    sufficient: t("Suffisant"),
+  };
   const statusText = forecast.status === "noSchedule" ? undefined : statusTexts[forecast.status];
   const coverage = formatCoverage(t, language, forecast);
   const pillCount = formatPillCount(t, quantity);

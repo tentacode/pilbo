@@ -11,6 +11,7 @@ import { useTranslation } from "react-i18next";
 import { Text } from "@/design-system/components/Text/Text";
 import { useThemeColors } from "@/design-system/hooks/useThemeColors";
 import { type Intake } from "@/domain/intake";
+import { useAppColorScheme } from "@/features/settings/hooks/useAppColorScheme";
 
 import { FormGroup } from "./FormGroup";
 import type { IntakeTimeRowProps } from "./IntakeTimeRow";
@@ -30,6 +31,7 @@ export function IntakeTimeRow({
   accessibilityLabel: customAccessibilityLabel,
 }: IntakeTimeRowProps) {
   const themeColors = useThemeColors();
+  const colorScheme = useAppColorScheme();
   const { t } = useTranslation("pillbox");
   return (
     <FormGroup>
@@ -37,7 +39,7 @@ export function IntakeTimeRow({
         <Text variant="bodyBold" accessibilityElementsHidden>
           {label ?? t("Heure")}
         </Text>
-        <Host matchContents colorScheme="light">
+        <Host matchContents colorScheme={colorScheme}>
           <DatePicker
             selection={dateOf(time)}
             displayedComponents={["hourAndMinute"]}

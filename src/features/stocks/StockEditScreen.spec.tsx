@@ -88,7 +88,7 @@ describe("StockEditScreen", () => {
     expect(screen.getByRole("header", { name: "Ajouter un stock" })).toBeOnTheScreen();
     expect(screen.getByRole("header", { name: "Quviviq 50 mg" })).toBeOnTheScreen();
     expect(screen.getByText("1 comprimé par jour · 22:00")).toBeOnTheScreen();
-    expect(screen.getByLabelText("0 comprimé, Stock bas, 0 jour, à renouveler")).toBeOnTheScreen();
+    expect(screen.getByLabelText("0 comprimé, Stock vide, 0 jour, à renouveler")).toBeOnTheScreen();
     expect(screen.getByText("10 jours")).toBeOnTheScreen();
     expect(screen.queryByRole("button", { name: "Ne plus suivre le stock" })).toBeNull();
 
@@ -243,7 +243,7 @@ describe("StockEditScreen", () => {
 
     expect(screen.getByRole("header", { name: "Add a stock" })).toBeOnTheScreen();
     expect(screen.getByText("1 pill a day · 22:00")).toBeOnTheScreen();
-    expect(screen.getByLabelText("0 pills, Low stock, 0 days, time to renew")).toBeOnTheScreen();
+    expect(screen.getByLabelText("0 pills, Out of stock, 0 days, time to renew")).toBeOnTheScreen();
     expect(screen.getByText("10 days")).toBeOnTheScreen();
   });
 });

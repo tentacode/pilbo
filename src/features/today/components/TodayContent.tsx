@@ -47,6 +47,7 @@ export function TodayContent() {
         {lowStockNotice.isVisible ? (
           <LowStockNotice
             lowStockCount={lowStockNotice.lowStockCount}
+            hasEmptyStock={lowStockNotice.hasEmptyStock}
             onPress={openMeds}
             onDismiss={lowStockNotice.dismiss}
           />

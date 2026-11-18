@@ -299,6 +299,22 @@ describe("TodayScreen", () => {
       expect(screen.queryByRole("button", { name: NOTICE })).toBeNull();
     });
 
+    it("shows an empty stock when a low stock is at zero", async () => {
+      saveStock(mockDatabase, {
+        medId: findMedId(mockDatabase, "Lithium", "250 mg"),
+        quantity: 0,
+        boxSize: 100,
+        lowStockDays: 7,
+      });
+      await renderAt(7, 0);
+
+      expect(
+        screen.getByRole("button", {
+          name: "Stock vide. Le stock d’un de vos médicaments est trop bas, pensez à le renouveler.",
+        }),
+      ).toBeOnTheScreen();
+    });
+
     it("comes back when another stock gets low", async () => {
       await renderAt(7, 0);
       await fireEvent.press(screen.getByRole("button", { name: "Masquer l’alerte de stock bas" }));

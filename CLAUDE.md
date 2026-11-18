@@ -51,7 +51,7 @@ En gros, on cherche une proof of concept : dans le doute, demander si c'est dans
 - Tests : **Jest + React Native Testing Library**. Deux projets Jest : `ios` (toute la suite) et `android` (uniquement les `*.android.spec.ts(x)`).
 - Qualité du code : **ESLint + Prettier**.
 - L'app est testée sur un iPhone personnel via Xcode, avec un compte Apple Developer payant (équipe `APPLE_TEAM_ID`), et sur un Galaxy S9 sous ROM Android 13 (adb le voit comme un `SM-N985F`).
-  - Vérifier un changement ou un bug : installer la build sur mon téléphone et me demander de tester, plutôt que le simulateur iOS ou l'émulateur Android (trop lents). Simulateur ou émulateur seulement si l'installation sur le téléphone échoue après un essai.
+  - Vérifier un changement ou un bug : toujours le simulateur iOS en priorité. Si le simulateur ne marche pas, me demander avant de faire une build sur l'iPhone (je dois le brancher).
 
 ### Contraintes iOS à garder en tête
 

@@ -52,9 +52,12 @@ function MedStockRow({ stockStatus: { stock, forecast }, onPress }: MedStockRowP
     forecast.daysLeft === undefined
       ? [pillCount, t("Pas d’estimation en jours : ce médicament n’est pas planifié")]
       : [`${coverage.emphasis}${coverage.rest}`, pillCount];
-  const accessibilityLabel = isLow
-    ? t("Stock bas : {{title}}, {{subtitle}}", { title, subtitle })
-    : t("Stock : {{title}}, {{subtitle}}", { title, subtitle });
+  const accessibilityLabel =
+    stock.quantity === 0
+      ? t("Stock vide : {{title}}, {{subtitle}}", { title, subtitle })
+      : isLow
+        ? t("Stock bas : {{title}}, {{subtitle}}", { title, subtitle })
+        : t("Stock : {{title}}, {{subtitle}}", { title, subtitle });
 
   return (
     <Pressable

@@ -46,6 +46,7 @@
   "stock bas": "low stock",
   "Stock bas : {{title}}, {{subtitle}}": "Low stock: {{title}}, {{subtitle}}",
   "stock non suivi": "stock not tracked",
+  "Stock vide : {{title}}, {{subtitle}}": "Out of stock: {{title}}, {{subtitle}}",
   "Suivre le stock": "Track the stock",
   "Supprimer": "Delete",
   "Supprimer ce médicament ?": "Delete this medication?",

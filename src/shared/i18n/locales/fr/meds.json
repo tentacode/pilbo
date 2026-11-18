@@ -54,6 +54,7 @@
   "stock bas": "stock bas",
   "Stock bas : {{title}}, {{subtitle}}": "Stock bas : {{title}}, {{subtitle}}",
   "stock non suivi": "stock non suivi",
+  "Stock vide : {{title}}, {{subtitle}}": "Stock vide : {{title}}, {{subtitle}}",
   "Suivre le stock": "Suivre le stock",
   "Supprimer": "Supprimer",
   "Supprimer ce médicament ?": "Supprimer ce médicament ?",
