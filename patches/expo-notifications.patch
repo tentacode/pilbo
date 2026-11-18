@@ -1,3 +1,17 @@
+diff --git a/android/src/main/java/expo/modules/notifications/service/delegates/ExpoHandlingDelegate.kt b/android/src/main/java/expo/modules/notifications/service/delegates/ExpoHandlingDelegate.kt
+index f1e7e36a124810807d7c7aedf04bd7f38e534175..a2e962325fe776adef3685aa7c5085a0e49ecdc4 100644
+--- a/android/src/main/java/expo/modules/notifications/service/delegates/ExpoHandlingDelegate.kt
++++ b/android/src/main/java/expo/modules/notifications/service/delegates/ExpoHandlingDelegate.kt
+@@ -150,6 +150,9 @@ class ExpoHandlingDelegate(protected val context: Context) : HandlingDelegate {
+   override fun handleNotificationResponse(notificationResponse: NotificationResponse) {
+     if (notificationResponse.action.opensAppToForeground()) {
+       openAppToForeground(context, notificationResponse)
++    } else {
++      // Pilbo patch: a background action button dismisses its notification right away, like on iOS.
++      NotificationsService.dismiss(context, arrayOf(notificationResponse.notification.notificationRequest.identifier))
+     }
+ 
+     // Run background tasks only for custom notification action buttons (not the default tap).
 diff --git a/android/src/main/java/expo/modules/notifications/service/delegates/ExpoPresentationDelegate.kt b/android/src/main/java/expo/modules/notifications/service/delegates/ExpoPresentationDelegate.kt
 index 38f6fbaf0c595009031fff8659dcd2def12e5205..40325ed78ab1879a083088b1dbd6aa71d1a4e7b3 100644
 --- a/android/src/main/java/expo/modules/notifications/service/delegates/ExpoPresentationDelegate.kt
@@ -34,6 +48,120 @@ index 38f6fbaf0c595009031fff8659dcd2def12e5205..40325ed78ab1879a083088b1dbd6aa71
        }
      }
    }
+diff --git a/ios/ExpoNotifications/Notifications/Emitter/EmitterModule.swift b/ios/ExpoNotifications/Notifications/Emitter/EmitterModule.swift
+index 1c7872ba2c318c7e42dc8f1f39d4bf3a06ccce3c..d871db9cc238b9c7b31138aa9d39c5471b2408dc 100644
+--- a/ios/ExpoNotifications/Notifications/Emitter/EmitterModule.swift
++++ b/ios/ExpoNotifications/Notifications/Emitter/EmitterModule.swift
+@@ -30,6 +30,14 @@ open class EmitterModule: Module, NotificationDelegate {
+     Function("clearLastNotificationResponse") {
+       lastResponse = nil
+     }
++
++    // Pilbo patch: called by JS once a custom action has been handled.
++    Function("completeNotificationAction") { (notificationIdentifier: String, actionIdentifier: String) in
++      NotificationActionCompletions.shared.complete(
++        notificationIdentifier: notificationIdentifier,
++        actionIdentifier: actionIdentifier
++      )
++    }
+   }
+ 
+   open func didReceive(_ response: UNNotificationResponse, completionHandler: @escaping () -> Void) -> Bool {
+diff --git a/ios/ExpoNotifications/Notifications/NotificationCenterManager.swift b/ios/ExpoNotifications/Notifications/NotificationCenterManager.swift
+index 8bb63039e4d0fa9ed4a18cf2788bfb928b4c34c2..97bd638b5e88bb4a0a1e2a5bae00f330a4005f47 100644
+--- a/ios/ExpoNotifications/Notifications/NotificationCenterManager.swift
++++ b/ios/ExpoNotifications/Notifications/NotificationCenterManager.swift
+@@ -171,14 +171,22 @@ public class NotificationCenterManager: NSObject,
+     didReceive response: UNNotificationResponse,
+     withCompletionHandler completionHandler: @escaping () -> Void
+   ) {
++    // Pilbo patch: a custom action keeps the app awake until JS calls completeNotificationAction.
++    let isCustomAction = NotificationActionCompletions.isCustomAction(response.actionIdentifier)
++    if isCustomAction {
++      NotificationActionCompletions.shared.keep(response, completionHandler: completionHandler)
++    }
++    let delegateCompletionHandler: () -> Void = isCustomAction ? {} : completionHandler
+     var handled = false
+     for delegate in delegates {
+-      handled = delegate.didReceive(response, completionHandler: completionHandler) || handled
++      handled = delegate.didReceive(response, completionHandler: delegateCompletionHandler) || handled
+     }
+     if !handled {
+       registry.appendPendingResponse(response)
+     }
+-    completionHandler()
++    if !isCustomAction {
++      completionHandler()
++    }
+   }
+ 
+   public func userNotificationCenter(_ center: UNUserNotificationCenter, openSettingsFor notification: UNNotification?) {
+@@ -198,3 +206,65 @@ public class NotificationCenterManager: NSObject,
+     }
+   }
+ }
++
++// Pilbo patch: completion handlers of custom actions, kept until JS has handled the action.
++public final class NotificationActionCompletions {
++  public static let shared = NotificationActionCompletions()
++
++  private struct PendingCompletion {
++    let completionHandler: () -> Void
++    let backgroundTask: UIBackgroundTaskIdentifier
++  }
++
++  private static let timeout: TimeInterval = 25
++  private let lock = NSLock()
++  private var pendingCompletions: [String: PendingCompletion] = [:]
++
++  static func isCustomAction(_ actionIdentifier: String) -> Bool {
++    return actionIdentifier != UNNotificationDefaultActionIdentifier
++      && actionIdentifier != UNNotificationDismissActionIdentifier
++  }
++
++  private static func key(notificationIdentifier: String, actionIdentifier: String) -> String {
++    return "\(notificationIdentifier)|\(actionIdentifier)"
++  }
++
++  func keep(_ response: UNNotificationResponse, completionHandler: @escaping () -> Void) {
++    let key = Self.key(
++      notificationIdentifier: response.notification.request.identifier,
++      actionIdentifier: response.actionIdentifier
++    )
++    let backgroundTask = UIApplication.shared.beginBackgroundTask(withName: key) { [weak self] in
++      self?.complete(key: key)
++    }
++    lock.lock()
++    let previous = pendingCompletions[key]
++    pendingCompletions[key] = PendingCompletion(completionHandler: completionHandler, backgroundTask: backgroundTask)
++    lock.unlock()
++    finish(previous)
++    DispatchQueue.main.asyncAfter(deadline: .now() + Self.timeout) { [weak self] in
++      self?.complete(key: key)
++    }
++  }
++
++  public func complete(notificationIdentifier: String, actionIdentifier: String) {
++    complete(key: Self.key(notificationIdentifier: notificationIdentifier, actionIdentifier: actionIdentifier))
++  }
++
++  private func complete(key: String) {
++    lock.lock()
++    let pendingCompletion = pendingCompletions.removeValue(forKey: key)
++    lock.unlock()
++    finish(pendingCompletion)
++  }
++
++  private func finish(_ pendingCompletion: PendingCompletion?) {
++    guard let pendingCompletion else {
++      return
++    }
++    DispatchQueue.main.async {
++      pendingCompletion.completionHandler()
++      UIApplication.shared.endBackgroundTask(pendingCompletion.backgroundTask)
++    }
++  }
++}
 diff --git a/ios/ExpoNotifications/Notifications/NotificationRecords.swift b/ios/ExpoNotifications/Notifications/NotificationRecords.swift
 index 58f69014923a0d32119b992fbdcaccaed1928121..cb82f5d7835b68260d8078ca6c4e791ca52e83a0 100644
 --- a/ios/ExpoNotifications/Notifications/NotificationRecords.swift

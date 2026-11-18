@@ -3,6 +3,7 @@ import * as Notifications from "expo-notifications";
 import { soundFileOf } from "@/domain/sound";
 
 import type { PlannedReminder } from "./utils/planReminders";
+import { REMINDER_CATEGORY_IDENTIFIER } from "./utils/reminderActions";
 
 // Without this handler, iOS hides notifications while the app is in the foreground.
 Notifications.setNotificationHandler({
@@ -48,6 +49,7 @@ export async function resetReminders(plannedReminders: PlannedReminder[]): Promi
     body,
     badge,
     presentationGroup,
+    reminderIntake,
     interruptionLevel,
     sound,
     channelId,
@@ -58,7 +60,13 @@ export async function resetReminders(plannedReminders: PlannedReminder[]): Promi
         title,
         body,
         ...(badge === undefined ? {} : { badge }),
-        ...(presentationGroup === undefined ? {} : { data: { presentationGroup } }),
+        data: {
+          ...(presentationGroup === undefined ? {} : { presentationGroup }),
+          ...reminderIntake,
+        },
+        ...(reminderIntake === undefined
+          ? {}
+          : { categoryIdentifier: REMINDER_CATEGORY_IDENTIFIER }),
         sound: soundFileOf(sound),
         interruptionLevel,
       },

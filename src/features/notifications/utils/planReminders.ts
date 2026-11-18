@@ -9,6 +9,7 @@ import type { NotificationSound } from "@/domain/sound";
 
 import { formatReminderBody, formatReminderTitle } from "./formatters";
 import { REMINDER_IDENTIFIER_PREFIX } from "./notificationTab";
+import type { ReminderIntake } from "./reminderActions";
 import { reminderBadge } from "./reminderBadge";
 
 export type PlannedReminder = {
@@ -18,6 +19,7 @@ export type PlannedReminder = {
   body: string;
   badge?: number;
   presentationGroup?: string;
+  reminderIntake?: ReminderIntake;
   interruptionLevel: "active" | "timeSensitive";
   sound: NotificationSound;
   channelId: string;
@@ -51,6 +53,7 @@ function planDayReminders(day: Date, pendingIntakes: Intake[]): PlannedReminder[
         body: formatReminderBody(intake),
         badge: reminderBadge(countPendingAt(date)),
         presentationGroup: `${REMINDER_IDENTIFIER_PREFIX}${intake.id}-${toLocalDate(day)}`,
+        reminderIntake: { intakeId: intake.id, intakeDay: toLocalDate(day) },
         interruptionLevel: "timeSensitive",
         sound: intake.sound,
         channelId: reminderChannelId(intake.sound),

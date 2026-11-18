@@ -6,27 +6,31 @@ Validé sur iPhone (spec 02) : notifications app fermée, son custom, badge, ann
 
 ## Fichiers
 
-| Fichier                                                         | Rôle                                                                                   |
-| --------------------------------------------------------------- | -------------------------------------------------------------------------------------- |
-| `src/config/notifications.ts`                                   | Nombre de rappels, plafond de 64, identifiants des canaux Android.                     |
-| `src/domain/sound.ts`                                           | Liste et ordre des sons (`NOTIFICATION_SOUNDS`), fichier d'un son.                     |
-| `src/features/notifications/notifications.ts`                   | Appels iOS : permission, nettoyage, planification.                                     |
-| `src/features/notifications/rescheduleReminders.ts`             | Lit la base, calcule les rappels, les replanifie.                                      |
-| `src/features/notifications/utils/planReminders.ts`             | Calcul pur des rappels et des badges (`now` en paramètre).                             |
-| `src/features/notifications/utils/planLowStockAlerts.ts`        | Calcul pur des alertes de stock bas (`now` en paramètre).                              |
-| `src/features/notifications/utils/reminderBadge.ios.ts`         | Badge d'un rappel : le nombre de prises en attente (`.android.ts` : aucun).            |
-| `patches/expo-notifications.patch`                              | Groupe de présentation (voir [Groupe de présentation](#groupe-de-présentation-patch)). |
-| `src/features/notifications/hooks/useReminderScheduling.ts`     | Replanification au lancement, au premier plan et au changement de langue.              |
-| `src/features/notifications/hooks/useNotificationPermission.ts` | Statut de la permission (`isGranted`) et demande (`request`).                          |
-| `src/features/notifications/hooks/useOpenTabOnNotification.ts`  | Ouvre l'onglet de la notification touchée.                                             |
-| `src/features/notifications/notificationChannels.android.ts`    | Canaux Android (`.ios.ts` sans effet).                                                 |
-| `src/features/notifications/SoundPickerScreen.tsx`              | Écran de choix d'un son (prise, réglages).                                             |
-| `src/features/notifications/hooks/useSoundPreview.ts`           | Écoute d'un son dans l'écran de choix (`expo-audio`).                                  |
-| `plugins/withExactAlarmPermissions.js`                          | Permissions d'alarmes exactes Android.                                                 |
-| `assets/sounds/`                                                | Sons des notifications (`make sounds`, sauf `beep.wav`).                               |
-| `scripts/generateSounds.mjs`                                    | Génère les sons et `silence.wav`.                                                      |
-| `plugins/withoutPushEntitlement.js`                             | Retire la permission push (compte gratuit).                                            |
-| `app.config.ts`                                                 | Déclare les sons, les plugins et la Team de signature.                                 |
+| Fichier                                                         | Rôle                                                                                                                                                       |
+| --------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `src/config/notifications.ts`                                   | Nombre de rappels, plafond de 64, identifiants des canaux Android.                                                                                         |
+| `src/domain/sound.ts`                                           | Liste et ordre des sons (`NOTIFICATION_SOUNDS`), fichier d'un son.                                                                                         |
+| `src/features/notifications/notifications.ts`                   | Appels iOS : permission, nettoyage, planification.                                                                                                         |
+| `src/features/notifications/rescheduleReminders.ts`             | Lit la base, calcule les rappels, les replanifie.                                                                                                          |
+| `src/features/notifications/utils/planReminders.ts`             | Calcul pur des rappels et des badges (`now` en paramètre).                                                                                                 |
+| `src/features/notifications/utils/planLowStockAlerts.ts`        | Calcul pur des alertes de stock bas (`now` en paramètre).                                                                                                  |
+| `src/features/notifications/utils/reminderBadge.ios.ts`         | Badge d'un rappel : le nombre de prises en attente (`.android.ts` : aucun).                                                                                |
+| `patches/expo-notifications.patch`                              | Groupe de présentation (voir [Groupe de présentation](#groupe-de-présentation-patch)), actions (voir [Actions sur les rappels](#actions-sur-les-rappels)). |
+| `src/features/notifications/hooks/useReminderScheduling.ts`     | Replanification au lancement, au premier plan et au changement de langue.                                                                                  |
+| `src/features/notifications/hooks/useNotificationPermission.ts` | Statut de la permission (`isGranted`) et demande (`request`).                                                                                              |
+| `src/features/notifications/hooks/useOpenTabOnNotification.ts`  | Ouvre l'onglet de la notification touchée.                                                                                                                 |
+| `src/features/notifications/reminderActionHandling.ts`          | Boutons « Je l'ai pris » / « Ignorer » : enregistrement, replanification.                                                                                  |
+| `src/features/notifications/reminderActionCategory.ts`          | Catégorie des rappels et libellés des boutons.                                                                                                             |
+| `src/features/notifications/reminderActionSupport.ios.ts`       | Fin d'une action (patch iOS) (`.android.ts` : tâche en arrière-plan).                                                                                      |
+| `index.ts`                                                      | Point d'entrée : démarre l'écoute des actions avant React.                                                                                                 |
+| `src/features/notifications/notificationChannels.android.ts`    | Canaux Android (`.ios.ts` sans effet).                                                                                                                     |
+| `src/features/notifications/SoundPickerScreen.tsx`              | Écran de choix d'un son (prise, réglages).                                                                                                                 |
+| `src/features/notifications/hooks/useSoundPreview.ts`           | Écoute d'un son dans l'écran de choix (`expo-audio`).                                                                                                      |
+| `plugins/withExactAlarmPermissions.js`                          | Permissions d'alarmes exactes Android.                                                                                                                     |
+| `assets/sounds/`                                                | Sons des notifications (`make sounds`, sauf `beep.wav`).                                                                                                   |
+| `scripts/generateSounds.mjs`                                    | Génère les sons et `silence.wav`.                                                                                                                          |
+| `plugins/withoutPushEntitlement.js`                             | Retire la permission push (compte gratuit).                                                                                                                |
+| `app.config.ts`                                                 | Déclare les sons, les plugins et la Team de signature.                                                                                                     |
 
 ## Configuration (`app.config.ts`)
 
@@ -125,6 +129,46 @@ expo-notifications ne sait ni remplacer une notification affichée par une autre
 Android utilise par défaut un AAR précompilé d'expo-notifications, qui ignorerait le patch : `expo.autolinking.android.buildFromSource` (`package.json`) force la compilation depuis les sources. iOS compile déjà depuis les sources.
 
 L'identifiant de la requête ne change pas (tap, annulation). Montée de version d'expo-notifications : `pnpm install` échoue si le patch ne s'applique plus, le refaire avec `pnpm patch expo-notifications`.
+
+## Actions sur les rappels
+
+Spec 35. Appui long (iOS, Apple Watch) ou notification dépliée (Android) : « Je l'ai pris » et « Ignorer », sans ouvrir l'app, même app tuée.
+
+- **Catégorie** `intake-reminder` (`reminderActionCategory.ts`) : enregistrée à chaque replanification, donc libellés à jour au changement de langue. `opensAppToForeground: false`, pas de déverrouillage demandé (sinon rien depuis la montre).
+- **Données** : chaque rappel de prise porte `intakeId` et `intakeDay` (jour de la prise, pas de la relance) dans `data`, et `categoryIdentifier`. Pas de boutons sur les alertes de stock bas.
+- **Traitement** (`handleReminderAction`) : migration de la base (`migrateDatabase`, partagée avec `useDatabaseReady`), `applyReminderAction` (même enregistrement que « Aujourd'hui » via `saveIntakeValidation`, rien si la prise a déjà un log ce jour-là), `rescheduleReminders`, puis `completeReminderAction`.
+- **Démarrage** : `index.ts` appelle `startReminderActionHandling()` avant React. Une action peut lancer l'app en arrière-plan sans écran. La dernière réponse (`getLastNotificationResponse`) est relue au démarrage : l'événement part parfois avant l'abonnement du listener.
+- **Replanifications en série** : `rescheduleReminders` attend la précédente. Celle du lancement de l'app et celle de l'action se mélangeaient sinon (annulations et planifications entrelacées).
+- `useOpenTabOnNotification` ignore les boutons : seul le tap simple ouvre un onglet.
+
+### iOS (patch)
+
+Par défaut, expo-notifications signale la fin à iOS dès qu'il transmet l'action au JS : iOS peut suspendre l'app avant l'enregistrement. Le patch (`NotificationCenterManager.swift`, `EmitterModule.swift`) :
+
+- garde le `completionHandler` d'une action personnalisée (`NotificationActionCompletions`), avec une tâche d'arrière-plan ;
+- l'appelle quand le JS appelle `completeNotificationAction` (`completeReminderAction`), ou au bout de 25 s ;
+- tap simple et suppression : comportement d'origine.
+
+### Android
+
+expo-notifications lance une tâche `expo-task-manager` pour un bouton d'action, app en arrière-plan ou tuée (JS chargé sans écran). `registerBackgroundReminderActions` (`reminderActionSupport.android.ts`) la déclare et l'enregistre (`registerTaskAsync`) au démarrage.
+
+- Les données arrivent brutes (`content.dataString`, JSON) : `reminderIntakeOf` les lit.
+- App en arrière-plan : la tâche et le listener reçoivent la même action. Sans effet : la prise n'est enregistrée qu'une fois.
+- Android n'attend pas la fin du JS : `completeReminderAction` ne fait rien.
+- Patch (`ExpoHandlingDelegate.kt`) : la notification disparaît dès l'appui, sans attendre la replanification.
+
+### Tester
+
+Variante Dev en **Release** (JS embarqué, sans Metro) : en Debug, l'app lancée en arrière-plan dépend de Metro.
+
+- iOS : `APP_VARIANT=dev pnpm expo run:ios --device <id> --configuration Release --no-bundler`.
+- Android : `APP_VARIANT=dev pnpm expo run:android --device <modèle> --variant release --no-bundler`. Désinstaller avant « Pilbo Dev » en Debug (signature différente).
+
+Créer une prise 2 minutes plus tard, tuer l'app, appuyer sur « Je l'ai pris » sans ouvrir l'app :
+
+- iOS : le badge de l'icône disparaît en moins d'une seconde (replanification faite).
+- les deux : aucune relance de cette prise, prise validée et stock baissé à l'ouverture.
 
 ## Handler (premier plan)
 

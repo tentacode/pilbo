@@ -258,6 +258,7 @@ describe("planReminders", () => {
       body: "1 × Lithium 250 mg",
       badge: 1,
       presentationGroup: "reminder-intake-8-20-2026-10-04",
+      reminderIntake: { intakeId: "intake-8-20", intakeDay: "2026-10-04" },
       interruptionLevel: "timeSensitive",
       sound: "beep",
       channelId: "intake-reminders",

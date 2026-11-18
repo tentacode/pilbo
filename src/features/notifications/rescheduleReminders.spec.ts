@@ -9,6 +9,9 @@ jest.mock("./notifications", () => ({
   getPermissionGranted: jest.fn(),
   resetReminders: jest.fn(() => Promise.resolve()),
 }));
+jest.mock("./reminderActionCategory", () => ({
+  registerReminderActions: jest.fn(() => Promise.resolve()),
+}));
 jest.mock("./notificationChannels", () => ({
   setUpNotificationChannels: jest.fn(() => Promise.resolve()),
 }));

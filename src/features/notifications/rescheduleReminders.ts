@@ -10,10 +10,20 @@ import { getIntakeLogsOfDay } from "@/features/today/queries/getIntakeLogsOfDay"
 import { getIntakesOfDay } from "@/features/today/queries/getIntakesOfDay";
 import { setUpNotificationChannels } from "./notificationChannels";
 import { getPermissionGranted, resetReminders } from "./notifications";
+import { registerReminderActions } from "./reminderActionCategory";
 import { planLowStockAlerts } from "./utils/planLowStockAlerts";
 import { planReminders } from "./utils/planReminders";
 
-export async function rescheduleReminders(database: Database, now: Date): Promise<void> {
+let rescheduling: Promise<void> = Promise.resolve();
+
+// Serialized: concurrent runs would interleave their cancel and schedule calls.
+export function rescheduleReminders(database: Database, now: Date): Promise<void> {
+  const run = rescheduling.then(() => reschedule(database, now));
+  rescheduling = run.catch(() => undefined);
+  return run;
+}
+
+async function reschedule(database: Database, now: Date): Promise<void> {
   const { defaultReminderSound, lowStockSound } = useSettingsStore.getState();
   // Before the permission check: Android 13+ only asks for the permission once a channel exists.
   await setUpNotificationChannels({
@@ -23,6 +33,7 @@ export async function rescheduleReminders(database: Database, now: Date): Promis
   if (!(await getPermissionGranted())) {
     return;
   }
+  await registerReminderActions();
   const { medStocks, intakes, intakeLogs } = getStocksData(database, now);
   const stockItems = computeStockItems(medStocks, intakes, intakeLogs, now);
   const plannedReminders = planReminders({

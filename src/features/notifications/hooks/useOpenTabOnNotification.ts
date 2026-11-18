@@ -5,12 +5,16 @@ import { useEffect } from "react";
 import { useTabResetStore } from "@/shared/navigation/tabResetStore";
 
 import { notificationTab } from "@/features/notifications/utils/notificationTab";
+import { reminderActionStatus } from "@/features/notifications/utils/reminderActions";
 
 const TAB_HREFS = { today: "/today", meds: "/meds" } as const;
 
 export function useOpenTabOnNotification(): void {
   useEffect(() => {
     const subscription = Notifications.addNotificationResponseReceivedListener((response) => {
+      if (reminderActionStatus(response.actionIdentifier) !== undefined) {
+        return;
+      }
       const tab = notificationTab(response.notification.request.identifier);
       router.navigate(TAB_HREFS[tab]);
       useTabResetStore.getState().requestTabReset(tab);

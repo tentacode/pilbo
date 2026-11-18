@@ -9,7 +9,7 @@ import { useOpenTabOnNotification } from "./useOpenTabOnNotification";
 jest.mock("expo-notifications", () => ({ addNotificationResponseReceivedListener: jest.fn() }));
 jest.mock("expo-router", () => ({ router: { navigate: jest.fn() } }));
 
-async function tapNotification(identifier: string) {
+async function tapNotification(identifier: string, actionIdentifier?: string) {
   let listener: ((response: Notifications.NotificationResponse) => void) | undefined;
   jest
     .mocked(Notifications.addNotificationResponseReceivedListener)
@@ -19,6 +19,7 @@ async function tapNotification(identifier: string) {
     });
   await renderHook(() => useOpenTabOnNotification());
   listener?.({
+    actionIdentifier,
     notification: { request: { identifier } },
   } as Notifications.NotificationResponse);
 }
@@ -30,6 +31,12 @@ describe("useOpenTabOnNotification", () => {
 
   afterEach(() => {
     jest.clearAllMocks();
+  });
+
+  it("stays on the current tab after a reminder action button", async () => {
+    await tapNotification("reminder-intake-1-2026-11-08T09:00", "intake-reminder-taken");
+
+    expect(router.navigate).not.toHaveBeenCalled();
   });
 
   it("opens the today tab from an intake reminder", async () => {
