@@ -1,4 +1,14 @@
-export type PillShape = "round" | "oval" | "capsule" | "softgel" | "triangle" | "square";
+export type PillShape =
+  | "round"
+  | "oval"
+  | "capsule"
+  | "softgel"
+  | "triangle"
+  | "square"
+  | "sachet"
+  | "tube"
+  | "syrup"
+  | "drops";
 
 export type PillSize = "small" | "medium" | "large";
 
@@ -10,15 +20,20 @@ export type PillDesign = {
 
 type PillShapeConfiguration = {
   hasScoreLine: boolean;
+  hasWhiteContainer: boolean;
 };
 
 export const PILL_SHAPES: Record<PillShape, PillShapeConfiguration> = {
-  round: { hasScoreLine: true },
-  oval: { hasScoreLine: true },
-  capsule: { hasScoreLine: false },
-  softgel: { hasScoreLine: false },
-  triangle: { hasScoreLine: false },
-  square: { hasScoreLine: false },
+  round: { hasScoreLine: true, hasWhiteContainer: false },
+  oval: { hasScoreLine: true, hasWhiteContainer: false },
+  capsule: { hasScoreLine: false, hasWhiteContainer: false },
+  softgel: { hasScoreLine: false, hasWhiteContainer: false },
+  triangle: { hasScoreLine: false, hasWhiteContainer: false },
+  square: { hasScoreLine: false, hasWhiteContainer: false },
+  sachet: { hasScoreLine: false, hasWhiteContainer: false },
+  tube: { hasScoreLine: false, hasWhiteContainer: false },
+  syrup: { hasScoreLine: false, hasWhiteContainer: true },
+  drops: { hasScoreLine: false, hasWhiteContainer: true },
 };
 
 export interface Med {

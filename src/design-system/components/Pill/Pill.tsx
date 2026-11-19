@@ -4,12 +4,16 @@ import type { PillDesign } from "@/domain/med";
 
 import { sizes } from "../../tokens";
 import { CapsulePill } from "./CapsulePill";
+import { DropsPill } from "./DropsPill";
 import { OvalPill } from "./OvalPill";
 import { outlineRatioFor, PILL_CENTER, PILL_VIEWBOX, pillScales } from "./Pill.styles";
 import { RoundPill } from "./RoundPill";
+import { SachetPill } from "./SachetPill";
 import { SoftgelPill } from "./SoftgelPill";
 import { SquarePill } from "./SquarePill";
+import { SyrupPill } from "./SyrupPill";
 import { TrianglePill } from "./TrianglePill";
+import { TubePill } from "./TubePill";
 
 type PillProps = {
   design: PillDesign;
@@ -47,5 +51,13 @@ function PillShape({ design, ...strokeProps }: PillShapeProps) {
       return <TrianglePill colors={design.colors} {...strokeProps} />;
     case "square":
       return <SquarePill colors={design.colors} {...strokeProps} />;
+    case "sachet":
+      return <SachetPill colors={design.colors} {...strokeProps} />;
+    case "tube":
+      return <TubePill colors={design.colors} {...strokeProps} />;
+    case "syrup":
+      return <SyrupPill colors={design.colors} {...strokeProps} />;
+    case "drops":
+      return <DropsPill colors={design.colors} {...strokeProps} />;
   }
 }

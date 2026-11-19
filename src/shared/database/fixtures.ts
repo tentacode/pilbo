@@ -31,12 +31,12 @@ export const medFixtures = {
   quviviq50: {
     name: "Quviviq",
     strength: "50 mg",
-    design: { shape: "softgel", colors: [ROSE, ROSE], size: "medium" },
+    design: { shape: "syrup", colors: [ROSE, WHITE], size: "medium" },
   },
   pregabalin50: {
     name: "Prégabaline",
     strength: "50 mg",
-    design: { shape: "oval", colors: [BUTTER, BUTTER], size: "medium" },
+    design: { shape: "sachet", colors: [BUTTER, BUTTER], size: "medium" },
   },
   prazepam25: {
     name: "Prazépam",

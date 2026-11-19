@@ -131,6 +131,10 @@ describe("formatShapeName", () => {
   it("returns the capitalized shape name", () => {
     expect(formatShapeName(t, "softgel")).toBe("Capsule molle");
     expect(formatShapeName(t, "square")).toBe("Carré");
+    expect(formatShapeName(t, "sachet")).toBe("Sachet");
+    expect(formatShapeName(t, "tube")).toBe("Tube");
+    expect(formatShapeName(t, "syrup")).toBe("Sirop");
+    expect(formatShapeName(t, "drops")).toBe("Gouttes");
   });
 });
 

@@ -96,12 +96,14 @@ describe("AppearanceScreen", () => {
     expect(screen.getByText("Doliprane 1 g", { includeHiddenElements: true })).toBeOnTheScreen();
   });
 
-  it("offers the six shapes, the current one selected", async () => {
+  it("offers the ten shapes, the current one selected", async () => {
     await renderMedsAppearance();
 
     expect(
-      screen.getAllByRole("radio", { name: /^(Rond|Ovale|Gélule|Capsule molle|Triangle|Carré)$/ }),
-    ).toHaveLength(6);
+      screen.getAllByRole("radio", {
+        name: /^(Rond|Ovale|Gélule|Capsule molle|Triangle|Carré|Sachet|Tube|Sirop|Gouttes)$/,
+      }),
+    ).toHaveLength(10);
     expect(screen.getByRole("radio", { name: "Rond" })).toBeSelected();
   });
 
@@ -120,6 +122,15 @@ describe("AppearanceScreen", () => {
     await fireEvent.press(screen.getByRole("radio", { name: "Triangle" }));
 
     expect(previewLabel()).toBe("Aperçu : triangle, moyenne, lilas");
+  });
+
+  it("gives a white bottle to a single-colored syrup", async () => {
+    await renderMedsAppearance({ medId: "doliprane", ...withColors([LILAC, LILAC]) });
+
+    await fireEvent.press(screen.getByRole("radio", { name: "Sirop" }));
+
+    expect(previewLabel()).toBe("Aperçu : sirop, moyenne, lilas et blanc");
+    expect(screen.getByRole("radio", { name: "Deux couleurs" })).toBeSelected();
   });
 
   it("changes the size", async () => {
@@ -250,7 +261,7 @@ describe("AppearanceScreen", () => {
 
   it("draws a random appearance", async () => {
     const random = jest.spyOn(Math, "random");
-    [0.4, 0.99, 0.2, 0.9].forEach((value) => random.mockReturnValueOnce(value));
+    [0.2, 0.99, 0.2, 0.9].forEach((value) => random.mockReturnValueOnce(value));
     const announce = jest.spyOn(AccessibilityInfo, "announceForAccessibility");
     await renderMedsAppearance();
 
@@ -349,7 +360,7 @@ describe("AppearanceScreen", () => {
 
     it("follows a random appearance with different colors", async () => {
       const random = jest.spyOn(Math, "random");
-      [0.4, 0.99, 0.2, 0.9].forEach((value) => random.mockReturnValueOnce(value));
+      [0.2, 0.99, 0.2, 0.9].forEach((value) => random.mockReturnValueOnce(value));
       await renderMedsAppearance();
 
       await fireEvent.press(screen.getByRole("button", { name: "Apparence aléatoire" }));
@@ -361,7 +372,7 @@ describe("AppearanceScreen", () => {
 
     it("follows a random appearance with identical colors", async () => {
       const random = jest.spyOn(Math, "random");
-      [0.4, 0.99, 0.2, 0.2].forEach((value) => random.mockReturnValueOnce(value));
+      [0.2, 0.99, 0.2, 0.2].forEach((value) => random.mockReturnValueOnce(value));
       await renderMedsAppearance(withColors([LILAC, MINT]));
       await fireEvent.press(screen.getByRole("radio", { name: "Couleur 2 : menthe" }));
 

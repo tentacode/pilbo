@@ -112,5 +112,13 @@ describe("PILL_SHAPES", () => {
     expect(PILL_SHAPES.softgel.hasScoreLine).toBe(false);
     expect(PILL_SHAPES.triangle.hasScoreLine).toBe(false);
     expect(PILL_SHAPES.square.hasScoreLine).toBe(false);
+    expect(PILL_SHAPES.sachet.hasScoreLine).toBe(false);
+  });
+
+  it("gives a white container to the syrup and drops shapes only", () => {
+    const shapesWithWhiteContainer = Object.entries(PILL_SHAPES)
+      .filter(([, configuration]) => configuration.hasWhiteContainer)
+      .map(([shape]) => shape);
+    expect(shapesWithWhiteContainer).toEqual(["syrup", "drops"]);
   });
 });

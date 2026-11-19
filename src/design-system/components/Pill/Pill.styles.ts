@@ -5,6 +5,7 @@ import type { ThemeColors } from "../../tokens";
 export const PILL_VIEWBOX = "0 0 40 40";
 export const PILL_CENTER = 20;
 export const PILL_ROTATION = -35;
+export const TALL_SHAPE_SCALE = 0.8;
 
 export const pillScales: Record<PillSize, number> = {
   small: 0.72,

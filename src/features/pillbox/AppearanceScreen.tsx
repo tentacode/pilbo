@@ -12,13 +12,13 @@ import { ColorField } from "./components/ColorField";
 import { CustomColorPanel } from "./components/CustomColorPanel";
 import { ShapeField } from "./components/ShapeField";
 import { SizeField } from "./components/SizeField";
-import type { Med, PillDesign } from "@/domain/med";
+import type { Med, PillDesign, PillShape } from "@/domain/med";
 import { useColorEditing } from "./hooks/useColorEditing";
 import { useIntakeDraft } from "./hooks/useIntakeDraft";
 import { useMedDraftContext } from "./hooks/useMedDraft";
 import { DEFAULT_PILL_DESIGN, initialColorCount } from "./utils/medDraft";
 import { formatPreviewLabel } from "./utils/formatters";
-import { type ColorCount, randomPillDesign, withShape } from "./utils/pillDesign";
+import { type ColorCount, colorCountOf, randomPillDesign, withShape } from "./utils/pillDesign";
 import { styles } from "./AppearanceScreen.styles";
 import { formatIntakeTime } from "@/shared/i18n/formatters";
 
@@ -47,6 +47,14 @@ export function AppearanceScreen({
   function openCustomColorPanel() {
     isCustomColorPanelRevealRequested.current = true;
     colorEditing.openCustomColorPanel();
+  }
+
+  function changeShape(shape: PillShape) {
+    const designWithShape = withShape(design, shape);
+    if (colorCountOf(designWithShape) !== colorCountOf(design)) {
+      colorEditing.syncColorCount(designWithShape);
+    }
+    setDesign(designWithShape);
   }
 
   function randomizeDesign() {
@@ -80,7 +88,7 @@ export function AppearanceScreen({
           context={previewContext}
           onRandomize={randomizeDesign}
         />
-        <ShapeField design={design} onChange={(shape) => setDesign(withShape(design, shape))} />
+        <ShapeField design={design} onChange={changeShape} />
         <SizeField size={design.size} onChange={(size) => setDesign({ ...design, size })} />
         <ColorField
           design={design}

@@ -18,7 +18,7 @@ describe("getAllStocks", () => {
         name: "Quviviq",
         strength: "50 mg",
         detail: "",
-        design: { shape: "softgel", colors: ["#F8C6DA", "#F8C6DA"], size: "medium" },
+        design: { shape: "syrup", colors: ["#F8C6DA", "#FFFFFF"], size: "medium" },
       },
       stock: { medId, quantity: -2, boxSize: 28, lowStockDays: 5 },
     });

@@ -1,10 +1,11 @@
 import { borderWidth, radius, sizes, spacing } from "@/design-system/tokens";
 import { createThemedStyles } from "@/design-system/utils/createThemedStyles";
 
+import { shapeCellLayout } from "./ShapeField.styles";
+
 export const useStyles = createThemedStyles((themeColors) => ({
   option: {
-    flexBasis: "30%",
-    flexGrow: 1,
+    ...shapeCellLayout,
     minHeight: sizes.shapeOptionMinimumHeight,
     alignItems: "center",
     justifyContent: "center",

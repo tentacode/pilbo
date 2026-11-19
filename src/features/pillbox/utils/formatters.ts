@@ -72,6 +72,10 @@ function shapeNamesOf(t: TFunction<"pillbox">): Record<PillShape, string> {
     softgel: t("capsule molle"),
     triangle: t("triangle"),
     square: t("carré"),
+    sachet: t("sachet"),
+    tube: t("tube"),
+    syrup: t("sirop"),
+    drops: t("gouttes"),
   };
 }
 

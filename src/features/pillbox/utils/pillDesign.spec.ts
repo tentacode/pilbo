@@ -16,11 +16,40 @@ describe("withShape", () => {
       withShape({ shape: "capsule", size: "small", colors: ["#F58FB8", "#FFFFFF"] }, "round"),
     ).toEqual({ shape: "round", size: "small", colors: ["#F58FB8", "#FFFFFF"] });
   });
+
+  it("gives a white container to a single-colored syrup or drops", () => {
+    const lilacPill: PillDesign = { shape: "round", size: "small", colors: ["#D6C9F5", "#D6C9F5"] };
+    expect(withShape(lilacPill, "syrup").colors).toEqual(["#D6C9F5", "#FFFFFF"]);
+    expect(withShape(lilacPill, "drops").colors).toEqual(["#D6C9F5", "#FFFFFF"]);
+  });
+
+  it("keeps both colors of a two-colored syrup", () => {
+    expect(
+      withShape({ shape: "round", size: "small", colors: ["#D6C9F5", "#FBE29A"] }, "syrup").colors,
+    ).toEqual(["#D6C9F5", "#FBE29A"]);
+  });
+
+  it("keeps a single color for the other shapes", () => {
+    expect(
+      withShape({ shape: "round", size: "small", colors: ["#D6C9F5", "#D6C9F5"] }, "sachet").colors,
+    ).toEqual(["#D6C9F5", "#D6C9F5"]);
+  });
 });
 
 describe("pillShapes", () => {
   it("lists the shapes in the configuration order", () => {
-    expect(pillShapes()).toEqual(["round", "oval", "capsule", "softgel", "triangle", "square"]);
+    expect(pillShapes()).toEqual([
+      "round",
+      "oval",
+      "capsule",
+      "softgel",
+      "triangle",
+      "square",
+      "sachet",
+      "tube",
+      "syrup",
+      "drops",
+    ]);
   });
 });
 
@@ -69,7 +98,7 @@ describe("randomPillDesign", () => {
   }
 
   it("picks a shape, a size and two swatch colors", () => {
-    expect(randomPillDesign(current, sequence(0.4, 0.99, 0.2, 0.9))).toEqual({
+    expect(randomPillDesign(current, sequence(0.2, 0.99, 0.2, 0.9))).toEqual({
       shape: "capsule",
       size: "large",
       colors: ["#FBE29A", "#B3E8E0"],
@@ -77,10 +106,18 @@ describe("randomPillDesign", () => {
   });
 
   it("draws again when the design is unchanged", () => {
-    expect(randomPillDesign(current, sequence(0, 0, 0, 0, 0.99, 0, 0, 0))).toEqual({
+    expect(randomPillDesign(current, sequence(0, 0, 0, 0, 0.5, 0, 0, 0))).toEqual({
       shape: "square",
       size: "small",
       colors: ["#FFFFFF", "#FFFFFF"],
+    });
+  });
+
+  it("gives a white container to a random syrup or drops", () => {
+    expect(randomPillDesign(current, sequence(0.99, 0, 0.2, 0.9))).toEqual({
+      shape: "drops",
+      size: "small",
+      colors: ["#FBE29A", "#FFFFFF"],
     });
   });
 

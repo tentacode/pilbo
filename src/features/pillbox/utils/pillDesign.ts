@@ -6,6 +6,9 @@ const PILL_SIZES: PillSize[] = ["small", "medium", "large"];
 export type ColorCount = 1 | 2;
 
 export function withShape(design: PillDesign, shape: PillShape): PillDesign {
+  if (PILL_SHAPES[shape].hasWhiteContainer && colorCountOf(design) === 1) {
+    return { ...design, shape, colors: [design.colors[0], pillSwatches.white] };
+  }
   return { ...design, shape };
 }
 
@@ -55,10 +58,14 @@ export function randomPillDesign(
   random: () => number = Math.random,
 ): PillDesign {
   const swatchColors = Object.values(pillSwatches);
+  const shape = pickRandom(pillShapes(), random);
+  const size = pickRandom(PILL_SIZES, random);
+  const firstColor = pickRandom(swatchColors, random);
+  const secondColor = pickRandom(swatchColors, random);
   const design: PillDesign = {
-    shape: pickRandom(pillShapes(), random),
-    size: pickRandom(PILL_SIZES, random),
-    colors: [pickRandom(swatchColors, random), pickRandom(swatchColors, random)],
+    shape,
+    size,
+    colors: [firstColor, PILL_SHAPES[shape].hasWhiteContainer ? pillSwatches.white : secondColor],
   };
   return isSameDesign(design, current) ? randomPillDesign(current, random) : design;
 }
