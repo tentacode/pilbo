@@ -7,7 +7,7 @@ name: A scheduled med taken from its sheet asks first, then shows on today and c
     visible: "Aujourd'hui"
     timeout: 60000
 - tapOn: "Médicaments.*"
-- tapOn: "Lithium 250 mg.*"
+- tapOn: "Magnésium 300 mg.*"
 - tapOn: "Prendre 1 comprimé"
 - assertVisible: "Le prendre quand même ?"
 - tapOn: "Prendre quand même"
@@ -17,7 +17,7 @@ name: A scheduled med taken from its sheet asks first, then shows on today and c
     element:
       text: "Autres médicaments"
     centerElement: true
-- tapOn: "Lithium 250 mg, Pris à \\d\\d:\\d\\d"
+- tapOn: "Magnésium 300 mg, Pris à \\d\\d:\\d\\d"
 - assertVisible: "Prise de \\d\\d:\\d\\d"
 - tapOn: "Supprimer cette prise"
 - assertNotVisible: "Autres médicaments"

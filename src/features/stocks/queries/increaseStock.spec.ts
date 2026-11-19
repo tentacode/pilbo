@@ -8,7 +8,7 @@ import { findMedId } from "./testStocks";
 describe("increaseStock", () => {
   it("gives back pills to the stock", () => {
     const database = createTestDatabase();
-    const medId = findMedId(database, "Prazépam", "25 mg");
+    const medId = findMedId(database, "Paracétamol", "500 mg");
     saveStock(database, { medId, quantity: -1, boxSize: 30, lowStockDays: 7 });
 
     increaseStock(database, medId, 1);
@@ -18,7 +18,7 @@ describe("increaseStock", () => {
 
   it("does nothing when the med has no stock", () => {
     const database = createTestDatabase();
-    const medId = findMedId(database, "Quviviq", "50 mg");
+    const medId = findMedId(database, "Mélatonine", "1 mg");
 
     increaseStock(database, medId, 1);
 

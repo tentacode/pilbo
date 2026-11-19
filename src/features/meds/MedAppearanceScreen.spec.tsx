@@ -33,7 +33,7 @@ function wrapper({ children }: { children: ReactNode }) {
 }
 
 async function renderScreen(): Promise<string> {
-  const medId = findMedId(mockDatabase, "Lithium", "250 mg");
+  const medId = findMedId(mockDatabase, "Magnésium", "300 mg");
   mockSearchParams = { medId };
   await render(<MedAppearanceScreen />, { wrapper });
   return medId;
@@ -48,7 +48,7 @@ describe("MedAppearanceScreen", () => {
   it("previews the med with its detail", async () => {
     await renderScreen();
 
-    expect(screen.getByText("Lithium 250 mg", { includeHiddenElements: true })).toBeOnTheScreen();
+    expect(screen.getByText("Magnésium 300 mg", { includeHiddenElements: true })).toBeOnTheScreen();
     expect(screen.getByText("Avec le repas", { includeHiddenElements: true })).toBeOnTheScreen();
   });
 

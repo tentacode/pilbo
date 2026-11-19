@@ -51,12 +51,12 @@ describe("useLowStockCount", () => {
   it("follows the database changes", async () => {
     const { result } = await renderHook(() => useLowStockCount());
 
-    setStock("Prazépam", "25 mg", 0);
-    setStock("Lamictal", "50 mg", 3);
+    setStock("Paracétamol", "500 mg", 0);
+    setStock("Vitamine D", "400 UI", 3);
     await act(() => mockDatabaseListener?.());
     expect(result.current).toBe(3);
 
-    setStock("Lithium", "250 mg", 200);
+    setStock("Magnésium", "300 mg", 200);
     await act(() => mockDatabaseListener?.());
     expect(result.current).toBe(2);
   });

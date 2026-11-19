@@ -61,13 +61,13 @@ describe("MedsScreen", () => {
     await renderScreen();
 
     expect(screen.getByRole("header", { name: "Médicaments" })).toBeOnTheScreen();
-    expect(screen.getAllByRole("button", { name: / mg, / }).map(nameOf)).toEqual([
-      "Lamictal 50 mg, 45 jours, 45 comprimés",
-      "Lamictal 100 mg, 56 jours, 56 comprimés",
-      "Lithium 250 mg, stock bas, 4 jours, 18 comprimés",
-      "Prazépam 25 mg, 15 comprimés",
-      "Prégabaline 50 mg, stock non suivi",
-      "Quviviq 50 mg, stock non suivi",
+    expect(screen.getAllByRole("button", { name: / (mg|UI), / }).map(nameOf)).toEqual([
+      "Fer 80 mg, stock non suivi",
+      "Magnésium 300 mg, stock bas, 4 jours, 18 comprimés",
+      "Mélatonine 1 mg, stock non suivi",
+      "Paracétamol 500 mg, 15 comprimés",
+      "Vitamine D 400 UI, 45 jours, 45 comprimés",
+      "Vitamine D 1000 UI, 56 jours, 56 comprimés",
     ]);
   });
 
@@ -82,15 +82,15 @@ describe("MedsScreen", () => {
   });
 
   it("hides the archived meds", async () => {
-    archiveMed(mockDatabase, findMedId(mockDatabase, "Prazépam", "25 mg"), new Date());
+    archiveMed(mockDatabase, findMedId(mockDatabase, "Paracétamol", "500 mg"), new Date());
     await renderScreen();
 
-    expect(screen.queryByRole("button", { name: /^Prazépam/ })).not.toBeOnTheScreen();
+    expect(screen.queryByRole("button", { name: /^Paracétamol/ })).not.toBeOnTheScreen();
   });
 
   it("marks a low stock without schedule", async () => {
     saveStock(mockDatabase, {
-      medId: findMedId(mockDatabase, "Prazépam", "25 mg"),
+      medId: findMedId(mockDatabase, "Paracétamol", "500 mg"),
       quantity: 0,
       boxSize: 20,
       lowStockDays: 7,
@@ -98,18 +98,18 @@ describe("MedsScreen", () => {
     await renderScreen();
 
     expect(
-      screen.getByRole("button", { name: "Prazépam 25 mg, stock bas, 0 comprimé" }),
+      screen.getByRole("button", { name: "Paracétamol 500 mg, stock bas, 0 comprimé" }),
     ).toBeOnTheScreen();
   });
 
   it("opens the sheet of a med", async () => {
     await renderScreen();
 
-    await fireEvent.press(screen.getByRole("button", { name: /^Lithium 250 mg/ }));
+    await fireEvent.press(screen.getByRole("button", { name: /^Magnésium 300 mg/ }));
 
     expect(router.push).toHaveBeenCalledWith({
       pathname: "/meds/[medId]",
-      params: { medId: findMedId(mockDatabase, "Lithium", "250 mg") },
+      params: { medId: findMedId(mockDatabase, "Magnésium", "300 mg") },
     });
   });
 
@@ -146,7 +146,7 @@ describe("MedsScreen", () => {
     await renderInEnglish(<MedsScreen />, { wrapper });
 
     expect(screen.getByRole("header", { name: "Meds" })).toBeOnTheScreen();
-    expect(screen.getByRole("button", { name: "Lithium 250 mg, low stock, 4 days, 18 pills" }));
+    expect(screen.getByRole("button", { name: "Magnésium 300 mg, low stock, 4 days, 18 pills" }));
     expect(screen.getAllByRole("button", { name: "New medication" })).toHaveLength(2);
   });
 });

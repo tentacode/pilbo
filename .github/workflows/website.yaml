@@ -25,9 +25,16 @@ jobs:
     steps:
       - uses: actions/checkout@v7
 
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24
+
+      - name: Build the website
+        run: node website/build.mjs
+
       - uses: actions/upload-pages-artifact@v5
         with:
-          path: website
+          path: website/dist
 
       - id: deployment
         uses: actions/deploy-pages@v5

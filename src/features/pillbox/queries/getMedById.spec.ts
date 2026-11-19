@@ -10,9 +10,9 @@ import { getMedById } from "./getMedById";
 describe("getMedById", () => {
   it("returns the med", () => {
     const database = createTestDatabase();
-    const prazepam = getAllMeds(database).find(({ name }) => name === "Prazépam");
+    const paracetamol = getAllMeds(database).find(({ name }) => name === "Paracétamol");
 
-    expect(getMedById(database, prazepam?.id ?? "")).toEqual(prazepam);
+    expect(getMedById(database, paracetamol?.id ?? "")).toEqual(paracetamol);
   });
 
   it("reads a single color design as a plain two color design", () => {
@@ -20,7 +20,7 @@ describe("getMedById", () => {
     const { id } = database
       .insert(medTable)
       .values({
-        name: "Lithium",
+        name: "Magnésium",
         strength: "",
         design: JSON.parse('{"shape":"round","size":"medium","colors":["#D6C9F5"]}'),
       })
@@ -36,13 +36,13 @@ describe("getMedById", () => {
 
   it("returns undefined for an archived med", () => {
     const database = createTestDatabase();
-    const prazepamId = findMedId(database, "Prazépam", "25 mg");
+    const paracetamolId = findMedId(database, "Paracétamol", "500 mg");
     database
       .update(medTable)
       .set({ archivedOn: "2026-11-04" })
-      .where(sql`${medTable.id} = ${prazepamId}`)
+      .where(sql`${medTable.id} = ${paracetamolId}`)
       .run();
 
-    expect(getMedById(database, prazepamId)).toBeUndefined();
+    expect(getMedById(database, paracetamolId)).toBeUndefined();
   });
 });

@@ -7,18 +7,18 @@ import { updateMed } from "./updateMed";
 describe("updateMed", () => {
   it("updates the name, strength, detail and design", () => {
     const database = createTestDatabase();
-    const prazepam = { id: findMedId(database, "Prazépam", "25 mg") };
+    const paracetamol = { id: findMedId(database, "Paracétamol", "500 mg") };
 
     updateMed(database, {
-      id: prazepam.id,
+      id: paracetamol.id,
       name: "Hydroxyzine",
       strength: "25 mg",
       detail: "",
       design: { shape: "oval", colors: ["#FFFFFF", "#FFFFFF"], size: "large" },
     });
 
-    expect(getMedById(database, prazepam.id)).toEqual({
-      id: prazepam.id,
+    expect(getMedById(database, paracetamol.id)).toEqual({
+      id: paracetamol.id,
       name: "Hydroxyzine",
       strength: "25 mg",
       detail: "",

@@ -69,7 +69,7 @@ function logMorningOn(database: Database, morning: Intake, localDate: string): v
 describe("saveIntake", () => {
   it("inserts a new intake with its meds, created today", () => {
     const database = createTestDatabase();
-    const prazepam = getMedById(database, findMedId(database, "Prazépam", "25 mg")) as Med;
+    const paracetamol = getMedById(database, findMedId(database, "Paracétamol", "500 mg")) as Med;
 
     const intakeId = saveIntake(
       database,
@@ -78,7 +78,7 @@ describe("saveIntake", () => {
         days: ["monday", "friday"],
         reminderIntervalMinutes: 15,
         sound: "chime",
-        medQuantities: [{ medId: prazepam.id, quantity: 2 }],
+        medQuantities: [{ medId: paracetamol.id, quantity: 2 }],
       },
       TODAY,
     );
@@ -89,7 +89,7 @@ describe("saveIntake", () => {
       days: ["monday", "friday"],
       reminderIntervalMinutes: 15,
       sound: "chime",
-      medQuantities: [{ med: prazepam, quantity: 2 }],
+      medQuantities: [{ med: paracetamol, quantity: 2 }],
     });
     expect(readVersion(database, intakeId)).toEqual({
       createdOn: "2026-10-24",
@@ -102,7 +102,7 @@ describe("saveIntake", () => {
   it("updates an intake without past logs in place and replaces its meds", () => {
     const database = createTestDatabase();
     const [morning] = getAllIntakes(database);
-    const prazepam = getMedById(database, findMedId(database, "Prazépam", "25 mg")) as Med;
+    const paracetamol = getMedById(database, findMedId(database, "Paracétamol", "500 mg")) as Med;
     const linksBefore = countRows(database, intakeMedTable);
     logMorningOn(database, morning, "2026-10-24");
 
@@ -114,7 +114,7 @@ describe("saveIntake", () => {
         days: ["sunday"],
         reminderIntervalMinutes: 30,
         sound: "drop",
-        medQuantities: [{ medId: prazepam.id, quantity: 3 }],
+        medQuantities: [{ medId: paracetamol.id, quantity: 3 }],
       },
       TODAY,
     );
@@ -126,7 +126,7 @@ describe("saveIntake", () => {
       days: ["sunday"],
       reminderIntervalMinutes: 30,
       sound: "drop",
-      medQuantities: [{ med: prazepam, quantity: 3 }],
+      medQuantities: [{ med: paracetamol, quantity: 3 }],
     });
     expect(countRows(database, intakeTable)).toBe(4);
     expect(countRows(database, intakeMedTable)).toBe(

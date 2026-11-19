@@ -1,0 +1,161 @@
+{
+  "site": {
+    "locale": "fr_FR",
+    "otherLanguageName": "English",
+    "skipLink": "Aller au contenu",
+    "shareImageAlt": "La gélule de Pilbo sur un fond de pilules colorées."
+  },
+  "navigation": {
+    "home": "Accueil",
+    "beta": "Rejoindre la bêta",
+    "support": "Assistance",
+    "privacy": "Confidentialité",
+    "sourceCode": "Code source"
+  },
+  "footer": {
+    "contactTitle": "Contactez-nous",
+    "contactText": "Une question, un problème ou une idée ? Écrivez-nous, nous lisons chaque message.",
+    "contactButton": "pilbo@tentacode.dev",
+    "navigationLabel": "Site de Pilbo",
+    "disclaimer": "Pilbo n’est pas un dispositif médical. Il ne remplace pas l’avis d’un médecin ou d’un pharmacien."
+  },
+  "pages": {
+    "index": {
+      "title": "Pilbo – Votre assistant pour prendre vos médicaments",
+      "description": "Pilbo est un pilulier virtuel qui vous aide à prendre vos médicaments : rappels, stocks et historique. Gratuit, sans compte, sur iPhone et Android."
+    },
+    "beta": {
+      "title": "Pilbo – Rejoindre la bêta",
+      "description": "Essayez Pilbo avant sa sortie, sur iPhone avec TestFlight ou sur Android avec le Play Store."
+    },
+    "support": {
+      "title": "Pilbo – Assistance",
+      "description": "Besoin d’aide avec Pilbo ? Écrivez-nous, nous vous répondrons."
+    },
+    "privacy": {
+      "title": "Pilbo – Politique de confidentialité",
+      "description": "Pilbo ne collecte aucune donnée : tout ce que vous saisissez reste sur votre téléphone."
+    }
+  },
+  "home": {
+    "hero": {
+      "title": "Un assistant pour prendre vos médicaments",
+      "lead": "Pilbo est un pilulier virtuel conçu pour celles et ceux qui prennent beaucoup de médicaments et peuvent parfois oublier des prises. Il vous rappelle chaque prise, jusqu’à ce qu’elle soit faite.",
+      "betaTitle": "Pilbo est en bêta, vous pouvez déjà l’essayer.",
+      "iosButton": "Bêta iPhone",
+      "androidButton": "Bêta Android",
+      "note": "Gratuit, sans publicité et sans compte. Vos données restent sur votre téléphone.",
+      "screenshotAlt": "L’écran Aujourd’hui de Pilbo : une alerte de stock bas, la prise de 12 h 20 en retard avec un comprimé de magnésium à prendre avec le repas, puis la prise de 20 h 20."
+    },
+    "features": {
+      "title": "Ce que fait Pilbo",
+      "lead": "Pilbo s’en tient à l’essentiel : vos prises, vos rappels et vos stocks.",
+      "pillbox": {
+        "title": "Vos prises dans votre pilulier",
+        "text": "Organisez vos prises à des heures différentes, chacune avec ses médicaments et ses quantités. Choisissez les jours de la semaine qui vous conviennent.",
+        "screenshotAlt": "L’écran Pilulier : des prises à 8 h 20, 12 h 20, 20 h 20 et 22 h, chacune avec ses médicaments."
+      },
+      "reminders": {
+        "title": "Des rappels discrets et efficaces",
+        "text": "Une notification discrète toutes les 10 minutes, au lieu d’une alarme que l’on arrête sans prendre ses médicaments. Validez la prise directement depuis la notification, et choisissez le son de vos rappels.",
+        "screenshotAlt": "Modification de la prise de 8 h 20 : heure, jours, rappel répété toutes les 10 minutes, son et médicaments."
+      },
+      "appearance": {
+        "title": "Des médicaments faciles à reconnaître",
+        "text": "Personnalisez la forme, la taille et les couleurs de vos médicaments pour les identifier rapidement. Comprimé, gélule, sachet, sirop ou gouttes : chacun a sa forme.",
+        "screenshotAlt": "Personnalisation d’une pilule : une gélule rose et lilas, avec le choix parmi dix formes, dont sachet, sirop et gouttes."
+      },
+      "stocks": {
+        "title": "Fini les boîtes vides",
+        "text": "Suivez le stock des médicaments importants pour vous. Chaque prise le diminue automatiquement, et une notification vous prévient avant d’en manquer.",
+        "screenshotAlt": "L’écran Médicaments : le magnésium est bientôt épuisé, plus que 4 jours, tandis que la vitamine D tiendra encore 46 et 56 jours."
+      },
+      "calendar": {
+        "title": "L’historique de vos prises",
+        "text": "Retrouvez vos prises dans un calendrier : les jours où tout a été pris, les prises en retard et celles oubliées.",
+        "screenshotAlt": "Le calendrier du mois : la plupart des jours sont validés, quelques prises ont été en retard ou oubliées."
+      }
+    },
+    "highlights": {
+      "title": "À savoir",
+      "privacy": {
+        "title": "Vos données restent sur votre téléphone",
+        "text": "Pas de compte, pas de serveur, pas de publicité et aucune récupération de vos données. Pilbo fonctionne sans connexion internet, et c’est un projet <a href=\"https://github.com/tentacode/pilbo\" hreflang=\"en\">open source</a>."
+      },
+      "accessibility": {
+        "title": "Accessibilité",
+        "text": "Pilbo a été conçu pour respecter les standards WCAG / RAAM. Il est compatible avec les lecteurs d’écran et les grandes tailles de texte."
+      },
+      "platforms": {
+        "title": "Sur iPhone et Android",
+        "text": "Pilbo est disponible sur iPhone et sur Android, en français et en anglais. Il est complètement gratuit."
+      }
+    },
+    "cta": {
+      "title": "Essayer Pilbo",
+      "text": "La bêta est ouverte : vous pouvez installer Pilbo dès maintenant. Vos retours nous aident à l’améliorer avant sa sortie."
+    }
+  },
+  "beta": {
+    "back": "Retour à l’accueil",
+    "title": "Rejoindre la bêta de Pilbo",
+    "lead": "Pilbo n’est pas encore disponible sur les stores. La bêta vous permet de l’utiliser dès maintenant, et vos retours nous aident à l’améliorer avant sa sortie.",
+    "feedbackTitle": "Merci de tester Pilbo !",
+    "feedbackText": "Essayez d’ajouter vos prises, de valider un rappel depuis la notification et de suivre un stock. Si quelque chose vous semble étrange, écrivez-nous à <a href=\"mailto:pilbo@tentacode.dev\">pilbo@tentacode.dev</a>, avec une capture d’écran si possible.",
+    "chooseLabel": "Choisissez votre téléphone",
+    "ios": {
+      "title": "Sur iPhone",
+      "intro": "La bêta passe par TestFlight, l’app d’Apple pour tester des apps. Deux étapes :",
+      "step1Title": "Installer TestFlight",
+      "step1Text": "TestFlight est gratuit, sur l’App Store.",
+      "step1Button": "TestFlight sur l’App Store",
+      "step2Title": "Rejoindre la bêta",
+      "step2Text": "Ouvrez ce lien sur votre iPhone, puis touchez « Accepter » et « Installer ».",
+      "step2Button": "Rejoindre la bêta iPhone",
+      "note": "Les mises à jour arrivent dans TestFlight. Pilbo s’ouvre ensuite comme n’importe quelle app."
+    },
+    "android": {
+      "title": "Sur Android",
+      "intro": "La bêta passe par le Play Store. Deux étapes, dans cet ordre :",
+      "step1Title": "Rejoindre le groupe des testeurs",
+      "step1Text": "Ce groupe Google vous donne accès au test.",
+      "step1Button": "Rejoindre le groupe des testeurs",
+      "step2Title": "S’inscrire au test",
+      "step2Text": "Touchez « Devenir testeur », puis installez Pilbo depuis le Play Store.",
+      "step2Button": "S’inscrire au test Android",
+      "note": "Utilisez pour les deux étapes le même compte Google que le Play Store de votre téléphone. Pilbo peut mettre quelques minutes à apparaître après votre inscription."
+    }
+  },
+  "support": {
+    "title": "Besoin d’aide ?",
+    "lead": "Une question, un problème ou une idée ? Écrivez-nous, nous vous répondrons.",
+    "contactText": "Écrivez-nous à <a href=\"mailto:pilbo@tentacode.dev\">pilbo@tentacode.dev</a>.",
+    "tipsTitle": "Pour nous aider à comprendre",
+    "tip1": "Essayez de décrire ce qui s’est passé, et ce que vous attendiez.",
+    "tip2": "Ajoutez une capture d’écran si possible.",
+    "tip3": "Indiquez le modèle de votre téléphone, et la version de Pilbo (dans les Réglages).",
+    "moreTitle": "En savoir plus",
+    "privacyLink": "Politique de confidentialité",
+    "betaLink": "Rejoindre la bêta"
+  },
+  "privacy": {
+    "title": "Politique de confidentialité",
+    "updated": "Dernière mise à jour : 9 novembre 2026",
+    "lead": "Pilbo ne collecte aucune donnée. Tout ce que vous saisissez reste sur votre téléphone. Cette politique s’applique à Pilbo sur iPhone et sur Android.",
+    "noDataTitle": "Aucune donnée collectée",
+    "noDataText": "Pilbo n’a ni compte ni serveur. Vos médicaments, vos prises, vos stocks et votre historique sont enregistrés uniquement sur votre téléphone. Nous ne les recevons jamais et ne pouvons pas les voir.",
+    "offlineText": "Pilbo fonctionne sans connexion internet.",
+    "trackingTitle": "Pas de publicité, pas de suivi",
+    "trackingText": "Pilbo n’affiche aucune publicité, ne mesure pas votre utilisation de l’app et ne vous suit pas. Il ne contient aucun service tiers qui collecte des données.",
+    "notificationsTitle": "Notifications",
+    "notificationsText": "Les rappels sont programmés par Pilbo directement sur votre téléphone. Ils ne passent par aucun serveur.",
+    "backupsTitle": "Sauvegardes",
+    "backupsText": "Pilbo n’envoie rien lui-même. Si la sauvegarde de votre téléphone est activée (iCloud ou Google), votre téléphone peut y inclure les données de Pilbo, comme pour vos autres apps. Ces sauvegardes sont gérées par Apple ou Google, dans votre compte. Nous n’y avons pas accès.",
+    "deletionTitle": "Supprimer vos données",
+    "deletionText": "Désinstaller Pilbo supprime toutes ses données de votre téléphone.",
+    "changesTitle": "Modifications",
+    "changesText": "Si cette politique change, nous mettrons à jour cette page et sa date, en haut.",
+    "contactTitle": "Contact",
+    "contactText": "Une question sur cette politique ? Écrivez-nous à <a href=\"mailto:pilbo@tentacode.dev\">pilbo@tentacode.dev</a>."
+  }
+}

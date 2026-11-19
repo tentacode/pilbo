@@ -27,7 +27,7 @@ name: The app language can be changed
 - assertVisible: "Pillbox"
 - assertVisible: "Meds.*"
 - tapOn: "Meds.*"
-- assertVisible: "Lithium 250 mg, low stock, .*"
+- assertVisible: "Magnésium 300 mg, low stock, .*"
 - tapOn: "Pillbox"
 - assertVisible: "New intake"
 

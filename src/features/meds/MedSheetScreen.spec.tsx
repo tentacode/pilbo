@@ -77,9 +77,9 @@ afterEach(() => {
 describe("MedSheetScreen", () => {
   describe("display", () => {
     it("shows a med without schedule, with its stock", async () => {
-      await renderSheet("Prazépam", "25 mg");
+      await renderSheet("Paracétamol", "500 mg");
 
-      expect(screen.getByRole("header", { name: "Prazépam 25 mg" })).toBeOnTheScreen();
+      expect(screen.getByRole("header", { name: "Paracétamol 500 mg" })).toBeOnTheScreen();
       expect(screen.getByText("Si besoin")).toBeOnTheScreen();
       expect(
         screen.getByRole("button", {
@@ -91,7 +91,7 @@ describe("MedSheetScreen", () => {
     });
 
     it("shows a scheduled med with a low stock and its intakes", async () => {
-      await renderSheet("Lithium", "250 mg");
+      await renderSheet("Magnésium", "300 mg");
 
       expect(
         screen.getByRole("button", {
@@ -108,7 +108,7 @@ describe("MedSheetScreen", () => {
     });
 
     it("offers to track the stock of a med without stock", async () => {
-      const medId = await renderSheet("Quviviq", "50 mg");
+      const medId = await renderSheet("Mélatonine", "1 mg");
 
       await press("Suivre le stock");
 
@@ -118,10 +118,10 @@ describe("MedSheetScreen", () => {
     it("shows the last taking of a previous day and opens that day", async () => {
       insertMedLog(
         mockDatabase,
-        findMedId(mockDatabase, "Prazépam", "25 mg"),
+        findMedId(mockDatabase, "Paracétamol", "500 mg"),
         new Date(2026, 9, 18, 15, 40),
       );
-      await renderSheet("Prazépam", "25 mg");
+      await renderSheet("Paracétamol", "500 mg");
 
       await press("Dernière prise : hier à 15:40");
 
@@ -132,7 +132,7 @@ describe("MedSheetScreen", () => {
     });
 
     it("opens the appearance, the edition and the intakes", async () => {
-      const medId = await renderSheet("Lithium", "250 mg");
+      const medId = await renderSheet("Magnésium", "300 mg");
 
       await press("Modifier l’apparence de la pilule");
       await press("Modifier le médicament");
@@ -156,7 +156,7 @@ describe("MedSheetScreen", () => {
 
   describe("taking", () => {
     it("takes a pill of a med without schedule", async () => {
-      const medId = await renderSheet("Prazépam", "25 mg");
+      const medId = await renderSheet("Paracétamol", "500 mg");
 
       await press(TAKE);
 
@@ -171,7 +171,7 @@ describe("MedSheetScreen", () => {
     });
 
     it("asks before taking a scheduled med", async () => {
-      const medId = await renderSheet("Lithium", "250 mg");
+      const medId = await renderSheet("Magnésium", "300 mg");
 
       await press(TAKE);
       expect(
@@ -188,7 +188,7 @@ describe("MedSheetScreen", () => {
     });
 
     it("undoes the takings of the visit one by one", async () => {
-      const medId = await renderSheet("Prazépam", "25 mg");
+      const medId = await renderSheet("Paracétamol", "500 mg");
       await press(TAKE);
       jest.setSystemTime(new Date(2026, 9, 19, 7, 5));
       await press(TAKE);
@@ -208,9 +208,9 @@ describe("MedSheetScreen", () => {
     });
 
     it("warns when the stock goes below zero and opens the stock", async () => {
-      const medId = findMedId(mockDatabase, "Prazépam", "25 mg");
+      const medId = findMedId(mockDatabase, "Paracétamol", "500 mg");
       saveStock(mockDatabase, { medId, quantity: 0, boxSize: 20, lowStockDays: 7 });
-      await renderSheet("Prazépam", "25 mg");
+      await renderSheet("Paracétamol", "500 mg");
 
       await press(TAKE);
       expect(screen.getByRole("header", { name: "Stock à mettre à jour" })).toBeOnTheScreen();
@@ -223,7 +223,7 @@ describe("MedSheetScreen", () => {
 
   describe("archiving", () => {
     it("archives a med without intake after confirmation", async () => {
-      const medId = await renderSheet("Prazépam", "25 mg");
+      const medId = await renderSheet("Paracétamol", "500 mg");
 
       await press("Supprimer le médicament");
       expect(screen.getByRole("header", { name: "Supprimer ce médicament ?" })).toBeOnTheScreen();
@@ -236,7 +236,7 @@ describe("MedSheetScreen", () => {
     });
 
     it("refuses to archive a med of an active intake", async () => {
-      const medId = await renderSheet("Lamictal", "50 mg");
+      const medId = await renderSheet("Vitamine D", "400 UI");
 
       await press("Supprimer le médicament");
       await press("Supprimer");
@@ -253,7 +253,7 @@ describe("MedSheetScreen", () => {
 
   it("is translated in English", async () => {
     jest.setSystemTime(new Date(2026, 9, 19, 7, 0));
-    mockSearchParams = { medId: findMedId(mockDatabase, "Prazépam", "25 mg") };
+    mockSearchParams = { medId: findMedId(mockDatabase, "Paracétamol", "500 mg") };
     await renderInEnglish(<MedSheetScreen />, { wrapper });
 
     expect(screen.getByRole("button", { name: "Take 1 pill" })).toBeOnTheScreen();

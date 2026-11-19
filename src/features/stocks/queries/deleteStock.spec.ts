@@ -9,7 +9,7 @@ import { findMedId } from "./testStocks";
 describe("deleteStock", () => {
   it("deletes the stock and keeps the med", () => {
     const database = createTestDatabase();
-    const medId = findMedId(database, "Quviviq", "50 mg");
+    const medId = findMedId(database, "Mélatonine", "1 mg");
     saveStock(database, { medId, quantity: 30, boxSize: 30, lowStockDays: 7 });
 
     deleteStock(database, medId);

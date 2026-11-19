@@ -47,12 +47,12 @@ function wrapper({ children }: { children: ReactNode }) {
   return <SafeAreaProvider initialMetrics={safeAreaMetrics}>{children}</SafeAreaProvider>;
 }
 
-function prazepamId(): string {
-  return findMedId(mockDatabase, "Prazépam", "25 mg");
+function paracetamolId(): string {
+  return findMedId(mockDatabase, "Paracétamol", "500 mg");
 }
 
 async function renderScreen() {
-  const medLogId = insertMedLog(mockDatabase, prazepamId(), new Date(2026, 10, 4, 15, 40));
+  const medLogId = insertMedLog(mockDatabase, paracetamolId(), new Date(2026, 10, 4, 15, 40));
   mockSearchParams = { medLogId };
   await render(<MedLogEditScreen />, { wrapper });
   return medLogId;
@@ -68,7 +68,7 @@ describe("MedLogEditScreen", () => {
     await renderScreen();
 
     expect(screen.getByRole("header", { name: "Prise de 15:40" })).toBeOnTheScreen();
-    expect(screen.getByRole("header", { name: "Prazépam 25 mg" })).toBeOnTheScreen();
+    expect(screen.getByRole("header", { name: "Paracétamol 500 mg" })).toBeOnTheScreen();
     expect(screen.getByText("Mercredi 4 novembre")).toBeOnTheScreen();
     expect(screen.getByTestId("date-picker").props.modifiers).toContainEqual({
       accessibilityLabel: "Heure de prise : 15:40",
@@ -93,7 +93,7 @@ describe("MedLogEditScreen", () => {
     await fireEvent.press(screen.getByRole("button", { name: "Supprimer cette prise" }));
 
     expect(countRows(mockDatabase, medLogTable)).toBe(0);
-    expect(getStockByMedId(mockDatabase, prazepamId())?.stock.quantity).toBe(16);
+    expect(getStockByMedId(mockDatabase, paracetamolId())?.stock.quantity).toBe(16);
     expect(mockParentNavigation.goBack).toHaveBeenCalledTimes(1);
     expect(rescheduleReminders).toHaveBeenCalledTimes(1);
   });

@@ -11,7 +11,7 @@ import { findMedId } from "./testStocks";
 describe("saveStock", () => {
   it("creates the stock of a med", () => {
     const database = createTestDatabase();
-    const medId = findMedId(database, "Quviviq", "50 mg");
+    const medId = findMedId(database, "Mélatonine", "1 mg");
 
     saveStock(database, { medId, quantity: 30, boxSize: 30, lowStockDays: 7 });
 
@@ -20,7 +20,7 @@ describe("saveStock", () => {
 
   it("updates an existing stock", () => {
     const database = createTestDatabase();
-    const medId = findMedId(database, "Quviviq", "50 mg");
+    const medId = findMedId(database, "Mélatonine", "1 mg");
     saveStock(database, { medId, quantity: 30, boxSize: 30, lowStockDays: 7 });
     const rowCount = countRows(database, stockTable);
 
@@ -37,7 +37,7 @@ describe("saveStock", () => {
 
   it("deletes the stock with its med", () => {
     const database = createTestDatabase();
-    const medId = findMedId(database, "Prazépam", "25 mg");
+    const medId = findMedId(database, "Paracétamol", "500 mg");
     saveStock(database, { medId, quantity: 30, boxSize: 30, lowStockDays: 7 });
 
     database

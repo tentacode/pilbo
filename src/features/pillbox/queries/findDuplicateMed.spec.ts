@@ -9,23 +9,23 @@ import { findMedId } from "@/features/stocks/queries/testStocks";
 describe("findDuplicateMed", () => {
   it("finds a med with the same name and strength, ignoring the surrounding spaces", () => {
     const duplicate = findDuplicateMed(createTestDatabase(), {
-      name: "  Lithium ",
-      strength: "250 mg ",
+      name: "  Magnésium ",
+      strength: "300 mg ",
     });
 
-    expect(duplicate?.name).toBe("Lithium");
+    expect(duplicate?.name).toBe("Magnésium");
   });
 
   it("compares the case and the accents exactly", () => {
     const database = createTestDatabase();
 
-    expect(findDuplicateMed(database, { name: "lithium", strength: "250 mg" })).toBeUndefined();
-    expect(findDuplicateMed(database, { name: "Prazepam", strength: "25 mg" })).toBeUndefined();
+    expect(findDuplicateMed(database, { name: "magnésium", strength: "300 mg" })).toBeUndefined();
+    expect(findDuplicateMed(database, { name: "Paracetamol", strength: "500 mg" })).toBeUndefined();
   });
 
   it("does not match another strength", () => {
     expect(
-      findDuplicateMed(createTestDatabase(), { name: "Lithium", strength: "400 mg" }),
+      findDuplicateMed(createTestDatabase(), { name: "Magnésium", strength: "400 mg" }),
     ).toBeUndefined();
   });
 
@@ -43,21 +43,21 @@ describe("findDuplicateMed", () => {
 
   it("ignores the edited med itself", () => {
     const database = createTestDatabase();
-    const lithium = getAllMeds(database).find(({ name }) => name === "Lithium");
+    const magnesium = getAllMeds(database).find(({ name }) => name === "Magnésium");
 
     expect(
       findDuplicateMed(database, {
-        name: "Lithium",
-        strength: "250 mg",
-        excludedMedId: lithium?.id,
+        name: "Magnésium",
+        strength: "300 mg",
+        excludedMedId: magnesium?.id,
       }),
     ).toBeUndefined();
   });
 
   it("ignores the archived meds", () => {
     const database = createTestDatabase();
-    archiveMed(database, findMedId(database, "Prazépam", "25 mg"), new Date(2026, 10, 4));
+    archiveMed(database, findMedId(database, "Paracétamol", "500 mg"), new Date(2026, 10, 4));
 
-    expect(findDuplicateMed(database, { name: "Prazépam", strength: "25 mg" })).toBeUndefined();
+    expect(findDuplicateMed(database, { name: "Paracétamol", strength: "500 mg" })).toBeUndefined();
   });
 });

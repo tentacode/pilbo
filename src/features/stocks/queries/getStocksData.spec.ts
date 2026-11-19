@@ -11,7 +11,7 @@ const NOW = new Date(2026, 9, 19, 9, 0);
 describe("getStocksData", () => {
   it("returns the stocks, the active intakes and the logs of the day", () => {
     const database = createTestDatabase();
-    const medId = findMedId(database, "Quviviq", "50 mg");
+    const medId = findMedId(database, "Mélatonine", "1 mg");
     saveStock(database, { medId, quantity: 12, boxSize: 28, lowStockDays: 5 });
     const [firstIntake, secondIntake] = getStocksData(database, NOW).intakes;
     archiveIntake(database, secondIntake.id, NOW);
@@ -30,7 +30,7 @@ describe("getStocksData", () => {
     const data = getStocksData(database, NOW);
 
     expect(data.localDate).toBe("2026-10-19");
-    expect(data.medStocks.map(({ med }) => med.name)).toContain("Quviviq");
+    expect(data.medStocks.map(({ med }) => med.name)).toContain("Mélatonine");
     expect(data.intakes.map(({ id }) => id)).not.toContain(secondIntake.id);
     expect(data.intakeLogs.map(({ expectedIntakeAt }) => expectedIntakeAt)).toEqual([
       "2026-10-19T08:20",

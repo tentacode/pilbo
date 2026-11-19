@@ -23,7 +23,7 @@ Le premier build d'une nouvelle version repasse par la revue bêta d'Apple. Goog
 - [ ] Si les fonctionnalités ont changé :
   - description TestFlight : `fastlane/beta_app_info/description/<langue>.txt` ;
   - fiche Play Store : `fastlane/metadata/android/<langue>/` (description courte 80 caractères max, complète 4000), envoyée à chaque `make android-beta` ;
-  - site : `website/` en FR et en EN (date de la politique de confidentialité si son contenu change).
+  - site : textes dans `website/src/locales/` (FR et EN, date de la politique de confidentialité si son contenu change), vérifiés avec `make preview-github-pages`. Captures du site : `make github-pages-screenshots` après une mise à jour de `store/screenshots/screenshots/`.
 - [ ] Si l'interface a changé : captures du Play Store dans `fastlane/metadata/android/<langue>/images/phoneScreenshots/`.
 
 ## 4. Envoyer

@@ -145,12 +145,12 @@ describe("IntakeEditScreen", () => {
     });
 
     it("saves the intake, reschedules the reminders and closes", async () => {
-      const prazepam = getAllMeds(mockDatabase).find(({ name }) => name === "Prazépam");
-      if (prazepam === undefined) {
-        throw new Error("Missing Prazépam");
+      const paracetamol = getAllMeds(mockDatabase).find(({ name }) => name === "Paracétamol");
+      if (paracetamol === undefined) {
+        throw new Error("Missing Paracétamol");
       }
       await renderScreen();
-      await act(() => draftActions.addMed(prazepam));
+      await act(() => draftActions.addMed(paracetamol));
 
       await fireEvent(screen.getByTestId("date-picker"), "dateChange", timeAt(21, 15));
       await fireEvent.press(screen.getByRole("radio", { name: "15 minutes" }));
@@ -160,7 +160,7 @@ describe("IntakeEditScreen", () => {
       expect(created).toMatchObject({
         time: { hour: 21, minute: 15 },
         reminderIntervalMinutes: 15,
-        medQuantities: [{ med: prazepam, quantity: 1 }],
+        medQuantities: [{ med: paracetamol, quantity: 1 }],
       });
       expect(rescheduleReminders).toHaveBeenCalledWith(mockDatabase, expect.any(Date));
       expect(mockParentNavigation.goBack).toHaveBeenCalledTimes(1);
@@ -207,7 +207,7 @@ describe("IntakeEditScreen", () => {
       await renderScreen(morning.id);
 
       await fireEvent.press(
-        screen.getByRole("button", { name: "Ajouter un comprimé de Lithium 250 mg" }),
+        screen.getByRole("button", { name: "Ajouter un comprimé de Magnésium 300 mg" }),
       );
       await fireEvent.press(screen.getByRole("button", { name: "Dimanche" }));
       await fireEvent.press(screen.getByRole("button", { name: "Enregistrer" }));
@@ -215,7 +215,7 @@ describe("IntakeEditScreen", () => {
       const updated = getIntakeById(mockDatabase, morning.id);
       expect(updated?.days).not.toContain("sunday");
       expect(updated?.days).toHaveLength(6);
-      expect(updated?.medQuantities.find(({ med }) => med.name === "Lithium")?.quantity).toBe(2);
+      expect(updated?.medQuantities.find(({ med }) => med.name === "Magnésium")?.quantity).toBe(2);
     });
 
     it("removes a med with the trash at quantity 1", async () => {
@@ -223,10 +223,10 @@ describe("IntakeEditScreen", () => {
       await renderScreen(morning.id);
 
       await fireEvent.press(
-        screen.getByRole("button", { name: "Retirer Lamictal 50 mg de la prise" }),
+        screen.getByRole("button", { name: "Retirer Vitamine D 400 UI de la prise" }),
       );
 
-      expect(screen.queryByText("Lamictal")).not.toBeOnTheScreen();
+      expect(screen.queryByText("Vitamine D")).not.toBeOnTheScreen();
     });
 
     it("refuses to save some days without any day", async () => {
@@ -307,9 +307,9 @@ describe("IntakeEditScreen", () => {
   });
 
   describe("med row actions", () => {
-    const LITHIUM_ROW = "Lithium 250 mg, Avec le repas";
+    const LITHIUM_ROW = "Magnésium 300 mg, Avec le repas";
 
-    async function openLithiumActions(chosenButtonIndex: number) {
+    async function openMagnesiumActions(chosenButtonIndex: number) {
       const showActionSheet = jest
         .spyOn(ActionSheetIOS, "showActionSheetWithOptions")
         .mockImplementation((_options, callback) => callback(chosenButtonIndex));
@@ -320,11 +320,11 @@ describe("IntakeEditScreen", () => {
     }
 
     it("shows the actions of the med", async () => {
-      const showActionSheet = await openLithiumActions(2);
+      const showActionSheet = await openMagnesiumActions(2);
 
       expect(showActionSheet).toHaveBeenCalledWith(
         expect.objectContaining({
-          title: "Lithium 250 mg",
+          title: "Magnésium 300 mg",
           options: ["Modifier le médicament", "Retirer de la prise", "Annuler"],
           cancelButtonIndex: 2,
         }),
@@ -334,23 +334,23 @@ describe("IntakeEditScreen", () => {
     });
 
     it("opens the med screen", async () => {
-      const lithiumId = getAllIntakes(mockDatabase)[0].medQuantities.find(
-        ({ med }) => med.name === "Lithium",
+      const magnesiumId = getAllIntakes(mockDatabase)[0].medQuantities.find(
+        ({ med }) => med.name === "Magnésium",
       )?.med.id;
 
-      await openLithiumActions(0);
+      await openMagnesiumActions(0);
 
       expect(router.push).toHaveBeenCalledWith({
         pathname: "/intake/med",
-        params: { medId: lithiumId },
+        params: { medId: magnesiumId },
       });
     });
 
     it("removes the med from the intake", async () => {
-      await openLithiumActions(1);
+      await openMagnesiumActions(1);
 
       expect(screen.queryByRole("button", { name: LITHIUM_ROW })).not.toBeOnTheScreen();
-      expect(screen.getByRole("button", { name: "Lamictal 50 mg" })).toBeOnTheScreen();
+      expect(screen.getByRole("button", { name: "Vitamine D 400 UI" })).toBeOnTheScreen();
     });
   });
 

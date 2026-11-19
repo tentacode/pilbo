@@ -1,6 +1,6 @@
 -include .env
 
-.PHONY: help install start testflight version-bump artwork sounds doctor clean build-simulator build-device build-release check-device-id android-build-emulator android-build-device android-build-release android-bundle android-beta check-android-device-id android-test-e2e check-android-emulator db-generate i18n-extract prettier lint typescript test-unit audit test-e2e tests
+.PHONY: help install start testflight version-bump artwork sounds build-github-pages preview-github-pages github-pages-screenshots doctor clean build-simulator build-device build-release check-device-id android-build-emulator android-build-device android-build-release android-bundle android-beta check-android-device-id android-test-e2e check-android-emulator db-generate i18n-extract prettier lint typescript test-unit audit test-e2e tests
 
 RUBY_BIN = /opt/homebrew/opt/ruby/bin
 
@@ -85,11 +85,20 @@ android-beta: ## Build "Pilbo" and send it to the Play Store closed test (fastla
 version-bump: ## Bump the app version in app.config.ts (TYPE=major|minor|patch)
 	@node scripts/bumpVersion.mjs $(TYPE)
 
-artwork: ## Generate the app icons and splash screens (SVG sources and PNG)
+artwork: ## Generate the app icons, splash screens, store images and website background (SVG sources and PNG)
 	@node scripts/generateArtwork.mjs
 
 sounds: ## Generate the notification sounds
 	@node scripts/generateSounds.mjs
+
+build-github-pages: ## Generate the website (GitHub Pages) in website/dist
+	@node website/build.mjs
+
+preview-github-pages: ## Preview the website on http://localhost:4000/pilbo/, regenerated on each change
+	@node website/preview.mjs
+
+github-pages-screenshots: ## Copy the app screenshots (store/screenshots) to the website, as reduced WebP
+	@node website/screenshots.mjs
 
 check-device-id:
 	@test -n "$(DEVICE_ID)" || (echo "$(RED)DEVICE_ID is missing in .env$(NC)" && exit 1)

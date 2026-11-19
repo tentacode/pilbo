@@ -7,10 +7,10 @@ describe("getAllMeds", () => {
     const meds = getAllMeds(createTestDatabase());
 
     expect(meds).toHaveLength(6);
-    expect(meds.find(({ name }) => name === "Lithium")).toEqual({
+    expect(meds.find(({ name }) => name === "Magnésium")).toEqual({
       id: expect.any(String),
-      name: "Lithium",
-      strength: "250 mg",
+      name: "Magnésium",
+      strength: "300 mg",
       detail: "Avec le repas",
       design: { shape: "round", colors: ["#D6C9F5", "#D6C9F5"], size: "medium" },
     });

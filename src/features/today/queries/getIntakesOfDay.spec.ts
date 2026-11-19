@@ -61,15 +61,15 @@ describe("getIntakesOfDay", () => {
       morning.medQuantities.map(({ med, quantity }) => [med.name, med.strength, quantity]),
     ).toEqual(
       expect.arrayContaining([
-        ["Lithium", "250 mg", 1],
-        ["Lamictal", "50 mg", 1],
+        ["Magnésium", "300 mg", 1],
+        ["Vitamine D", "400 UI", 1],
       ]),
     );
     expect(morning.medQuantities[0].med.design.shape).toEqual(expect.any(String));
     expect(morning.medQuantities.map(({ med }) => [med.name, med.detail])).toEqual(
       expect.arrayContaining([
-        ["Lithium", "Avec le repas"],
-        ["Lamictal", ""],
+        ["Magnésium", "Avec le repas"],
+        ["Vitamine D", ""],
       ]),
     );
   });

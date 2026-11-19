@@ -183,6 +183,6 @@ La sauvegarde du keystore reste indispensable : en cas de perte, Google peut ré
 ### Test fermé
 
 - Testeurs : Google Group `pilbo-beta` (« Tout le monde peut rejoindre »), déclaré comme liste de testeurs du test fermé.
-- Lien à partager : la page « Rejoindre la bêta » (`https://tentacode.github.io/pilbo/beta/`, sources dans `website/`), qui présente les deux étapes dans l'ordre : rejoindre le groupe, puis s'inscrire au test.
+- Lien à partager : la page « Rejoindre la bêta » (`https://tentacode.github.io/pilbo/beta/`, sources dans `website/src/`), qui présente iPhone et Android ; côté Android, les deux étapes dans l'ordre : rejoindre le groupe, puis s'inscrire au test.
 - Revue de Google à chaque build envoyé (de quelques heures à plusieurs jours).
 - Ne pas mettre le test fermé en pause pendant les 14 jours.

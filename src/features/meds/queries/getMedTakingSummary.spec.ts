@@ -9,7 +9,7 @@ import { getMedTakingSummary } from "./getMedTakingSummary";
 describe("getMedTakingSummary", () => {
   it("adds the free takings and the taken intakes of the day, with their quantities", () => {
     const database = createTestDatabase();
-    const lithiumId = findMedId(database, "Lithium", "250 mg");
+    const magnesiumId = findMedId(database, "Magnésium", "300 mg");
     const [, , evening] = getAllIntakes(database);
     database
       .insert(intakeLogTable)
@@ -28,9 +28,9 @@ describe("getMedTakingSummary", () => {
         },
       ])
       .run();
-    insertMedLog(database, lithiumId, new Date(2026, 10, 4, 15, 40));
+    insertMedLog(database, magnesiumId, new Date(2026, 10, 4, 15, 40));
 
-    expect(getMedTakingSummary(database, lithiumId, "2026-11-04")).toEqual({
+    expect(getMedTakingSummary(database, magnesiumId, "2026-11-04")).toEqual({
       todayQuantity: 3,
       lastTakenAt: "2026-11-04T20:25",
     });
@@ -38,7 +38,7 @@ describe("getMedTakingSummary", () => {
 
   it("ignores the skipped intakes and the other meds", () => {
     const database = createTestDatabase();
-    const lithiumId = findMedId(database, "Lithium", "250 mg");
+    const magnesiumId = findMedId(database, "Magnésium", "300 mg");
     const [morning] = getAllIntakes(database);
     database
       .insert(intakeLogTable)
@@ -49,18 +49,22 @@ describe("getMedTakingSummary", () => {
         status: "skipped",
       })
       .run();
-    insertMedLog(database, findMedId(database, "Prazépam", "25 mg"), new Date(2026, 10, 4, 9, 0));
+    insertMedLog(
+      database,
+      findMedId(database, "Paracétamol", "500 mg"),
+      new Date(2026, 10, 4, 9, 0),
+    );
 
-    expect(getMedTakingSummary(database, lithiumId, "2026-11-04")).toEqual({ todayQuantity: 0 });
+    expect(getMedTakingSummary(database, magnesiumId, "2026-11-04")).toEqual({ todayQuantity: 0 });
   });
 
   it("returns the last taking of a previous day", () => {
     const database = createTestDatabase();
-    const prazepamId = findMedId(database, "Prazépam", "25 mg");
-    insertMedLog(database, prazepamId, new Date(2026, 10, 1, 9, 0));
-    insertMedLog(database, prazepamId, new Date(2026, 10, 2, 15, 40));
+    const paracetamolId = findMedId(database, "Paracétamol", "500 mg");
+    insertMedLog(database, paracetamolId, new Date(2026, 10, 1, 9, 0));
+    insertMedLog(database, paracetamolId, new Date(2026, 10, 2, 15, 40));
 
-    expect(getMedTakingSummary(database, prazepamId, "2026-11-04")).toEqual({
+    expect(getMedTakingSummary(database, paracetamolId, "2026-11-04")).toEqual({
       todayQuantity: 0,
       lastTakenAt: "2026-11-02T15:40",
     });

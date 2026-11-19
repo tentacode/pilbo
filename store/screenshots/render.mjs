@@ -74,6 +74,7 @@ for (const language of languages) {
       "--hide-scrollbars",
       "--no-first-run",
       "--no-default-browser-check",
+      "--use-mock-keychain",
       "--allow-file-access-from-files",
       "--force-device-scale-factor=1",
       `--window-size=${width},${height}`,

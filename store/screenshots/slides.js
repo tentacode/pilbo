@@ -14,8 +14,8 @@ globalThis.storeScreenshots = {
         en: "Today’s intakes,\nat a glance",
       },
       subtitle: {
-        fr: "Validez chaque prise d’un geste.",
-        en: "Check off each intake in one tap.",
+        fr: "Validez une prise en un geste.",
+        en: "Check off an intake in one tap.",
       },
       pills: [
         { shape: "round", color: "butter", x: 1240, y: 1080, size: 310, rotate: 0 },
@@ -28,12 +28,12 @@ globalThis.storeScreenshots = {
       layout: "text-top",
       background: "rose",
       headline: {
-        fr: "Des rappels qui\ninsistent, gentiment",
-        en: "Reminders that\ngently insist",
+        fr: "Des rappels discrets\net efficaces",
+        en: "Discreet, effective\nreminders",
       },
       subtitle: {
-        fr: "Un bip toutes les 10 min, jusqu’à la prise.",
-        en: "A beep every 10 minutes, until you take it.",
+        fr: "Une notification toutes les 10 minutes, jusqu’à la prise.",
+        en: "A notification every 10 minutes, until you take it.",
       },
       pills: [
         { shape: "bicolor", color: "roseStrong", x: 95, y: 1180, size: 400, rotate: 35 },
@@ -46,12 +46,12 @@ globalThis.storeScreenshots = {
       layout: "text-bottom",
       background: "butter",
       headline: {
-        fr: "Des pilules\nà votre image",
-        en: "Pills that\nlook like yours",
+        fr: "Des médicaments\nfaciles à reconnaître",
+        en: "Medications that are\neasy to recognize",
       },
       subtitle: {
-        fr: "Formes et couleurs : repérez chaque médicament.",
-        en: "Shapes and colors to spot each medication.",
+        fr: "Choisissez leur forme, leur taille et leurs couleurs.",
+        en: "Choose their shape, size and colors.",
       },
       pills: [
         { shape: "capsule", color: "lavender", x: 1225, y: 520, size: 390, rotate: 30 },
@@ -64,12 +64,12 @@ globalThis.storeScreenshots = {
       layout: "text-top",
       background: "turquoise",
       headline: {
-        fr: "Ne tombez plus\nà court",
-        en: "Never run out\nagain",
+        fr: "Fini les\nboîtes vides",
+        en: "No more\nempty boxes",
       },
       subtitle: {
-        fr: "Pilbo vous prévient avant la fin de la boîte.",
-        en: "Pilbo tells you before the box runs out.",
+        fr: "Une notification vous prévient avant d’en manquer.",
+        en: "A notification lets you know before you run out.",
       },
       pills: [
         { shape: "round", color: "white", x: 80, y: 1200, size: 280, rotate: 0 },
@@ -82,12 +82,12 @@ globalThis.storeScreenshots = {
       layout: "text-bottom",
       background: "lavender",
       headline: {
-        fr: "Votre suivi,\njour après jour",
-        en: "Your history,\nday by day",
+        fr: "L’historique\nde vos prises",
+        en: "The history\nof your intakes",
       },
       subtitle: {
-        fr: "Retrouvez ce que vous avez pris, ou non.",
-        en: "See what you took, and what you skipped.",
+        fr: "Les prises faites, en retard ou oubliées.",
+        en: "Taken, late or forgotten intakes.",
       },
       pills: [
         { shape: "round", color: "rose", x: 85, y: 640, size: 300, rotate: 0 },
@@ -100,12 +100,12 @@ globalThis.storeScreenshots = {
       layout: "text-top",
       background: "night",
       headline: {
-        fr: "100 % local,\nsans compte",
-        en: "100% local,\nno account",
+        fr: "Vos données restent\nsur votre téléphone",
+        en: "Your data stays\non your phone",
       },
       subtitle: {
-        fr: "Vos données restent sur votre téléphone.",
-        en: "Your data stays on your phone.",
+        fr: "Sans compte, sans serveur, sans publicité.",
+        en: "No account, no server, no ads.",
       },
       pills: [
         { shape: "capsule", color: "rose", x: 1230, y: 1150, size: 390, rotate: 25 },

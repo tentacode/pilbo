@@ -100,16 +100,16 @@ describe("MedScreen", () => {
       await renderIntakeMedScreen();
 
       expect(screen.getByRole("header", { name: "Nouveau médicament" })).toBeOnTheScreen();
-      await typeIn("Nom", " Mélatonine ");
-      await typeIn("Dosage (facultatif)", "1 mg");
+      await typeIn("Nom", " Zinc ");
+      await typeIn("Dosage (facultatif)", "15 mg");
       expect(
         screen.queryByRole("adjustable", { name: "Quantité dans la prise" }),
       ).not.toBeOnTheScreen();
       await fireEvent.press(screen.getByRole("button", { name: "Ajouter à la prise" }));
 
-      const melatonin = findMed("Mélatonine");
-      expect(melatonin).toMatchObject({ strength: "1 mg", detail: "" });
-      expect(draftMedQuantities).toContainEqual({ med: melatonin, quantity: 1 });
+      const zinc = findMed("Zinc");
+      expect(zinc).toMatchObject({ strength: "15 mg", detail: "" });
+      expect(draftMedQuantities).toContainEqual({ med: zinc, quantity: 1 });
       expect(router.dismissAll).toHaveBeenCalledTimes(1);
     });
 
@@ -150,12 +150,12 @@ describe("MedScreen", () => {
     it("refuses a duplicate", async () => {
       await renderIntakeMedScreen();
 
-      await typeIn("Nom", "Lithium");
-      await typeIn("Dosage (facultatif)", "250 mg");
+      await typeIn("Nom", "Magnésium");
+      await typeIn("Dosage (facultatif)", "300 mg");
       await fireEvent.press(screen.getByRole("button", { name: "Ajouter à la prise" }));
 
       expect(
-        screen.getByRole("header", { name: "Votre médicament Lithium 250 mg existe déjà" }),
+        screen.getByRole("header", { name: "Votre médicament Magnésium 300 mg existe déjà" }),
       ).toBeOnTheScreen();
       expect(countRows(mockDatabase, medTable)).toBe(6);
     });
@@ -163,7 +163,7 @@ describe("MedScreen", () => {
 
   describe("existing med from an intake", () => {
     it("updates the med and the intake draft", async () => {
-      mockSearchParams = { medId: findMed("Lithium")?.id };
+      mockSearchParams = { medId: findMed("Magnésium")?.id };
       await renderIntakeMedScreen();
 
       expect(screen.getByRole("header", { name: "Modifier le médicament" })).toBeOnTheScreen();
@@ -173,14 +173,14 @@ describe("MedScreen", () => {
       await typeIn("Dosage (facultatif)", "400 mg");
       await fireEvent.press(screen.getByRole("button", { name: "Enregistrer" }));
 
-      expect(findMed("Lithium")?.strength).toBe("400 mg");
+      expect(findMed("Magnésium")?.strength).toBe("400 mg");
       expect(draftMedQuantities.map(({ med }) => med.strength)).toEqual(["400 mg"]);
       expect(router.back).toHaveBeenCalledTimes(1);
     });
   });
 
   it("has no stock button", async () => {
-    mockSearchParams = { medId: findMed("Lithium")?.id };
+    mockSearchParams = { medId: findMed("Magnésium")?.id };
     await renderIntakeMedScreen();
 
     expect(screen.queryByRole("button", { name: "Ajouter un stock" })).toBeNull();
@@ -230,46 +230,46 @@ describe("MedScreen", () => {
   });
 
   describe("existing med from the meds tab", () => {
-    function prazepamId(): string {
-      return findMed("Prazépam")?.id ?? "";
+    function paracetamolId(): string {
+      return findMed("Paracétamol")?.id ?? "";
     }
 
     it("refuses to rename it as another med", async () => {
-      mockSearchParams = { medId: prazepamId() };
+      mockSearchParams = { medId: paracetamolId() };
       await renderMedsMedScreen();
 
-      await typeIn("Nom", "Lithium");
-      await typeIn("Dosage (facultatif)", "250 mg");
+      await typeIn("Nom", "Magnésium");
+      await typeIn("Dosage (facultatif)", "300 mg");
       await fireEvent.press(screen.getByRole("button", { name: "Enregistrer" }));
 
       expect(
-        screen.getByRole("header", { name: "Votre médicament Lithium 250 mg existe déjà" }),
+        screen.getByRole("header", { name: "Votre médicament Magnésium 300 mg existe déjà" }),
       ).toBeOnTheScreen();
-      expect(getMedById(mockDatabase, prazepamId())?.name).toBe("Prazépam");
+      expect(getMedById(mockDatabase, paracetamolId())?.name).toBe("Paracétamol");
     });
 
     it("saves it and closes the modal", async () => {
-      mockSearchParams = { medId: prazepamId() };
+      mockSearchParams = { medId: paracetamolId() };
       await renderMedsMedScreen();
 
-      await typeIn("Détail (facultatif)", "Si angoisse");
+      await typeIn("Détail (facultatif)", "Si douleur");
       await fireEvent.press(screen.getByRole("button", { name: "Enregistrer" }));
 
-      expect(getMedById(mockDatabase, prazepamId())?.detail).toBe("Si angoisse");
+      expect(getMedById(mockDatabase, paracetamolId())?.detail).toBe("Si douleur");
       expect(router.back).toHaveBeenCalledTimes(1);
       expect(router.navigate).not.toHaveBeenCalled();
     });
   });
 
   it("accepts the name of an archived med", async () => {
-    archiveMed(mockDatabase, findMedId(mockDatabase, "Prazépam", "25 mg"), new Date());
+    archiveMed(mockDatabase, findMedId(mockDatabase, "Paracétamol", "500 mg"), new Date());
     await renderMedsMedScreen();
 
-    await typeIn("Nom", "Prazépam");
+    await typeIn("Nom", "Paracétamol");
     await typeIn("Dosage (facultatif)", "25 mg");
     await fireEvent.press(screen.getByRole("button", { name: "Ajouter" }));
 
-    expect(findMed("Prazépam")).toBeDefined();
+    expect(findMed("Paracétamol")).toBeDefined();
     expect(countRows(mockDatabase, medTable)).toBe(7);
   });
 

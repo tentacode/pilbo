@@ -7,7 +7,7 @@ name: A med of the pillbox cannot be deleted, a med without intake can
     visible: "Aujourd'hui"
     timeout: 60000
 - tapOn: "Médicaments.*"
-- tapOn: "Lamictal 50 mg.*"
+- tapOn: "Vitamine D 400 UI.*"
 - scrollUntilVisible:
     element:
       text: "Supprimer le médicament"
@@ -21,7 +21,7 @@ name: A med of the pillbox cannot be deleted, a med without intake can
       text: "Médicaments"
     direction: UP
 - tapOn: "Médicaments"
-- tapOn: "Prazépam 25 mg.*"
+- tapOn: "Paracétamol 500 mg.*"
 - scrollUntilVisible:
     element:
       text: "Supprimer le médicament"
@@ -31,4 +31,4 @@ name: A med of the pillbox cannot be deleted, a med without intake can
 - extendedWaitUntil:
     visible: "Nouveau médicament"
     timeout: 5000
-- assertNotVisible: "Prazépam 25 mg.*"
+- assertNotVisible: "Paracétamol 500 mg.*"

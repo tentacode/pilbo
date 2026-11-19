@@ -1,0 +1,161 @@
+{
+  "site": {
+    "locale": "en_US",
+    "otherLanguageName": "Français",
+    "skipLink": "Skip to content",
+    "shareImageAlt": "The Pilbo capsule on a background of colorful pills."
+  },
+  "navigation": {
+    "home": "Home",
+    "beta": "Join the beta",
+    "support": "Support",
+    "privacy": "Privacy",
+    "sourceCode": "Source code"
+  },
+  "footer": {
+    "contactTitle": "Contact us",
+    "contactText": "A question, a problem or an idea? Write to us, we read every message.",
+    "contactButton": "pilbo@tentacode.dev",
+    "navigationLabel": "Pilbo website",
+    "disclaimer": "Pilbo is not a medical device. It does not replace the advice of a doctor or pharmacist."
+  },
+  "pages": {
+    "index": {
+      "title": "Pilbo – Your assistant for taking your medications",
+      "description": "Pilbo is a virtual pill box that helps you take your medications: reminders, stocks and history. Free, with no account, on iPhone and Android."
+    },
+    "beta": {
+      "title": "Pilbo – Join the beta",
+      "description": "Try Pilbo before its release, on iPhone with TestFlight or on Android with the Play Store."
+    },
+    "support": {
+      "title": "Pilbo – Support",
+      "description": "Need help with Pilbo? Write to us, we will answer you."
+    },
+    "privacy": {
+      "title": "Pilbo – Privacy policy",
+      "description": "Pilbo collects no data: everything you enter stays on your phone."
+    }
+  },
+  "home": {
+    "hero": {
+      "title": "An assistant to help you take your medications",
+      "lead": "Pilbo is a virtual pill box designed for people who take a lot of medications and sometimes forget a dose. It reminds you of each intake, until it is done.",
+      "betaTitle": "Pilbo is in beta, you can already try it.",
+      "iosButton": "iPhone beta",
+      "androidButton": "Android beta",
+      "note": "Free, with no ads and no account. Your data stays on your phone.",
+      "screenshotAlt": "Pilbo’s Today screen: a low stock alert, the 12:20 intake running late with a magnesium tablet to take with meals, then the 8:20 PM intake."
+    },
+    "features": {
+      "title": "What Pilbo does",
+      "lead": "Pilbo sticks to the essentials: your intakes, your reminders and your stocks.",
+      "pillbox": {
+        "title": "Your intakes in your pill box",
+        "text": "Organize your intakes at different times, each with its medications and quantities. Pick the days of the week that suit you.",
+        "screenshotAlt": "The Pillbox screen: intakes at 8:20, 12:20, 8:20 PM and 10 PM, each with its medications."
+      },
+      "reminders": {
+        "title": "Discreet, effective reminders",
+        "text": "A discreet notification every 10 minutes, instead of an alarm you turn off without taking your medications. Confirm the intake right from the notification, and choose the sound of your reminders.",
+        "screenshotAlt": "Editing the 8:20 intake: time, days, reminder repeated every 10 minutes, sound and medications."
+      },
+      "appearance": {
+        "title": "Medications that are easy to recognize",
+        "text": "Customize the shape, size and colors of your medications to recognize them at a glance. Tablet, capsule, sachet, syrup or drops: each one has its shape.",
+        "screenshotAlt": "Customizing a pill: a pink and lilac capsule, with a choice of ten shapes, including sachet, syrup and drops."
+      },
+      "stocks": {
+        "title": "No more empty boxes",
+        "text": "Track the stock of the medications that matter to you. Each intake lowers it automatically, and a notification lets you know before you run out.",
+        "screenshotAlt": "The Meds screen: magnesium is running low, 4 days left, while vitamin D will last 46 and 56 more days."
+      },
+      "calendar": {
+        "title": "The history of your intakes",
+        "text": "Find your intakes in a calendar: the days when everything was taken, the late intakes and the forgotten ones.",
+        "screenshotAlt": "The calendar of the month: most days are checked, a few intakes were late or missed."
+      }
+    },
+    "highlights": {
+      "title": "Good to know",
+      "privacy": {
+        "title": "Your data stays on your phone",
+        "text": "No account, no server, no ads and no collection of your data. Pilbo works without an internet connection, and it is an <a href=\"https://github.com/tentacode/pilbo\">open source</a> project."
+      },
+      "accessibility": {
+        "title": "Accessibility",
+        "text": "Pilbo was designed to meet the WCAG / RAAM standards. It works with screen readers and large text sizes."
+      },
+      "platforms": {
+        "title": "On iPhone and Android",
+        "text": "Pilbo is available on iPhone and Android, in English and French. It is completely free."
+      }
+    },
+    "cta": {
+      "title": "Try Pilbo",
+      "text": "The beta is open: you can install Pilbo now. Your feedback helps us improve it before its release."
+    }
+  },
+  "beta": {
+    "back": "Back to home",
+    "title": "Join the Pilbo beta",
+    "lead": "Pilbo is not available in the stores yet. The beta lets you use it now, and your feedback helps us improve it before its release.",
+    "feedbackTitle": "Thank you for testing Pilbo!",
+    "feedbackText": "Try adding your intakes, taking one from a reminder notification and tracking a stock. If something feels off, write to us at <a href=\"mailto:pilbo@tentacode.dev\">pilbo@tentacode.dev</a>, with a screenshot if possible.",
+    "chooseLabel": "Choose your phone",
+    "ios": {
+      "title": "On iPhone",
+      "intro": "The beta goes through TestFlight, Apple’s app for testing apps. Two steps:",
+      "step1Title": "Install TestFlight",
+      "step1Text": "TestFlight is free, on the App Store.",
+      "step1Button": "TestFlight on the App Store",
+      "step2Title": "Join the beta",
+      "step2Text": "Open this link on your iPhone, then tap “Accept” and “Install”.",
+      "step2Button": "Join the iPhone beta",
+      "note": "Updates arrive in TestFlight. Pilbo then opens like any other app."
+    },
+    "android": {
+      "title": "On Android",
+      "intro": "The beta goes through the Play Store. Two steps, in this order:",
+      "step1Title": "Join the testers group",
+      "step1Text": "This Google group gives you access to the test.",
+      "step1Button": "Join the testers group",
+      "step2Title": "Sign up for the test",
+      "step2Text": "Tap “Become a tester”, then install Pilbo from the Play Store.",
+      "step2Button": "Sign up for the Android test",
+      "note": "Use the same Google account as the Play Store on your phone for both steps. Pilbo may take a few minutes to show up after you sign up."
+    }
+  },
+  "support": {
+    "title": "Need help?",
+    "lead": "A question, a problem or an idea? Write to us, we will answer you.",
+    "contactText": "Write to us at <a href=\"mailto:pilbo@tentacode.dev\">pilbo@tentacode.dev</a>.",
+    "tipsTitle": "To help us understand",
+    "tip1": "Try to describe what happened, and what you expected.",
+    "tip2": "Add a screenshot if possible.",
+    "tip3": "Tell us your phone model, and the version of Pilbo (in Settings).",
+    "moreTitle": "Learn more",
+    "privacyLink": "Privacy policy",
+    "betaLink": "Join the beta"
+  },
+  "privacy": {
+    "title": "Privacy policy",
+    "updated": "Last updated: November 9, 2026",
+    "lead": "Pilbo collects no data. Everything you enter stays on your phone. This policy applies to Pilbo on iPhone and Android.",
+    "noDataTitle": "No data collected",
+    "noDataText": "Pilbo has no account and no server. Your medications, intakes, stocks and history are only stored on your phone. We never receive them, and we cannot see them.",
+    "offlineText": "Pilbo works without an internet connection.",
+    "trackingTitle": "No advertising, no tracking",
+    "trackingText": "Pilbo shows no advertising, does not measure your use of the app and does not track you. It contains no third-party service that collects data.",
+    "notificationsTitle": "Notifications",
+    "notificationsText": "Reminders are scheduled by Pilbo directly on your phone. They do not go through any server.",
+    "backupsTitle": "Backups",
+    "backupsText": "Pilbo sends nothing by itself. If backup is turned on on your phone (iCloud or Google), your phone may include Pilbo’s data in it, as for your other apps. These backups are handled by Apple or Google, in your account. We have no access to them.",
+    "deletionTitle": "Deleting your data",
+    "deletionText": "Uninstalling Pilbo deletes all its data from your phone.",
+    "changesTitle": "Changes",
+    "changesText": "If this policy changes, we will update this page and its date at the top.",
+    "contactTitle": "Contact",
+    "contactText": "A question about this policy? Write to us at <a href=\"mailto:pilbo@tentacode.dev\">pilbo@tentacode.dev</a>."
+  }
+}

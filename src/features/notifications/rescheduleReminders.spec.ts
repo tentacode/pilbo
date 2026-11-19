@@ -68,16 +68,16 @@ describe("rescheduleReminders", () => {
     expect(plannedReminders.slice(24, 26)).toEqual([
       expect.objectContaining({
         identifier: "low-stock-2026-11-21",
-        body: "Lamictal 50 mg : pensez à le renouveler.",
+        body: "Vitamine D 400 UI : pensez à le renouveler.",
       }),
       expect.objectContaining({
         identifier: "low-stock-2026-12-02",
-        body: "Lamictal 100 mg : pensez à le renouveler.",
+        body: "Vitamine D 1000 UI : pensez à le renouveler.",
       }),
     ]);
     expect(plannedReminders[0]).toMatchObject({
       title: "C'est l'heure de votre prise de 08:20",
-      body: "1 × Lamictal 50 mg, 1 × Lithium 250 mg",
+      body: "1 × Magnésium 300 mg, 1 × Vitamine D 400 UI",
     });
   });
 

@@ -7,16 +7,16 @@ import { findMedId } from "./testStocks";
 describe("getAllStocks", () => {
   it("returns each stock with its med", () => {
     const database = createTestDatabase();
-    const medId = findMedId(database, "Quviviq", "50 mg");
+    const medId = findMedId(database, "Mélatonine", "1 mg");
     saveStock(database, { medId, quantity: -2, boxSize: 28, lowStockDays: 5 });
 
-    const quviviq = getAllStocks(database).find(({ med }) => med.id === medId);
+    const melatonin = getAllStocks(database).find(({ med }) => med.id === medId);
 
-    expect(quviviq).toEqual({
+    expect(melatonin).toEqual({
       med: {
         id: medId,
-        name: "Quviviq",
-        strength: "50 mg",
+        name: "Mélatonine",
+        strength: "1 mg",
         detail: "",
         design: { shape: "syrup", colors: ["#F8C6DA", "#FFFFFF"], size: "medium" },
       },

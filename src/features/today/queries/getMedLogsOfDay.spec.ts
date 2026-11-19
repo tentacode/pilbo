@@ -8,26 +8,26 @@ import { insertMedLog } from "./insertMedLog";
 describe("getMedLogsOfDay", () => {
   it("returns every med taken that day, with its time, ordered by time", () => {
     const database = createTestDatabase();
-    const prazepam = getMedById(database, findMedId(database, "Prazépam", "25 mg"));
-    if (prazepam === undefined) {
-      throw new Error("Missing Prazépam");
+    const paracetamol = getMedById(database, findMedId(database, "Paracétamol", "500 mg"));
+    if (paracetamol === undefined) {
+      throw new Error("Missing Paracétamol");
     }
-    const lithiumId = findMedId(database, "Lithium", "250 mg");
-    insertMedLog(database, prazepam.id, new Date(2026, 9, 21, 18, 0));
-    insertMedLog(database, lithiumId, new Date(2026, 9, 21, 9, 30));
-    insertMedLog(database, prazepam.id, new Date(2026, 9, 21, 15, 40));
-    insertMedLog(database, prazepam.id, new Date(2026, 9, 22, 8, 0));
+    const magnesiumId = findMedId(database, "Magnésium", "300 mg");
+    insertMedLog(database, paracetamol.id, new Date(2026, 9, 21, 18, 0));
+    insertMedLog(database, magnesiumId, new Date(2026, 9, 21, 9, 30));
+    insertMedLog(database, paracetamol.id, new Date(2026, 9, 21, 15, 40));
+    insertMedLog(database, paracetamol.id, new Date(2026, 9, 22, 8, 0));
 
     const medLogs = getMedLogsOfDay(database, "2026-10-21");
 
     expect(medLogs.map(({ med, takenAt }) => [med.name, takenAt])).toEqual([
-      ["Lithium", "2026-10-21T09:30"],
-      ["Prazépam", "2026-10-21T15:40"],
-      ["Prazépam", "2026-10-21T18:00"],
+      ["Magnésium", "2026-10-21T09:30"],
+      ["Paracétamol", "2026-10-21T15:40"],
+      ["Paracétamol", "2026-10-21T18:00"],
     ]);
     expect(medLogs[1]).toEqual({
       id: expect.any(String),
-      med: prazepam,
+      med: paracetamol,
       takenAt: "2026-10-21T15:40",
     });
   });

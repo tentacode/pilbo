@@ -9,7 +9,7 @@ name: Sounds can be chosen for an intake and by default
 - tapOn: "Pilulier"
 
 # Sound of an intake, kept after saving
-- tapOn: "08:20.*Lamictal 50 mg.*"
+- tapOn: "08:20.*Vitamine D 400 UI.*"
 - scrollUntilVisible:
     element:
       text: "Son : Beep Boop Beep Boop"
@@ -20,7 +20,7 @@ name: Sounds can be chosen for an intake and by default
 - tapOn: "Valider"
 - assertVisible: "Son : Sonnette"
 - tapOn: "Enregistrer"
-- tapOn: "08:20.*Lamictal 50 mg.*"
+- tapOn: "08:20.*Vitamine D 400 UI.*"
 - scrollUntilVisible:
     element:
       text: "Son : Sonnette"
@@ -42,7 +42,7 @@ name: Sounds can be chosen for an intake and by default
 - tapOn: "Toutes les prises"
 - assertVisible: "Son par défaut : Glissade"
 - tapOn: "Pilulier"
-- tapOn: "12:20.*Lithium 250 mg.*"
+- tapOn: "12:20.*Magnésium 300 mg.*"
 - scrollUntilVisible:
     element:
       text: "Son : Glissade"

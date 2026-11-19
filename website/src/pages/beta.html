@@ -1,0 +1,66 @@
+<div class="container page-header">
+  <a class="back-link" href="{{homeUrl}}">{{> icon-chevron-left}}{{beta.back}}</a>
+  <h1>{{beta.title}}</h1>
+  <p class="lead">{{beta.lead}}</p>
+</div>
+
+<section class="container" aria-label="{{beta.chooseLabel}}">
+  <div class="platforms">
+    <section class="card platform" id="ios" aria-labelledby="ios-title">
+      <h2 id="ios-title" class="platform-title">
+        <span class="platform-logo">{{> logo-apple}}</span>{{beta.ios.title}}
+      </h2>
+      <p>{{beta.ios.intro}}</p>
+      <ol class="steps">
+        <li>
+          <h3>{{beta.ios.step1Title}}</h3>
+          <p>{{beta.ios.step1Text}}</p>
+          <a
+            class="button button-secondary"
+            href="https://apps.apple.com/app/testflight/id899247664"
+            >{{> logo-apple}}{{beta.ios.step1Button}}</a
+          >
+        </li>
+        <li>
+          <h3>{{beta.ios.step2Title}}</h3>
+          <p>{{beta.ios.step2Text}}</p>
+          <a class="button" href="https://testflight.apple.com/join/VTZ7Nr2P"
+            >{{> logo-apple}}{{beta.ios.step2Button}}</a
+          >
+        </li>
+      </ol>
+      <p class="secondary">{{beta.ios.note}}</p>
+    </section>
+
+    <section class="card platform" id="android" aria-labelledby="android-title">
+      <h2 id="android-title" class="platform-title">
+        <span class="platform-logo">{{> logo-android}}</span>{{beta.android.title}}
+      </h2>
+      <p>{{beta.android.intro}}</p>
+      <ol class="steps">
+        <li>
+          <h3>{{beta.android.step1Title}}</h3>
+          <p>{{beta.android.step1Text}}</p>
+          <a class="button button-secondary" href="https://groups.google.com/g/pilbo-beta"
+            >{{> logo-android}}{{beta.android.step1Button}}</a
+          >
+        </li>
+        <li>
+          <h3>{{beta.android.step2Title}}</h3>
+          <p>{{beta.android.step2Text}}</p>
+          <a class="button" href="https://play.google.com/apps/testing/com.tentacode.pilbo"
+            >{{> logo-android}}{{beta.android.step2Button}}</a
+          >
+        </li>
+      </ol>
+      <p class="secondary">{{beta.android.note}}</p>
+    </section>
+  </div>
+</section>
+
+<section class="container section" aria-labelledby="feedback-title">
+  <div class="cta">
+    <h2 id="feedback-title">{{beta.feedbackTitle}}</h2>
+    <p>{{beta.feedbackText}}</p>
+  </div>
+</section>

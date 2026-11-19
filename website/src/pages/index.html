@@ -1,0 +1,152 @@
+<section class="hero" aria-labelledby="hero-title">
+  <div class="container hero-content">
+    <div class="hero-card">
+      <h1 id="hero-title">{{home.hero.title}}</h1>
+      <p class="lead">{{home.hero.lead}}</p>
+      <p class="hero-beta">{{home.hero.betaTitle}}</p>
+      <div class="button-row">
+        <a class="button" href="{{homeUrl}}beta/#ios">{{> logo-apple}}{{home.hero.iosButton}}</a>
+        <a class="button" href="{{homeUrl}}beta/#android"
+          >{{> logo-android}}{{home.hero.androidButton}}</a
+        >
+      </div>
+      <p class="hero-note">{{home.hero.note}}</p>
+    </div>
+    <div class="phone hero-phone">
+      <img
+        src="{{root}}screenshots/{{language}}/today.webp"
+        width="600"
+        height="1304"
+        alt="{{home.hero.screenshotAlt}}"
+      />
+    </div>
+  </div>
+</section>
+
+<section class="container section" aria-labelledby="features-title">
+  <header class="section-header">
+    <h2 id="features-title">{{home.features.title}}</h2>
+    <p class="lead">{{home.features.lead}}</p>
+  </header>
+
+  <div class="features">
+    <article class="feature feature-lavender">
+      <div class="feature-text">
+        <span class="feature-icon">{{> icon-pillbox}}</span>
+        <h3>{{home.features.pillbox.title}}</h3>
+        <p>{{home.features.pillbox.text}}</p>
+      </div>
+      <div class="phone">
+        <img
+          src="{{root}}screenshots/{{language}}/pillbox.webp"
+          width="600"
+          height="1304"
+          loading="lazy"
+          alt="{{home.features.pillbox.screenshotAlt}}"
+        />
+      </div>
+    </article>
+
+    <article class="feature feature-rose">
+      <div class="feature-text">
+        <span class="feature-icon">{{> icon-clock}}</span>
+        <h3>{{home.features.reminders.title}}</h3>
+        <p>{{home.features.reminders.text}}</p>
+      </div>
+      <div class="phone">
+        <img
+          src="{{root}}screenshots/{{language}}/reminders.webp"
+          width="600"
+          height="1304"
+          loading="lazy"
+          alt="{{home.features.reminders.screenshotAlt}}"
+        />
+      </div>
+    </article>
+
+    <article class="feature feature-butter">
+      <div class="feature-text">
+        <span class="feature-icon">{{> icon-pencil}}</span>
+        <h3>{{home.features.appearance.title}}</h3>
+        <p>{{home.features.appearance.text}}</p>
+      </div>
+      <div class="phone">
+        <img
+          src="{{root}}screenshots/{{language}}/pills.webp"
+          width="600"
+          height="1304"
+          loading="lazy"
+          alt="{{home.features.appearance.screenshotAlt}}"
+        />
+      </div>
+    </article>
+
+    <article class="feature feature-turquoise">
+      <div class="feature-text">
+        <span class="feature-icon">{{> icon-meds}}</span>
+        <h3>{{home.features.stocks.title}}</h3>
+        <p>{{home.features.stocks.text}}</p>
+      </div>
+      <div class="phone">
+        <img
+          src="{{root}}screenshots/{{language}}/stocks.webp"
+          width="600"
+          height="1304"
+          loading="lazy"
+          alt="{{home.features.stocks.screenshotAlt}}"
+        />
+      </div>
+    </article>
+
+    <article class="feature feature-lavender">
+      <div class="feature-text">
+        <span class="feature-icon">{{> icon-calendar}}</span>
+        <h3>{{home.features.calendar.title}}</h3>
+        <p>{{home.features.calendar.text}}</p>
+      </div>
+      <div class="phone">
+        <img
+          src="{{root}}screenshots/{{language}}/calendar.webp"
+          width="600"
+          height="1304"
+          loading="lazy"
+          alt="{{home.features.calendar.screenshotAlt}}"
+        />
+      </div>
+    </article>
+  </div>
+</section>
+
+<section class="container section" aria-labelledby="highlights-title">
+  <h2 id="highlights-title" class="section-header">{{home.highlights.title}}</h2>
+  <ul class="highlights">
+    <li class="card">
+      <span class="feature-icon">{{> icon-lock}}</span>
+      <h3>{{home.highlights.privacy.title}}</h3>
+      <p>{{home.highlights.privacy.text}}</p>
+    </li>
+    <li class="card">
+      <span class="feature-icon">{{> icon-check-circle}}</span>
+      <h3>{{home.highlights.accessibility.title}}</h3>
+      <p>{{home.highlights.accessibility.text}}</p>
+    </li>
+    <li class="card">
+      <span class="feature-icon">{{> icon-sun}}</span>
+      <h3>{{home.highlights.platforms.title}}</h3>
+      <p>{{home.highlights.platforms.text}}</p>
+    </li>
+  </ul>
+</section>
+
+<section class="container section" aria-labelledby="cta-title">
+  <div class="cta">
+    <h2 id="cta-title">{{home.cta.title}}</h2>
+    <p class="lead">{{home.cta.text}}</p>
+    <div class="button-row">
+      <a class="button" href="{{homeUrl}}beta/#ios">{{> logo-apple}}{{home.hero.iosButton}}</a>
+      <a class="button" href="{{homeUrl}}beta/#android"
+        >{{> logo-android}}{{home.hero.androidButton}}</a
+      >
+    </div>
+  </div>
+</section>

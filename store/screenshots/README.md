@@ -27,7 +27,7 @@ Gabarits des images App Store de Pilbo : fond, titre, sous-titre, pilules décor
 | 1   | `today`     | `01-today.png`     | Aujourd'hui : une prise validée, une en retard, une à venir        | Claire    |
 | 2   | `reminders` | `02-reminders.png` | Modification d'une prise, réglage « Répéter le rappel toutes les » | Claire    |
 | 3   | `pills`     | `03-pills.png`     | Personnalisation d'une pilule (forme, couleurs)                    | Claire    |
-| 4   | `stocks`    | `04-stocks.png`    | Stocks, avec une alerte de stock bas                               | Claire    |
+| 4   | `stocks`    | `04-stocks.png`    | Médicaments, avec une alerte de stock bas                          | Claire    |
 | 5   | `calendar`  | `05-calendar.png`  | Calendrier du mois, avec des jours remplis                         | Claire    |
 | 6   | `privacy`   | `06-privacy.png`   | Aujourd'hui                                                        | Sombre    |
 
@@ -38,7 +38,9 @@ Gabarits des images App Store de Pilbo : fond, titre, sous-titre, pilules décor
    ```sh
    xcrun simctl status_bar booted override --time 9:41 --batteryState charged --batteryLevel 100 --cellularBars 4 --wifiBars 3
    ```
-3. Pour chaque langue (`fr`, `en`, réglage « Langue » de l'app) et chaque image du tableau :
+3. Pour chaque langue (`fr`, `en`, réglage « Langue » de l'app) et chaque image du tableau, plus `03-pillbox.png` (onglet Pilulier, utilisé par le site seulement) :
+   - les données de test sont en français : pour `en`, renommer d'abord les médicaments dans l'app (Iron, Magnesium, Melatonin, Paracetamol, Vitamin D 400 IU et 1000 IU, détails « With meals » et « As needed ») ;
+   - `03-pills.png` : apparence du magnésium, forme Gélule, deux couleurs (rose, lilas), sans valider ;
    - naviguer vers l'écran (Maestro MCP) ;
    - apparence : `xcrun simctl ui booted appearance light` (ou `dark` pour l'image 6) ;
    - capturer :
@@ -54,6 +56,7 @@ Gabarits des images App Store de Pilbo : fond, titre, sous-titre, pilules décor
    ```
    Le script s'arrête et liste les captures manquantes. Chrome est cherché dans `/Applications`, sinon `CHROME_PATH=/chemin/vers/chrome`.
 5. Vérifier le résultat dans `output/`, ou ouvrir `preview.html`.
+6. Mettre à jour les captures du site : `make github-pages-screenshots`.
 
 ## Modifier
 

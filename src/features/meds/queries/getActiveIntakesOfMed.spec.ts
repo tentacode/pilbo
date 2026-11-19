@@ -7,20 +7,20 @@ describe("getActiveIntakesOfMed", () => {
   it("returns the active intakes containing the med, with all their meds", () => {
     const database = createTestDatabase();
 
-    const intakes = getActiveIntakesOfMed(database, findMedId(database, "Lamictal", "50 mg"));
+    const intakes = getActiveIntakesOfMed(database, findMedId(database, "Vitamine D", "400 UI"));
 
     expect(intakes).toHaveLength(1);
     expect(intakes[0].time).toEqual({ hour: 8, minute: 20 });
     expect(intakes[0].medQuantities.map(({ med }) => med.name).sort()).toEqual([
-      "Lamictal",
-      "Lithium",
+      "Magnésium",
+      "Vitamine D",
     ]);
   });
 
   it("ignores the archived versions of an intake", () => {
     const database = createTestDatabase({ withLogs: true, now: new Date(2026, 9, 24) });
 
-    const times = getActiveIntakesOfMed(database, findMedId(database, "Lithium", "250 mg")).map(
+    const times = getActiveIntakesOfMed(database, findMedId(database, "Magnésium", "300 mg")).map(
       ({ time }) => time,
     );
 
@@ -34,6 +34,8 @@ describe("getActiveIntakesOfMed", () => {
   it("returns nothing for a med without intake", () => {
     const database = createTestDatabase();
 
-    expect(getActiveIntakesOfMed(database, findMedId(database, "Prazépam", "25 mg"))).toEqual([]);
+    expect(getActiveIntakesOfMed(database, findMedId(database, "Paracétamol", "500 mg"))).toEqual(
+      [],
+    );
   });
 });

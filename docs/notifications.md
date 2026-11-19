@@ -76,7 +76,7 @@ Un échec est seulement affiché en console : tout sera replanifié au prochain 
 - **Alertes de stock bas** : ajoutées après les rappels du jour, dans la limite de 64.
 - **Demain** : ajouté prise par prise (6 rappels entiers) tant que le total reste ≤ 64. Si une journée entière est sautée, les rappels du lendemain existent quand même.
 - **Identifiant** : `reminder-<intakeId>-<date locale>` (ex. `reminder-…-2026-10-14T08:40`).
-- **Contenu** : titre « C'est l'heure de votre prise de 08:20 », corps « 1 × Lithium 250 mg, 1 × Lamictal 50 mg ». Son de la prise (`intake.sound`), `interruptionLevel: "timeSensitive"`.
+- **Contenu** : titre « C'est l'heure de votre prise de 08:20 », corps « 1 × Magnésium 300 mg, 1 × Vitamine D 400 UI ». Son de la prise (`intake.sound`), `interruptionLevel: "timeSensitive"`.
 - **Canal Android** : `channelId` du son de la prise (`reminderChannelId`), dans le trigger.
 - **Groupe de présentation** : `presentationGroup` = `reminder-<intakeId>-<date locale du jour>` (ex. `reminder-…-2026-10-14`), le même pour les 6 rappels d'une prise. Envoyé dans `data.presentationGroup`, voir [Groupe de présentation](#groupe-de-présentation-patch).
 - **Langue** : textes générés dans la langue courante de l'app (`i18n.t`, namespace `notifications`), heure au format 12 h / 24 h du réglage iOS.
@@ -89,7 +89,7 @@ Un échec est seulement affiché en console : tout sera replanifié au prochain 
 - Pas d'alerte pour un stock ≤ 0, ni pour un médicament sans prise (pas de date prévisible).
 - Rien n'est mémorisé : tout est recalculé à chaque replanification.
 - **Identifiant** : `low-stock-<date locale>` (ex. `low-stock-2026-10-22`).
-- **Contenu** : titre « Stock bas », corps « Lithium 250 mg, Lamictal 50 mg : pensez à les renouveler. ». Son des alertes (réglage `lowStockSound`), `interruptionLevel: "active"`, **sans `badge`** (le chiffre de l'icône ne change pas). Canal Android du son (`lowStockChannelId`).
+- **Contenu** : titre « Stock bas », corps « Magnésium 300 mg, Vitamine D 400 UI : pensez à les renouveler. ». Son des alertes (réglage `lowStockSound`), `interruptionLevel: "active"`, **sans `badge`** (le chiffre de l'icône ne change pas). Canal Android du son (`lowStockChannelId`).
 
 ### Sons
 

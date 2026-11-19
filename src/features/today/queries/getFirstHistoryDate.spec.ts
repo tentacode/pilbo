@@ -30,8 +30,8 @@ describe("getFirstHistoryDate", () => {
 
   it("returns the date of an older as-needed log", () => {
     const database = createTestDatabase({ now: new Date(2026, 9, 24, 9, 0) });
-    const prazepam = getMedById(database, findMedId(database, "Prazépam", "25 mg")) as Med;
-    insertMedLog(database, prazepam.id, new Date(2026, 7, 30, 15, 40));
+    const paracetamol = getMedById(database, findMedId(database, "Paracétamol", "500 mg")) as Med;
+    insertMedLog(database, paracetamol.id, new Date(2026, 7, 30, 15, 40));
 
     expect(getFirstHistoryDate(database)).toBe("2026-08-30");
   });

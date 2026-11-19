@@ -181,31 +181,33 @@ describe("TodayScreen", () => {
   });
 
   describe("other meds", () => {
-    function takePrazepamAt(takenAt: string) {
+    function takeParacetamolAt(takenAt: string) {
       mockDatabase
         .insert(medLogTable)
-        .values({ medId: findMedId(mockDatabase, "Prazépam", "25 mg"), takenAt })
+        .values({ medId: findMedId(mockDatabase, "Paracétamol", "500 mg"), takenAt })
         .run();
     }
 
     it("lists one card per free taking of the day, ordered by time", async () => {
-      takePrazepamAt("2026-10-04T15:40");
-      takePrazepamAt("2026-10-04T06:10");
-      takePrazepamAt("2026-10-03T09:00");
+      takeParacetamolAt("2026-10-04T15:40");
+      takeParacetamolAt("2026-10-04T06:10");
+      takeParacetamolAt("2026-10-03T09:00");
       await renderAt(17, 0);
 
       expect(screen.getByRole("header", { name: "Autres médicaments" })).toBeOnTheScreen();
-      expect(screen.getAllByRole("button", { name: /^Prazépam 25 mg/ }).map(nameOf)).toEqual([
-        "Prazépam 25 mg, Pris à 06:10",
-        "Prazépam 25 mg, Pris à 15:40",
+      expect(screen.getAllByRole("button", { name: /^Paracétamol 500 mg/ }).map(nameOf)).toEqual([
+        "Paracétamol 500 mg, Pris à 06:10",
+        "Paracétamol 500 mg, Pris à 15:40",
       ]);
     });
 
     it("opens the free taking", async () => {
-      takePrazepamAt("2026-10-04T06:10");
+      takeParacetamolAt("2026-10-04T06:10");
       await renderAt(7, 0);
 
-      await fireEvent.press(screen.getByRole("button", { name: "Prazépam 25 mg, Pris à 06:10" }));
+      await fireEvent.press(
+        screen.getByRole("button", { name: "Paracétamol 500 mg, Pris à 06:10" }),
+      );
 
       expect(router.push).toHaveBeenCalledWith({
         pathname: "/med-log",
@@ -241,7 +243,7 @@ describe("TodayScreen", () => {
   describe("stock below zero", () => {
     it("warns and opens the meds tab", async () => {
       saveStock(mockDatabase, {
-        medId: findMedId(mockDatabase, "Lamictal", "50 mg"),
+        medId: findMedId(mockDatabase, "Vitamine D", "400 UI"),
         quantity: 0,
         boxSize: 30,
         lowStockDays: 7,
@@ -253,7 +255,7 @@ describe("TodayScreen", () => {
       expect(screen.getByRole("header", { name: "Stock à mettre à jour" })).toBeOnTheScreen();
       expect(
         screen.getByText(
-          "Le stock de Lamictal 50 mg est passé sous zéro. Pensez à mettre à jour les quantités dans Médicaments.",
+          "Le stock de Vitamine D 400 UI est passé sous zéro. Pensez à mettre à jour les quantités dans Médicaments.",
         ),
       ).toBeOnTheScreen();
 
@@ -278,7 +280,7 @@ describe("TodayScreen", () => {
 
     it("is hidden without low stock", async () => {
       saveStock(mockDatabase, {
-        medId: findMedId(mockDatabase, "Lithium", "250 mg"),
+        medId: findMedId(mockDatabase, "Magnésium", "300 mg"),
         quantity: 200,
         boxSize: 100,
         lowStockDays: 7,
@@ -301,7 +303,7 @@ describe("TodayScreen", () => {
 
     it("shows an empty stock when a low stock is at zero", async () => {
       saveStock(mockDatabase, {
-        medId: findMedId(mockDatabase, "Lithium", "250 mg"),
+        medId: findMedId(mockDatabase, "Magnésium", "300 mg"),
         quantity: 0,
         boxSize: 100,
         lowStockDays: 7,
@@ -321,7 +323,7 @@ describe("TodayScreen", () => {
       await screen.unmount();
 
       saveStock(mockDatabase, {
-        medId: findMedId(mockDatabase, "Lamictal", "50 mg"),
+        medId: findMedId(mockDatabase, "Vitamine D", "400 UI"),
         quantity: 3,
         boxSize: 30,
         lowStockDays: 7,
@@ -406,7 +408,7 @@ describe("TodayScreen", () => {
       mockDatabase
         .insert(medLogTable)
         .values({
-          medId: findMedId(mockDatabase, "Prazépam", "25 mg"),
+          medId: findMedId(mockDatabase, "Paracétamol", "500 mg"),
           takenAt: "2026-10-03T15:40",
         })
         .run();
@@ -436,7 +438,7 @@ describe("TodayScreen", () => {
 
       expect(screen.getByRole("header", { name: "Autres médicaments" })).toBeOnTheScreen();
       expect(
-        screen.getByRole("button", { name: "Prazépam 25 mg, Pris à 15:40" }),
+        screen.getByRole("button", { name: "Paracétamol 500 mg, Pris à 15:40" }),
       ).toBeOnTheScreen();
     });
 

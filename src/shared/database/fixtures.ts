@@ -12,35 +12,35 @@ const DEEP_ROSE = "#F58FB8";
 const WHITE = "#FFFFFF";
 
 export const medFixtures = {
-  lithium250: {
-    name: "Lithium",
-    strength: "250 mg",
+  magnesium300: {
+    name: "Magnésium",
+    strength: "300 mg",
     detail: "Avec le repas",
     design: { shape: "round", colors: [LAVENDER, LAVENDER], size: "medium" },
   },
-  lamictal50: {
-    name: "Lamictal",
-    strength: "50 mg",
+  vitaminD400: {
+    name: "Vitamine D",
+    strength: "400 UI",
     design: { shape: "capsule", colors: [TURQUOISE, TURQUOISE], size: "small" },
   },
-  lamictal100: {
-    name: "Lamictal",
-    strength: "100 mg",
+  vitaminD1000: {
+    name: "Vitamine D",
+    strength: "1000 UI",
     design: { shape: "capsule", colors: [TURQUOISE, TURQUOISE], size: "large" },
   },
-  quviviq50: {
-    name: "Quviviq",
-    strength: "50 mg",
+  melatonin1: {
+    name: "Mélatonine",
+    strength: "1 mg",
     design: { shape: "syrup", colors: [ROSE, WHITE], size: "medium" },
   },
-  pregabalin50: {
-    name: "Prégabaline",
-    strength: "50 mg",
+  iron80: {
+    name: "Fer",
+    strength: "80 mg",
     design: { shape: "sachet", colors: [BUTTER, BUTTER], size: "medium" },
   },
-  prazepam25: {
-    name: "Prazépam",
-    strength: "25 mg",
+  paracetamol500: {
+    name: "Paracétamol",
+    strength: "500 mg",
     detail: "Si besoin",
     design: { shape: "capsule", colors: [DEEP_ROSE, WHITE], size: "medium" },
   },
@@ -62,8 +62,8 @@ export const intakeFixtures: IntakeFixture[] = [
     days: EVERY_DAY,
     reminderIntervalMinutes: REMINDER_INTERVAL_MINUTES,
     medQuantities: [
-      { med: "lithium250", quantity: 1 },
-      { med: "lamictal50", quantity: 1 },
+      { med: "magnesium300", quantity: 1 },
+      { med: "vitaminD400", quantity: 1 },
     ],
   },
   {
@@ -71,14 +71,14 @@ export const intakeFixtures: IntakeFixture[] = [
     minute: 20,
     days: EVERY_DAY,
     reminderIntervalMinutes: REMINDER_INTERVAL_MINUTES,
-    medQuantities: [{ med: "lithium250", quantity: 1 }],
+    medQuantities: [{ med: "magnesium300", quantity: 1 }],
   },
   {
     hour: 20,
     minute: 20,
     days: EVERY_DAY,
     reminderIntervalMinutes: REMINDER_INTERVAL_MINUTES,
-    medQuantities: [{ med: "lithium250", quantity: 2 }],
+    medQuantities: [{ med: "magnesium300", quantity: 2 }],
   },
   {
     hour: 22,
@@ -87,9 +87,9 @@ export const intakeFixtures: IntakeFixture[] = [
     reminderIntervalMinutes: REMINDER_INTERVAL_MINUTES,
     sound: "nocturne",
     medQuantities: [
-      { med: "lamictal100", quantity: 1 },
-      { med: "quviviq50", quantity: 1 },
-      { med: "pregabalin50", quantity: 1 },
+      { med: "vitaminD1000", quantity: 1 },
+      { med: "melatonin1", quantity: 1 },
+      { med: "iron80", quantity: 1 },
     ],
   },
 ];
@@ -99,10 +99,10 @@ export interface StockFixture extends Omit<NewStockRow, "medId"> {
 }
 
 export const stockFixtures: StockFixture[] = [
-  { med: "lithium250", quantity: 18, boxSize: 100, lowStockDays: 7 },
-  { med: "lamictal50", quantity: 45, boxSize: 50, lowStockDays: 7 },
-  { med: "lamictal100", quantity: 56, boxSize: 60, lowStockDays: 7 },
-  { med: "prazepam25", quantity: 15, boxSize: 20, lowStockDays: 7 },
+  { med: "magnesium300", quantity: 18, boxSize: 100, lowStockDays: 7 },
+  { med: "vitaminD400", quantity: 45, boxSize: 50, lowStockDays: 7 },
+  { med: "vitaminD1000", quantity: 56, boxSize: 60, lowStockDays: 7 },
+  { med: "paracetamol500", quantity: 15, boxSize: 20, lowStockDays: 7 },
 ];
 
 export const HISTORY_DAYS = 45;
@@ -134,7 +134,7 @@ export const historyLogFixture = {
 };
 
 export const medLogFixture: { med: MedFixtureKey; daysAgo: number[]; time: string } = {
-  med: "prazepam25",
+  med: "paracetamol500",
   daysAgo: [2, 5, 14, 21, 30],
   time: "15:40",
 };

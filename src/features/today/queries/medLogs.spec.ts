@@ -15,13 +15,13 @@ function at(day: number, hour: number, minute: number): Date {
 describe("med logs", () => {
   it("inserts a log and reads it back by its identifier", () => {
     const database = createTestDatabase();
-    const prazepamId = findMedId(database, "Prazépam", "25 mg");
+    const paracetamolId = findMedId(database, "Paracétamol", "500 mg");
 
-    const medLogId = insertMedLog(database, prazepamId, at(14, 15, 40));
+    const medLogId = insertMedLog(database, paracetamolId, at(14, 15, 40));
 
     expect(getMedLogById(database, medLogId)).toEqual({
       id: medLogId,
-      med: expect.objectContaining({ id: prazepamId, name: "Prazépam" }),
+      med: expect.objectContaining({ id: paracetamolId, name: "Paracétamol" }),
       takenAt: "2026-10-14T15:40",
     });
   });
@@ -32,9 +32,9 @@ describe("med logs", () => {
 
   it("deletes only the given log", () => {
     const database = createTestDatabase();
-    const prazepamId = findMedId(database, "Prazépam", "25 mg");
-    const firstMedLogId = insertMedLog(database, prazepamId, at(14, 9, 5));
-    const secondMedLogId = insertMedLog(database, prazepamId, at(14, 9, 5));
+    const paracetamolId = findMedId(database, "Paracétamol", "500 mg");
+    const firstMedLogId = insertMedLog(database, paracetamolId, at(14, 9, 5));
+    const secondMedLogId = insertMedLog(database, paracetamolId, at(14, 9, 5));
 
     deleteMedLog(database, secondMedLogId);
 
@@ -44,8 +44,8 @@ describe("med logs", () => {
 
   it("updates the time of a log", () => {
     const database = createTestDatabase();
-    const prazepamId = findMedId(database, "Prazépam", "25 mg");
-    const medLogId = insertMedLog(database, prazepamId, at(14, 15, 40));
+    const paracetamolId = findMedId(database, "Paracétamol", "500 mg");
+    const medLogId = insertMedLog(database, paracetamolId, at(14, 15, 40));
 
     updateMedLogTime(database, medLogId, "2026-10-14T11:20");
 

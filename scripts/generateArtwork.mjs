@@ -18,6 +18,8 @@ const SETTINGS = {
   splashDarkOpacity: 0.35,
   featureGraphicWidth: 1024,
   featureGraphicHeight: 500,
+  websiteHeroWidth: 1600,
+  websiteHeroHeight: 900,
 };
 
 const ICON_SIZE = 1024;
@@ -333,6 +335,23 @@ function featureGraphic() {
   });
 }
 
+function websiteHero() {
+  const { websiteHeroWidth: width, websiteHeroHeight: height } = SETTINGS;
+  const { pillsPerRow, pillSize } = artworkConfig.websiteHero;
+  return svg({
+    width,
+    height,
+    background: COLORS.background,
+    content: backgroundPills({
+      width,
+      height,
+      pillsPerRow,
+      scaleRange: pillSize,
+      opacity: SETTINGS.backgroundOpacity,
+    }),
+  });
+}
+
 function renderPng({ source, output, width, height, background }) {
   const size = Math.max(width, height);
   const offsetX = (size - width) / 2;
@@ -382,6 +401,7 @@ const iconSources = icon();
 const splashSources = splash();
 const adaptiveIconSources = adaptiveIcon();
 const featureGraphicSource = featureGraphic();
+const websiteHeroSource = websiteHero();
 
 const artworks = [
   { name: "icon", source: iconSources.regular, size: ICON_SIZE, background: COLORS.background },
@@ -442,3 +462,8 @@ for (const directory of otherStoreDirectories) {
 for (const directory of [firstStoreDirectory, ...otherStoreDirectories]) {
   console.log(`Generated ${directory}/icon.png and featureGraphic.png`);
 }
+
+writeFileSync("assets/artwork/website-hero.svg", websiteHeroSource);
+writeFileSync("website/src/static/pills.svg", websiteHeroSource);
+copyFileSync(`${firstStoreDirectory}/featureGraphic.png`, "website/src/static/share.png");
+console.log("Generated website/src/static/pills.svg and share.png");

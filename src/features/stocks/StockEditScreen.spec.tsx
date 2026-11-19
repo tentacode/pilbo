@@ -83,10 +83,10 @@ describe("StockEditScreen", () => {
   });
 
   it("creates a stock with the default values", async () => {
-    const medId = await renderFor("Quviviq", "50 mg");
+    const medId = await renderFor("Mélatonine", "1 mg");
 
     expect(screen.getByRole("header", { name: "Ajouter un stock" })).toBeOnTheScreen();
-    expect(screen.getByRole("header", { name: "Quviviq 50 mg" })).toBeOnTheScreen();
+    expect(screen.getByRole("header", { name: "Mélatonine 1 mg" })).toBeOnTheScreen();
     expect(screen.getByText("1 comprimé par jour · 22:00")).toBeOnTheScreen();
     expect(screen.getByLabelText("0 comprimé, Stock vide, 0 jour, à renouveler")).toBeOnTheScreen();
     expect(screen.getByText("10 jours")).toBeOnTheScreen();
@@ -105,7 +105,7 @@ describe("StockEditScreen", () => {
   });
 
   it("updates an existing stock with the steppers and a new box", async () => {
-    const medId = await renderFor("Lithium", "250 mg");
+    const medId = await renderFor("Magnésium", "300 mg");
 
     expect(screen.getByRole("header", { name: "Modifier le stock" })).toBeOnTheScreen();
     expect(
@@ -133,7 +133,7 @@ describe("StockEditScreen", () => {
   });
 
   it("types the remaining pills between 0 and 9999", async () => {
-    await renderFor("Lithium", "250 mg");
+    await renderFor("Magnésium", "300 mg");
 
     await fireEvent(quantityInput(), "focus");
     await fireEvent.changeText(quantityInput(), "250");
@@ -148,9 +148,9 @@ describe("StockEditScreen", () => {
   });
 
   it("shows a negative stock as it is", async () => {
-    const medId = findMedId(mockDatabase, "Lithium", "250 mg");
+    const medId = findMedId(mockDatabase, "Magnésium", "300 mg");
     saveStock(mockDatabase, { medId, quantity: -3, boxSize: 100, lowStockDays: 7 });
-    await renderFor("Lithium", "250 mg");
+    await renderFor("Magnésium", "300 mg");
 
     expect(quantityInput()).toHaveDisplayValue("-3");
     expect(screen.getByRole("button", { name: "Un comprimé de moins" })).toBeDisabled();
@@ -161,7 +161,7 @@ describe("StockEditScreen", () => {
   });
 
   it("refuses an empty or out of range box size", async () => {
-    const medId = await renderFor("Lithium", "250 mg");
+    const medId = await renderFor("Magnésium", "300 mg");
     const boxSizeInput = screen.getByLabelText("Taille d’une boîte, en comprimés");
 
     await fireEvent.changeText(boxSizeInput, "0");
@@ -187,7 +187,7 @@ describe("StockEditScreen", () => {
   });
 
   it("hides the threshold for a med without schedule", async () => {
-    await renderFor("Prazépam", "25 mg");
+    await renderFor("Paracétamol", "500 mg");
 
     expect(screen.getByLabelText("15 comprimés, Aucune prise prévue")).toBeOnTheScreen();
     expect(screen.queryByRole("adjustable", { name: "Me prévenir à" })).toBeNull();
@@ -195,7 +195,7 @@ describe("StockEditScreen", () => {
   });
 
   it("asks before discarding the changes", async () => {
-    await renderFor("Lithium", "250 mg");
+    await renderFor("Magnésium", "300 mg");
     expect(mockPreventRemove.isPrevented).toBe(false);
 
     await press("Un comprimé de plus");
@@ -212,7 +212,7 @@ describe("StockEditScreen", () => {
   });
 
   it("leaves without confirmation when asked to", async () => {
-    await renderFor("Lithium", "250 mg");
+    await renderFor("Magnésium", "300 mg");
     await press("Un comprimé de plus");
     const action = { type: "NAVIGATE" };
 
@@ -225,7 +225,7 @@ describe("StockEditScreen", () => {
   });
 
   it("stops tracking the stock after confirmation", async () => {
-    const medId = await renderFor("Lithium", "250 mg");
+    const medId = await renderFor("Magnésium", "300 mg");
 
     await press("Ne plus suivre le stock");
     expect(screen.getByRole("header", { name: "Ne plus suivre ce stock ?" })).toBeOnTheScreen();
@@ -239,7 +239,7 @@ describe("StockEditScreen", () => {
   it("is translated in English", async () => {
     await i18n.changeLanguage("en");
 
-    await renderFor("Quviviq", "50 mg");
+    await renderFor("Mélatonine", "1 mg");
 
     expect(screen.getByRole("header", { name: "Add a stock" })).toBeOnTheScreen();
     expect(screen.getByText("1 pill a day · 22:00")).toBeOnTheScreen();

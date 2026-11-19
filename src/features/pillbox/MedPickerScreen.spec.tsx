@@ -68,37 +68,37 @@ describe("MedPickerScreen", () => {
     it("lists every med by name then ascending strength", async () => {
       await renderIntakePicker();
 
-      expect(screen.getAllByRole("button", { name: /mg/ }).map(nameOf)).toEqual([
-        "Lamictal 50 mg, Dans la prise",
-        "Ajouter Lamictal 100 mg",
-        "Lithium 250 mg, Avec le repas, Dans la prise",
-        "Ajouter Prazépam 25 mg, Si besoin",
-        "Ajouter Prégabaline 50 mg",
-        "Ajouter Quviviq 50 mg",
+      expect(screen.getAllByRole("button", { name: /mg|UI/ }).map(nameOf)).toEqual([
+        "Ajouter Fer 80 mg",
+        "Magnésium 300 mg, Avec le repas, Dans la prise",
+        "Ajouter Mélatonine 1 mg",
+        "Ajouter Paracétamol 500 mg, Si besoin",
+        "Vitamine D 400 UI, Dans la prise",
+        "Ajouter Vitamine D 1000 UI",
       ]);
     });
 
     it("hides the archived meds", async () => {
-      archiveMed(mockDatabase, findMedId(mockDatabase, "Prazépam", "25 mg"), new Date());
+      archiveMed(mockDatabase, findMedId(mockDatabase, "Paracétamol", "500 mg"), new Date());
       await renderIntakePicker();
 
-      expect(screen.queryByRole("button", { name: /Prazépam/ })).not.toBeOnTheScreen();
+      expect(screen.queryByRole("button", { name: /Paracétamol/ })).not.toBeOnTheScreen();
     });
 
     it("disables the meds already in the intake", async () => {
       await renderIntakePicker();
 
       expect(
-        screen.getByRole("button", { name: "Lithium 250 mg, Avec le repas, Dans la prise" }),
+        screen.getByRole("button", { name: "Magnésium 300 mg, Avec le repas, Dans la prise" }),
       ).toBeDisabled();
     });
 
     it("adds the selected med to the intake and goes back", async () => {
       await renderIntakePicker();
 
-      await fireEvent.press(screen.getByRole("button", { name: "Ajouter Lamictal 100 mg" }));
+      await fireEvent.press(screen.getByRole("button", { name: "Ajouter Vitamine D 1000 UI" }));
 
-      expect([...draftMedNames].sort()).toEqual(["Lamictal", "Lamictal", "Lithium"]);
+      expect([...draftMedNames].sort()).toEqual(["Magnésium", "Vitamine D", "Vitamine D"]);
       expect(router.back).toHaveBeenCalledTimes(1);
     });
 

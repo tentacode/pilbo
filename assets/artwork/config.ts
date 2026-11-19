@@ -17,6 +17,7 @@ export type ArtworkConfig = {
   splash: ArtworkLayout;
   androidSplash: { heroSize: number };
   featureGraphic: ArtworkLayout;
+  websiteHero: Omit<ArtworkLayout, "heroSize">;
 };
 
 export const artworkConfig: ArtworkConfig = {
@@ -86,6 +87,12 @@ export const artworkConfig: ArtworkConfig = {
     /** Background density: pills per row, decimals allowed. Higher = more pills, closer together. */
     pillsPerRow: 6,
     /** Random size range of the background pills [minimum, maximum], same scale as heroSize. */
+    pillSize: [3, 5.5],
+  } /** Background of the website hero (website/src/static/pills.svg), 1600 × 900 px, pills only. Scaled to cover the hero, so its edges may be cropped. */,
+  websiteHero: {
+    /** Background density: pills per row, decimals allowed. Higher = more pills, closer together. */
+    pillsPerRow: 9,
+    /** Random size range of the background pills [minimum, maximum], same scale as icon.heroSize. */
     pillSize: [3, 5.5],
   },
 };

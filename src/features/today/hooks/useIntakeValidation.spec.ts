@@ -147,8 +147,8 @@ describe("useIntakeValidation", () => {
 
       await act(() => result.current.validate(bedtime.id, "taken"));
 
-      expect(quantityOf("Lamictal", "100 mg")).toBe(55);
-      expect(quantityOf("Quviviq", "50 mg")).toBeUndefined();
+      expect(quantityOf("Vitamine D", "1000 UI")).toBe(55);
+      expect(quantityOf("Mélatonine", "1 mg")).toBeUndefined();
       expect(onStocksBelowZero).not.toHaveBeenCalled();
     });
 
@@ -158,13 +158,13 @@ describe("useIntakeValidation", () => {
 
       await act(() => result.current.validate(intakes[0].id, status));
 
-      expect(quantityOf("Lithium", "250 mg")).toBe(18);
-      expect(quantityOf("Lamictal", "50 mg")).toBe(45);
+      expect(quantityOf("Magnésium", "300 mg")).toBe(18);
+      expect(quantityOf("Vitamine D", "400 UI")).toBe(45);
     });
 
     it("reports the meds going below zero", async () => {
       saveStock(mockDatabase, {
-        medId: findMedId(mockDatabase, "Lithium", "250 mg"),
+        medId: findMedId(mockDatabase, "Magnésium", "300 mg"),
         quantity: 1,
         boxSize: 100,
         lowStockDays: 7,
@@ -178,9 +178,9 @@ describe("useIntakeValidation", () => {
 
       await act(() => result.current.validate(evening.id, "taken"));
 
-      expect(quantityOf("Lithium", "250 mg")).toBe(-1);
+      expect(quantityOf("Magnésium", "300 mg")).toBe(-1);
       expect(onStocksBelowZero).toHaveBeenCalledWith([
-        expect.objectContaining({ name: "Lithium", strength: "250 mg" }),
+        expect.objectContaining({ name: "Magnésium", strength: "300 mg" }),
       ]);
     });
 
@@ -193,7 +193,7 @@ describe("useIntakeValidation", () => {
 
       await act(() => result.current.validate(intakes[0].id, "taken"));
 
-      expect(quantityOf("Lithium", "250 mg")).toBe(18);
+      expect(quantityOf("Magnésium", "300 mg")).toBe(18);
     });
   });
 });

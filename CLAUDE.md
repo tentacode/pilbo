@@ -45,7 +45,7 @@ En gros, on cherche une proof of concept : dans le doute, demander si c'est dans
 - État UI : état local ou contexte React d'abord. **Zustand** seulement si un état UI doit être partagé entre des composants éloignés. Jamais pour les données persistées (SQLite uniquement).
   - Exception : les petits réglages UI persistés (ex. `onboardingDone`, préférences dans `features/settings/store/settingsStore.ts`) utilisent Zustand `persist` avec `expo-sqlite/kv-store`, via le stockage synchrone partagé `shared/storage/synchronousStorage.ts` pour éviter un flash au démarrage.
 - Données **100 % locales** : pas de backend, pas de compte utilisateur.
-- Pages web (support, confidentialité, « Rejoindre la bêta ») : `website/`, FR/EN, déployées sur GitHub Pages à chaque push sur `main`.
+- Site vitrine : sources dans `website/src/` (gabarits, textes FR/EN dans `locales/`), généré par `make build-github-pages`, aperçu avec `make preview-github-pages`, déployé sur GitHub Pages à chaque push sur `main`.
 - i18n : **i18next + react-i18next + expo-localization** (français et anglais), clés = texte français, un namespace par feature, `make i18n-extract`. Voir la section i18n de `docs/architecture.md`.
 - Notifications : **expo-notifications** (notifications locales programmées).
 - Tests : **Jest + React Native Testing Library**. Deux projets Jest : `ios` (toute la suite) et `android` (uniquement les `*.android.spec.ts(x)`).
