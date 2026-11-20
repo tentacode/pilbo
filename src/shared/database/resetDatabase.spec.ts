@@ -10,9 +10,9 @@ describe("resetDatabase", () => {
 
     resetDatabase(database, { withLogs: false });
 
-    expect(countRows(database, medTable)).toBe(6);
-    expect(countRows(database, intakeTable)).toBe(4);
-    expect(countRows(database, intakeMedTable)).toBe(7);
+    expect(countRows(database, medTable)).toBe(7);
+    expect(countRows(database, intakeTable)).toBe(6);
+    expect(countRows(database, intakeMedTable)).toBe(9);
   });
 
   it("seeds an empty database", () => {
@@ -20,6 +20,6 @@ describe("resetDatabase", () => {
 
     resetDatabase(database, { withLogs: false });
 
-    expect(countRows(database, medTable)).toBe(6);
+    expect(countRows(database, medTable)).toBe(7);
   });
 });

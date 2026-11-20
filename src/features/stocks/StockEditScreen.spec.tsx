@@ -87,7 +87,7 @@ describe("StockEditScreen", () => {
 
     expect(screen.getByRole("header", { name: "Ajouter un stock" })).toBeOnTheScreen();
     expect(screen.getByRole("header", { name: "Mélatonine 1 mg" })).toBeOnTheScreen();
-    expect(screen.getByText("1 comprimé par jour · 22:00")).toBeOnTheScreen();
+    expect(screen.getByText("2 prises")).toBeOnTheScreen();
     expect(screen.getByLabelText("0 comprimé, Stock vide, 0 jour, à renouveler")).toBeOnTheScreen();
     expect(screen.getByText("10 jours")).toBeOnTheScreen();
     expect(screen.queryByRole("button", { name: "Ne plus suivre le stock" })).toBeNull();
@@ -236,13 +236,19 @@ describe("StockEditScreen", () => {
     expect(rescheduleReminders).toHaveBeenCalledTimes(1);
   });
 
+  it("shows the time and the recurrence of a single custom intake", async () => {
+    await renderFor("Vitamine B12", "1000 µg");
+
+    expect(screen.getByText("1 prise à 09:00\nLe 17 de chaque mois")).toBeOnTheScreen();
+  });
+
   it("is translated in English", async () => {
     await i18n.changeLanguage("en");
 
     await renderFor("Mélatonine", "1 mg");
 
     expect(screen.getByRole("header", { name: "Add a stock" })).toBeOnTheScreen();
-    expect(screen.getByText("1 pill a day · 22:00")).toBeOnTheScreen();
+    expect(screen.getByText("2 intakes")).toBeOnTheScreen();
     expect(screen.getByLabelText("0 pills, Out of stock, 0 days, time to renew")).toBeOnTheScreen();
     expect(screen.getByText("10 days")).toBeOnTheScreen();
   });

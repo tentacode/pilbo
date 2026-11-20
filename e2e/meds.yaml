@@ -36,7 +36,7 @@ name: A new med can be created, its stock tracked, taken and the takings undone
 - assertVisible: "2 comprimés aujourd’hui · dernier à \\d\\d:\\d\\d"
 - scrollUntilVisible:
     element:
-      text: "Stock bas : 0 comprimé.*"
+      text: "Stock vide : 0 comprimé.*"
     centerElement: true
 - scrollUntilVisible:
     element:

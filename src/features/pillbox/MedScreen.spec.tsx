@@ -143,7 +143,7 @@ describe("MedScreen", () => {
         "accessibilityHint",
         "Indiquez le nom du médicament.",
       );
-      expect(countRows(mockDatabase, medTable)).toBe(6);
+      expect(countRows(mockDatabase, medTable)).toBe(7);
       expect(router.dismissAll).not.toHaveBeenCalled();
     });
 
@@ -157,7 +157,7 @@ describe("MedScreen", () => {
       expect(
         screen.getByRole("header", { name: "Votre médicament Magnésium 300 mg existe déjà" }),
       ).toBeOnTheScreen();
-      expect(countRows(mockDatabase, medTable)).toBe(6);
+      expect(countRows(mockDatabase, medTable)).toBe(7);
     });
   });
 
@@ -213,7 +213,7 @@ describe("MedScreen", () => {
       await fireEvent.press(screen.getByRole("button", { name: "Annuler" }));
 
       expect(router.back).toHaveBeenCalledTimes(1);
-      expect(countRows(mockDatabase, medTable)).toBe(6);
+      expect(countRows(mockDatabase, medTable)).toBe(7);
     });
 
     it("opens the appearance of the draft", async () => {
@@ -270,7 +270,7 @@ describe("MedScreen", () => {
     await fireEvent.press(screen.getByRole("button", { name: "Ajouter" }));
 
     expect(findMed("Paracétamol")).toBeDefined();
-    expect(countRows(mockDatabase, medTable)).toBe(7);
+    expect(countRows(mockDatabase, medTable)).toBe(8);
   });
 
   it("is translated in English", async () => {

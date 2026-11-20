@@ -1,17 +1,32 @@
 import { type SQL, sql } from "drizzle-orm";
 
-import type { Intake, Weekday } from "@/domain/intake";
+import type { Intake, IntakeFrequency, IntakeRecurrence, Weekday } from "@/domain/intake";
 import { toNotificationSound } from "@/domain/sound";
 import { intakeMedTable, intakeTable, medTable } from "@/shared/database/schema";
 import type { Database } from "@/shared/database/types";
 
 import { toMed } from "./medRecord";
 
-type IntakeMedRecord = {
+export type IntakeRecurrenceRecord = {
+  days: string;
+  frequency: IntakeFrequency;
+  interval: number;
+  startsOn: string;
+};
+
+export function toIntakeRecurrence({
+  days,
+  frequency,
+  interval,
+  startsOn,
+}: IntakeRecurrenceRecord): IntakeRecurrence {
+  return { days: JSON.parse(days) as Weekday[], frequency, interval, startsOn };
+}
+
+type IntakeMedRecord = IntakeRecurrenceRecord & {
   intakeId: string;
   hour: number;
   minute: number;
-  days: string;
   reminderIntervalMinutes: number;
   sound: string;
   medId: string | null;
@@ -29,6 +44,9 @@ export function selectActiveIntakes(database: Database, condition: SQL = sql`1 =
       ${intakeTable.hour} AS hour,
       ${intakeTable.minute} AS minute,
       ${intakeTable.days} AS days,
+      ${intakeTable.frequency} AS frequency,
+      ${intakeTable.interval} AS interval,
+      ${intakeTable.startsOn} AS startsOn,
       ${intakeTable.reminderIntervalMinutes} AS reminderIntervalMinutes,
       ${intakeTable.sound} AS sound,
       ${medTable.id} AS medId,
@@ -49,7 +67,7 @@ export function selectActiveIntakes(database: Database, condition: SQL = sql`1 =
     const intake = intakes.get(record.intakeId) ?? {
       id: record.intakeId,
       time: { hour: record.hour, minute: record.minute },
-      days: JSON.parse(record.days) as Weekday[],
+      ...toIntakeRecurrence(record),
       reminderIntervalMinutes: record.reminderIntervalMinutes,
       sound: toNotificationSound(record.sound),
       medQuantities: [],

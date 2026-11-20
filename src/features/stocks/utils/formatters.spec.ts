@@ -15,6 +15,7 @@ import {
 import type { StockForecast } from "./stockForecast";
 
 const t = i18n.getFixedT(null, "stocks");
+const translatePillbox = i18n.getFixedT(null, "pillbox");
 
 const lithium: Med = {
   id: "lithium",
@@ -57,35 +58,66 @@ describe("stock edit formatters", () => {
     id: "morning",
     time: { hour: 8, minute: 30 },
     days: [...WEEKDAYS],
+    frequency: "daily",
+    interval: 1,
+    startsOn: "2026-10-01",
     reminderIntervalMinutes: 10,
     sound: "beep",
     medQuantities: [{ med: lithium, quantity: 2 }],
   };
   const evening: Intake = { ...morning, id: "evening", time: { hour: 20, minute: 30 } };
 
-  it("adds the daily pills only when they are the same every day", () => {
-    expect(formatMedSchedule(t, lithium, [evening, morning])).toBe(
-      "4 comprimés par jour · 08:30 et 20:30",
-    );
-    expect(formatMedSchedule(t, lithium, [{ ...morning, days: ["monday"] }, evening])).toBe(
-      "Prises de 08:30 et 20:30",
-    );
+  it("shows the time of a single every day intake", () => {
+    expect(formatMedSchedule(t, translatePillbox, "fr", lithium, [morning])).toEqual({
+      subtitle: "1 prise à 08:30",
+    });
+  });
+
+  it("adds the recurrence of a single custom intake on a second line", () => {
     expect(
-      formatMedSchedule(t, lithium, [
-        morning,
-        { ...morning, id: "noon", time: { hour: 12, minute: 0 }, days: ["monday"] },
-        evening,
+      formatMedSchedule(t, translatePillbox, "fr", lithium, [
+        { ...morning, frequency: "weekly", interval: 2, days: ["tuesday", "wednesday"] },
       ]),
-    ).toBe("Prises de 08:30, 12:00 et 20:30");
+    ).toEqual({
+      subtitle: "1 prise à 08:30",
+      detail: "Mardi et mercredi, une semaine sur deux",
+    });
     expect(
-      formatMedSchedule(t, lithium, [
-        { ...morning, days: ["monday"], medQuantities: [{ med: lithium, quantity: 1 }] },
+      formatMedSchedule(t, translatePillbox, "fr", lithium, [{ ...morning, days: ["monday"] }]),
+    ).toEqual({ subtitle: "1 prise à 08:30", detail: "Lundi" });
+  });
+
+  it("counts several intakes", () => {
+    expect(formatMedSchedule(t, translatePillbox, "fr", lithium, [morning, evening])).toEqual({
+      subtitle: "2 prises",
+    });
+  });
+
+  it("counts a monthly intake as planned", () => {
+    expect(
+      formatMedSchedule(t, translatePillbox, "fr", lithium, [
+        { ...morning, frequency: "monthly", days: [] },
       ]),
-    ).toBe("1 comprimé par jour · 08:30");
+    ).toEqual({ subtitle: "1 prise à 08:30", detail: "Le 1er de chaque mois" });
+  });
+
+  it("is translated in English", async () => {
+    await i18n.changeLanguage("en");
+
+    expect(
+      formatMedSchedule(t, translatePillbox, "en", lithium, [
+        { ...morning, frequency: "monthly", days: [] },
+      ]),
+    ).toEqual({ subtitle: "1 intake at 08:30", detail: "On the 1st of every month" });
+    expect(formatMedSchedule(t, translatePillbox, "en", lithium, [morning, evening])).toEqual({
+      subtitle: "2 intakes",
+    });
   });
 
   it("describes a med without schedule", () => {
-    expect(formatMedSchedule(t, lithium, [])).toBe("Aucune prise prévue");
+    expect(formatMedSchedule(t, translatePillbox, "fr", lithium, [])).toEqual({
+      subtitle: "Aucune prise prévue",
+    });
   });
 
   it("formats the coverage", () => {

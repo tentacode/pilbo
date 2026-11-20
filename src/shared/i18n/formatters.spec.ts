@@ -3,7 +3,10 @@ import {
   formatDayAndMonth,
   formatFullDate,
   formatLongDateWithYear,
+  formatDayOfMonth,
   formatShortDate,
+  formatShortDayAndMonth,
+  formatShortWeekdayDayAndMonth,
   formatIntakeTime,
   formatWeekday,
 } from "./formatters";
@@ -73,5 +76,34 @@ describe("formatLongDateWithYear", () => {
 describe("capitalize", () => {
   it("capitalizes the first letter", () => {
     expect(capitalize("lundi")).toBe("Lundi");
+  });
+});
+
+describe("formatShortDayAndMonth", () => {
+  it("formats a short day and month", () => {
+    expect(formatShortDayAndMonth(new Date(2026, 10, 2), "fr")).toBe("2 nov.");
+    expect(formatShortDayAndMonth(new Date(2026, 10, 1), "fr")).toBe("1er nov.");
+    expect(formatShortDayAndMonth(new Date(2026, 10, 2), "en")).toBe("Nov 2");
+  });
+});
+
+describe("formatShortWeekdayDayAndMonth", () => {
+  it("formats a short weekday, day and month", () => {
+    expect(formatShortWeekdayDayAndMonth(new Date(2026, 10, 12), "fr")).toBe("Jeu. 12 nov.");
+    expect(formatShortWeekdayDayAndMonth(new Date(2026, 10, 1), "fr")).toBe("Dim. 1er nov.");
+    expect(formatShortWeekdayDayAndMonth(new Date(2026, 10, 12), "en")).toBe("Thu, Nov 12");
+  });
+});
+
+describe("formatDayOfMonth", () => {
+  it("formats the day of the month in French", () => {
+    expect(formatDayOfMonth(1, "fr")).toBe("1er");
+    expect(formatDayOfMonth(2, "fr")).toBe("2");
+  });
+
+  it("formats an English ordinal", () => {
+    expect(
+      [1, 2, 3, 4, 11, 12, 13, 21, 22, 23, 31].map((day) => formatDayOfMonth(day, "en")),
+    ).toEqual(["1st", "2nd", "3rd", "4th", "11th", "12th", "13th", "21st", "22nd", "23rd", "31st"]);
   });
 });

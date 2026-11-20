@@ -160,7 +160,10 @@ Format de `design` (`src/domain/med.ts`) :
 | `id`                        | text (UUID)             | clé primaire                            |
 | `hour`                      | integer                 | obligatoire (0–23)                      |
 | `minute`                    | integer                 | obligatoire (0–59)                      |
-| `days`                      | text (JSON `Weekday[]`) | obligatoire                             |
+| `days`                      | text (JSON `Weekday[]`) | obligatoire, ignoré en `monthly`        |
+| `frequency`                 | text                    | obligatoire, `"daily"` par défaut       |
+| `interval`                  | integer                 | obligatoire, `1` par défaut             |
+| `starts_on`                 | text                    | obligatoire, date locale (`2026-11-02`) |
 | `reminder_interval_minutes` | integer                 | obligatoire                             |
 | `sound`                     | text                    | obligatoire, `"beep"` par défaut        |
 | `is_archived`               | integer (booléen)       | obligatoire, `false` par défaut         |
@@ -171,9 +174,21 @@ Une ligne `intake` est une **version** de prise, valable sur `[created_on, archi
 
 - Création : `created_on` = aujourd'hui.
 - Archivage : `is_archived` et `archived_on` = aujourd'hui.
-- Modification de l'heure, des jours, des médicaments ou des quantités d'une prise qui a des logs **avant aujourd'hui** (`saveIntake`) : l'ancienne version est archivée, une nouvelle est créée (`created_on` = aujourd'hui) et les logs du jour passent sur la nouvelle. Sinon (pas de log passé, ou seuls l'intervalle de rappel ou le son changent) : modification sur place.
+- Modification de l'heure, des jours, de la récurrence (`frequency`, `interval`, `starts_on`), des médicaments ou des quantités d'une prise qui a des logs **avant aujourd'hui** (`saveIntake`) : l'ancienne version est archivée, une nouvelle est créée (`created_on` = aujourd'hui, même `starts_on`) et les logs du jour passent sur la nouvelle. Sinon (pas de log passé, ou seuls l'intervalle de rappel ou le son changent) : modification sur place.
 - Son des rappels (`sound`) : clé de `NOTIFICATION_SOUNDS` (`src/domain/sound.ts`), c'est-à-dire le nom du fichier sans extension (`chime`), ou `vibration` pour « Vibration seule ». Une valeur inconnue est relue comme `beep` (`toNotificationSound`). « Appliquer à toutes les prises » depuis les réglages (`setAllActiveIntakesSound`) modifie sur place les prises non archivées.
-- Prises prévues un jour D (`getIntakesOfDay`) : `created_on ≤ D`, `archived_on` nul ou `> D`, jour de la semaine de D dans `days`. Une prise archivée aujourd'hui n'apparaît donc plus aujourd'hui.
+- Récurrence (migration `0003_intake_recurrence`, les prises existantes sont passées en `daily`, `interval` 1, `starts_on` = `created_on`) :
+  - `frequency` : `daily` (jours de `days`), `weekly` (jours de `days`, une semaine sur `interval` : 2, 3 ou 4) ou `monthly` (un mois sur `interval` : 1, 2, 3 ou 6).
+  - « Tous les jours » = `daily` avec les 7 jours ; tout le reste est affiché « Personnalisé ».
+- Prises prévues un jour D (`getIntakesOfDay`) : en SQL, `created_on ≤ D` et `archived_on` nul ou `> D` ; puis en TypeScript, `isIntakeDueOn(intake, D)` (`src/domain/recurrence.ts`). Une prise archivée aujourd'hui n'apparaît donc plus aujourd'hui.
+
+#### Règle « prise prévue un jour D » (`isIntakeDueOn`, à reproduire en Swift pour le widget)
+
+Calcul sur des dates locales (année, mois, jour), jamais en millisecondes d'heure locale (changements d'heure).
+
+1. D avant `starts_on` : non prévue.
+2. `daily` : jour de la semaine de D dans `days`.
+3. `weekly` : semaines du lundi au dimanche. Écart en semaines entre le lundi de la semaine de `starts_on` et le lundi de la semaine de D ; prévue si écart % `interval` = 0 et jour de la semaine de D dans `days`.
+4. `monthly` : jour du mois de `starts_on`, ramené au dernier jour du mois si le mois est plus court (31 → 30, 28 ou 29 février). Prévue si D est ce jour et si (écart en mois entre `starts_on` et D) % `interval` = 0.
 
 ### `intake_med`
 

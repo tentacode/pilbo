@@ -10,7 +10,7 @@ describe("getMedTakingSummary", () => {
   it("adds the free takings and the taken intakes of the day, with their quantities", () => {
     const database = createTestDatabase();
     const magnesiumId = findMedId(database, "Magnésium", "300 mg");
-    const [, , evening] = getAllIntakes(database);
+    const evening = getAllIntakes(database)[4];
     database
       .insert(intakeLogTable)
       .values([

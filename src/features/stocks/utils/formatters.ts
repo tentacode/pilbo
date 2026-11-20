@@ -1,11 +1,12 @@
 import type { TFunction } from "i18next";
 
-import type { Intake } from "@/domain/intake";
+import { type Intake, isEveryDay } from "@/domain/intake";
 import { formatMedLabel, type Med } from "@/domain/med";
-import { formatDayAndMonth } from "@/shared/i18n/formatters";
+import { formatDayAndMonth, formatIntakeTime } from "@/shared/i18n/formatters";
 import type { Language } from "@/shared/i18n/resources";
 
-import { dailyQuantityOf, intakeTimesOf } from "./medSchedule";
+import { formatRecurrence } from "@/features/pillbox/utils/recurrenceFormatters";
+import { scheduledIntakesOf } from "./medSchedule";
 import type { StockForecast } from "./stockForecast";
 
 export function formatPillUnit(t: TFunction<"stocks">, quantity: number): string {
@@ -33,19 +34,30 @@ function joinWithAnd(t: TFunction<"stocks">, items: string[]): string {
       });
 }
 
-export function formatMedSchedule(t: TFunction<"stocks">, med: Med, intakes: Intake[]): string {
-  const times = intakeTimesOf(med.id, intakes);
-  if (times.length === 0) {
-    return noScheduleText(t);
+export type MedScheduleText = {
+  subtitle: string;
+  detail?: string;
+};
+
+export function formatMedSchedule(
+  t: TFunction<"stocks">,
+  translatePillbox: TFunction<"pillbox">,
+  language: Language,
+  med: Med,
+  intakes: Intake[],
+): MedScheduleText {
+  const scheduledIntakes = scheduledIntakesOf(med.id, intakes);
+  if (scheduledIntakes.length === 0) {
+    return { subtitle: noScheduleText(t) };
   }
-  const dailyQuantity = dailyQuantityOf(med.id, intakes);
-  if (dailyQuantity !== undefined) {
-    return t("{{pills}} par jour · {{times}}", {
-      pills: formatPillCount(t, dailyQuantity),
-      times: joinWithAnd(t, times),
-    });
+  if (scheduledIntakes.length > 1) {
+    return { subtitle: t("{{count}} prises", { count: scheduledIntakes.length }) };
   }
-  return t("Prises de {{times}}", { count: times.length, times: joinWithAnd(t, times) });
+  const [intake] = scheduledIntakes;
+  const subtitle = t("1 prise à {{time}}", { time: formatIntakeTime(intake.time) });
+  return isEveryDay(intake)
+    ? { subtitle }
+    : { subtitle, detail: formatRecurrence(translatePillbox, language, intake) };
 }
 
 export function formatCoverage(

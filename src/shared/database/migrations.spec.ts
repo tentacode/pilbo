@@ -68,4 +68,34 @@ describe("migrations", () => {
       { id: "lithium", archivedOn: null },
     ]);
   });
+
+  it("gives existing intakes a daily recurrence starting on their creation date", () => {
+    const database = createTestDatabase({ seed: false, lastMigrationTag: "0002_intake_sound" });
+    database.run(sql`
+      INSERT INTO intake (id, hour, minute, days, reminder_interval_minutes, created_on, sound)
+      VALUES ('morning', 8, 20, '["monday","friday"]', 10, '2026-10-01', 'chime')
+    `);
+
+    migrateTestDatabase(database);
+
+    expect(
+      database.all(sql`
+        SELECT
+          ${intakeTable.days} AS days,
+          ${intakeTable.sound} AS sound,
+          ${intakeTable.frequency} AS frequency,
+          ${intakeTable.interval} AS interval,
+          ${intakeTable.startsOn} AS startsOn
+        FROM ${intakeTable}
+      `),
+    ).toEqual([
+      {
+        days: '["monday","friday"]',
+        sound: "chime",
+        frequency: "daily",
+        interval: 1,
+        startsOn: "2026-10-01",
+      },
+    ]);
+  });
 });

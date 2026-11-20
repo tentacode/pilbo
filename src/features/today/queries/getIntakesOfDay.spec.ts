@@ -15,7 +15,12 @@ const TUESDAY = new Date(2026, 9, 20);
 
 function insertIntake(
   database: Database,
-  version: Partial<Pick<NewIntakeRow, "createdOn" | "archivedOn" | "isArchived">> & {
+  version: Partial<
+    Pick<
+      NewIntakeRow,
+      "createdOn" | "archivedOn" | "isArchived" | "frequency" | "interval" | "startsOn"
+    >
+  > & {
     days?: Weekday[];
   } = {},
 ): string {
@@ -30,6 +35,7 @@ function insertIntake(
       days: ["monday"],
       reminderIntervalMinutes: 5,
       createdOn: "2026-10-01",
+      startsOn: "2026-10-01",
       ...version,
     })
     .returning({ id: intakeTable.id })
@@ -49,6 +55,7 @@ describe("getIntakesOfDay", () => {
     expect(intakes.map(({ time }) => time)).toEqual([
       { hour: 8, minute: 20 },
       { hour: 12, minute: 20 },
+      { hour: 19, minute: 30 },
       { hour: 20, minute: 20 },
       { hour: 22, minute: 0 },
     ]);
@@ -77,7 +84,7 @@ describe("getIntakesOfDay", () => {
   it("reads the sound of each intake", () => {
     const intakes = getIntakesOfDay(createTestDatabase(), TUESDAY);
 
-    expect(intakes.map(({ sound }) => sound)).toEqual(["beep", "beep", "beep", "nocturne"]);
+    expect(intakes.map(({ sound }) => sound)).toEqual(["beep", "beep", "beep", "beep", "nocturne"]);
   });
 
   it("keeps only the intakes planned on the weekday of the date", () => {
@@ -105,6 +112,40 @@ describe("getIntakesOfDay", () => {
     expect(intakeIdsOn(database, new Date(2026, 9, 26))).not.toContain(intakeId);
   });
 
+  it("hides an intake before its start date", () => {
+    const database = createTestDatabase();
+    const intakeId = insertIntake(database, { startsOn: "2026-10-26" });
+
+    expect(intakeIdsOn(database, MONDAY)).not.toContain(intakeId);
+    expect(intakeIdsOn(database, new Date(2026, 9, 26))).toContain(intakeId);
+  });
+
+  it("hides an intake during a paused week", () => {
+    const database = createTestDatabase();
+    const intakeId = insertIntake(database, {
+      frequency: "weekly",
+      interval: 2,
+      startsOn: "2026-10-12",
+    });
+
+    expect(intakeIdsOn(database, new Date(2026, 9, 12))).toContain(intakeId);
+    expect(intakeIdsOn(database, MONDAY)).not.toContain(intakeId);
+    expect(intakeIdsOn(database, new Date(2026, 9, 26))).toContain(intakeId);
+  });
+
+  it("returns a monthly intake on its day of the month only", () => {
+    const database = createTestDatabase();
+    const intakeId = insertIntake(database, {
+      frequency: "monthly",
+      interval: 1,
+      startsOn: "2026-09-20",
+      days: [],
+    });
+
+    expect(intakeIdsOn(database, TUESDAY)).toContain(intakeId);
+    expect(intakeIdsOn(database, MONDAY)).not.toContain(intakeId);
+  });
+
   it("returns the version of an edited intake that covers the date", () => {
     const database = createTestDatabase();
     const [morning] = getAllIntakes(database);
@@ -120,6 +161,9 @@ describe("getIntakesOfDay", () => {
         id: morning.id,
         time: { hour: 9, minute: 0 },
         days: morning.days,
+        frequency: morning.frequency,
+        interval: morning.interval,
+        startsOn: morning.startsOn,
         reminderIntervalMinutes: morning.reminderIntervalMinutes,
         sound: morning.sound,
         medQuantities: morning.medQuantities.map(({ med, quantity }) => ({
@@ -148,6 +192,7 @@ describe("getIntakesOfDay", () => {
         days: ["monday"],
         reminderIntervalMinutes: 5,
         createdOn: "2026-10-01",
+        startsOn: "2026-10-01",
       })
       .run();
 

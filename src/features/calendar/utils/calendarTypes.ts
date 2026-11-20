@@ -1,4 +1,4 @@
-import type { Intake, Weekday } from "@/domain/intake";
+import type { Intake, IntakeRecurrence } from "@/domain/intake";
 
 export type DayStatus = "missed" | "late" | "taken" | "skipped" | "none";
 
@@ -7,10 +7,9 @@ export type Month = {
   month: number;
 };
 
-export type IntakeVersion = {
+export type IntakeVersion = IntakeRecurrence & {
   id: string;
   time: Intake["time"];
-  days: Weekday[];
   createdOn: string;
   archivedOn: string | null;
 };

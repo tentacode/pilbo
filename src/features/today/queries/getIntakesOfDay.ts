@@ -1,19 +1,22 @@
 import { sql } from "drizzle-orm";
 
-import type { Intake, Weekday } from "@/domain/intake";
+import type { Intake } from "@/domain/intake";
 import { toLocalDate } from "@/domain/intakeLog";
+import { isIntakeDueOn } from "@/domain/recurrence";
 import { toNotificationSound } from "@/domain/sound";
 import { intakeMedTable, intakeTable, medTable } from "@/shared/database/schema";
 import type { Database } from "@/shared/database/types";
 
+import {
+  type IntakeRecurrenceRecord,
+  toIntakeRecurrence,
+} from "@/features/pillbox/queries/intakeRecord";
 import { toMed } from "@/features/pillbox/queries/medRecord";
-import { weekdayOf } from "@/features/today/utils/computeTodayIntakes";
 
-type IntakeMedOfDayRecord = {
+type IntakeMedOfDayRecord = IntakeRecurrenceRecord & {
   intakeId: string;
   hour: number;
   minute: number;
-  days: string;
   reminderIntervalMinutes: number;
   sound: string;
   medId: string;
@@ -32,6 +35,9 @@ export function getIntakesOfDay(database: Database, date: Date): Intake[] {
       ${intakeTable.hour} AS hour,
       ${intakeTable.minute} AS minute,
       ${intakeTable.days} AS days,
+      ${intakeTable.frequency} AS frequency,
+      ${intakeTable.interval} AS interval,
+      ${intakeTable.startsOn} AS startsOn,
       ${intakeTable.reminderIntervalMinutes} AS reminderIntervalMinutes,
       ${intakeTable.sound} AS sound,
       ${medTable.id} AS medId,
@@ -45,7 +51,6 @@ export function getIntakesOfDay(database: Database, date: Date): Intake[] {
     INNER JOIN ${medTable} ON ${medTable.id} = ${intakeMedTable.medId}
     WHERE ${intakeTable.createdOn} <= ${localDate}
       AND (${intakeTable.archivedOn} IS NULL OR ${intakeTable.archivedOn} > ${localDate})
-      AND EXISTS (SELECT 1 FROM json_each(${intakeTable.days}) WHERE value = ${weekdayOf(date)})
     ORDER BY ${intakeTable.hour}, ${intakeTable.minute}
   `);
 
@@ -54,7 +59,7 @@ export function getIntakesOfDay(database: Database, date: Date): Intake[] {
     const intake = intakes.get(record.intakeId) ?? {
       id: record.intakeId,
       time: { hour: record.hour, minute: record.minute },
-      days: JSON.parse(record.days) as Weekday[],
+      ...toIntakeRecurrence(record),
       reminderIntervalMinutes: record.reminderIntervalMinutes,
       sound: toNotificationSound(record.sound),
       medQuantities: [],
@@ -72,5 +77,5 @@ export function getIntakesOfDay(database: Database, date: Date): Intake[] {
       quantity: record.quantity,
     });
   }
-  return [...intakes.values()];
+  return [...intakes.values()].filter((intake) => isIntakeDueOn(intake, date));
 }

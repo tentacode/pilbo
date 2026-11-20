@@ -138,3 +138,5 @@ Tous les plans et réponses doivent être écrits en français (même quand je p
 Les messages doivent être clairs, concis (éviter les longs paragraphes), organisés en sections, étape par étape si nécessaire : courts et clairs.
 
 Toujours poser des questions si quelque chose doit être clarifié.
+
+Pour parler d'un élément de l'interface, nommer précisément l'écran ou la modale où il se trouve (ex. « modale Stock, ouverte depuis la carte Stock de l'écran détail Médicament, ligne sous le nom »), jamais un vague « sous-titre du stock ».

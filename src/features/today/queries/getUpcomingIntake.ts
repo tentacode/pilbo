@@ -1,7 +1,7 @@
+import { weekdayOf } from "@/domain/intake";
 import { addDays } from "@/domain/intakeLog";
 import type { Database } from "@/shared/database/types";
 
-import { weekdayOf } from "@/features/today/utils/computeTodayIntakes";
 import type { UpcomingIntake } from "@/features/today/utils/todayTypes";
 import { getIntakesOfDay } from "./getIntakesOfDay";
 

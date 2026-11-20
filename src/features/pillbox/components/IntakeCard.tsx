@@ -10,6 +10,7 @@ import {
   formatIntakeAccessibilityLabel,
   formatIntakeSchedule,
 } from "@/features/pillbox/utils/formatters";
+import { formatNextIntake } from "@/features/pillbox/utils/recurrenceFormatters";
 import { pillStackLayoutOf } from "@/features/pillbox/utils/pillStack";
 import { useStyles } from "./IntakeCard.styles";
 import { IntakeMedRow } from "./IntakeMedRow";
@@ -18,19 +19,23 @@ import { useLanguage } from "@/shared/i18n/hooks/useLanguage";
 
 type IntakeCardProps = {
   intake: Intake;
+  nextIntakeDate: Date | null;
+  now: Date;
   onPress: () => void;
 };
 
-export function IntakeCard({ intake, onPress }: IntakeCardProps) {
+export function IntakeCard({ intake, nextIntakeDate, now, onPress }: IntakeCardProps) {
   const styles = useStyles();
   const themeColors = useThemeColors();
   const { t } = useTranslation("pillbox");
   const language = useLanguage();
   const pillStackLayout = pillStackLayoutOf(intake.medQuantities);
+  const nextIntake =
+    nextIntakeDate === null ? null : formatNextIntake(t, language, nextIntakeDate, now);
   return (
     <Pressable
       accessibilityRole="button"
-      accessibilityLabel={formatIntakeAccessibilityLabel(t, language, intake)}
+      accessibilityLabel={formatIntakeAccessibilityLabel(t, language, intake, nextIntake)}
       onPress={onPress}
       style={({ pressed }) => [styles.card, pressed && styles.pressed]}
     >
@@ -41,6 +46,11 @@ export function IntakeCard({ intake, onPress }: IntakeCardProps) {
       <Text variant="small" tone="secondary" style={styles.schedule}>
         {formatIntakeSchedule(t, language, intake)}
       </Text>
+      {nextIntake === null ? null : (
+        <Text variant="small" tone="secondary">
+          {nextIntake}
+        </Text>
+      )}
       <View style={styles.meds}>
         {intake.medQuantities.map((medQuantity) => (
           <IntakeMedRow

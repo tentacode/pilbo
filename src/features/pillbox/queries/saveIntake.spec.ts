@@ -50,6 +50,9 @@ function toIntakeToSave(intake: Intake, changes: Partial<IntakeToSave> = {}): In
     id: intake.id,
     time: intake.time,
     days: intake.days,
+    frequency: intake.frequency,
+    interval: intake.interval,
+    startsOn: intake.startsOn,
     reminderIntervalMinutes: intake.reminderIntervalMinutes,
     sound: intake.sound,
     medQuantities: intake.medQuantities.map(({ med, quantity }) => ({ medId: med.id, quantity })),
@@ -76,6 +79,9 @@ describe("saveIntake", () => {
       {
         time: { hour: 7, minute: 45 },
         days: ["monday", "friday"],
+        frequency: "weekly",
+        interval: 2,
+        startsOn: "2026-10-26",
         reminderIntervalMinutes: 15,
         sound: "chime",
         medQuantities: [{ medId: paracetamol.id, quantity: 2 }],
@@ -87,6 +93,9 @@ describe("saveIntake", () => {
       id: intakeId,
       time: { hour: 7, minute: 45 },
       days: ["monday", "friday"],
+      frequency: "weekly",
+      interval: 2,
+      startsOn: "2026-10-26",
       reminderIntervalMinutes: 15,
       sound: "chime",
       medQuantities: [{ med: paracetamol, quantity: 2 }],
@@ -96,7 +105,7 @@ describe("saveIntake", () => {
       archivedOn: null,
       isArchived: 0,
     });
-    expect(countRows(database, intakeTable)).toBe(5);
+    expect(countRows(database, intakeTable)).toBe(7);
   });
 
   it("updates an intake without past logs in place and replaces its meds", () => {
@@ -112,6 +121,9 @@ describe("saveIntake", () => {
         id: morning.id,
         time: { hour: 9, minute: 0 },
         days: ["sunday"],
+        frequency: "monthly",
+        interval: 3,
+        startsOn: "2026-10-25",
         reminderIntervalMinutes: 30,
         sound: "drop",
         medQuantities: [{ medId: paracetamol.id, quantity: 3 }],
@@ -124,11 +136,14 @@ describe("saveIntake", () => {
       id: morning.id,
       time: { hour: 9, minute: 0 },
       days: ["sunday"],
+      frequency: "monthly",
+      interval: 3,
+      startsOn: "2026-10-25",
       reminderIntervalMinutes: 30,
       sound: "drop",
       medQuantities: [{ med: paracetamol, quantity: 3 }],
     });
-    expect(countRows(database, intakeTable)).toBe(4);
+    expect(countRows(database, intakeTable)).toBe(6);
     expect(countRows(database, intakeMedTable)).toBe(
       linksBefore - morning.medQuantities.length + 1,
     );
@@ -167,11 +182,14 @@ describe("saveIntake", () => {
       "2026-10-23T08:20": morning.id,
       "2026-10-24T08:20": intakeId,
     });
-    expect(countRows(database, intakeTable)).toBe(5);
+    expect(countRows(database, intakeTable)).toBe(7);
   });
 
   it.each<[string, (morning: Intake) => Partial<IntakeToSave>]>([
     ["the days", () => ({ days: ["monday"] })],
+    ["the frequency", () => ({ frequency: "weekly", interval: 2 })],
+    ["the interval", () => ({ frequency: "monthly", interval: 1 })],
+    ["the start date", () => ({ startsOn: "2026-10-26" })],
     [
       "a quantity",
       (morning) => ({ medQuantities: [{ medId: morning.medQuantities[0].med.id, quantity: 2 }] }),
@@ -203,7 +221,7 @@ describe("saveIntake", () => {
 
     expect(intakeId).toBe(morning.id);
     expect(getIntakeById(database, morning.id)?.reminderIntervalMinutes).toBe(30);
-    expect(countRows(database, intakeTable)).toBe(4);
+    expect(countRows(database, intakeTable)).toBe(6);
   });
 
   it("updates in place when only the sound changes", () => {
@@ -215,6 +233,6 @@ describe("saveIntake", () => {
 
     expect(intakeId).toBe(morning.id);
     expect(getIntakeById(database, morning.id)?.sound).toBe("shire");
-    expect(countRows(database, intakeTable)).toBe(4);
+    expect(countRows(database, intakeTable)).toBe(6);
   });
 });

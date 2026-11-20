@@ -1,8 +1,7 @@
 import type { Intake } from "@/domain/intake";
-import type { IntakeLog } from "@/domain/intakeLog";
+import { addDays, type IntakeLog, toLocalDate } from "@/domain/intakeLog";
+import { isIntakeDueOn } from "@/domain/recurrence";
 import type { Stock } from "@/domain/stock";
-
-import { weekdayOf } from "@/features/today/utils/computeTodayIntakes";
 
 export type StockStatus = "low" | "sufficient" | "noSchedule";
 
@@ -18,19 +17,14 @@ const MAXIMUM_SIMULATED_DAYS = 9999;
 const STOCK_BAR_HORIZON_DAYS = 30;
 const NO_HANDLED_INTAKE: ReadonlySet<string> = new Set();
 
-function addDays(date: Date, days: number): Date {
-  return new Date(date.getFullYear(), date.getMonth(), date.getDate() + days);
-}
-
 function dosesOn(
   day: Date,
   medId: string,
   intakes: Intake[],
   handledIntakeIds: ReadonlySet<string>,
 ) {
-  const weekday = weekdayOf(day);
   return intakes
-    .filter(({ id, days }) => days.includes(weekday) && !handledIntakeIds.has(id))
+    .filter((intake) => isIntakeDueOn(intake, day) && !handledIntakeIds.has(intake.id))
     .sort(
       (first, second) =>
         first.time.hour - second.time.hour || first.time.minute - second.time.minute,
@@ -44,12 +38,34 @@ function sum(values: number[]): number {
   return values.reduce((total, value) => total + value, 0);
 }
 
-function weeklyConsumption(medId: string, intakes: Intake[], now: Date): number {
+function greatestCommonDivisor(first: number, second: number): number {
+  return second === 0 ? first : greatestCommonDivisor(second, first % second);
+}
+
+function repeatingPeriodDays(intakes: Intake[]): number | null {
+  if (intakes.some(({ frequency }) => frequency === "monthly")) {
+    return null;
+  }
+  return intakes.reduce((period, { frequency, interval }) => {
+    const intakePeriod = frequency === "weekly" ? DAYS_PER_WEEK * interval : DAYS_PER_WEEK;
+    return (period * intakePeriod) / greatestCommonDivisor(period, intakePeriod);
+  }, DAYS_PER_WEEK);
+}
+
+function periodConsumption(medId: string, intakes: Intake[], from: Date, period: number): number {
   return sum(
-    Array.from({ length: DAYS_PER_WEEK }, (_, day) =>
-      sum(dosesOn(addDays(now, day), medId, intakes, NO_HANDLED_INTAKE)),
+    Array.from({ length: period }, (_, day) =>
+      sum(dosesOn(addDays(from, day), medId, intakes, NO_HANDLED_INTAKE)),
     ),
   );
+}
+
+function intakesOfMed(medId: string, intakes: Intake[]): Intake[] {
+  return intakes.filter(({ medQuantities }) => medQuantities.some(({ med }) => med.id === medId));
+}
+
+function latestStartsOn(intakes: Intake[]): string {
+  return intakes.reduce((latest, { startsOn }) => (startsOn > latest ? startsOn : latest), "");
 }
 
 function handledIntakeIdsOf(todayIntakeLogs: IntakeLog[]): Set<string> {
@@ -57,9 +73,8 @@ function handledIntakeIdsOf(todayIntakeLogs: IntakeLog[]): Set<string> {
 }
 
 export function isScheduled(medId: string, intakes: Intake[]): boolean {
-  return intakes.some(
-    ({ days, medQuantities }) =>
-      days.length > 0 && medQuantities.some(({ med }) => med.id === medId),
+  return intakesOfMed(medId, intakes).some(
+    ({ frequency, days }) => frequency === "monthly" || days.length > 0,
   );
 }
 
@@ -74,22 +89,30 @@ export function countCoveredDays(
     return 0;
   }
   const handledToday = handledIntakeIdsOf(todayIntakeLogs);
-  const consumptionPerWeek = weeklyConsumption(medId, intakes, now);
+  const medIntakes = intakesOfMed(medId, intakes);
+  const period = repeatingPeriodDays(medIntakes);
+  const repeatingFrom = latestStartsOn(medIntakes);
+  let hasSkippedPeriods = period === null;
   let remaining = quantity;
 
   for (let day = 0; day < MAXIMUM_SIMULATED_DAYS; day += 1) {
+    const date = addDays(now, day);
+    if (!hasSkippedPeriods && period !== null && day > 0 && toLocalDate(date) >= repeatingFrom) {
+      hasSkippedPeriods = true;
+      const consumption = periodConsumption(medId, medIntakes, date, period);
+      if (consumption > 0) {
+        // Skipping whole periods keeps the result exact: each one consumes the same quantity.
+        const skippedPeriods = Math.max(0, Math.floor(remaining / consumption) - 1);
+        remaining -= skippedPeriods * consumption;
+        day += skippedPeriods * period;
+      }
+    }
     const handledIntakeIds = day === 0 ? handledToday : NO_HANDLED_INTAKE;
-    for (const dose of dosesOn(addDays(now, day), medId, intakes, handledIntakeIds)) {
+    for (const dose of dosesOn(addDays(now, day), medId, medIntakes, handledIntakeIds)) {
       if (remaining < dose) {
         return day;
       }
       remaining -= dose;
-    }
-    if (day === 0 && consumptionPerWeek > 0) {
-      // Skipping whole weeks keeps the result exact: each one consumes the same quantity.
-      const skippedWeeks = Math.max(0, Math.floor(remaining / consumptionPerWeek) - 1);
-      remaining -= skippedWeeks * consumptionPerWeek;
-      day += skippedWeeks * DAYS_PER_WEEK;
     }
   }
   return MAXIMUM_SIMULATED_DAYS;

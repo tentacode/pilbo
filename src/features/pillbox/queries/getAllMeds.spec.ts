@@ -6,7 +6,7 @@ describe("getAllMeds", () => {
   it("returns every med, scheduled or as needed", () => {
     const meds = getAllMeds(createTestDatabase());
 
-    expect(meds).toHaveLength(6);
+    expect(meds).toHaveLength(7);
     expect(meds.find(({ name }) => name === "Magnésium")).toEqual({
       id: expect.any(String),
       name: "Magnésium",

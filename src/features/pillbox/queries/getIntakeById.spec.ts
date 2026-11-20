@@ -14,7 +14,7 @@ describe("getIntakeById", () => {
 
   it("reads the sound of the intake", () => {
     const database = createTestDatabase();
-    const night = getAllIntakes(database)[3];
+    const night = getAllIntakes(database)[5];
 
     expect(getIntakeById(database, night.id)?.sound).toBe("nocturne");
   });

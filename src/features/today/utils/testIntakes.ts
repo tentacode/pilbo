@@ -6,6 +6,9 @@ export function createIntake(hour: number, minute: number): Intake {
     id: `intake-${hour}-${minute}`,
     time: { hour, minute },
     days: [...WEEKDAYS],
+    frequency: "daily",
+    interval: 1,
+    startsOn: "2026-01-01",
     reminderIntervalMinutes: 10,
     sound: "beep",
     medQuantities: [

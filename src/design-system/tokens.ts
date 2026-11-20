@@ -278,6 +278,9 @@ export const sizes = {
   unconstrainedMeasureWidth: 10000,
   colorWheelCenter: 18,
   calendarDayMinimumHeight: 56,
+  weekPreviewLabelWidth: 62,
+  weekPreviewDay: 34,
+  weekPreviewRowMinimumHeight: 48,
   legendSwatch: 26,
 } as const;
 

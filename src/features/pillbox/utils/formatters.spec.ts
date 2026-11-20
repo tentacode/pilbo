@@ -1,4 +1,4 @@
-import type { Intake } from "@/domain/intake";
+import { type Intake, WEEKDAYS } from "@/domain/intake";
 import { i18n } from "@/shared/i18n/i18n";
 
 import {
@@ -19,6 +19,9 @@ const intake: Intake = {
   id: "intake",
   time: { hour: 8, minute: 5 },
   days: ["monday", "wednesday"],
+  frequency: "daily",
+  interval: 1,
+  startsOn: "2026-10-01",
   reminderIntervalMinutes: 10,
   sound: "beep",
   medQuantities: [
@@ -51,8 +54,8 @@ describe("formatDayName", () => {
 });
 
 describe("formatIntakeSchedule", () => {
-  it("lists the short day names and the reminder interval", () => {
-    expect(formatIntakeSchedule(t, "fr", intake)).toBe("Lun, mer · rappel toutes les 10 min");
+  it("shows the recurrence of a custom intake, without the reminder interval", () => {
+    expect(formatIntakeSchedule(t, "fr", intake)).toBe("Lundi et mercredi");
   });
 
   it("shows every day", () => {
@@ -69,14 +72,22 @@ describe("formatIntakeSchedule", () => {
   it("is translated in English", async () => {
     await i18n.changeLanguage("en");
 
-    expect(formatIntakeSchedule(t, "en", intake)).toBe("Mon, Wed · reminder every 10 min");
+    expect(formatIntakeSchedule(t, "en", { ...intake, days: [...WEEKDAYS] })).toBe(
+      "Every day · reminder every 10 min",
+    );
   });
 });
 
 describe("formatIntakeAccessibilityLabel", () => {
-  it("names the time, the days, the reminder and the meds", () => {
-    expect(formatIntakeAccessibilityLabel(t, "fr", intake)).toBe(
-      "08:05. Lundi, mercredi, rappel toutes les 10 minutes. Lithium 250 mg, quantité 2",
+  it("names the time, every day, the reminder and the meds", () => {
+    expect(formatIntakeAccessibilityLabel(t, "fr", { ...intake, days: [...WEEKDAYS] }, null)).toBe(
+      "08:05. Tous les jours, rappel toutes les 10 minutes. Lithium 250 mg, quantité 2",
+    );
+  });
+
+  it("names the recurrence and the next intake of a custom intake", () => {
+    expect(formatIntakeAccessibilityLabel(t, "fr", intake, "Prochaine : demain")).toBe(
+      "08:05. Lundi et mercredi. Prochaine : demain. Lithium 250 mg, quantité 2",
     );
   });
 });

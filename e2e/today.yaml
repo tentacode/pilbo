@@ -13,7 +13,7 @@ name: Today lists the intakes of the day
       const days = ["dimanche", "lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi"];
       const months = ["janvier", "février", "mars", "avril", "mai", "juin", "juillet", "août", "septembre", "octobre", "novembre", "décembre"];
       const now = new Date();
-      output.today = days[now.getDay()] + " " + now.getDate() + " " + months[now.getMonth()] + " " + now.getFullYear();
+      output.today = days[now.getDay()] + " " + (now.getDate() === 1 ? "1er" : now.getDate()) + " " + months[now.getMonth()] + " " + now.getFullYear();
     }
 - assertVisible:
     text: ${output.today}

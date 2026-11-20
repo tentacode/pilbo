@@ -19,7 +19,7 @@ describe("hasActiveIntakeWithOtherSound", () => {
 
   it("ignores the archived intakes", () => {
     const database = createTestDatabase();
-    const night = getAllIntakes(database)[3];
+    const night = getAllIntakes(database)[5];
 
     archiveIntake(database, night.id, new Date(2026, 9, 20));
 

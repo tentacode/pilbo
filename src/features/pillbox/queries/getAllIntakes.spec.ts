@@ -11,7 +11,9 @@ describe("getAllIntakes", () => {
 
     expect(intakes.map(({ time }) => time)).toEqual([
       { hour: 8, minute: 20 },
+      { hour: 9, minute: 0 },
       { hour: 12, minute: 20 },
+      { hour: 19, minute: 30 },
       { hour: 20, minute: 20 },
       { hour: 22, minute: 0 },
     ]);
@@ -49,6 +51,7 @@ describe("getAllIntakes", () => {
         days: ["monday"],
         reminderIntervalMinutes: 5,
         createdOn: "2026-10-01",
+        startsOn: "2026-10-01",
       })
       .run();
 
@@ -57,6 +60,9 @@ describe("getAllIntakes", () => {
         id: expect.any(String),
         time: { hour: 7, minute: 0 },
         days: ["monday"],
+        frequency: "daily",
+        interval: 1,
+        startsOn: "2026-10-01",
         reminderIntervalMinutes: 5,
         sound: "beep",
         medQuantities: [],
@@ -64,10 +70,43 @@ describe("getAllIntakes", () => {
     ]);
   });
 
+  it("reads the recurrence of each intake", () => {
+    const database = createTestDatabase({ seed: false });
+    database
+      .insert(intakeTable)
+      .values({
+        hour: 7,
+        minute: 0,
+        days: ["tuesday"],
+        frequency: "weekly",
+        interval: 3,
+        startsOn: "2026-11-03",
+        reminderIntervalMinutes: 5,
+        createdOn: "2026-10-01",
+      })
+      .run();
+
+    expect(getAllIntakes(database)[0]).toEqual(
+      expect.objectContaining({
+        days: ["tuesday"],
+        frequency: "weekly",
+        interval: 3,
+        startsOn: "2026-11-03",
+      }),
+    );
+  });
+
   it("reads the sound of each intake", () => {
     const intakes = getAllIntakes(createTestDatabase());
 
-    expect(intakes.map(({ sound }) => sound)).toEqual(["beep", "beep", "beep", "nocturne"]);
+    expect(intakes.map(({ sound }) => sound)).toEqual([
+      "beep",
+      "beep",
+      "beep",
+      "beep",
+      "beep",
+      "nocturne",
+    ]);
   });
 
   it("falls back to the default sound for an unknown sound", () => {
@@ -81,6 +120,7 @@ describe("getAllIntakes", () => {
         reminderIntervalMinutes: 5,
         sound: "removed_sound" as NotificationSound,
         createdOn: "2026-10-01",
+        startsOn: "2026-10-01",
       })
       .run();
 
@@ -98,6 +138,7 @@ describe("getAllIntakes", () => {
         reminderIntervalMinutes: 5,
         isArchived: true,
         createdOn: "2026-10-01",
+        startsOn: "2026-10-01",
         archivedOn: "2026-10-20",
       })
       .run();

@@ -10,9 +10,10 @@ import { styles } from "./StockEditHeader.styles";
 type StockEditHeaderProps = {
   med: Med;
   subtitle: string;
+  detail?: string;
 };
 
-export function StockEditHeader({ med, subtitle }: StockEditHeaderProps) {
+export function StockEditHeader({ med, subtitle, detail }: StockEditHeaderProps) {
   return (
     <View style={styles.header}>
       <Pill design={med.design} displaySize={sizes.pillInHeader} />
@@ -22,7 +23,7 @@ export function StockEditHeader({ med, subtitle }: StockEditHeaderProps) {
           {med.strength === "" ? null : <Text variant="leadInline"> {med.strength}</Text>}
         </Text>
         <Text variant="small" tone="secondary">
-          {subtitle}
+          {detail === undefined ? subtitle : `${subtitle}\n${detail}`}
         </Text>
       </View>
     </View>

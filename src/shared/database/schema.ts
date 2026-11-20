@@ -1,6 +1,6 @@
 import { integer, primaryKey, sqliteTable, text } from "drizzle-orm/sqlite-core";
 
-import type { Weekday } from "@/domain/intake";
+import type { IntakeFrequency, Weekday } from "@/domain/intake";
 import type { IntakeLogStatus } from "@/domain/intakeLog";
 import type { PillDesign } from "@/domain/med";
 import type { NotificationSound } from "@/domain/sound";
@@ -26,6 +26,9 @@ export const intakeTable = sqliteTable("intake", {
   hour: integer("hour").notNull(),
   minute: integer("minute").notNull(),
   days: text("days", { mode: "json" }).$type<Weekday[]>().notNull(),
+  frequency: text("frequency").$type<IntakeFrequency>().notNull().default("daily"),
+  interval: integer("interval").notNull().default(1),
+  startsOn: text("starts_on").notNull(),
   reminderIntervalMinutes: integer("reminder_interval_minutes").notNull(),
   sound: text("sound").$type<NotificationSound>().notNull().default("beep"),
   isArchived: integer("is_archived", { mode: "boolean" }).notNull().default(false),

@@ -109,7 +109,7 @@ describe("SoundSettingScreen", () => {
 
       await fireEvent.press(screen.getByRole("button", { name: "Toutes les prises" }));
 
-      expect(intakeSounds()).toEqual(Array(4).fill("chime"));
+      expect(intakeSounds()).toEqual(Array(6).fill("chime"));
       expect(rescheduleReminders).toHaveBeenCalledTimes(1);
       expect(router.back).toHaveBeenCalledTimes(1);
     });
@@ -119,7 +119,7 @@ describe("SoundSettingScreen", () => {
 
       await fireEvent.press(screen.getByRole("button", { name: "Nouvelles prises uniquement" }));
 
-      expect(intakeSounds()).toEqual(["beep", "beep", "beep", "nocturne"]);
+      expect(intakeSounds()).toEqual(["beep", "beep", "beep", "beep", "beep", "nocturne"]);
       expect(useSettingsStore.getState().defaultReminderSound).toBe("chime");
       expect(router.back).toHaveBeenCalledTimes(1);
     });

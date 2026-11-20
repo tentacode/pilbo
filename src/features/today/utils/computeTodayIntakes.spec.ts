@@ -4,7 +4,6 @@ import {
   computeTodayIntakes,
   countTodayIntakes,
   countPendingPastIntakes,
-  weekdayOf,
 } from "./computeTodayIntakes";
 import { createDate, createIntake, createIntakeLog } from "./testIntakes";
 import type { TodaySections } from "./todayTypes";
@@ -250,13 +249,5 @@ describe("countPendingPastIntakes", () => {
     const logs = [createIntakeLog(INTAKES[0], "skipped", { hour: 9, minute: 0 })];
 
     expect(countPendingPastIntakes(computeTodayIntakes(INTAKES, logs, createDate(9, 0)))).toBe(0);
-  });
-});
-
-describe("weekdayOf", () => {
-  it("returns the weekday of a date", () => {
-    expect(weekdayOf(new Date(2026, 9, 4))).toBe("sunday");
-    expect(weekdayOf(new Date(2026, 9, 5))).toBe("monday");
-    expect(weekdayOf(new Date(2026, 9, 10))).toBe("saturday");
   });
 });

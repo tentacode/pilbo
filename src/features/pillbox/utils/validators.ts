@@ -1,4 +1,4 @@
-import { selectedDaysOf, type IntakeDraft } from "./intakeDraft";
+import type { IntakeDraft } from "./intakeDraft";
 import type { MedDraft } from "./medDraft";
 
 export const MINIMUM_MED_QUANTITY = 1;
@@ -18,7 +18,7 @@ export function validateIntakeDraft(draft: IntakeDraft): IntakeDraftError | null
   if (draft.medQuantities.length === 0) {
     return "missingMed";
   }
-  if (selectedDaysOf(draft).length === 0) {
+  if (draft.frequency !== "monthly" && draft.days.length === 0) {
     return "missingDay";
   }
   if (!draft.medQuantities.every(({ quantity }) => isValidMedQuantity(quantity))) {

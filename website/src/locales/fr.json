@@ -2,8 +2,7 @@
   "site": {
     "locale": "fr_FR",
     "otherLanguageName": "English",
-    "skipLink": "Aller au contenu",
-    "shareImageAlt": "La gélule de Pilbo sur un fond de pilules colorées."
+    "skipLink": "Aller au contenu"
   },
   "navigation": {
     "home": "Accueil",
@@ -14,14 +13,14 @@
   },
   "footer": {
     "contactTitle": "Contactez-nous",
-    "contactText": "Une question, un problème ou une idée ? Écrivez-nous, nous lisons chaque message.",
+    "contactText": "Une question, un problème ou une idée ? Laissez-nous un message !",
     "contactButton": "pilbo@tentacode.dev",
     "navigationLabel": "Site de Pilbo",
     "disclaimer": "Pilbo n’est pas un dispositif médical. Il ne remplace pas l’avis d’un médecin ou d’un pharmacien."
   },
   "pages": {
     "index": {
-      "title": "Pilbo – Votre assistant pour prendre vos médicaments",
+      "title": "Pilbo – Un assistant pour prendre vos médicaments",
       "description": "Pilbo est un pilulier virtuel qui vous aide à prendre vos médicaments : rappels, stocks et historique. Gratuit, sans compte, sur iPhone et Android."
     },
     "beta": {
@@ -41,7 +40,7 @@
     "hero": {
       "title": "Un assistant pour prendre vos médicaments",
       "lead": "Pilbo est un pilulier virtuel conçu pour celles et ceux qui prennent beaucoup de médicaments et peuvent parfois oublier des prises. Il vous rappelle chaque prise, jusqu’à ce qu’elle soit faite.",
-      "betaTitle": "Pilbo est en bêta, vous pouvez déjà l’essayer.",
+      "betaTitle": "Pilbo est en bêta, n’hésitez pas à l’essayer !",
       "iosButton": "Bêta iPhone",
       "androidButton": "Bêta Android",
       "note": "Gratuit, sans publicité et sans compte. Vos données restent sur votre téléphone.",
@@ -49,19 +48,19 @@
     },
     "features": {
       "title": "Ce que fait Pilbo",
-      "lead": "Pilbo s’en tient à l’essentiel : vos prises, vos rappels et vos stocks.",
+      "lead": "Pilbo gère vos médicaments simplement : vos prises, vos rappels et votre stock.",
       "pillbox": {
-        "title": "Vos prises dans votre pilulier",
-        "text": "Organisez vos prises à des heures différentes, chacune avec ses médicaments et ses quantités. Choisissez les jours de la semaine qui vous conviennent.",
+        "title": "Un pilulier virtuel",
+        "text": "Organisez vos prises à des heures différentes, chacune avec ses médicaments et ses quantités. Vous pouvez choisir les jours et la récurrence de chaque prise indépendamment.",
         "screenshotAlt": "L’écran Pilulier : des prises à 8 h 20, 12 h 20, 20 h 20 et 22 h, chacune avec ses médicaments."
       },
       "reminders": {
-        "title": "Des rappels discrets et efficaces",
+        "title": "Des rappels discrets",
         "text": "Une notification discrète toutes les 10 minutes, au lieu d’une alarme que l’on arrête sans prendre ses médicaments. Validez la prise directement depuis la notification, et choisissez le son de vos rappels.",
         "screenshotAlt": "Modification de la prise de 8 h 20 : heure, jours, rappel répété toutes les 10 minutes, son et médicaments."
       },
       "appearance": {
-        "title": "Des médicaments faciles à reconnaître",
+        "title": "Une touche de couleur",
         "text": "Personnalisez la forme, la taille et les couleurs de vos médicaments pour les identifier rapidement. Comprimé, gélule, sachet, sirop ou gouttes : chacun a sa forme.",
         "screenshotAlt": "Personnalisation d’une pilule : une gélule rose et lilas, avec le choix parmi dix formes, dont sachet, sirop et gouttes."
       },
@@ -72,7 +71,7 @@
       },
       "calendar": {
         "title": "L’historique de vos prises",
-        "text": "Retrouvez vos prises dans un calendrier : les jours où tout a été pris, les prises en retard et celles oubliées.",
+        "text": "Visualisez vos prises dans un calendrier : les jours où tout a été pris, les prises en retard et celles oubliées.",
         "screenshotAlt": "Le calendrier du mois : la plupart des jours sont validés, quelques prises ont été en retard ou oubliées."
       }
     },
@@ -84,7 +83,7 @@
       },
       "accessibility": {
         "title": "Accessibilité",
-        "text": "Pilbo a été conçu pour respecter les standards WCAG / RAAM. Il est compatible avec les lecteurs d’écran et les grandes tailles de texte."
+        "text": "Pilbo est conçu en respectant au maximum les recommandations WCAG / RAAM, et testé avec les lecteurs d’écran et les grandes tailles de texte. Il n’a pas encore fait l’objet d’un audit, mais si vous remarquez une non-conformité, n’hésitez pas à nous écrire à <a href=\"mailto:pilbo@tentacode.dev\">pilbo@tentacode.dev</a>."
       },
       "platforms": {
         "title": "Sur iPhone et Android",
@@ -92,14 +91,15 @@
       }
     },
     "cta": {
-      "title": "Essayer Pilbo",
-      "text": "La bêta est ouverte : vous pouvez installer Pilbo dès maintenant. Vos retours nous aident à l’améliorer avant sa sortie."
+      "title": "Essayer Pilbo !",
+      "text": "La bêta est ouverte : vous pouvez installer Pilbo dès maintenant. Vos retours sont précieux et nous aideront à l’améliorer avant sa sortie."
     }
   },
   "beta": {
     "back": "Retour à l’accueil",
     "title": "Rejoindre la bêta de Pilbo",
     "lead": "Pilbo n’est pas encore disponible sur les stores. La bêta vous permet de l’utiliser dès maintenant, et vos retours nous aident à l’améliorer avant sa sortie.",
+    "dataText": "Vos données ne seront pas perdues : à la sortie de Pilbo, vous pourrez installer la version finale et retrouver vos médicaments, vos prises et votre historique.",
     "feedbackTitle": "Merci de tester Pilbo !",
     "feedbackText": "Essayez d’ajouter vos prises, de valider un rappel depuis la notification et de suivre un stock. Si quelque chose vous semble étrange, écrivez-nous à <a href=\"mailto:pilbo@tentacode.dev\">pilbo@tentacode.dev</a>, avec une capture d’écran si possible.",
     "chooseLabel": "Choisissez votre téléphone",

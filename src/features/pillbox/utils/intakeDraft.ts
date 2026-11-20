@@ -1,16 +1,24 @@
-import { type Intake, type Weekday, WEEKDAYS } from "@/domain/intake";
+import {
+  DEFAULT_MONTHLY_INTERVAL,
+  DEFAULT_WEEKLY_INTERVAL,
+  type Intake,
+  type IntakeFrequency,
+  type IntakeRecurrence,
+  isEveryDay,
+  type Weekday,
+  WEEKDAYS,
+} from "@/domain/intake";
 import { type Med, type MedQuantity, sortMedQuantities } from "@/domain/med";
 import type { NotificationSound } from "@/domain/sound";
 
 import type { IntakeToSave } from "@/features/pillbox/queries/saveIntake";
 
-export type DayMode = "everyDay" | "someDays";
+export type DayMode = "everyDay" | "custom";
 
-export type IntakeDraft = {
+export type IntakeDraft = IntakeRecurrence & {
   intakeId?: string;
   time: Intake["time"];
   dayMode: DayMode;
-  days: Weekday[];
   reminderIntervalMinutes: number;
   sound: NotificationSound;
   medQuantities: MedQuantity[];
@@ -18,20 +26,21 @@ export type IntakeDraft = {
 
 const NEW_INTAKE_TIME = { hour: 8, minute: 0 };
 
-function isEveryDay(days: Weekday[]): boolean {
-  return WEEKDAYS.every((day) => days.includes(day));
+function everyDayRecurrence(startsOn: string): IntakeRecurrence {
+  return { frequency: "daily", interval: 1, startsOn, days: [...WEEKDAYS] };
 }
 
 export function createIntakeDraft(
   defaultReminderIntervalMinutes: number,
   defaultReminderSound: NotificationSound,
+  today: string,
   intake?: Intake,
 ): IntakeDraft {
   if (intake === undefined) {
     return {
       time: NEW_INTAKE_TIME,
       dayMode: "everyDay",
-      days: [...WEEKDAYS],
+      ...everyDayRecurrence(today),
       reminderIntervalMinutes: defaultReminderIntervalMinutes,
       sound: defaultReminderSound,
       medQuantities: [],
@@ -40,7 +49,10 @@ export function createIntakeDraft(
   return {
     intakeId: intake.id,
     time: intake.time,
-    dayMode: isEveryDay(intake.days) ? "everyDay" : "someDays",
+    dayMode: isEveryDay(intake) ? "everyDay" : "custom",
+    frequency: intake.frequency,
+    interval: intake.interval,
+    startsOn: intake.startsOn,
     days: intake.days,
     reminderIntervalMinutes: intake.reminderIntervalMinutes,
     sound: intake.sound,
@@ -48,8 +60,50 @@ export function createIntakeDraft(
   };
 }
 
-export function selectedDaysOf(draft: IntakeDraft): Weekday[] {
-  return draft.dayMode === "everyDay" ? [...WEEKDAYS] : draft.days;
+function earliestDate(first: string, second: string): string {
+  return first < second ? first : second;
+}
+
+export function withDayMode(
+  draft: IntakeDraft,
+  dayMode: DayMode,
+  initialStartsOn: string,
+  today: string,
+): Partial<IntakeDraft> {
+  if (dayMode === draft.dayMode) {
+    return {};
+  }
+  return { dayMode, ...everyDayRecurrence(earliestDate(initialStartsOn, today)) };
+}
+
+export function withFrequency(
+  { days }: IntakeDraft,
+  frequency: IntakeFrequency,
+  initialStartsOn: string,
+  today: string,
+): Partial<IntakeDraft> {
+  const interval =
+    frequency === "weekly"
+      ? DEFAULT_WEEKLY_INTERVAL
+      : frequency === "monthly"
+        ? DEFAULT_MONTHLY_INTERVAL
+        : 1;
+  const hasNoDay = frequency !== "monthly" && days.length === 0;
+  return {
+    frequency,
+    interval,
+    ...(hasNoDay ? { days: [...WEEKDAYS] } : {}),
+    ...(frequency === "daily" ? { startsOn: earliestDate(initialStartsOn, today) } : {}),
+  };
+}
+
+export function recurrenceOf({
+  frequency,
+  interval,
+  startsOn,
+  days,
+}: IntakeDraft): IntakeRecurrence {
+  return { frequency, interval, startsOn, days };
 }
 
 export function toggleDay(days: Weekday[], day: Weekday): Weekday[] {
@@ -77,7 +131,7 @@ export function replaceDraftMed(medQuantities: MedQuantity[], med: Med): MedQuan
 export function draftSignature(draft: IntakeDraft): string {
   return JSON.stringify({
     time: draft.time,
-    days: selectedDaysOf(draft),
+    ...recurrenceOf(draft),
     reminderIntervalMinutes: draft.reminderIntervalMinutes,
     sound: draft.sound,
     medQuantities: draft.medQuantities.map(({ med, quantity }) => [med.id, quantity]),
@@ -88,7 +142,7 @@ export function toIntakeToSave(draft: IntakeDraft): IntakeToSave {
   return {
     id: draft.intakeId,
     time: draft.time,
-    days: selectedDaysOf(draft),
+    ...recurrenceOf(draft),
     reminderIntervalMinutes: draft.reminderIntervalMinutes,
     sound: draft.sound,
     medQuantities: draft.medQuantities.map(({ med, quantity }) => ({ medId: med.id, quantity })),

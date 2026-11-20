@@ -15,13 +15,13 @@ describe("setAllActiveIntakesSound", () => {
 
     setAllActiveIntakesSound(database, "chime");
 
-    expect(getAllIntakes(database).map(({ sound }) => sound)).toEqual(Array(4).fill("chime"));
+    expect(getAllIntakes(database).map(({ sound }) => sound)).toEqual(Array(6).fill("chime"));
     expect(countRows(database, intakeTable)).toBe(intakesBefore);
   });
 
   it("keeps the sound of the archived intakes", () => {
     const database = createTestDatabase();
-    const night = getAllIntakes(database)[3];
+    const night = getAllIntakes(database)[5];
     archiveIntake(database, night.id, new Date(2026, 9, 20));
 
     setAllActiveIntakesSound(database, "chime");

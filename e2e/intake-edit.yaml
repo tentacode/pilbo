@@ -33,14 +33,19 @@ name: An intake can be created, edited and deleted
 - tapOn:
     id: "PopoverDismissRegion"
 - assertNotVisible: "Heure : 08:00"
+- tapOn: "Personnalisé"
+- assertVisible: "Quand prendre mes médicaments"
 - tapOn: "Dimanche"
+- assertVisible: "Lundi, mardi, mercredi, jeudi, vendredi et samedi.*"
+- tapOn: "Prise de .*"
+- assertVisible: "Lundi, mardi, mercredi, jeudi, vendredi et samedi\\. Prochaine.*"
 - tapOn: "Retirer un comprimé de Zolpidem"
 - tapOn: "Enregistrer"
 - scrollUntilVisible:
     element:
-      text: ".*Lundi, mardi, mercredi, jeudi, vendredi, samedi.*Zolpidem, quantité 1"
+      text: ".*Lundi, mardi, mercredi, jeudi, vendredi et samedi.*Zolpidem, quantité 1"
     centerElement: true
-- tapOn: ".*Lundi, mardi, mercredi, jeudi, vendredi, samedi.*Zolpidem, quantité 1"
+- tapOn: ".*Lundi, mardi, mercredi, jeudi, vendredi et samedi.*Zolpidem, quantité 1"
 - scrollUntilVisible:
     element:
       text: "Supprimer cette prise"

@@ -1,4 +1,4 @@
-import { WEEKDAYS } from "@/domain/intake";
+import { type Weekday, WEEKDAYS } from "@/domain/intake";
 
 import type { IntakeLogStatus } from "@/domain/intakeLog";
 
@@ -33,6 +33,11 @@ export const medFixtures = {
     strength: "1 mg",
     design: { shape: "syrup", colors: [ROSE, WHITE], size: "medium" },
   },
+  vitaminB12: {
+    name: "Vitamine B12",
+    strength: "1000 µg",
+    design: { shape: "drops", colors: [ROSE, ROSE], size: "small" },
+  },
   iron80: {
     name: "Fer",
     strength: "80 mg",
@@ -48,7 +53,8 @@ export const medFixtures = {
 
 export type MedFixtureKey = keyof typeof medFixtures;
 
-export interface IntakeFixture extends Omit<NewIntakeRow, "createdOn"> {
+export interface IntakeFixture extends Omit<NewIntakeRow, "createdOn" | "startsOn" | "days"> {
+  days: Weekday[];
   medQuantities: { med: MedFixtureKey; quantity: number }[];
 }
 
@@ -92,6 +98,24 @@ export const intakeFixtures: IntakeFixture[] = [
       { med: "iron80", quantity: 1 },
     ],
   },
+  {
+    hour: 9,
+    minute: 0,
+    days: [],
+    frequency: "monthly",
+    interval: 1,
+    reminderIntervalMinutes: REMINDER_INTERVAL_MINUTES,
+    medQuantities: [{ med: "vitaminB12", quantity: 1 }],
+  },
+  {
+    hour: 19,
+    minute: 30,
+    days: EVERY_DAY,
+    frequency: "weekly",
+    interval: 2,
+    reminderIntervalMinutes: REMINDER_INTERVAL_MINUTES,
+    medQuantities: [{ med: "melatonin1", quantity: 1 }],
+  },
 ];
 
 export interface StockFixture extends Omit<NewStockRow, "medId"> {
@@ -106,6 +130,8 @@ export const stockFixtures: StockFixture[] = [
 ];
 
 export const HISTORY_DAYS = 45;
+
+export const WEEKLY_START_WEEKS_AGO = 6;
 
 export const intakeVersionFixture = {
   intake: intakeFixtures[1],

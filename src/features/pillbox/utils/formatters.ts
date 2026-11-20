@@ -1,34 +1,23 @@
 import type { TFunction } from "i18next";
 
-import { type Intake, type Weekday, WEEKDAYS } from "@/domain/intake";
+import { type Intake, isEveryDay, type Weekday } from "@/domain/intake";
 import { pillSwatches, type PillSwatch } from "@/design-system/tokens";
 import { formatMedLabel, type PillDesign, type PillShape, type PillSize } from "@/domain/med";
 import { capitalize, formatIntakeTime, formatWeekday } from "@/shared/i18n/formatters";
 import type { Language } from "@/shared/i18n/resources";
 
-export function formatIntakeDays(
-  t: TFunction<"pillbox">,
-  language: Language,
-  days: Weekday[],
-  width: "long" | "short",
-): string {
-  if (WEEKDAYS.every((day) => days.includes(day))) {
-    return t("Tous les jours");
-  }
-  return capitalize(
-    WEEKDAYS.filter((day) => days.includes(day))
-      .map((day) => formatWeekday(day, language, width))
-      .join(", "),
-  );
-}
+import { formatRecurrence } from "./recurrenceFormatters";
 
 export function formatIntakeSchedule(
   t: TFunction<"pillbox">,
   language: Language,
   intake: Intake,
 ): string {
+  if (!isEveryDay(intake)) {
+    return formatRecurrence(t, language, intake);
+  }
   return t("{{days}} · rappel toutes les {{minutes}} min", {
-    days: formatIntakeDays(t, language, intake.days, "short"),
+    days: t("Tous les jours"),
     minutes: intake.reminderIntervalMinutes,
   });
 }
@@ -45,11 +34,15 @@ export function formatIntakeAccessibilityLabel(
   t: TFunction<"pillbox">,
   language: Language,
   intake: Intake,
+  nextIntake: string | null,
 ): string {
-  const schedule = t("{{days}}, rappel toutes les {{minutes}} minutes", {
-    days: formatIntakeDays(t, language, intake.days, "long"),
-    minutes: intake.reminderIntervalMinutes,
-  });
+  const schedule =
+    nextIntake === null
+      ? t("{{days}}, rappel toutes les {{minutes}} minutes", {
+          days: t("Tous les jours"),
+          minutes: intake.reminderIntervalMinutes,
+        })
+      : `${formatRecurrence(t, language, intake)}. ${nextIntake}`;
   const meds = intake.medQuantities
     .map(({ med, quantity }) => formatQuantityAccessibilityLabel(t, formatMedLabel(med), quantity))
     .join(". ");

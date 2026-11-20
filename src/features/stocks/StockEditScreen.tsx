@@ -16,6 +16,7 @@ import { SettingsRow } from "@/features/settings/components/SettingsRow";
 import { SettingsSection } from "@/features/settings/components/SettingsSection";
 import { LOW_STOCK_DAYS, useSettingsStore } from "@/features/settings/store/settingsStore";
 import { useCurrentMinute } from "@/features/today/hooks/useCurrentMinute";
+import { useLanguage } from "@/shared/i18n/hooks/useLanguage";
 import { BoxSizeInput } from "./components/BoxSizeInput";
 import { StockEditHeader } from "./components/StockEditHeader";
 import { StockSummaryCard } from "./components/StockSummaryCard";
@@ -49,6 +50,8 @@ type StockEditFormProps = Omit<ReturnType<typeof useStockEditData>, "med"> & {
 
 function StockEditForm({ med, stock, intakes, intakeLogs }: StockEditFormProps) {
   const { t } = useTranslation("stocks");
+  const { t: translatePillbox } = useTranslation("pillbox");
+  const language = useLanguage();
   const now = useCurrentMinute();
   const boxSizeErrorText = t(
     "Indiquez une taille de boîte entre {{minimum}} et {{maximum}} comprimés.",
@@ -108,7 +111,10 @@ function StockEditForm({ med, stock, intakes, intakeLogs }: StockEditFormProps) 
       footer={<Button label={t("Enregistrer")} icon="check" onPress={handleSave} />}
     >
       <View style={styles.content}>
-        <StockEditHeader med={med} subtitle={formatMedSchedule(t, med, intakes)} />
+        <StockEditHeader
+          med={med}
+          {...formatMedSchedule(t, translatePillbox, language, med, intakes)}
+        />
         <StockSummaryCard quantity={draft.quantity} forecast={forecast} />
         <Button
           label={

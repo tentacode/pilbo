@@ -10,7 +10,12 @@ name: Pillbox lists the intakes
 - assertVisible:
     text: "08:20.*Magnésium 300 mg, quantité 1. Vitamine D 400 UI, quantité 1"
 - assertVisible:
+    text: "09:00\\. Le .* de chaque mois\\. Prochaine.*Vitamine B12 1000 µg, quantité 1"
+- assertVisible:
     text: "12:20.*Magnésium 300 mg, quantité 1"
+- scrollUntilVisible:
+    element:
+      text: "19:30\\. Tous les jours, une semaine sur deux\\. Prochaine.*Mélatonine 1 mg, quantité 1"
 - scrollUntilVisible:
     element:
       text: "20:20.*Magnésium 300 mg, quantité 2"

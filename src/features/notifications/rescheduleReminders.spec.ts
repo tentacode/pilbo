@@ -1,5 +1,7 @@
 import { createTestDatabase } from "@/shared/database/testDatabase";
 
+import { insertMed } from "@/features/pillbox/queries/insertMed";
+import { type IntakeToSave, saveIntake } from "@/features/pillbox/queries/saveIntake";
 import { useSettingsStore } from "@/features/settings/store/settingsStore";
 import { setUpNotificationChannels } from "./notificationChannels";
 import { getPermissionGranted, resetReminders } from "./notifications";
@@ -42,7 +44,7 @@ describe("rescheduleReminders", () => {
     await rescheduleReminders(createTestDatabase(), NOW);
 
     expect(setUpNotificationChannels).toHaveBeenCalledWith({
-      reminders: ["shire", "beep", "beep", "beep", "nocturne"],
+      reminders: ["shire", "beep", "beep", "beep", "beep", "beep", "nocturne"],
       lowStock: ["drop"],
     });
   });
@@ -87,7 +89,44 @@ describe("rescheduleReminders", () => {
     await rescheduleReminders(createTestDatabase({ withLogs: true, now: NOW }), NOW);
 
     const [plannedReminders] = jest.mocked(resetReminders).mock.calls[0];
-    expect(plannedReminders).toHaveLength(44);
+    expect(plannedReminders).toHaveLength(56);
     expect(plannedReminders[0].title).toBe("C'est l'heure de votre prise de 12:20");
+  });
+
+  it("follows the recurrence: nothing in a paused week, a monthly intake tomorrow", async () => {
+    jest.mocked(getPermissionGranted).mockResolvedValue(true);
+    const database = createTestDatabase({ seed: false });
+    const { id: medId } = insertMed(database, {
+      name: "Lithium",
+      strength: "250 mg",
+      detail: "",
+      design: { shape: "round", colors: ["#FFFFFF", "#FFFFFF"], size: "medium" },
+    });
+    const intake: IntakeToSave = {
+      time: { hour: 9, minute: 0 },
+      days: ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"],
+      frequency: "weekly",
+      interval: 2,
+      startsOn: "2026-10-05",
+      reminderIntervalMinutes: 10,
+      sound: "beep",
+      medQuantities: [{ medId, quantity: 1 }],
+    };
+    saveIntake(database, intake, new Date(2026, 9, 1));
+    const monthlyIntakeId = saveIntake(
+      database,
+      { ...intake, frequency: "monthly", interval: 1, startsOn: "2026-09-15", days: [] },
+      new Date(2026, 9, 1),
+    );
+
+    await rescheduleReminders(database, NOW);
+
+    const [plannedReminders] = jest.mocked(resetReminders).mock.calls[0];
+    expect(plannedReminders).toHaveLength(6);
+    expect(
+      plannedReminders.every(({ identifier }) =>
+        identifier.startsWith(`reminder-${monthlyIntakeId}-2026-10-15`),
+      ),
+    ).toBe(true);
   });
 });

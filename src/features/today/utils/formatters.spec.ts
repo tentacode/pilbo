@@ -29,7 +29,7 @@ function createTodayIntake(status: TodayIntake["status"], minutesFromNow: number
 describe("formatSwitcherDate", () => {
   it.each([
     ["2026-10-04", "4 oct. 2026", "dimanche 4 octobre 2026"],
-    ["2026-01-01", "1er janv. 2026", "jeudi 1 janvier 2026"],
+    ["2026-01-01", "1er janv. 2026", "jeudi 1er janvier 2026"],
     ["2026-08-15", "15 août 2026", "samedi 15 août 2026"],
   ])("formats %s as %s", (localDate, text, accessibilityLabel) => {
     expect(formatSwitcherDate(localDate, "fr")).toEqual({ text, accessibilityLabel });

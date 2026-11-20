@@ -1,4 +1,4 @@
-import type { Intake, Weekday } from "@/domain/intake";
+import type { Intake } from "@/domain/intake";
 import { fromLocalDateTime, type IntakeLog } from "@/domain/intakeLog";
 
 import type { IntakeValidation, TodayIntake, TodaySections } from "./todayTypes";
@@ -6,20 +6,6 @@ import type { IntakeValidation, TodayIntake, TodaySections } from "./todayTypes"
 export const LATE_THRESHOLD_MINUTES = 60;
 
 const MILLISECONDS_PER_MINUTE = 60_000;
-
-const WEEKDAYS_FROM_SUNDAY: readonly Weekday[] = [
-  "sunday",
-  "monday",
-  "tuesday",
-  "wednesday",
-  "thursday",
-  "friday",
-  "saturday",
-];
-
-export function weekdayOf(date: Date): Weekday {
-  return WEEKDAYS_FROM_SUNDAY[date.getDay()];
-}
 
 export function minutesFromNow({ hour, minute }: Intake["time"], now: Date): number {
   return hour * 60 + minute - (now.getHours() * 60 + now.getMinutes());

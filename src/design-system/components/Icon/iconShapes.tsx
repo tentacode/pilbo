@@ -37,6 +37,8 @@ export const iconShapes = {
   close: <Path d="M6.5 6.5l11 11M17.5 6.5l-11 11" />,
   chevronRight: <Path d="M9.5 6l6 6-6 6" />,
   chevronLeft: <Path d="M14.5 6l-6 6 6 6" />,
+  chevronDown: <Path d="M6 9.5l6 6 6-6" />,
+  chevronUp: <Path d="M6 14.5l6-6 6 6" />,
   undo: (
     <>
       <Path d="M9 6.5L4.5 11 9 15.5" />

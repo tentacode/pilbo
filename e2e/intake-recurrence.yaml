@@ -1,0 +1,43 @@
+appId: com.tentacode.pilbo.dev
+name: An intake can be taken one week out of two or once a month
+---
+- launchApp:
+    clearState: true
+- extendedWaitUntil:
+    visible: "Pilulier"
+    timeout: 60000
+- tapOn: "Pilulier"
+- tapOn: "Nouvelle prise"
+- tapOn: "Personnalisé"
+- assertVisible: "Quand prendre mes médicaments"
+- tapOn: "Semaine"
+- assertVisible: "Une semaine sur deux"
+- assertVisible: "Tous les jours, une semaine sur deux.*"
+- tapOn: "Nouvelle prise"
+- assertVisible: "Tous les jours, une semaine sur deux\\. Prochaine : aujourd'hui"
+- tapOn: "Ajouter un médicament"
+- tapOn: "Nouveau médicament"
+- tapOn: "Nom"
+- inputText: "Ibuprofène"
+- tapOn: "Ajouter à la prise"
+- tapOn: "Enregistrer"
+- scrollUntilVisible:
+    element:
+      text: "08:00\\. Tous les jours, une semaine sur deux\\. Prochaine : aujourd'hui.*Ibuprofène.*"
+    centerElement: true
+- tapOn: "Nouvelle prise"
+- tapOn: "Personnalisé"
+- tapOn: "Mois"
+- assertVisible: "Prochaines prises"
+- assertVisible: "Le .* de chaque mois.*"
+- tapOn: "Nouvelle prise"
+- tapOn: "Ajouter un médicament"
+- tapOn: "Nouveau médicament"
+- tapOn: "Nom"
+- inputText: "Vitamine K"
+- tapOn: "Ajouter à la prise"
+- tapOn: "Enregistrer"
+- scrollUntilVisible:
+    element:
+      text: "08:00\\. Le .* de chaque mois\\. Prochaine : aujourd'hui.*Vitamine K.*"
+    centerElement: true

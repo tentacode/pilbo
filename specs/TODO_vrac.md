@@ -2,7 +2,6 @@
 - [ ] widget apple (vraiment nécessaire ?)
 - [ ] thèmes en IAP. (thème Chaton)
 - [ ] Vous aimez pilbo ?
-- [ ] Rappels d'évènements (ex: prise de sang, rendez-vous médecin, séance de kiné)
 - [ ] Android : proposer la mise à jour dans l'app (API « in-app updates » de Google Play).
 - [ ] iPhone : prévenir dans l'app qu'une nouvelle version est disponible sur l'App Store (demande un appel réseau à Apple, à concilier avec la page de confidentialité).
 - [ ] Modale « Quoi de neuf dans Pilbo ? » au premier lancement après une mise à jour.
@@ -12,7 +11,3 @@
 Bug :
 
 Rien
-
-Prio :
-
-- [ ] Récurrence personnalisé (une semaine sur deux, tous les mois, toutes les trois semaines) - après les évènements

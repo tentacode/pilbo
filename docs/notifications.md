@@ -58,7 +58,7 @@ Déclencheurs :
 
 1. Crée les canaux Android des sons utilisés et supprime les autres (voir [Canaux](#canaux-notificationchannelsandroidts)). Sons lus dans `useSettingsStore`.
 2. S'arrête là si la permission n'est pas accordée.
-3. Lit les prises du jour et de demain, les logs du jour et les stocks.
+3. Lit les prises du jour et de demain (`getIntakesOfDay`, qui suit la récurrence avec `isIntakeDueOn` : rien une semaine en pause ni avant la date de début), les logs du jour et les stocks.
 4. `planLowStockAlerts()` calcule les alertes de stock bas, `planReminders()` la liste complète.
 5. `resetReminders()` fait un **nettoyage complet** (annule les planifiées, efface celles affichées, badge à 0), puis planifie chaque rappel.
 

@@ -1,6 +1,7 @@
 import { type Intake, WEEKDAYS, type Weekday } from "@/domain/intake";
-import type { IntakeLog, IntakeLogStatus } from "@/domain/intakeLog";
+import { addDays, type IntakeLog, type IntakeLogStatus } from "@/domain/intakeLog";
 import type { Med } from "@/domain/med";
+import { isIntakeDueOn } from "@/domain/recurrence";
 import type { Stock } from "@/domain/stock";
 
 import {
@@ -32,6 +33,9 @@ function createIntake(
     id: `intake-${hour}`,
     time: { hour, minute: 0 },
     days,
+    frequency: "daily",
+    interval: 1,
+    startsOn: "2026-01-01",
     reminderIntervalMinutes: 10,
     sound: "beep",
     medQuantities: [{ med, quantity }],
@@ -54,6 +58,20 @@ function createStock(quantity: number, lowStockDays = 7): Stock {
 
 const morning = createIntake(8, 1);
 const evening = createIntake(20, 1);
+
+function simulateCoveredDays(quantity: number, intakes: Intake[]): number {
+  let remaining = quantity;
+  for (let day = 0; ; day++) {
+    const date = addDays(MONDAY_MORNING, day);
+    for (const intake of intakes.filter((candidate) => isIntakeDueOn(candidate, date))) {
+      const dose = intake.medQuantities[0].quantity;
+      if (remaining < dose) {
+        return day;
+      }
+      remaining -= dose;
+    }
+  }
+}
 
 describe("countCoveredDays", () => {
   it("returns the fully covered days (spec example)", () => {
@@ -102,6 +120,56 @@ describe("countCoveredDays", () => {
 
     expect(countCoveredDays(100, lithium.id, [weekdays], [], MONDAY_MORNING)).toBe(140);
     expect(countCoveredDays(102, lithium.id, [weekdays], [], MONDAY_MORNING)).toBe(142);
+  });
+
+  it("stays exact with one week out of two", () => {
+    const everyOtherWeek: Intake = {
+      ...createIntake(8, 1, ["monday", "tuesday", "wednesday", "thursday", "friday"]),
+      frequency: "weekly",
+      interval: 2,
+      startsOn: "2026-10-19",
+    };
+
+    expect(countCoveredDays(100, lithium.id, [everyOtherWeek], [], MONDAY_MORNING)).toBe(280);
+    expect(countCoveredDays(102, lithium.id, [everyOtherWeek], [], MONDAY_MORNING)).toBe(282);
+  });
+
+  it("matches a day by day simulation with mixed and future recurrences", () => {
+    const intakes: Intake[] = [
+      {
+        ...createIntake(8, 1, ["monday", "thursday"]),
+        frequency: "weekly",
+        interval: 3,
+        startsOn: "2026-11-05",
+      },
+      { ...createIntake(20, 2, ["sunday"]), startsOn: "2026-10-25" },
+      { ...createIntake(12, 1, ["saturday"]), frequency: "weekly", interval: 4 },
+    ];
+
+    for (const quantity of [1, 7, 50, 333]) {
+      expect(countCoveredDays(quantity, lithium.id, intakes, [], MONDAY_MORNING)).toBe(
+        simulateCoveredDays(quantity, intakes),
+      );
+    }
+  });
+
+  it("counts the doses of a monthly intake", () => {
+    const monthly: Intake = {
+      ...createIntake(8, 1, []),
+      frequency: "monthly",
+      interval: 1,
+      startsOn: "2026-10-19",
+    };
+
+    expect(countCoveredDays(3, lithium.id, [monthly], [], MONDAY_MORNING)).toBe(92);
+    expect(
+      computeStockForecast(
+        { medId: lithium.id, quantity: 3, boxSize: 30, lowStockDays: 7 },
+        [monthly],
+        [],
+        MONDAY_MORNING,
+      ).status,
+    ).toBe("sufficient");
   });
 
   it("stops at the simulation bound", () => {

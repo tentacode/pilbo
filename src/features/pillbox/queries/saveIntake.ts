@@ -13,13 +13,13 @@ export type IntakeToSave = Omit<Intake, "id" | "medQuantities"> & {
 };
 
 function scheduleSignature(
-  time: Intake["time"],
-  days: Intake["days"],
+  { time, days, frequency, interval, startsOn }: Omit<IntakeToSave, "medQuantities">,
   medQuantities: IntakeToSave["medQuantities"],
 ): string {
   return JSON.stringify({
     time: [time.hour, time.minute],
     days: WEEKDAYS.filter((weekday) => days.includes(weekday)),
+    recurrence: [frequency, interval, startsOn],
     medQuantities: [...medQuantities]
       .sort((first, second) => first.medId.localeCompare(second.medId))
       .map(({ medId, quantity }) => [medId, quantity]),
@@ -29,10 +29,9 @@ function scheduleSignature(
 function isScheduleChanged(current: Intake, intake: IntakeToSave): boolean {
   return (
     scheduleSignature(
-      current.time,
-      current.days,
+      current,
       current.medQuantities.map(({ med, quantity }) => ({ medId: med.id, quantity })),
-    ) !== scheduleSignature(intake.time, intake.days, intake.medQuantities)
+    ) !== scheduleSignature(intake, intake.medQuantities)
   );
 }
 
@@ -63,6 +62,9 @@ export function saveIntake(database: Database, intake: IntakeToSave, today: Date
     hour: intake.time.hour,
     minute: intake.time.minute,
     days: intake.days,
+    frequency: intake.frequency,
+    interval: intake.interval,
+    startsOn: intake.startsOn,
     reminderIntervalMinutes: intake.reminderIntervalMinutes,
     sound: intake.sound,
   };

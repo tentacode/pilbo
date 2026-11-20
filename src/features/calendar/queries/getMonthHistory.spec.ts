@@ -10,12 +10,15 @@ describe("getMonthHistory", () => {
 
     const { intakeVersions } = getMonthHistory(database, { year: 2026, month: 9 });
 
-    expect(intakeVersions).toHaveLength(5);
+    expect(intakeVersions).toHaveLength(7);
     expect(intakeVersions.filter(({ time }) => time.hour === 12)).toEqual([
       {
         id: expect.any(String),
         time: { hour: 12, minute: 0 },
         days: expect.arrayContaining(["monday", "sunday"]),
+        frequency: "daily",
+        interval: 1,
+        startsOn: "2026-09-09",
         createdOn: "2026-09-09",
         archivedOn: "2026-10-14",
       },
@@ -23,6 +26,9 @@ describe("getMonthHistory", () => {
         id: expect.any(String),
         time: { hour: 12, minute: 20 },
         days: expect.arrayContaining(["monday", "sunday"]),
+        frequency: "daily",
+        interval: 1,
+        startsOn: "2026-09-09",
         createdOn: "2026-10-14",
         archivedOn: null,
       },

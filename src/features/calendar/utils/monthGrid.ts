@@ -1,7 +1,7 @@
 import { fromLocalDate, toLocalDate } from "@/domain/intakeLog";
+import { isIntakeDueOn } from "@/domain/recurrence";
 
 import type { MonthHistory } from "@/features/calendar/queries/getMonthHistory";
-import { weekdayOf } from "@/features/today/utils/computeTodayIntakes";
 import type { CalendarDay, IntakeVersion, Month } from "./calendarTypes";
 import { computeDayStatus } from "./computeDayStatus";
 import { daysInMonth } from "./months";
@@ -13,7 +13,7 @@ function isPlannedOn(version: IntakeVersion, localDate: string, date: Date): boo
   return (
     version.createdOn <= localDate &&
     (version.archivedOn === null || version.archivedOn > localDate) &&
-    version.days.includes(weekdayOf(date))
+    isIntakeDueOn(version, date)
   );
 }
 
@@ -43,13 +43,13 @@ export function computeMonthDays(
   });
 }
 
-export function toCalendarWeeks(days: CalendarDay[]): (CalendarDay | null)[][] {
+export function toCalendarWeeks<Day extends { localDate: string }>(days: Day[]): (Day | null)[][] {
   if (days.length === 0) {
     return [];
   }
   const leadingBlanks =
     (fromLocalDate(days[0].localDate).getDay() + DAYS_PER_WEEK - 1) % DAYS_PER_WEEK;
-  const cells: (CalendarDay | null)[] = [...Array<null>(leadingBlanks).fill(null), ...days];
+  const cells: (Day | null)[] = [...Array<null>(leadingBlanks).fill(null), ...days];
   while (cells.length % DAYS_PER_WEEK !== 0) {
     cells.push(null);
   }

@@ -19,7 +19,7 @@ function openIntake(intakeId: string) {
 
 export function PillboxScreen() {
   const { t } = useTranslation("pillbox");
-  const { intakes } = usePillboxData();
+  const { intakes, nextIntakeDates, now } = usePillboxData();
 
   return (
     <Screen>
@@ -36,7 +36,12 @@ export function PillboxScreen() {
       {intakes.length === 0 ? (
         <PillboxEmptyState onCreateIntake={openNewIntake} />
       ) : (
-        <IntakeList intakes={intakes} onIntakePress={openIntake} />
+        <IntakeList
+          intakes={intakes}
+          nextIntakeDates={nextIntakeDates}
+          now={now}
+          onIntakePress={openIntake}
+        />
       )}
     </Screen>
   );

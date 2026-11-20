@@ -1,11 +1,14 @@
 import { sql } from "drizzle-orm";
 
-import type { Weekday } from "@/domain/intake";
 import type { IntakeLog } from "@/domain/intakeLog";
 import { intakeLogTable, intakeMedTable, intakeTable } from "@/shared/database/schema";
 import type { Database } from "@/shared/database/types";
 
 import type { IntakeVersion, Month } from "@/features/calendar/utils/calendarTypes";
+import {
+  type IntakeRecurrenceRecord,
+  toIntakeRecurrence,
+} from "@/features/pillbox/queries/intakeRecord";
 import { firstDayOf, shiftMonth } from "@/features/calendar/utils/months";
 
 export type MonthHistory = {
@@ -13,11 +16,10 @@ export type MonthHistory = {
   intakeLogs: IntakeLog[];
 };
 
-type IntakeVersionRecord = {
+type IntakeVersionRecord = IntakeRecurrenceRecord & {
   id: string;
   hour: number;
   minute: number;
-  days: string;
   createdOn: string;
   archivedOn: string | null;
 };
@@ -32,6 +34,9 @@ export function getMonthHistory(database: Database, month: Month): MonthHistory 
       ${intakeTable.hour} AS hour,
       ${intakeTable.minute} AS minute,
       ${intakeTable.days} AS days,
+      ${intakeTable.frequency} AS frequency,
+      ${intakeTable.interval} AS interval,
+      ${intakeTable.startsOn} AS startsOn,
       ${intakeTable.createdOn} AS createdOn,
       ${intakeTable.archivedOn} AS archivedOn
     FROM ${intakeTable}
@@ -55,10 +60,12 @@ export function getMonthHistory(database: Database, month: Month): MonthHistory 
   `);
 
   return {
-    intakeVersions: records.map(({ hour, minute, days, ...version }) => ({
-      ...version,
+    intakeVersions: records.map(({ id, hour, minute, createdOn, archivedOn, ...recurrence }) => ({
+      id,
       time: { hour, minute },
-      days: JSON.parse(days) as Weekday[],
+      ...toIntakeRecurrence(recurrence),
+      createdOn,
+      archivedOn,
     })),
     intakeLogs,
   };

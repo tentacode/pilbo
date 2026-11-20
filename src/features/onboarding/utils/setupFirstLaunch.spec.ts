@@ -15,7 +15,7 @@ describe("setupFirstLaunch", () => {
 
     setupFirstLaunch(database, { isDevVariant: true, isFirstLaunch: true });
 
-    expect(countRows(database, medTable)).toBe(6);
+    expect(countRows(database, medTable)).toBe(7);
     expect(useOnboardingStore.getState().onboardingDone).toBe(true);
   });
 

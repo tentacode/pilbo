@@ -7,7 +7,7 @@ import { useThemeColors } from "@/design-system/hooks/useThemeColors";
 import type { Intake } from "@/domain/intake";
 
 import { formatMedIntakeDetails } from "@/features/meds/utils/formatters";
-import { formatIntakeDays } from "@/features/pillbox/utils/formatters";
+import { formatRecurrence } from "@/features/pillbox/utils/recurrenceFormatters";
 import { SettingsSection } from "@/features/settings/components/SettingsSection";
 import { formatIntakeTime } from "@/shared/i18n/formatters";
 import { useLanguage } from "@/shared/i18n/hooks/useLanguage";
@@ -31,7 +31,7 @@ export function MedIntakesSection({ medId, intakes, onOpenIntake }: MedIntakesSe
   return (
     <SettingsSection title={t("Dans le pilulier")}>
       {intakes.map((intake) => {
-        const days = formatIntakeDays(translatePillbox, language, intake.days, "short");
+        const days = formatRecurrence(translatePillbox, language, intake);
         const time = formatIntakeTime(intake.time);
         const details = formatMedIntakeDetails(t, { intake, days, medId });
         return (

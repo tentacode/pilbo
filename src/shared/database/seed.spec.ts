@@ -16,9 +16,9 @@ describe("seedDatabase", () => {
   it("inserts the meds, the intakes, their links and the stocks", () => {
     const database = createTestDatabase();
 
-    expect(countRows(database, medTable)).toBe(6);
-    expect(countRows(database, intakeTable)).toBe(4);
-    expect(countRows(database, intakeMedTable)).toBe(7);
+    expect(countRows(database, medTable)).toBe(7);
+    expect(countRows(database, intakeTable)).toBe(6);
+    expect(countRows(database, intakeMedTable)).toBe(9);
     expect(countRows(database, stockTable)).toBe(4);
   });
 
@@ -30,9 +30,9 @@ describe("seedDatabase", () => {
       FROM ${intakeTable}
     `);
 
-    expect(records).toHaveLength(4);
+    expect(records).toHaveLength(6);
     expect(records).toEqual(
-      Array.from({ length: 4 }, () => ({ createdOn: "2026-09-09", archivedOn: null })),
+      Array.from({ length: 6 }, () => ({ createdOn: "2026-09-09", archivedOn: null })),
     );
   });
 
@@ -41,8 +41,8 @@ describe("seedDatabase", () => {
 
     seedDatabase(database, { withLogs: false });
 
-    expect(countRows(database, medTable)).toBe(6);
-    expect(countRows(database, intakeTable)).toBe(4);
+    expect(countRows(database, medTable)).toBe(7);
+    expect(countRows(database, intakeTable)).toBe(6);
   });
 
   it("generates UUIDs as identifiers", () => {
@@ -121,7 +121,7 @@ describe("seedDatabase", () => {
         ORDER BY ${intakeTable.createdOn}
       `);
 
-      expect(countRows(database, intakeTable)).toBe(5);
+      expect(countRows(database, intakeTable)).toBe(7);
       expect(versions).toEqual([
         { hour: 12, minute: 0, createdOn: "2026-09-09", archivedOn: "2026-10-14", isArchived: 1 },
         { hour: 12, minute: 20, createdOn: "2026-10-14", archivedOn: null, isArchived: 0 },
@@ -132,6 +132,7 @@ describe("seedDatabase", () => {
       expect(readLogsOfDay("2026-10-23")).toEqual([
         { time: "08:20", status: "taken", createdAt: "08:25" },
         { time: "12:20", status: "taken", createdAt: "12:25" },
+        { time: "19:30", status: "taken", createdAt: "19:35" },
         { time: "20:20", status: "taken", createdAt: "20:25" },
         { time: "22:00", status: "taken", createdAt: "22:05" },
       ]);
@@ -156,9 +157,25 @@ describe("seedDatabase", () => {
         "skipped",
       ]);
       expect(readLogsOfDay("2026-10-15")).toEqual([]);
-      expect(readLogsOfDay("2026-10-09")).toHaveLength(3);
-      expect(readLogsOfDay("2026-09-09")).toHaveLength(4);
+      expect(readLogsOfDay("2026-10-09")).toHaveLength(5);
+      expect(readLogsOfDay("2026-09-09")).toHaveLength(6);
       expect(readLogsOfDay("2026-09-08")).toEqual([]);
+    });
+
+    it("logs the recurring intakes only on their due days", () => {
+      expect(readLogsOfDay("2026-10-09").map(({ time }) => time)).toEqual([
+        "08:20",
+        "09:00",
+        "12:00",
+        "20:20",
+        "22:00",
+      ]);
+      expect(readLogsOfDay("2026-10-16").map(({ time }) => time)).toEqual([
+        "08:20",
+        "12:20",
+        "20:20",
+        "22:00",
+      ]);
     });
 
     it("inserts med logs on past days", () => {

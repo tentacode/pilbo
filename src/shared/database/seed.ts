@@ -1,7 +1,8 @@
 import { sql } from "drizzle-orm";
 
-import { type Intake, intakeDateOn } from "@/domain/intake";
+import { type Intake, intakeDateOn, type IntakeRecurrence, type Weekday } from "@/domain/intake";
 import { addDays, type IntakeLogStatus, toLocalDate, toLocalDateTime } from "@/domain/intakeLog";
+import { isIntakeDueOn, mondayOf } from "@/domain/recurrence";
 
 import {
   medLogFixture,
@@ -16,6 +17,7 @@ import {
   type MedFixtureKey,
   medFixtures,
   stockFixtures,
+  WEEKLY_START_WEEKS_AGO,
 } from "./fixtures";
 import {
   intakeLogTable,
@@ -37,11 +39,20 @@ export type SeedOptions = {
 type SeededVersion = {
   id: string;
   time: Intake["time"];
+  recurrence: IntakeRecurrence;
   createdOn: string;
   archivedOn: string | null;
 };
 
 const MILLISECONDS_PER_MINUTE = 60_000;
+const DAYS_PER_WEEK = 7;
+
+// Weekly fixtures are active during the current week, whatever the weekday.
+function startsOnOf({ frequency }: IntakeFixture, historyStart: string, now: Date): string {
+  return frequency === "weekly"
+    ? toLocalDate(addDays(mondayOf(now), -WEEKLY_START_WEEKS_AGO * DAYS_PER_WEEK))
+    : historyStart;
+}
 
 function hasMeds(database: Database): boolean {
   const result = database.get<{ count: number }>(sql`SELECT COUNT(*) AS count FROM ${medTable}`);
@@ -65,7 +76,7 @@ function logDates(
 
 function insertVersion(
   database: Database,
-  intake: NewIntakeRow,
+  intake: NewIntakeRow & { days: Weekday[] },
   medQuantities: IntakeFixture["medQuantities"],
   medIds: Map<MedFixtureKey, string>,
 ): SeededVersion {
@@ -87,6 +98,12 @@ function insertVersion(
   return {
     id,
     time: { hour: intake.hour, minute: intake.minute },
+    recurrence: {
+      days: intake.days,
+      frequency: intake.frequency ?? "daily",
+      interval: intake.interval ?? 1,
+      startsOn: intake.startsOn,
+    },
     createdOn: intake.createdOn,
     archivedOn: intake.archivedOn ?? null,
   };
@@ -109,8 +126,10 @@ function historyLogsOfDay(
   }
   const localDate = toLocalDate(day);
   const versionsOfDay = versions.filter(
-    ({ createdOn, archivedOn }) =>
-      createdOn <= localDate && (archivedOn === null || archivedOn > localDate),
+    ({ createdOn, archivedOn, recurrence }) =>
+      createdOn <= localDate &&
+      (archivedOn === null || archivedOn > localDate) &&
+      isIntakeDueOn(recurrence, day),
   );
   const loggedVersions = kind === "partlyForgotten" ? versionsOfDay.slice(0, -1) : versionsOfDay;
   return loggedVersions.map(({ id, time }, index) => ({
@@ -177,6 +196,7 @@ export function seedDatabase(
     const versions: SeededVersion[] = [];
     for (const intakeFixture of intakeFixtures) {
       const { medQuantities, ...intake } = intakeFixture;
+      const startsOn = startsOnOf(intakeFixture, historyStart, now);
       let createdOn = historyStart;
 
       if (withLogs && intakeFixture === intakeVersionFixture.intake) {
@@ -185,6 +205,7 @@ export function seedDatabase(
           ...intake,
           ...intakeVersionFixture.previousTime,
           createdOn,
+          startsOn,
           isArchived: true,
           archivedOn,
         };
@@ -192,7 +213,12 @@ export function seedDatabase(
         createdOn = archivedOn;
       }
 
-      const version = insertVersion(transaction, { ...intake, createdOn }, medQuantities, medIds);
+      const version = insertVersion(
+        transaction,
+        { ...intake, createdOn, startsOn },
+        medQuantities,
+        medIds,
+      );
       versions.push(version);
 
       if (withLogs && intakeFixture === intakeLogFixture.intake) {

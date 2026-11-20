@@ -38,7 +38,7 @@ function DraftSoundSpy() {
 }
 
 function renderScreen() {
-  const night = getAllIntakes(mockDatabase)[3];
+  const night = getAllIntakes(mockDatabase)[5];
   function wrapper({ children }: { children: ReactNode }) {
     return (
       <SafeAreaProvider initialMetrics={safeAreaMetrics}>

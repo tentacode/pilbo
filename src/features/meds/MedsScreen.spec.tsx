@@ -78,7 +78,7 @@ describe("MedsScreen", () => {
     expect(screen.getAllByText("jours").length).toBeGreaterThan(0);
     expect(screen.getByText("15")).toBeOnTheScreen();
     expect(screen.getAllByText("cp")).toHaveLength(1);
-    expect(screen.getAllByText("Non suivi")).toHaveLength(2);
+    expect(screen.getAllByText("Non suivi")).toHaveLength(3);
   });
 
   it("hides the archived meds", async () => {

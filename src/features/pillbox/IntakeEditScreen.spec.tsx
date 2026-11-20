@@ -5,6 +5,7 @@ import { ActionSheetIOS } from "react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 
 import { rescheduleReminders } from "@/features/notifications/rescheduleReminders";
+import { WEEKDAYS } from "@/domain/intake";
 import { createTestDatabase } from "@/shared/database/testDatabase";
 import type { Database } from "@/shared/database/types";
 import { i18n } from "@/shared/i18n/i18n";
@@ -97,7 +98,7 @@ describe("IntakeEditScreen", () => {
         accessibilityLabel: "Heure : 08:00",
       });
       expect(screen.getByRole("radio", { name: "Tous les jours" })).toBeSelected();
-      expect(screen.getByRole("button", { name: "Lundi" })).toBeSelected();
+      expect(screen.queryByText("Prochaine : aujourd'hui")).not.toBeOnTheScreen();
       expect(screen.getByRole("radio", { name: "10 minutes" })).toBeSelected();
       expect(screen.queryByRole("button", { name: "Supprimer cette prise" })).not.toBeOnTheScreen();
     });
@@ -140,7 +141,7 @@ describe("IntakeEditScreen", () => {
       await fireEvent.press(screen.getByRole("button", { name: "Enregistrer" }));
 
       expect(screen.getByRole("header", { name: "Il manque un médicament" })).toBeOnTheScreen();
-      expect(getAllIntakes(mockDatabase)).toHaveLength(4);
+      expect(getAllIntakes(mockDatabase)).toHaveLength(6);
       expect(mockParentNavigation.goBack).not.toHaveBeenCalled();
     });
 
@@ -185,7 +186,7 @@ describe("IntakeEditScreen", () => {
 
     it("keeps its own sound", async () => {
       useSettingsStore.setState({ defaultReminderSound: "chime" });
-      const night = getAllIntakes(mockDatabase)[3];
+      const night = getAllIntakes(mockDatabase)[5];
       await renderScreen(night.id);
 
       expect(screen.getByRole("button", { name: "Son : Nocturne" })).toBeOnTheScreen();
@@ -209,7 +210,11 @@ describe("IntakeEditScreen", () => {
       await fireEvent.press(
         screen.getByRole("button", { name: "Ajouter un comprimé de Magnésium 300 mg" }),
       );
-      await fireEvent.press(screen.getByRole("button", { name: "Dimanche" }));
+      await fireEvent.press(screen.getByRole("radio", { name: "Personnalisé" }));
+      await act(() => draftActions.toggleDay("sunday"));
+      expect(
+        screen.getByText("Lundi, mardi, mercredi, jeudi, vendredi et samedi"),
+      ).toBeOnTheScreen();
       await fireEvent.press(screen.getByRole("button", { name: "Enregistrer" }));
 
       const updated = getIntakeById(mockDatabase, morning.id);
@@ -229,17 +234,56 @@ describe("IntakeEditScreen", () => {
       expect(screen.queryByText("Vitamine D")).not.toBeOnTheScreen();
     });
 
-    it("refuses to save some days without any day", async () => {
+    it("refuses to save a custom recurrence without any day", async () => {
       const [morning] = getAllIntakes(mockDatabase);
       await renderScreen(morning.id);
 
-      await fireEvent.press(screen.getByRole("radio", { name: "Certains jours" }));
-      for (const day of ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche"]) {
-        await fireEvent.press(screen.getByRole("button", { name: day }));
+      await fireEvent.press(screen.getByRole("radio", { name: "Personnalisé" }));
+      for (const day of WEEKDAYS) {
+        await act(() => draftActions.toggleDay(day));
       }
       await fireEvent.press(screen.getByRole("button", { name: "Enregistrer" }));
 
       expect(screen.getByRole("header", { name: "Il manque un jour" })).toBeOnTheScreen();
+    });
+
+    it("saves a monthly recurrence and shows the next intake", async () => {
+      const [morning] = getAllIntakes(mockDatabase);
+      await renderScreen(morning.id);
+
+      await fireEvent.press(screen.getByRole("radio", { name: "Personnalisé" }));
+      expect(router.push).toHaveBeenCalledWith("/intake/recurrence");
+      await act(() => draftActions.setFrequency("monthly"));
+      await act(() => draftActions.setStartsOn("2099-03-31"));
+      await act(() => draftActions.setInterval(2));
+
+      expect(screen.getByText("Le 31, un mois sur deux")).toBeOnTheScreen();
+      expect(screen.getByText("Prochaine : mardi 31 mars 2099")).toBeOnTheScreen();
+      await fireEvent.press(
+        screen.getByRole("button", {
+          name: "Le 31, un mois sur deux. Prochaine : mardi 31 mars 2099",
+        }),
+      );
+      expect(router.push).toHaveBeenLastCalledWith("/intake/recurrence");
+      await fireEvent.press(screen.getByRole("button", { name: "Enregistrer" }));
+
+      expect(getIntakeById(mockDatabase, morning.id)).toMatchObject({
+        frequency: "monthly",
+        interval: 2,
+        startsOn: "2099-03-31",
+      });
+    });
+
+    it("goes back to every day", async () => {
+      const [morning] = getAllIntakes(mockDatabase);
+      await renderScreen(morning.id);
+
+      await fireEvent.press(screen.getByRole("radio", { name: "Personnalisé" }));
+      await act(() => draftActions.setFrequency("weekly"));
+      await fireEvent.press(screen.getByRole("radio", { name: "Tous les jours" }));
+
+      expect(screen.queryByText(/Prochaine/)).not.toBeOnTheScreen();
+      expect(mockPreventRemove.isPrevented).toBe(false);
     });
 
     it("archives the intake after confirmation", async () => {
@@ -282,6 +326,22 @@ describe("IntakeEditScreen", () => {
 
       await fireEvent.press(screen.getByRole("button", { name: "Abandonner" }));
       expect(mockNavigation.dispatch).toHaveBeenCalledWith(action);
+    });
+
+    it("discards a custom recurrence with the intake changes", async () => {
+      const [morning] = getAllIntakes(mockDatabase);
+      await renderScreen(morning.id);
+      await fireEvent.press(screen.getByRole("radio", { name: "Personnalisé" }));
+      await act(() => draftActions.setFrequency("weekly"));
+
+      expect(mockPreventRemove.isPrevented).toBe(true);
+      await act(() => mockPreventRemove.callback?.({ data: { action: { type: "GO_BACK" } } }));
+      await fireEvent.press(screen.getByRole("button", { name: "Abandonner" }));
+
+      expect(getIntakeById(mockDatabase, morning.id)).toMatchObject({
+        frequency: "daily",
+        interval: 1,
+      });
     });
 
     it("asks before discarding a new sound", async () => {

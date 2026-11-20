@@ -13,6 +13,9 @@ function version(changes: Partial<IntakeVersion> = {}): IntakeVersion {
     id: "morning",
     time: { hour: 8, minute: 20 },
     days: [...WEEKDAYS],
+    frequency: "daily",
+    interval: 1,
+    startsOn: "2026-09-01",
     createdOn: "2026-09-01",
     archivedOn: null,
     ...changes,
@@ -78,6 +81,30 @@ describe("computeMonthDays", () => {
 
     expect(statusOn(days, 19)).toBe("missed");
     expect(statusOn(days, 20)).toBe("none");
+  });
+
+  it("does not count a paused week or another day of the month as missed", () => {
+    const history: MonthHistory = {
+      intakeVersions: [
+        version({
+          id: "everyOtherWeek",
+          days: ["monday"],
+          frequency: "weekly",
+          interval: 2,
+          startsOn: "2026-10-05",
+        }),
+        version({ id: "monthly", days: [], frequency: "monthly", startsOn: "2026-09-15" }),
+      ],
+      intakeLogs: [],
+    };
+
+    const days = computeMonthDays(history, OCTOBER, NOW, "2026-09-01");
+
+    expect(statusOn(days, 5)).toBe("missed");
+    expect(statusOn(days, 12)).toBe("none");
+    expect(statusOn(days, 15)).toBe("missed");
+    expect(statusOn(days, 16)).toBe("none");
+    expect(statusOn(days, 19)).toBe("missed");
   });
 
   it("only looks at handled or late intakes today", () => {

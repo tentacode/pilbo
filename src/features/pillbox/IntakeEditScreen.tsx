@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next";
 
 import { Button } from "@/design-system/components/Button/Button";
 import { Sheet } from "@/design-system/components/Sheet/Sheet";
+import { nextDueDate } from "@/domain/recurrence";
 
 import { DeleteIntakeDialog } from "./components/DeleteIntakeDialog";
 import { DiscardChangesDialog } from "./components/DiscardChangesDialog";
@@ -17,10 +18,12 @@ import { ReminderIntervalField } from "./components/ReminderIntervalField";
 import { useIntakeActions } from "./hooks/useIntakeActions";
 import { useIntakeDraft } from "./hooks/useIntakeDraft";
 import { useModalClosing } from "./hooks/useModalClosing";
-import { selectedDaysOf } from "./utils/intakeDraft";
+import { recurrenceOf } from "./utils/intakeDraft";
+import { formatNextIntake, formatRecurrence } from "./utils/recurrenceFormatters";
 import { type IntakeDraftError, validateIntakeDraft } from "./utils/validators";
 import { styles } from "./IntakeEditScreen.styles";
 import { formatIntakeTime } from "@/shared/i18n/formatters";
+import { useLanguage } from "@/shared/i18n/hooks/useLanguage";
 
 export function IntakeEditScreen() {
   const { t } = useTranslation("pillbox");
@@ -31,6 +34,9 @@ export function IntakeEditScreen() {
   const [draftError, setDraftError] = useState<IntakeDraftError | null>(null);
   const [isDeleteDialogVisible, setIsDeleteDialogVisible] = useState(false);
   const savedIntakeId = initialDraft.intakeId;
+  const language = useLanguage();
+  const now = new Date();
+  const nextIntakeDate = nextDueDate(recurrenceOf(draft), now, intakeDraft.isHandledToday);
 
   function handleSave() {
     const error = validateIntakeDraft(draft);
@@ -64,9 +70,12 @@ export function IntakeEditScreen() {
         <IntakeTimeRow time={draft.time} onChange={intakeDraft.setTime} />
         <IntakeDaysField
           dayMode={draft.dayMode}
-          selectedDays={selectedDaysOf(draft)}
+          recurrence={formatRecurrence(t, language, recurrenceOf(draft))}
+          nextIntake={
+            nextIntakeDate === null ? null : formatNextIntake(t, language, nextIntakeDate, now)
+          }
           onDayModeChange={intakeDraft.setDayMode}
-          onDayPress={intakeDraft.toggleDay}
+          onOpenRecurrence={() => router.push("/intake/recurrence")}
         />
         <ReminderIntervalField
           minutes={draft.reminderIntervalMinutes}

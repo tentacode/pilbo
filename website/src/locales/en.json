@@ -2,8 +2,7 @@
   "site": {
     "locale": "en_US",
     "otherLanguageName": "Français",
-    "skipLink": "Skip to content",
-    "shareImageAlt": "The Pilbo capsule on a background of colorful pills."
+    "skipLink": "Skip to content"
   },
   "navigation": {
     "home": "Home",
@@ -14,14 +13,14 @@
   },
   "footer": {
     "contactTitle": "Contact us",
-    "contactText": "A question, a problem or an idea? Write to us, we read every message.",
+    "contactText": "A question, a problem or an idea? Drop us a message!",
     "contactButton": "pilbo@tentacode.dev",
     "navigationLabel": "Pilbo website",
     "disclaimer": "Pilbo is not a medical device. It does not replace the advice of a doctor or pharmacist."
   },
   "pages": {
     "index": {
-      "title": "Pilbo – Your assistant for taking your medications",
+      "title": "Pilbo – An assistant for taking your medications",
       "description": "Pilbo is a virtual pill box that helps you take your medications: reminders, stocks and history. Free, with no account, on iPhone and Android."
     },
     "beta": {
@@ -41,7 +40,7 @@
     "hero": {
       "title": "An assistant to help you take your medications",
       "lead": "Pilbo is a virtual pill box designed for people who take a lot of medications and sometimes forget a dose. It reminds you of each intake, until it is done.",
-      "betaTitle": "Pilbo is in beta, you can already try it.",
+      "betaTitle": "Pilbo is in beta, feel free to try it!",
       "iosButton": "iPhone beta",
       "androidButton": "Android beta",
       "note": "Free, with no ads and no account. Your data stays on your phone.",
@@ -49,19 +48,19 @@
     },
     "features": {
       "title": "What Pilbo does",
-      "lead": "Pilbo sticks to the essentials: your intakes, your reminders and your stocks.",
+      "lead": "Pilbo makes managing your medications simple: your intakes, your reminders and your stock.",
       "pillbox": {
-        "title": "Your intakes in your pill box",
-        "text": "Organize your intakes at different times, each with its medications and quantities. Pick the days of the week that suit you.",
+        "title": "A virtual pill box",
+        "text": "Organize your intakes at different times, each with its medications and quantities. You can choose the days and recurrence of each intake independently.",
         "screenshotAlt": "The Pillbox screen: intakes at 8:20, 12:20, 8:20 PM and 10 PM, each with its medications."
       },
       "reminders": {
-        "title": "Discreet, effective reminders",
+        "title": "Discreet reminders",
         "text": "A discreet notification every 10 minutes, instead of an alarm you turn off without taking your medications. Confirm the intake right from the notification, and choose the sound of your reminders.",
         "screenshotAlt": "Editing the 8:20 intake: time, days, reminder repeated every 10 minutes, sound and medications."
       },
       "appearance": {
-        "title": "Medications that are easy to recognize",
+        "title": "A touch of color",
         "text": "Customize the shape, size and colors of your medications to recognize them at a glance. Tablet, capsule, sachet, syrup or drops: each one has its shape.",
         "screenshotAlt": "Customizing a pill: a pink and lilac capsule, with a choice of ten shapes, including sachet, syrup and drops."
       },
@@ -72,7 +71,7 @@
       },
       "calendar": {
         "title": "The history of your intakes",
-        "text": "Find your intakes in a calendar: the days when everything was taken, the late intakes and the forgotten ones.",
+        "text": "View your intakes in a calendar: the days when everything was taken, the late intakes and the forgotten ones.",
         "screenshotAlt": "The calendar of the month: most days are checked, a few intakes were late or missed."
       }
     },
@@ -84,7 +83,7 @@
       },
       "accessibility": {
         "title": "Accessibility",
-        "text": "Pilbo was designed to meet the WCAG / RAAM standards. It works with screen readers and large text sizes."
+        "text": "Pilbo is designed to follow the WCAG / RAAM guidelines as closely as possible, and tested with screen readers and large text sizes. It has not been audited yet, but if you notice an accessibility issue, feel free to write to us at <a href=\"mailto:pilbo@tentacode.dev\">pilbo@tentacode.dev</a>."
       },
       "platforms": {
         "title": "On iPhone and Android",
@@ -92,14 +91,15 @@
       }
     },
     "cta": {
-      "title": "Try Pilbo",
-      "text": "The beta is open: you can install Pilbo now. Your feedback helps us improve it before its release."
+      "title": "Try Pilbo!",
+      "text": "The beta is open: you can install Pilbo now. Your feedback is valuable and will help us improve it before its release."
     }
   },
   "beta": {
     "back": "Back to home",
     "title": "Join the Pilbo beta",
     "lead": "Pilbo is not available in the stores yet. The beta lets you use it now, and your feedback helps us improve it before its release.",
+    "dataText": "Your data will not be lost: when Pilbo is released, you can install the final version and find your medications, intakes and history as they were.",
     "feedbackTitle": "Thank you for testing Pilbo!",
     "feedbackText": "Try adding your intakes, taking one from a reminder notification and tracking a stock. If something feels off, write to us at <a href=\"mailto:pilbo@tentacode.dev\">pilbo@tentacode.dev</a>, with a screenshot if possible.",
     "chooseLabel": "Choose your phone",

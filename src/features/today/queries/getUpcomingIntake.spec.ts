@@ -1,5 +1,5 @@
 import type { Weekday } from "@/domain/intake";
-import { intakeMedTable, intakeTable } from "@/shared/database/schema";
+import { intakeMedTable, intakeTable, type NewIntakeRow } from "@/shared/database/schema";
 import { createTestDatabase } from "@/shared/database/testDatabase";
 import type { Database } from "@/shared/database/types";
 
@@ -13,6 +13,7 @@ function insertIntake(
   days: Weekday[],
   hour: number,
   isArchived = false,
+  recurrence: Partial<Pick<NewIntakeRow, "frequency" | "interval" | "startsOn">> = {},
 ): string {
   const { id: medId } = insertMed(database, {
     name: "Lithium",
@@ -30,6 +31,8 @@ function insertIntake(
       isArchived,
       createdOn: "2026-10-01",
       archivedOn: isArchived ? "2026-10-20" : null,
+      startsOn: "2026-10-01",
+      ...recurrence,
     })
     .returning({ id: intakeTable.id })
     .get();
@@ -57,6 +60,33 @@ describe("getUpcomingIntake", () => {
 
     expect(getUpcomingIntake(database, SATURDAY)).toEqual(
       expect.objectContaining({ daysAhead: 7, weekday: "saturday" }),
+    );
+  });
+
+  it("skips an intake in a paused week", () => {
+    const database = createTestDatabase({ seed: false });
+    insertIntake(database, ["monday"], 8, false, {
+      frequency: "weekly",
+      interval: 2,
+      startsOn: "2026-10-19",
+    });
+    const intakeId = insertIntake(database, ["thursday"], 9);
+
+    expect(getUpcomingIntake(database, SATURDAY)).toEqual(
+      expect.objectContaining({ daysAhead: 5, intake: expect.objectContaining({ id: intakeId }) }),
+    );
+  });
+
+  it("finds a monthly intake tomorrow", () => {
+    const database = createTestDatabase({ seed: false });
+    const intakeId = insertIntake(database, [], 8, false, {
+      frequency: "monthly",
+      interval: 1,
+      startsOn: "2026-09-25",
+    });
+
+    expect(getUpcomingIntake(database, SATURDAY)).toEqual(
+      expect.objectContaining({ daysAhead: 1, intake: expect.objectContaining({ id: intakeId }) }),
     );
   });
 
