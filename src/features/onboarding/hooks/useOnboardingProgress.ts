@@ -10,6 +10,7 @@ type OnboardingProgress = {
   areNotificationsAllowed: boolean;
   isRestartedFromSettings: boolean;
   goToNextStep: () => void;
+  goToStep: (stepIndex: number) => void;
   allowNotifications: () => void;
   finish: () => void;
 };
@@ -21,10 +22,12 @@ export function useOnboardingProgress(): OnboardingProgress {
   const setOnboardingDone = useOnboardingStore((state) => state.setOnboardingDone);
   const isRestartedFromSettings = useOnboardingStore((state) => state.isRestartedFromSettings);
 
-  const goToNextStep = () => {
+  const goToStep = (nextStepIndex: number) => {
     setIsWaitingForPermission(false);
-    setStepIndex(stepIndex + 1);
+    setStepIndex(nextStepIndex);
   };
+
+  const goToNextStep = () => goToStep(stepIndex + 1);
 
   if (isWaitingForPermission && isGranted) {
     goToNextStep();
@@ -45,6 +48,7 @@ export function useOnboardingProgress(): OnboardingProgress {
     areNotificationsAllowed: isGranted === true,
     isRestartedFromSettings,
     goToNextStep,
+    goToStep,
     allowNotifications,
     finish,
   };

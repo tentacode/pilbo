@@ -5,7 +5,4 @@ export const useStyles = createThemedStyles((themeColors) => ({
     flex: 1,
     backgroundColor: themeColors.background,
   },
-  step: {
-    flex: 1,
-  },
 }));

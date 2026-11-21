@@ -1,7 +1,7 @@
 import { act, fireEvent, render, screen } from "@testing-library/react-native";
 import { router } from "expo-router";
 import type { ReactNode } from "react";
-import { AppState, type AppStateStatus, Linking } from "react-native";
+import { AppState, type AppStateStatus, Dimensions, Linking } from "react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 
 import {
@@ -41,6 +41,13 @@ function wrapper({ children }: { children: ReactNode }) {
 
 async function press(name: string) {
   await fireEvent.press(screen.getByRole("button", { name }));
+}
+
+async function swipeToStep(stepNumber: number) {
+  const { width } = Dimensions.get("window");
+  await fireEvent(screen.getByTestId("onboarding-carousel"), "momentumScrollEnd", {
+    nativeEvent: { contentOffset: { x: (stepNumber - 1) * width, y: 0 } },
+  });
 }
 
 async function expectStep(title: string, stepNumber: number) {
@@ -84,6 +91,22 @@ describe("OnboardingScreen", () => {
     await press("Créer ma première prise");
     expect(useOnboardingStore.getState().onboardingDone).toBe(true);
     expect(router.replace).toHaveBeenCalledWith("/pillbox");
+  });
+
+  it("goes forward and back by swiping", async () => {
+    await render(<OnboardingScreen />, { wrapper });
+    await expectStep("Vos médicaments, regroupés en prises", 1);
+
+    await swipeToStep(2);
+    await expectStep("Un rappel, puis un autre", 2);
+
+    await swipeToStep(3);
+    await expectStep("Pilbo n'est pas une application médicale", 3);
+    expect(requestPermission).not.toHaveBeenCalled();
+
+    await swipeToStep(2);
+    await expectStep("Un rappel, puis un autre", 2);
+    expect(screen.getByRole("button", { name: "Autoriser les notifications" })).toBeOnTheScreen();
   });
 
   it("goes to the next step when the notifications are allowed", async () => {

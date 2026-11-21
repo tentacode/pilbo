@@ -13,6 +13,12 @@ name: Onboarding can be restarted from the settings
     centerElement: true
 - tapOn: "Revoir la présentation"
 - assertVisible: "Vos médicaments, regroupés en prises"
+- swipe:
+    direction: LEFT
+- assertVisible: "Un rappel, puis un autre"
+- swipe:
+    direction: RIGHT
+- assertVisible: "Vos médicaments, regroupés en prises"
 - tapOn: "Continuer"
 - assertVisible: "Un rappel, puis un autre"
 - runFlow:

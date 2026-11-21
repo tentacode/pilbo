@@ -23,8 +23,7 @@ For _fastlane_ installation instructions, see [Installing _fastlane_](https://do
 
 Build Pilbo and send it to TestFlight
 
-----
-
+---
 
 ## Android
 
@@ -44,7 +43,7 @@ Build the Pilbo Android App Bundle without uploading it (BUILD_NUMBER=…)
 
 Build Pilbo and send it to the Play Store closed test (TRACK=internal for the internal test)
 
-----
+---
 
 This README.md is auto-generated and will be re-generated every time [_fastlane_](https://fastlane.tools) is run.
 

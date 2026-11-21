@@ -26,8 +26,8 @@ Ces écrans se trouvent dans Claude Design, dans la section "1 · Onboarding".
 ### Écrans
 
 - Design : `onboarding-1.dc.html` à `onboarding-4.dc.html` (thème lavande), barre d'étapes = `pager` du design.
-- Une seule route, l'étape est un state local. On avance uniquement par les boutons : pas de swipe, pas de retour.
-- Transition entre étapes : implémenter 2 variantes (fondu, glissement horizontal), aucune animation si « Réduire les animations ». Arrêt pour que je teste et choisisse.
+- Une seule route, l'étape est un state local. On avance par les boutons ou par un swipe horizontal (dans les deux sens). Sur l'étape notifications, swiper vers l'avant équivaut à « Plus tard ».
+- Transition entre étapes : défilement horizontal paginé qui suit le doigt, sans animation sur les boutons si « Réduire les animations ».
 - « Créer ma première prise » : `onboardingDone = true`, puis Pilulier.
 
 ### Notifications
