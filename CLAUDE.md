@@ -56,7 +56,7 @@ En gros, on cherche une proof of concept : dans le doute, demander si c'est dans
 ### Contraintes iOS à garder en tête
 
 - J'ai un très petit téléphone (iPhone 12 mini) : le design doit être responsive et bien fonctionner sur ce téléphone.
-- Maximum 64 notifications locales en attente en même temps : utiliser des rappels quotidiens répétés (1 emplacement chacun), reprogrammés quand une prise est validée.
+- Maximum 64 notifications locales en attente en même temps : les rappels sont planifiés jour après jour jusqu'à 63, plus 1 place pour l'avertissement « ouvrez l'app » (voir `docs/notifications.md`).
 - Mode silencieux : pas de son, mais vibration si « Retour haptique en mode silencieux » est activé.
 - Profils de signature valables 1 an. Les rappels de prise sont en `timeSensitive` (ils traversent les modes de concentration), les alertes de stock bas en `active`.
 - Nouveau bundle ID, nouvelle capacité ou nouvel appareil : `expo run:ios` ne crée pas le profil (« No profiles for… »). Lancer une fois `xcodebuild -workspace ios/Pilbo.xcworkspace -scheme Pilbo -configuration <Debug|Release> -destination id=<appareil> -allowProvisioningUpdates build` (après le prebuild de la variante voulue).

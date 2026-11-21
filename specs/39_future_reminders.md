@@ -19,10 +19,27 @@ Aujourd'hui, seuls les rappels d'aujourd'hui et de demain sont planifiés (`resc
 
 Déjà en place (voir `docs/notifications.md`, `planReopenAppWarning`) : il part 5 min après le dernier rappel de prise planifié et garde 1 place sur les 64. Vérifier qu'il suit bien le dernier rappel des jours suivants.
 
-## Décisions techniques
+## Décisions
+
+### Technique
 
 - `planReminders` reçoit la liste des prises par jour (aujourd'hui en premier) au lieu de `todayIntakes` / `tomorrowIntakes`.
 - `rescheduleReminders` lit les prises une seule fois et les filtre par jour avec `isIntakeDueOn`, sans requête SQL par jour.
+- Cette lecture unique suffit : les versions de prise valides aujourd'hui sont aussi celles des jours suivants, car `saveIntake` et `archiveIntake` écrivent toujours la date du jour dans `created_on` / `archived_on`.
+- Les prises sans médicament restent exclues (jointure sur les médicaments, comme `getIntakesOfDay`).
+
+### Calcul
+
+- Horizon : jusqu'au même jour un an plus tard, inclus.
+- Aujourd'hui : inchangé. Rappels encore à venir des prises sans log (une prise commencée peut en avoir moins de 6), dans la limite de 63.
+- Point d'arrêt : au premier bloc de 6 rappels qui ne rentre plus, on s'arrête, sans essayer de caser les prises suivantes.
+- Alertes de stock bas : triées avec les blocs de rappels par ordre chronologique (un bloc est daté par son premier rappel). Une alerte après le point d'arrêt ou après l'horizon d'un an n'est pas planifiée. Elles ne passent plus avant les rappels de demain comme aujourd'hui.
+
+### Vérification
+
+- Tests Jest, pas de test manuel sur l'iPhone ni sur le S9.
+- Un test couvre un changement d'heure entre deux jours planifiés.
+- Vérification réelle sur l'émulateur Android : les rappels planifiés sont listés avec `adb shell dumpsys alarm` (nombre, dates, avertissement). Le calcul est le même sur iOS. Pas d'affichage des notifications planifiées dans l'app.
 
 ## Hors périmètre
 
@@ -34,5 +51,5 @@ Déjà en place (voir `docs/notifications.md`, `planReopenAppWarning`) : il part
 ## Vérification
 
 - Tests Jest de `planReminders` et `rescheduleReminders` : plusieurs jours, plafond, prise mensuelle dans 3 semaines, alertes de stock bas dans l'ordre chronologique, avertissement après le dernier jour planifié.
-- Mise à jour de `docs/notifications.md` (section « Calcul des rappels »).
+- Mise à jour de `docs/notifications.md` (section « Calcul des rappels », et le calcul « 4 prises × 6 rappels × 2 jours = 48 » de la section « Contraintes iOS »).
 - `make tests` doit passer.

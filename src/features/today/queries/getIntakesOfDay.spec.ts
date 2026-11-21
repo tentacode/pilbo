@@ -7,7 +7,7 @@ import type { Database } from "@/shared/database/types";
 
 import { getAllIntakes } from "@/features/pillbox/queries/getAllIntakes";
 import { saveIntake } from "@/features/pillbox/queries/saveIntake";
-import { getIntakesOfDay } from "./getIntakesOfDay";
+import { getIntakesOfDay, getIntakeVersionsOn } from "./getIntakesOfDay";
 import { insertIntakeLog } from "./insertIntakeLog";
 
 const MONDAY = new Date(2026, 9, 19);
@@ -201,5 +201,45 @@ describe("getIntakesOfDay", () => {
 
   it("returns nothing when the database is empty", () => {
     expect(getIntakesOfDay(createTestDatabase({ seed: false }), MONDAY)).toEqual([]);
+  });
+});
+
+describe("getIntakeVersionsOn", () => {
+  it("returns the valid versions whatever their recurrence", () => {
+    const database = createTestDatabase();
+    const pausedIntakeId = insertIntake(database, {
+      frequency: "weekly",
+      interval: 2,
+      startsOn: "2026-10-12",
+    });
+    const monthlyIntakeId = insertIntake(database, {
+      frequency: "monthly",
+      interval: 1,
+      startsOn: "2026-09-20",
+      days: [],
+    });
+    const archivedIntakeId = insertIntake(database, { isArchived: true, archivedOn: "2026-10-19" });
+
+    const intakeIds = getIntakeVersionsOn(database, MONDAY).map(({ id }) => id);
+
+    expect(intakeIds).toEqual(expect.arrayContaining([pausedIntakeId, monthlyIntakeId]));
+    expect(intakeIds).not.toContain(archivedIntakeId);
+  });
+
+  it("hides an intake without meds", () => {
+    const database = createTestDatabase({ seed: false });
+    database
+      .insert(intakeTable)
+      .values({
+        hour: 7,
+        minute: 0,
+        days: ["monday"],
+        reminderIntervalMinutes: 5,
+        createdOn: "2026-10-01",
+        startsOn: "2026-10-01",
+      })
+      .run();
+
+    expect(getIntakeVersionsOn(database, MONDAY)).toEqual([]);
   });
 });

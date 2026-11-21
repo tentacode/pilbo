@@ -27,7 +27,7 @@ type IntakeMedOfDayRecord = IntakeRecurrenceRecord & {
   quantity: number;
 };
 
-export function getIntakesOfDay(database: Database, date: Date): Intake[] {
+export function getIntakeVersionsOn(database: Database, date: Date): Intake[] {
   const localDate = toLocalDate(date);
   const records = database.all<IntakeMedOfDayRecord>(sql`
     SELECT
@@ -77,5 +77,9 @@ export function getIntakesOfDay(database: Database, date: Date): Intake[] {
       quantity: record.quantity,
     });
   }
-  return [...intakes.values()].filter((intake) => isIntakeDueOn(intake, date));
+  return [...intakes.values()];
+}
+
+export function getIntakesOfDay(database: Database, date: Date): Intake[] {
+  return getIntakeVersionsOn(database, date).filter((intake) => isIntakeDueOn(intake, date));
 }

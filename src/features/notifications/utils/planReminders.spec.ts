@@ -1,12 +1,31 @@
-import { createIntake, createIntakeLog } from "@/features/today/utils/testIntakes";
+import type { Intake } from "@/domain/intake";
+import { addDays } from "@/domain/intakeLog";
 
-import { planReminders } from "./planReminders";
+import { createIntake, createIntakeLog } from "@/features/today/utils/testIntakes";
+import { type IntakeDay, planIntakeDays } from "./planIntakeDays";
+import { type PlannedReminder, planReminders } from "./planReminders";
 
 const MORNING = createIntake(8, 20);
 const NOON = createIntake(12, 20);
 
 function at(day: number, hour: number, minute: number, second = 0): Date {
   return new Date(2026, 9, day, hour, minute, second);
+}
+
+function consecutiveDays(now: Date, ...intakesOfDays: Intake[][]): IntakeDay[] {
+  return intakesOfDays.map((intakes, index) => ({ day: addDays(now, index), intakes }));
+}
+
+function lowStockAlert(date: Date): PlannedReminder {
+  return {
+    identifier: `low-stock-${date.getDate()}`,
+    date,
+    title: "Stock bas",
+    body: "Lithium 250 mg : pensez à le renouveler.",
+    interruptionLevel: "active",
+    sound: "beep",
+    channelId: "low-stock",
+  };
 }
 
 function label(date: Date): string {
@@ -23,8 +42,7 @@ function times(reminders: ReturnType<typeof planReminders>): string[] {
 describe("planReminders", () => {
   it("plans six reminders per intake, every reminder interval", () => {
     const reminders = planReminders({
-      todayIntakes: [MORNING],
-      tomorrowIntakes: [],
+      intakeDays: consecutiveDays(at(4, 7, 0), [MORNING]),
       todayLogs: [],
       now: at(4, 7, 0),
     });
@@ -41,8 +59,7 @@ describe("planReminders", () => {
 
   it("keeps only the remaining reminders of a started intake", () => {
     const reminders = planReminders({
-      todayIntakes: [MORNING],
-      tomorrowIntakes: [],
+      intakeDays: consecutiveDays(at(4, 8, 35), [MORNING]),
       todayLogs: [],
       now: at(4, 8, 35),
     });
@@ -52,8 +69,7 @@ describe("planReminders", () => {
 
   it("keeps a reminder planned a few seconds later", () => {
     const reminders = planReminders({
-      todayIntakes: [MORNING],
-      tomorrowIntakes: [],
+      intakeDays: consecutiveDays(at(4, 8, 39, 50), [MORNING]),
       todayLogs: [],
       now: at(4, 8, 39, 50),
     });
@@ -63,8 +79,7 @@ describe("planReminders", () => {
 
   it("skips a reminder planned right now", () => {
     const reminders = planReminders({
-      todayIntakes: [MORNING],
-      tomorrowIntakes: [],
+      intakeDays: consecutiveDays(at(4, 8, 40), [MORNING]),
       todayLogs: [],
       now: at(4, 8, 40),
     });
@@ -74,8 +89,7 @@ describe("planReminders", () => {
 
   it("plans nothing for a handled intake", () => {
     const reminders = planReminders({
-      todayIntakes: [MORNING, NOON],
-      tomorrowIntakes: [],
+      intakeDays: consecutiveDays(at(4, 8, 30), [MORNING, NOON]),
       todayLogs: [createIntakeLog(MORNING, "skipped", { hour: 8, minute: 25 })],
       now: at(4, 8, 30),
     });
@@ -86,8 +100,7 @@ describe("planReminders", () => {
 
   it("adds the reminders of tomorrow", () => {
     const reminders = planReminders({
-      todayIntakes: [MORNING],
-      tomorrowIntakes: [MORNING],
+      intakeDays: consecutiveDays(at(4, 23, 0), [MORNING], [MORNING]),
       todayLogs: [],
       now: at(4, 23, 0),
     });
@@ -102,15 +115,14 @@ describe("planReminders", () => {
     ]);
   });
 
-  it("adds the intakes of tomorrow only while all their reminders fit in 63", () => {
+  it("adds the intakes of the next days only while all their reminders fit in 63", () => {
+    const now = at(4, 6, 0);
     const todayIntakes = Array.from({ length: 10 }, (_, index) => createIntake(10 + index, 0));
-    const tomorrowIntakes = [createIntake(7, 0), createIntake(8, 0)];
 
     const reminders = planReminders({
-      todayIntakes,
-      tomorrowIntakes,
+      intakeDays: consecutiveDays(now, todayIntakes, [createIntake(7, 0), createIntake(8, 0)]),
       todayLogs: [],
-      now: at(4, 6, 0),
+      now,
     });
 
     expect(reminders).toHaveLength(60);
@@ -118,76 +130,175 @@ describe("planReminders", () => {
   });
 
   it("never plans more than 63 reminders, keeping a slot for the reopen app warning", () => {
+    const now = at(4, 6, 0);
     const todayIntakes = Array.from({ length: 12 }, (_, index) => createIntake(10 + index, 0));
 
     const reminders = planReminders({
-      todayIntakes,
-      tomorrowIntakes: [],
+      intakeDays: consecutiveDays(now, todayIntakes),
       todayLogs: [],
-      now: at(4, 6, 0),
+      now,
     });
 
     expect(reminders).toHaveLength(63);
   });
 
-  it("plans the low stock alerts after today and before tomorrow", () => {
-    const alert = {
-      identifier: "low-stock-2026-10-08",
-      date: at(8, 9, 0),
-      title: "Stock bas",
-      body: "Lithium 250 mg : pensez à le renouveler.",
-      interruptionLevel: "active" as const,
-      sound: "beep" as const,
-      channelId: "low-stock",
+  it("plans ten days of a single daily intake", () => {
+    const now = at(4, 7, 0);
+
+    const reminders = planReminders({
+      intakeDays: planIntakeDays([MORNING], now),
+      todayLogs: [],
+      now,
+    });
+
+    expect(reminders).toHaveLength(60);
+    expect([...new Set(reminders.map(({ date }) => date.getDate()))]).toEqual([
+      4, 5, 6, 7, 8, 9, 10, 11, 12, 13,
+    ]);
+  });
+
+  it("stops at the first intake whose reminders do not fit, without trying the next ones", () => {
+    const now = at(4, 6, 0);
+    const todayIntakes = Array.from({ length: 10 }, (_, index) => createIntake(10 + index, 0));
+
+    const reminders = planReminders({
+      intakeDays: consecutiveDays(now, todayIntakes, [MORNING]),
+      todayLogs: [],
+      lowStockAlerts: [lowStockAlert(at(6, 9, 0))],
+      now,
+    });
+
+    expect(reminders).toHaveLength(60);
+    expect(reminders.every(({ date }) => date.getDate() === 4)).toBe(true);
+  });
+
+  it("plans an intake due in three weeks", () => {
+    const now = at(4, 7, 0);
+    const monthly = {
+      ...MORNING,
+      frequency: "monthly" as const,
+      startsOn: "2026-09-25",
+      days: [],
     };
 
     const reminders = planReminders({
-      todayIntakes: [NOON],
-      tomorrowIntakes: [MORNING],
+      intakeDays: planIntakeDays([monthly], now),
+      todayLogs: [],
+      now,
+    });
+
+    expect(times(reminders).slice(0, 2)).toEqual(["25 08:20", "25 08:30"]);
+    expect(reminders[6].identifier).toBe("reminder-intake-8-20-2026-11-25T08:20");
+  });
+
+  it("plans the low stock alerts in chronological order with the reminders", () => {
+    const now = at(4, 6, 0);
+    const alert = lowStockAlert(at(5, 9, 0));
+
+    const reminders = planReminders({
+      intakeDays: consecutiveDays(now, [NOON], [MORNING], [NOON]),
       todayLogs: [],
       lowStockAlerts: [alert],
-      now: at(4, 6, 0),
+      now,
     });
 
     expect(reminders.map(({ identifier }) => identifier.slice(0, 9))).toEqual([
-      ...Array<string>(6).fill("reminder-"),
+      ...Array<string>(12).fill("reminder-"),
       "low-stock",
       ...Array<string>(6).fill("reminder-"),
     ]);
-    expect(reminders[6]).toBe(alert);
+    expect(reminders[12]).toBe(alert);
   });
 
-  it("keeps the low stock alerts before tomorrow within 63", () => {
-    const todayIntakes = Array.from({ length: 10 }, (_, index) => createIntake(10 + index, 0));
-    const lowStockAlerts = Array.from({ length: 6 }, (_, index) => ({
-      identifier: `low-stock-${index}`,
-      date: at(10 + index, 9, 0),
-      title: "Stock bas",
-      body: "",
-      interruptionLevel: "active" as const,
-      sound: "beep" as const,
-      channelId: "low-stock",
-    }));
+  it("skips the low stock alerts after the last planned intake", () => {
+    const now = at(4, 7, 0);
 
     const reminders = planReminders({
-      todayIntakes,
-      tomorrowIntakes: [MORNING],
+      intakeDays: planIntakeDays([MORNING], now),
       todayLogs: [],
-      lowStockAlerts,
-      now: at(4, 6, 0),
+      lowStockAlerts: [lowStockAlert(at(8, 9, 0)), lowStockAlert(at(20, 9, 0))],
+      now,
     });
 
-    expect(reminders).toHaveLength(63);
-    expect(reminders.filter(({ title }) => title === "Stock bas")).toHaveLength(3);
-    expect(reminders.filter(({ date }) => date.getDate() === 5)).toHaveLength(0);
+    expect(reminders).toHaveLength(61);
+    expect(reminders.filter(({ title }) => title === "Stock bas")).toEqual([
+      expect.objectContaining({ identifier: "low-stock-8" }),
+    ]);
+  });
+
+  it("gives up the last intake when low stock alerts take its slots", () => {
+    const now = at(4, 7, 0);
+    const lowStockAlerts = [5, 6, 7, 8].map((day) => lowStockAlert(at(day, 9, 30)));
+
+    const reminders = planReminders({
+      intakeDays: planIntakeDays([MORNING], now),
+      todayLogs: [],
+      lowStockAlerts,
+      now,
+    });
+
+    expect(reminders).toHaveLength(58);
+    expect(Math.max(...reminders.map(({ date }) => date.getDate()))).toBe(12);
+  });
+
+  it("skips the low stock alerts after the one year horizon", () => {
+    const now = at(4, 7, 0);
+
+    const reminders = planReminders({
+      intakeDays: [],
+      todayLogs: [],
+      lowStockAlerts: [
+        lowStockAlert(new Date(2027, 9, 4, 9, 0)),
+        lowStockAlert(new Date(2027, 9, 5, 9, 0)),
+      ],
+      now,
+    });
+
+    expect(reminders.map(({ date }) => date)).toEqual([new Date(2027, 9, 4, 9, 0)]);
+  });
+
+  it("keeps the local time across a change of time", () => {
+    const now = at(24, 7, 0);
+
+    const reminders = planReminders({
+      intakeDays: planIntakeDays([MORNING], now),
+      todayLogs: [],
+      now,
+    });
+
+    expect(times(reminders).filter((time) => time.endsWith("08:20"))).toEqual([
+      "24 08:20",
+      "25 08:20",
+      "26 08:20",
+      "27 08:20",
+      "28 08:20",
+      "29 08:20",
+      "30 08:20",
+      "31 08:20",
+      "1 08:20",
+      "2 08:20",
+    ]);
+    expect(reminders[6].identifier).toBe("reminder-intake-8-20-2026-10-25T08:20");
+  });
+
+  it("plans the next days when nothing is due today", () => {
+    const now = at(4, 7, 0);
+
+    const reminders = planReminders({
+      intakeDays: [{ day: addDays(now, 2), intakes: [MORNING] }],
+      todayLogs: [],
+      now,
+    });
+
+    expect(times(reminders)[0]).toBe("6 08:20");
+    expect(reminders).toHaveLength(6);
   });
 
   it("counts the pending intakes of the day in the badge", () => {
     const evening = createIntake(8, 40);
 
     const reminders = planReminders({
-      todayIntakes: [MORNING, evening],
-      tomorrowIntakes: [MORNING],
+      intakeDays: consecutiveDays(at(4, 7, 0), [MORNING, evening], [MORNING]),
       todayLogs: [],
       now: at(4, 7, 0),
     });
@@ -216,8 +327,7 @@ describe("planReminders", () => {
 
   it("does not count a handled intake in the badge", () => {
     const reminders = planReminders({
-      todayIntakes: [MORNING, NOON],
-      tomorrowIntakes: [],
+      intakeDays: consecutiveDays(at(4, 9, 0), [MORNING, NOON]),
       todayLogs: [createIntakeLog(MORNING, "taken", { hour: 8, minute: 30 })],
       now: at(4, 9, 0),
     });
@@ -227,8 +337,7 @@ describe("planReminders", () => {
 
   it("groups the reminders of an intake by day", () => {
     const reminders = planReminders({
-      todayIntakes: [MORNING, NOON],
-      tomorrowIntakes: [MORNING],
+      intakeDays: consecutiveDays(at(4, 7, 0), [MORNING, NOON], [MORNING]),
       todayLogs: [],
       now: at(4, 7, 0),
     });
@@ -245,8 +354,7 @@ describe("planReminders", () => {
 
   it("writes the identifier, the title and the body", () => {
     const [reminder] = planReminders({
-      todayIntakes: [MORNING],
-      tomorrowIntakes: [],
+      intakeDays: consecutiveDays(at(4, 7, 0), [MORNING]),
       todayLogs: [],
       now: at(4, 7, 0),
     });
@@ -267,8 +375,7 @@ describe("planReminders", () => {
 
   it("uses the sound of the intake and its channel", () => {
     const [reminder] = planReminders({
-      todayIntakes: [{ ...MORNING, sound: "chime" }],
-      tomorrowIntakes: [],
+      intakeDays: consecutiveDays(at(4, 7, 0), [{ ...MORNING, sound: "chime" }]),
       todayLogs: [],
       now: at(4, 7, 0),
     });

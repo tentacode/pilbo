@@ -12,6 +12,7 @@ Validé sur iPhone (spec 02) : notifications app fermée, son custom, badge, ann
 | `src/domain/sound.ts`                                           | Liste et ordre des sons (`NOTIFICATION_SOUNDS`), fichier d'un son.                                                                                         |
 | `src/features/notifications/notifications.ts`                   | Appels iOS : permission, nettoyage, planification.                                                                                                         |
 | `src/features/notifications/rescheduleReminders.ts`             | Lit la base, calcule les rappels, les replanifie.                                                                                                          |
+| `src/features/notifications/utils/planIntakeDays.ts`            | Prises de chaque jour, d'aujourd'hui à un an plus tard (`isIntakeDueOn`).                                                                                  |
 | `src/features/notifications/utils/planReminders.ts`             | Calcul pur des rappels et des badges (`now` en paramètre).                                                                                                 |
 | `src/features/notifications/utils/planLowStockAlerts.ts`        | Calcul pur des alertes de stock bas (`now` en paramètre).                                                                                                  |
 | `src/features/notifications/utils/reminderBadge.ios.ts`         | Badge d'un rappel : le nombre de prises en attente (`.android.ts` : aucun).                                                                                |
@@ -58,8 +59,8 @@ Déclencheurs :
 
 1. Crée les canaux Android des sons utilisés et supprime les autres (voir [Canaux](#canaux-notificationchannelsandroidts)). Sons lus dans `useSettingsStore`.
 2. S'arrête là si la permission n'est pas accordée.
-3. Lit les prises du jour et de demain (`getIntakesOfDay`, qui suit la récurrence avec `isIntakeDueOn` : rien une semaine en pause ni avant la date de début), les logs du jour et les stocks.
-4. `planLowStockAlerts()` calcule les alertes de stock bas, `planReminders()` la liste complète.
+3. Lit une seule fois les prises valides aujourd'hui (`getIntakeVersionsOn`, sans requête par jour), les logs du jour et les stocks. Ces versions valent aussi pour les jours suivants : `saveIntake` et `archiveIntake` écrivent toujours la date du jour dans `created_on` / `archived_on`.
+4. `planIntakeDays()` répartit les prises par jour avec `isIntakeDueOn` (rien une semaine en pause ni avant la date de début), `planLowStockAlerts()` calcule les alertes de stock bas, `planReminders()` la liste complète.
 5. `resetReminders()` fait un **nettoyage complet** (annule les planifiées, efface celles affichées, badge à 0), puis planifie chaque rappel.
 
 Un échec est seulement affiché en console : tout sera replanifié au prochain déclencheur.
@@ -75,8 +76,10 @@ Un échec est seulement affiché en console : tout sera replanifié au prochain 
 | `LOW_STOCK_ALERT_HOUR`                 | 9      | Heure des alertes de stock bas.                                 |
 
 - **Aujourd'hui** : prises sans log uniquement. Rappels à `heure + n × intake.reminderIntervalMinutes` (n de 0 à 5), seulement ceux encore à venir, même à quelques secondes près (une prise créée pour la minute suivante sonne). Ex. : prise de 08:20, app ouverte à 08:35 → 08:40, 08:50, 09:00, 09:10.
-- **Alertes de stock bas** : ajoutées après les rappels du jour, dans la limite de 63.
-- **Demain** : ajouté prise par prise (6 rappels entiers) tant que le total reste ≤ 63. Si une journée entière est sautée, les rappels du lendemain existent quand même.
+- **Jours suivants** : jour après jour, jusqu'au même jour un an plus tard inclus (pour couvrir les prises tous les 6 mois). Chaque prise apporte ses 6 rappels d'un bloc, badge calculé comme pour aujourd'hui (prises en attente de ce jour-là).
+- **Alertes de stock bas** : triées avec les blocs des jours suivants par ordre chronologique (un bloc est daté par son premier rappel). Rien après l'horizon d'un an.
+- **Point d'arrêt** : on ajoute les blocs et les alertes dans l'ordre tant que le total reste ≤ 63. Au premier qui ne rentre plus, on s'arrête, sans essayer de caser les suivants. Ex. : une seule prise par jour → 10 jours (60 rappels), les 3 places restantes servent aux alertes de stock bas de cette période.
+- Si une journée entière est sautée, les rappels des jours suivants existent quand même.
 - **Identifiant** : `reminder-<intakeId>-<date locale>` (ex. `reminder-…-2026-10-14T08:40`).
 - **Contenu** : titre « C'est l'heure de votre prise de 08:20 », corps « 1 × Magnésium 300 mg, 1 × Vitamine D 400 UI ». Son de la prise (`intake.sound`), `interruptionLevel: "timeSensitive"`.
 - **Canal Android** : `channelId` du son de la prise (`reminderChannelId`), dans le trigger.
@@ -97,7 +100,7 @@ Un échec est seulement affiché en console : tout sera replanifié au prochain 
 
 Sans ouverture de l'app ni action sur une notification, plus rien n'est planifié après le dernier rappel. On prévient l'utilisateur :
 
-- Une notification 5 min après le dernier rappel de prise planifié (les alertes de stock bas ne comptent pas).
+- Une notification 5 min après le dernier rappel de prise planifié, quel que soit son jour (les alertes de stock bas ne comptent pas).
 - Rien s'il n'y a aucun rappel de prise.
 - Ajoutée par `rescheduleReminders` après `planReminders`, qui lui garde 1 place sur les 64.
 - **Identifiant** : `reopen-app-warning`.
@@ -216,7 +219,7 @@ Puis `requestTabReset` (`src/shared/navigation/tabResetStore.ts`) : l'écran rac
 
 ## Contraintes iOS
 
-- **64 notifications planifiées max** par app, identique avec un compte gratuit ou payant. 4 prises × 6 rappels × 2 jours = 48.
+- **64 notifications planifiées max** par app, identique avec un compte gratuit ou payant. 63 pour les rappels et les alertes, 1 pour l'avertissement : 10 prises à l'avance (6 rappels chacune), soit environ 2,5 jours avec 4 prises par jour.
 - **Mode silencieux** : pas de son, vibration seulement si « Vibrer en mode silencieux » est activé.
 - **Son custom** : `.wav`, `.caf` ou `.aiff`, moins de 30 s.
 - **Compte gratuit** : ni Push, ni Time Sensitive (la signature échoue).
