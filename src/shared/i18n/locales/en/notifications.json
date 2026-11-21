@@ -2,6 +2,7 @@
   "{{meds}} : pensez à les renouveler._one": "{{meds}}: consider renewing it.",
   "{{meds}} : pensez à les renouveler._other": "{{meds}}: consider renewing them.",
   "Annuler": "Cancel",
+  "Attention": "Heads up",
   "Beep Boop": "Beep Boop",
   "Beep Boop Beep Boop": "Beep Boop Beep Boop",
   "C'est l'heure de votre prise de {{time}}": "Time for your {{time}} intake",
@@ -19,5 +20,6 @@
   "Stock bas": "Low stock",
   "Stock bas – {{sound}}": "Low stock – {{sound}}",
   "Valider": "Confirm",
-  "Vibration seule": "Vibration only"
+  "Vibration seule": "Vibration only",
+  "Vous devez ouvrir Pilbo pour continuer à recevoir vos rappels. Sinon, vous n'en recevrez plus.": "Open Pilbo to keep receiving your reminders. Otherwise, you won't get any more."
 }

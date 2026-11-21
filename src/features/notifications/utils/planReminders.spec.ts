@@ -102,7 +102,7 @@ describe("planReminders", () => {
     ]);
   });
 
-  it("adds the intakes of tomorrow only while all their reminders fit in 64", () => {
+  it("adds the intakes of tomorrow only while all their reminders fit in 63", () => {
     const todayIntakes = Array.from({ length: 10 }, (_, index) => createIntake(10 + index, 0));
     const tomorrowIntakes = [createIntake(7, 0), createIntake(8, 0)];
 
@@ -117,7 +117,7 @@ describe("planReminders", () => {
     expect(reminders.filter(({ date }) => date.getDate() === 5)).toHaveLength(0);
   });
 
-  it("never plans more than 64 reminders", () => {
+  it("never plans more than 63 reminders, keeping a slot for the reopen app warning", () => {
     const todayIntakes = Array.from({ length: 12 }, (_, index) => createIntake(10 + index, 0));
 
     const reminders = planReminders({
@@ -127,7 +127,7 @@ describe("planReminders", () => {
       now: at(4, 6, 0),
     });
 
-    expect(reminders).toHaveLength(64);
+    expect(reminders).toHaveLength(63);
   });
 
   it("plans the low stock alerts after today and before tomorrow", () => {
@@ -157,7 +157,7 @@ describe("planReminders", () => {
     expect(reminders[6]).toBe(alert);
   });
 
-  it("keeps the low stock alerts before tomorrow within 64", () => {
+  it("keeps the low stock alerts before tomorrow within 63", () => {
     const todayIntakes = Array.from({ length: 10 }, (_, index) => createIntake(10 + index, 0));
     const lowStockAlerts = Array.from({ length: 6 }, (_, index) => ({
       identifier: `low-stock-${index}`,
@@ -177,8 +177,8 @@ describe("planReminders", () => {
       now: at(4, 6, 0),
     });
 
-    expect(reminders).toHaveLength(64);
-    expect(reminders.filter(({ title }) => title === "Stock bas")).toHaveLength(4);
+    expect(reminders).toHaveLength(63);
+    expect(reminders.filter(({ title }) => title === "Stock bas")).toHaveLength(3);
     expect(reminders.filter(({ date }) => date.getDate() === 5)).toHaveLength(0);
   });
 

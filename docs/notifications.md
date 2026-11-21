@@ -66,15 +66,17 @@ Un échec est seulement affiché en console : tout sera replanifié au prochain 
 
 ## Calcul des rappels (`planReminders`)
 
-| Config (`src/config/notifications.ts`) | Valeur | Rôle                            |
-| -------------------------------------- | ------ | ------------------------------- |
-| `REMINDER_COUNT`                       | 6      | Rappels par prise.              |
-| `MAXIMUM_SCHEDULED_REMINDERS`          | 64     | Limite iOS.                     |
-| `LOW_STOCK_ALERT_HOUR`                 | 9      | Heure des alertes de stock bas. |
+| Config (`src/config/notifications.ts`) | Valeur | Rôle                                                            |
+| -------------------------------------- | ------ | --------------------------------------------------------------- |
+| `REMINDER_COUNT`                       | 6      | Rappels par prise.                                              |
+| `MAXIMUM_SCHEDULED_NOTIFICATIONS`      | 64     | Limite iOS.                                                     |
+| `MAXIMUM_SCHEDULED_REMINDERS`          | 63     | Rappels et alertes de stock bas (1 place pour l'avertissement). |
+| `REOPEN_APP_WARNING_DELAY_MINUTES`     | 5      | Délai de l'avertissement après le dernier rappel.               |
+| `LOW_STOCK_ALERT_HOUR`                 | 9      | Heure des alertes de stock bas.                                 |
 
 - **Aujourd'hui** : prises sans log uniquement. Rappels à `heure + n × intake.reminderIntervalMinutes` (n de 0 à 5), seulement ceux encore à venir, même à quelques secondes près (une prise créée pour la minute suivante sonne). Ex. : prise de 08:20, app ouverte à 08:35 → 08:40, 08:50, 09:00, 09:10.
-- **Alertes de stock bas** : ajoutées après les rappels du jour, dans la limite de 64.
-- **Demain** : ajouté prise par prise (6 rappels entiers) tant que le total reste ≤ 64. Si une journée entière est sautée, les rappels du lendemain existent quand même.
+- **Alertes de stock bas** : ajoutées après les rappels du jour, dans la limite de 63.
+- **Demain** : ajouté prise par prise (6 rappels entiers) tant que le total reste ≤ 63. Si une journée entière est sautée, les rappels du lendemain existent quand même.
 - **Identifiant** : `reminder-<intakeId>-<date locale>` (ex. `reminder-…-2026-10-14T08:40`).
 - **Contenu** : titre « C'est l'heure de votre prise de 08:20 », corps « 1 × Magnésium 300 mg, 1 × Vitamine D 400 UI ». Son de la prise (`intake.sound`), `interruptionLevel: "timeSensitive"`.
 - **Canal Android** : `channelId` du son de la prise (`reminderChannelId`), dans le trigger.
@@ -90,6 +92,17 @@ Un échec est seulement affiché en console : tout sera replanifié au prochain 
 - Rien n'est mémorisé : tout est recalculé à chaque replanification.
 - **Identifiant** : `low-stock-<date locale>` (ex. `low-stock-2026-10-22`).
 - **Contenu** : titre « Stock bas », corps « Magnésium 300 mg, Vitamine D 400 UI : pensez à les renouveler. ». Son des alertes (réglage `lowStockSound`), `interruptionLevel: "active"`, **sans `badge`** (le chiffre de l'icône ne change pas). Canal Android du son (`lowStockChannelId`).
+
+### Avertissement « ouvrez l'app » (`planReopenAppWarning`)
+
+Sans ouverture de l'app ni action sur une notification, plus rien n'est planifié après le dernier rappel. On prévient l'utilisateur :
+
+- Une notification 5 min après le dernier rappel de prise planifié (les alertes de stock bas ne comptent pas).
+- Rien s'il n'y a aucun rappel de prise.
+- Ajoutée par `rescheduleReminders` après `planReminders`, qui lui garde 1 place sur les 64.
+- **Identifiant** : `reopen-app-warning`.
+- **Contenu** : titre « ⚠️ Attention », corps « Vous devez ouvrir Pilbo pour continuer à recevoir vos rappels. Sinon, vous n'en recevrez plus. ». L'emoji sert d'icône : pas d'icône par notification sur iOS, icône commune sur Android.
+- Son des alertes de stock bas (réglage `lowStockSound`) et son canal Android, `interruptionLevel: "active"`, sans `badge` ni boutons. Un tap ouvre « Aujourd'hui », ce qui replanifie tout.
 
 ### Sons
 

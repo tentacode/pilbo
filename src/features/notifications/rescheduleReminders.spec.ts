@@ -56,7 +56,7 @@ describe("rescheduleReminders", () => {
     await rescheduleReminders(createTestDatabase(), NOW);
 
     const [plannedReminders] = jest.mocked(resetReminders).mock.calls[0];
-    expect(plannedReminders.filter(({ sound }) => sound === "vibration")).toHaveLength(2);
+    expect(plannedReminders.filter(({ sound }) => sound === "vibration")).toHaveLength(3);
     expect(plannedReminders[0].sound).toBe("beep");
   });
 
@@ -66,7 +66,7 @@ describe("rescheduleReminders", () => {
     await rescheduleReminders(createTestDatabase(), NOW);
 
     const [plannedReminders] = jest.mocked(resetReminders).mock.calls[0];
-    expect(plannedReminders).toHaveLength(50);
+    expect(plannedReminders).toHaveLength(51);
     expect(plannedReminders.slice(24, 26)).toEqual([
       expect.objectContaining({
         identifier: "low-stock-2026-11-21",
@@ -89,7 +89,7 @@ describe("rescheduleReminders", () => {
     await rescheduleReminders(createTestDatabase({ withLogs: true, now: NOW }), NOW);
 
     const [plannedReminders] = jest.mocked(resetReminders).mock.calls[0];
-    expect(plannedReminders).toHaveLength(56);
+    expect(plannedReminders).toHaveLength(57);
     expect(plannedReminders[0].title).toBe("C'est l'heure de votre prise de 12:20");
   });
 
@@ -122,11 +122,28 @@ describe("rescheduleReminders", () => {
     await rescheduleReminders(database, NOW);
 
     const [plannedReminders] = jest.mocked(resetReminders).mock.calls[0];
-    expect(plannedReminders).toHaveLength(6);
+    expect(plannedReminders).toHaveLength(7);
     expect(
-      plannedReminders.every(({ identifier }) =>
-        identifier.startsWith(`reminder-${monthlyIntakeId}-2026-10-15`),
-      ),
+      plannedReminders
+        .slice(0, 6)
+        .every(({ identifier }) => identifier.startsWith(`reminder-${monthlyIntakeId}-2026-10-15`)),
     ).toBe(true);
+  });
+
+  it("ends with the reopen app warning, 5 minutes after the last reminder", async () => {
+    jest.mocked(getPermissionGranted).mockResolvedValue(true);
+
+    await rescheduleReminders(createTestDatabase(), NOW);
+
+    const [plannedReminders] = jest.mocked(resetReminders).mock.calls[0];
+    const lastReminderTime = Math.max(
+      ...plannedReminders
+        .filter(({ reminderIntake }) => reminderIntake !== undefined)
+        .map(({ date }) => date.getTime()),
+    );
+    expect(plannedReminders.at(-1)).toMatchObject({
+      identifier: "reopen-app-warning",
+      date: new Date(lastReminderTime + 5 * 60_000),
+    });
   });
 });

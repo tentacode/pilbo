@@ -1,7 +1,11 @@
 import { DEFAULT_NOTIFICATION_SOUND, type NotificationSound } from "@/domain/sound";
 
 export const REMINDER_COUNT = 6;
-export const MAXIMUM_SCHEDULED_REMINDERS = 64;
+export const MAXIMUM_SCHEDULED_NOTIFICATIONS = 64;
+export const REOPEN_APP_WARNING_COUNT = 1;
+export const MAXIMUM_SCHEDULED_REMINDERS =
+  MAXIMUM_SCHEDULED_NOTIFICATIONS - REOPEN_APP_WARNING_COUNT;
+export const REOPEN_APP_WARNING_DELAY_MINUTES = 5;
 export const LOW_STOCK_ALERT_HOUR = 9;
 
 // Android channels keep their importance and sound once created: each sound has its own channel, and

@@ -31,6 +31,17 @@ export function formatLowStockAlertBody(meds: Pick<Med, "name" | "strength">[]):
   });
 }
 
+export function formatReopenAppWarningTitle(): string {
+  return `⚠️ ${i18n.t("Attention", { ns: "notifications" })}`;
+}
+
+export function formatReopenAppWarningBody(): string {
+  return i18n.t(
+    "Vous devez ouvrir Pilbo pour continuer à recevoir vos rappels. Sinon, vous n'en recevrez plus.",
+    { ns: "notifications" },
+  );
+}
+
 export function formatSoundName(t: TFunction<"notifications">, sound: NotificationSound): string {
   switch (sound) {
     case "beep_short":

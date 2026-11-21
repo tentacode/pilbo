@@ -13,6 +13,7 @@ import { getPermissionGranted, resetReminders } from "./notifications";
 import { registerReminderActions } from "./reminderActionCategory";
 import { planLowStockAlerts } from "./utils/planLowStockAlerts";
 import { planReminders } from "./utils/planReminders";
+import { planReopenAppWarning } from "./utils/planReopenAppWarning";
 
 let rescheduling: Promise<void> = Promise.resolve();
 
@@ -43,5 +44,8 @@ async function reschedule(database: Database, now: Date): Promise<void> {
     lowStockAlerts: planLowStockAlerts(stockItems, now, lowStockSound),
     now,
   });
-  await resetReminders(plannedReminders);
+  await resetReminders([
+    ...plannedReminders,
+    ...planReopenAppWarning(plannedReminders, lowStockSound),
+  ]);
 }
