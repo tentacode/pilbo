@@ -36,6 +36,8 @@
   --color-rose-soft: #fdeaf2;
   --color-butter-soft: #fff5d8;
   --color-turquoise-soft: #e1f6f2;
+  --color-warning-soft: #ffefc2;
+  --color-warning-ink: #6b4a00;
   --color-on-ink: #ffffff;
   --color-shadow: rgba(46, 42, 92, 0.14);
 
@@ -673,6 +675,34 @@ a:hover {
 
 .steps p {
   margin-bottom: var(--space-medium);
+}
+
+.warning {
+  display: flex;
+  gap: var(--space-medium);
+  margin: 0 0 var(--space-extra-large);
+  padding: var(--space-large);
+  border-radius: var(--radius-small);
+  background: var(--color-warning-soft);
+  color: var(--color-warning-ink);
+}
+
+.warning .icon {
+  flex-shrink: 0;
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+.warning p {
+  margin: 0 0 var(--space-extra-small);
+}
+
+.warning p:last-child {
+  margin-bottom: 0;
+}
+
+.warning-title {
+  font-weight: 700;
 }
 
 /* Footer */

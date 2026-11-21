@@ -123,7 +123,9 @@
       "step2Title": "Sign up for the test",
       "step2Text": "Tap “Become a tester”, then install Pilbo from the Play Store.",
       "step2Button": "Sign up for the Android test",
-      "note": "Use the same Google account as the Play Store on your phone for both steps. Pilbo may take a few minutes to show up after you sign up."
+      "accountWarningTitle": "Use the same Google account everywhere",
+      "accountWarningText": "The testers group, the test sign-up and the Play Store on your phone must use the same Google account. Otherwise, the Play Store shows “Item not found”. To check, open the Play Store and tap your photo at the top right.",
+      "note": "Pilbo may take a few minutes to show up after you sign up."
     }
   },
   "support": {

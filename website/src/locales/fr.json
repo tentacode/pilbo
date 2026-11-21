@@ -123,7 +123,9 @@
       "step2Title": "S’inscrire au test",
       "step2Text": "Touchez « Devenir testeur », puis installez Pilbo depuis le Play Store.",
       "step2Button": "S’inscrire au test Android",
-      "note": "Utilisez pour les deux étapes le même compte Google que le Play Store de votre téléphone. Pilbo peut mettre quelques minutes à apparaître après votre inscription."
+      "accountWarningTitle": "Utilisez le même compte Google partout",
+      "accountWarningText": "Le groupe des testeurs, l’inscription au test et le Play Store de votre téléphone doivent utiliser le même compte Google. Sinon, le Play Store affiche « Élément introuvable ». Pour vérifier, ouvrez le Play Store et touchez votre photo en haut à droite.",
+      "note": "Pilbo peut mettre quelques minutes à apparaître après votre inscription."
     }
   },
   "support": {
