@@ -1,13 +1,13 @@
 import { addBox, createStockDraft, isStockDraftDirty, parseBoxSize, toStock } from "./stockDraft";
 
-const existingStock = { medId: "lithium", quantity: -3, boxSize: 28, lowStockDays: 5 };
+const existingStock = { medId: "lithium", quantity: -3, boxSize: 30, lowStockDays: 5 };
 
 describe("stockDraft", () => {
-  it("starts a new stock at 0 pills, a box of 30 and the default threshold", () => {
+  it("starts a new stock at 0 pills, a box of 28 and the default threshold", () => {
     expect(createStockDraft("lithium", undefined, 10)).toEqual({
       medId: "lithium",
       quantity: 0,
-      boxSizeText: "30",
+      boxSizeText: "28",
       lowStockDays: 10,
     });
   });
@@ -16,7 +16,7 @@ describe("stockDraft", () => {
     expect(createStockDraft("lithium", existingStock, 10)).toEqual({
       medId: "lithium",
       quantity: -3,
-      boxSizeText: "28",
+      boxSizeText: "30",
       lowStockDays: 5,
     });
   });
@@ -33,7 +33,7 @@ describe("stockDraft", () => {
   it("adds a box to the quantity, up to 9999", () => {
     const draft = createStockDraft("lithium", existingStock, 7);
 
-    expect(addBox(draft).quantity).toBe(25);
+    expect(addBox(draft).quantity).toBe(27);
     expect(addBox({ ...draft, quantity: 9990 }).quantity).toBe(9999);
     expect(addBox({ ...draft, boxSizeText: "" })).toEqual({ ...draft, boxSizeText: "" });
   });
@@ -43,7 +43,7 @@ describe("stockDraft", () => {
 
     expect(isStockDraftDirty(draft, draft)).toBe(false);
     expect(isStockDraftDirty({ ...draft, quantity: 0 }, draft)).toBe(true);
-    expect(isStockDraftDirty({ ...draft, boxSizeText: "30" }, draft)).toBe(true);
+    expect(isStockDraftDirty({ ...draft, boxSizeText: "28" }, draft)).toBe(true);
     expect(isStockDraftDirty({ ...draft, lowStockDays: 8 }, draft)).toBe(true);
   });
 

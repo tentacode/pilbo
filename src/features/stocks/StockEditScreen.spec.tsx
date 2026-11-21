@@ -97,7 +97,7 @@ describe("StockEditScreen", () => {
     expect(getStockByMedId(mockDatabase, medId)?.stock).toEqual({
       medId,
       quantity: 0,
-      boxSize: 30,
+      boxSize: 28,
       lowStockDays: 10,
     });
     expect(mockParentNavigation.goBack).toHaveBeenCalledTimes(1);

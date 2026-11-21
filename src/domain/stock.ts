@@ -14,4 +14,4 @@ export interface MedStock {
 
 export const STOCK_QUANTITY = { minimum: 0, maximum: 9999, default: 0 } as const;
 
-export const BOX_SIZE = { minimum: 1, maximum: 999, default: 30 } as const;
+export const BOX_SIZE = { minimum: 1, maximum: 999, default: 28 } as const;
